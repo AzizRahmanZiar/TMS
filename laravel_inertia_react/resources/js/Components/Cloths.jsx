@@ -9,62 +9,122 @@ const Table = () => {
     const [formData, setFormData] = useState({
         nom: "",
         mobile: "",
+        qadd: "",
+        shana: "",
+        ghara: "",
+        zegar: "",
+        lstoony: "",
+        partog: "",
+        pai_tsa: "",
+        lastoni: false,
+        lastoni_goti: false,
+        bin: false,
+        bin_kat: false,
+        makh_jib: false,
+        tarikhzi: false,
+        kalari: false,
+        shabazi: false,
+        arabi: false,
+        lemen: false,
+        lastoni_2: false,
         rawrul_tareekh: "",
         tasleem_tareekh: "",
-        qadd: "",
-        zagar: "",
-        partog: "",
-        ghara: "",
-        shana: "",
-        pai_sta: "",
-        C_mobile: "",
-        listoni: false,
-        lemn: false,
-        arabi: false,
-        shabazi: false,
-        kalari: false,
-        tarikhzi: false,
-        makh_jib: false,
-        bin_kat: false,
-        bin: false,
-        listoni_goti: false,
+        shamir: "",
+        mushtari_mobile: "",
     });
+
+    const [tableData, setTableData] = useState([
+        {
+            nom: "احمد",
+            mobile: "۰۷۰۱۲۳۴۵۶۷",
+            qadd: "۱۲",
+            shana: "۵۶",
+            ghara: "۱۱",
+            zegar: "۸",
+            lstoony: "۲۳",
+            partog: "۲۰",
+            pai_tsa: "۱۰",
+            lastoni: false,
+            lastoni_goti: false,
+            bin: true,
+            bin_kat: false,
+            makh_jib: true,
+            tarikhzi: false,
+            kalari: true,
+            shabazi: false,
+            arabi: true,
+            lemen: false,
+            lastoni_2: true,
+            rawrul_tareekh: "۱۴۰۴-۰۳-۲۰",
+            tasleem_tareekh: "۱۴۰۶-۱۱-۲۰",
+            shamir: "۹",
+            mushtari_mobile: "۰۷۰۹۲۸۴۵۶۷",
+        },
+        {
+            nom: "احسان",
+            mobile: "۰۷۰۲۲۹۴۸۶۷",
+            qadd: "۲۴",
+            shana: "۷۸",
+            ghara: "۸۷",
+            zegar: "۱۱",
+            lstoony: "۹۰",
+            partog: "۲۲",
+            pai_tsa: "۷۶",
+            lastoni: true,
+            lastoni_goti: true,
+            bin: false,
+            bin_kat: true,
+            makh_jib: false,
+            tarikhzi: true,
+            kalari: false,
+            shabazi: true,
+            arabi: false,
+            lemen: true,
+            lastoni_2: false,
+            rawrul_tareekh: "۱۴۰۲-۱۱-۱۲",
+            tasleem_tareekh: "۱۴۰۳-۱۰-۰۲",
+            shamir: "۲",
+            mushtari_mobile: "۰۷۰۲۲۹۴۸۶۷",
+        },
+    ]);
 
     const handleAddClick = () => {
         setIsEditing(false);
         setModalOpen(true);
-        resetForm();
+        resetFormData();
+    };
+
+    const resetFormData = () => {
+        setFormData({
+            nom: "",
+            mobile: "",
+            qadd: "",
+            shana: "",
+            ghara: "",
+            zegar: "",
+            lstoony: "",
+            partog: "",
+            pai_tsa: "",
+            lastoni: false,
+            lastoni_goti: false,
+            bin: false,
+            bin_kat: false,
+            makh_jib: false,
+            tarikhzi: false,
+            kalari: false,
+            shabazi: false,
+            arabi: false,
+            lemen: false,
+            lastoni_2: false,
+            rawrul_tareekh: "",
+            tasleem_tareekh: "",
+            shamir: "",
+            mushtari_mobile: "",
+        });
     };
 
     const closeModal = () => {
         setModalOpen(false);
-        resetForm();
-    };
-
-    const resetForm = () => {
-        setFormData({
-            nom: "",
-            mobile: "",
-            rawrul_tareekh: "",
-            tasleem_tareekh: "",
-            qadd: "",
-            zagar: "",
-            partog: "",
-            ghara: "",
-            shana: "",
-            pai_sta: "",
-            c_mobile: "",
-            listoni: false,
-            lemn: false,
-            arabi: false,
-            shabazi: false,
-            kalari: false,
-            tarikhzi: false,
-            makh_jib: false,
-            bin_kat: false,
-            bin: false,
-            listoni_goti: false,
-        });
     };
 
     const handleChange = (e) => {
@@ -77,43 +137,31 @@ const Table = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
+        if (isEditing) {
+            setTableData((prevData) =>
+                prevData.map((data, index) =>
+                    index === formData.index ? formData : data
+                )
+            );
+        } else {
+            setTableData((prevData) => [...prevData, formData]);
+        }
         closeModal();
     };
 
     const handleUpdate = (index) => {
-        const rowData = {
-            nom: "عزیزالرحمن",
-            mobile: "۰۷۰۲۴۹۲۶۸۲",
-            rawrul_tareekh: "۱۴۰۳/۰۲/۲۱",
-            tasleem_tareekh: "۱۴۰۳/۰۲/۲۱",
-            qadd: "۱۲",
-            zagar: "۱۰",
-            partog: "۱۲",
-            ghara: "۲۳",
-            shana: "۲۳",
-            pai_sta: "۳",
-            mobile: "۰۷۰۲۴۹۲۶۸۲",
-            listoni: false,
-            lemn: false,
-            arabi: false,
-            shabazi: false,
-            kalari: false,
-            tarikhzi: false,
-            makh_jib: false,
-            bin_kat: false,
-            bin: false,
-            listoni_goti: false,
-        };
-
-        setFormData(rowData);
         setIsEditing(true);
         setModalOpen(true);
+        setFormData({ ...tableData[index], index });
     };
 
     const handleDelete = (index) => {
-        console.log("Delete row:", index);
+        setTableData((prevData) => prevData.filter((_, i) => i !== index));
     };
+
+    const filteredData = tableData.filter((row) =>
+        row.mobile.includes(searchTerm)
+    );
 
     return (
         <div className="overflow-x-auto">
@@ -123,7 +171,7 @@ const Table = () => {
                 <div className="flex items-end gap-10">
                     <input
                         type="text"
-                        placeholder="لـــــــــټون ..."
+                        placeholder=" لټــــــــــــول ..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="border w-[30rem] p-2 rounded"
@@ -135,155 +183,243 @@ const Table = () => {
                         ریکارډ اضافه کول
                     </button>
                 </div>
-
                 <img src="/imgs/cloths-3.jpg" alt="" className="h-40 w-40" />
             </div>
 
             <div className="overflow-x-auto">
-                <table className="w-full bg-white border border-gray-200">
+                <table className="w-full border border-gray-200">
                     <thead>
                         <tr className="bg-gray-100">
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 نوم
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 مبایل
                             </th>
-                            <th className="py-2 px-2 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 قد
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 شانه
                             </th>
-                            <th className="py-2 px-2 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 غاړه
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 ځګر
                             </th>
-                            <th className="py-2 px-2 text-right text-gray-600">
-                                لسټوڼي
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
+                                اندازه لسټوڼي
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 پرتوګ
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 پایڅه
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 لستوڼي غوټۍ
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 بین
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 بین کاټ
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 د مخ جیب
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 ترخزي
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 کالري
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 شابازي
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 عربي
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 لمن
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 لستوڼي
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 د راوړلو تاریخ
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 د تسلیمولو تاریخ
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
-                                مبایل
-                            </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 شمیر
                             </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
+                                مشتري مبایل
+                            </th>
+
+                            <th className="py-2 px-1 text-right text-gray-600 border-b border-gray-300">
                                 عملیې
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {Array(3)
-                            .fill()
-                            .map((_, index) => (
-                                <tr
-                                    key={index}
-                                    className="border-b hover:bg-gray-50"
-                                >
-                                    <td className="py-2 px-1">عزیزالرحمن</td>
-                                    <td className="py-2 px-1">۰۷۰۲۴۹۲۶۸۲</td>
-                                    <td className="py-2 px-1">۱۲</td>
-                                    <td className="py-2 px-1">۲۳</td>
-                                    <td className="py-2 px-1">۱۰</td>
-                                    <td className="py-2 px-1">۱۲</td>
-                                    <td className="py-2 px-1">۸۹</td>
-                                    <td className="py-2 px-1">۸۹</td>
-                                    <td className="py-2 px-1">۲۳</td>
-                                    <td className="py-2 px-1">
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td className="py-2 px-1">
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td className="py-2 px-1">
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td className="py-2 px-1">
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td className="py-2 px-1">
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td className="py-2 px-1">
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td className="py-2 px-1">
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td className="py-2 px-1">
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td className="py-2 px-1">
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td className="py-2 px-1">
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td className="py-2 px-1">۱۴۰۳/۰۲/۲۱</td>
-                                    <td className="py-2 px-1">۱۴۰۳/۰۲/۲۱</td>
-                                    <td className="py-2 px-1">۰۷۰۲۴۹۲۸۱۷</td>
-                                    <td className="py-2 px-2">۳</td>
-                                    <td className="flex gap-2">
-                                        <button
-                                            onClick={() => handleUpdate(index)}
-                                            className="text-blue-600"
-                                        >
-                                            <FaEdit />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(index)}
-                                            className="text-red-600"
-                                        >
-                                            <MdDelete />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                        {filteredData.map((row, index) => (
+                            <tr
+                                key={index}
+                                className="border-b border-gray-300"
+                            >
+                                <td className="py-2 px-1 text-right">
+                                    {row.nom}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.mobile}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.qadd}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.shana}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.ghara}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.zegar}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.lstoony}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.partog}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.pai_tsa}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    <input
+                                        type="checkbox"
+                                        checked={row.lastoni_goti}
+                                        onChange={() =>
+                                            toggleCheckbox(
+                                                index,
+                                                "lastoni_goti"
+                                            )
+                                        }
+                                    />
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    <input
+                                        type="checkbox"
+                                        checked={row.bin}
+                                        onChange={() =>
+                                            toggleCheckbox(index, "bin")
+                                        }
+                                    />
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    <input
+                                        type="checkbox"
+                                        checked={row.bin_kat}
+                                        onChange={() =>
+                                            toggleCheckbox(index, "bin_kat")
+                                        }
+                                    />
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    <input
+                                        type="checkbox"
+                                        checked={row.makh_jib}
+                                        onChange={() =>
+                                            toggleCheckbox(index, "makh_jib")
+                                        }
+                                    />
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    <input
+                                        type="checkbox"
+                                        checked={row.tarikhzi}
+                                        onChange={() =>
+                                            toggleCheckbox(index, "tarikhzi")
+                                        }
+                                    />
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    <input
+                                        type="checkbox"
+                                        checked={row.kalari}
+                                        onChange={() =>
+                                            toggleCheckbox(index, "kalari")
+                                        }
+                                    />
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    <input
+                                        type="checkbox"
+                                        checked={row.shabazi}
+                                        onChange={() =>
+                                            toggleCheckbox(index, "shabazi")
+                                        }
+                                    />
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    <input
+                                        type="checkbox"
+                                        checked={row.arabi}
+                                        onChange={() =>
+                                            toggleCheckbox(index, "arabi")
+                                        }
+                                    />
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    <input
+                                        type="checkbox"
+                                        checked={row.lemen}
+                                        onChange={() =>
+                                            toggleCheckbox(index, "lemen")
+                                        }
+                                    />
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    <input
+                                        type="checkbox"
+                                        checked={row.lastoni_2}
+                                        onChange={() =>
+                                            toggleCheckbox(index, "lastoni_2")
+                                        }
+                                    />
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.rawrul_tareekh}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.tasleem_tareekh}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.shamir}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.mushtari_mobile}
+                                </td>
+
+                                <td className="py-2 flex gap-2 px-1 text-right">
+                                    <button
+                                        onClick={() => handleUpdate(index)}
+                                        className="text-blue-500"
+                                    >
+                                        <FaEdit />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(index)}
+                                        className="text-red-500 ml-2"
+                                    >
+                                        <MdDelete />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -312,38 +448,8 @@ const Table = () => {
                                 required: true,
                             },
                             {
-                                id: "rawrul_tareekh",
-                                label: "د راوړلو تاریخ",
-                                type: "date",
-                                required: true,
-                            },
-                            {
-                                id: "tasleem_tareekh",
-                                label: "د تسلیمولو تاریخ",
-                                type: "date",
-                                required: true,
-                            },
-                            {
                                 id: "qadd",
                                 label: "قد",
-                                type: "text",
-                                required: true,
-                            },
-                            {
-                                id: "zagar",
-                                label: "ځګر",
-                                type: "text",
-                                required: true,
-                            },
-                            {
-                                id: "partog",
-                                label: "پرتوګ",
-                                type: "text",
-                                required: true,
-                            },
-                            {
-                                id: "ghara",
-                                label: "غاړه",
                                 type: "text",
                                 required: true,
                             },
@@ -354,8 +460,26 @@ const Table = () => {
                                 required: true,
                             },
                             {
-                                id: "lastoni",
-                                label: "لستوڼي",
+                                id: "ghara",
+                                label: "غاړه",
+                                type: "text",
+                                required: true,
+                            },
+                            {
+                                id: "zegar",
+                                label: "ځګر",
+                                type: "text",
+                                required: true,
+                            },
+                            {
+                                id: "lstoony",
+                                label: "اندازه لسټوڼي",
+                                type: "text",
+                                required: true,
+                            },
+                            {
+                                id: "partog",
+                                label: "پرتوګ",
                                 type: "text",
                                 required: true,
                             },
@@ -366,15 +490,27 @@ const Table = () => {
                                 required: true,
                             },
                             {
-                                id: "mobile",
-                                label: "مبایل",
+                                id: "shamir",
+                                label: "شمیر",
                                 type: "text",
                                 required: true,
                             },
                             {
-                                id: "shamir",
-                                label: "شمیر",
+                                id: "mushtari_mobile",
+                                label: "مشتري مبایل",
                                 type: "text",
+                                required: true,
+                            },
+                            {
+                                id: "rawrul_tareekh",
+                                label: "د راوړلو تاریخ",
+                                type: "date",
+                                required: true,
+                            },
+                            {
+                                id: "tasleem_tareekh",
+                                label: "د تسلیمولو تاریخ",
+                                type: "date",
                                 required: true,
                             },
                         ].map(({ id, label, type, required }) => (
@@ -397,16 +533,17 @@ const Table = () => {
                         ))}
 
                         {[
-                            { name: "listoni", label: "لسټوڼي" },
-                            { name: "lemn", label: "لمن" },
-                            { name: "arabi", label: "عربي" },
-                            { name: "shabazi", label: "شابازي" },
-                            { name: "kalari", label: "کالري" },
-                            { name: "tarikhzi", label: "ترخزي" },
-                            { name: "makh_jib", label: "د مخ جیب" },
-                            { name: "bin_kat", label: "بین کاټ" },
+                            { name: "lastoni", label: "لستوڼي" },
+                            { name: "lastoni_goti", label: "غوټۍ" },
                             { name: "bin", label: "بین" },
-                            { name: "listoni_goti", label: "لستوڼي غوټۍ" },
+                            { name: "bin_kat", label: "بین کاټ" },
+                            { name: "makh_jib", label: "د مخ جیب" },
+                            { name: "tarikhzi", label: "ترخزي" },
+                            { name: "kalari", label: "کالري" },
+                            { name: "shabazi", label: "شابازي" },
+                            { name: "arabi", label: "عربي" },
+                            { name: "lemen", label: "لمن" },
+                            { name: "lastoni_2", label: "لستوڼي" },
                         ].map(({ name, label }) => (
                             <div key={name} className="flex items-center">
                                 <input

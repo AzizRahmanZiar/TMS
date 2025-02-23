@@ -9,92 +9,117 @@ const Table = () => {
     const [formData, setFormData] = useState({
         nom: "",
         mobile: "",
+        yakhun_qak: "",
+        patlun: "",
+        ghara: "",
+        zegar: "",
+        lstoony: "",
         rawrul_tareekh: "",
         tasleem_tareekh: "",
-        yachan_qak: "",
-        pathlon: "",
-        ghara: "",
-        zagar: "",
-        listoni: "",
-        c_mobile: "",
-        shamira: "",
+        mushtari_mobile: "",
+        shamir: "",
     });
+
+    const [tableData, setTableData] = useState([
+        {
+            nom: "احمد",
+            mobile: "۰۷۰۱۲۳۴۵۶۷",
+            yakhun_qak: "۱۰۰",
+            patlun: "۸۰",
+            ghara: "۶۷",
+            zegar: "۴۰",
+            lstoony: "۲۳",
+            rawrul_tareekh: "۱۴۰۴-۰۳-۲۰",
+            tasleem_tareekh: "۱۴۰۶-۱۱-۲۰",
+            mushtari_mobile: "۰۷۰۹۲۸۴۵۶۷",
+            shamir: "۲",
+        },
+        {
+            nom: "احسان",
+            mobile: "۰۷۰۲۲۹۴۸۶۷",
+            yakhun_qak: "۱۲۰",
+            patlun: "۷۵",
+            ghara: "۱۲",
+            zegar: "۳۸",
+            lstoony: "۹۰",
+            rawrul_tareekh: "۱۴۰۲-۱۱-۱۲",
+            tasleem_tareekh: "۱۴۰۳-۱۰-۰۲",
+            mushtari_mobile: "۰۷۰۲۲۹۴۸۶۷",
+            shamir: "۳",
+        },
+    ]);
 
     const handleAddClick = () => {
         setIsEditing(false);
         setModalOpen(true);
-        resetForm();
+        resetFormData();
+    };
+
+    const resetFormData = () => {
+        setFormData({
+            nom: "",
+            mobile: "",
+            yakhun_qak: "",
+            patlun: "",
+            ghara: "",
+            zegar: "",
+            lstoony: "",
+            rawrul_tareekh: "",
+            tasleem_tareekh: "",
+            mushtari_mobile: "",
+            shamir: "",
+        });
     };
 
     const closeModal = () => {
         setModalOpen(false);
-        resetForm();
-    };
-
-    const resetForm = () => {
-        setFormData({
-            nom: "",
-            mobile: "",
-            rawrul_tareekh: "",
-            tasleem_tareekh: "",
-            yachan_qak: "",
-            pathlon: "",
-            ghara: "",
-            zagar: "",
-            listoni: "",
-            c_mobile: "",
-            shamira: "",
-        });
     };
 
     const handleChange = (e) => {
-        const { id, value, type, checked } = e.target;
+        const { id, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [id]: type === "checkbox" ? checked : value,
+            [id]: value,
         }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
+        if (isEditing) {
+            setTableData((prevData) =>
+                prevData.map((data, index) =>
+                    index === formData.index ? formData : data
+                )
+            );
+        } else {
+            setTableData((prevData) => [...prevData, formData]);
+        }
         closeModal();
     };
 
     const handleUpdate = (index) => {
-        const rowData = {
-            nom: "عزیزالرحمن",
-            mobile: "۰۷۰۲۴۹۲۶۸۲",
-            rawrul_tareekh: "۱۴۰۳/۰۲/۲۱",
-            tasleem_tareekh: "۱۴۰۳/۰۲/۲۱",
-            zagar: "۱۰",
-            pathlon: "۱۲",
-            ghara: "۲۳",
-
-            listoni: "۳۵",
-            c_mobile: "۰۷۰۲۴۹۲۶۸۲",
-            shamira: "۲",
-        };
-
-        setFormData(rowData);
         setIsEditing(true);
         setModalOpen(true);
+        setFormData({ ...tableData[index], index });
     };
 
     const handleDelete = (index) => {
-        // Logic to delete the row
-        console.log("Delete row:", index);
+        setTableData((prevData) => prevData.filter((_, i) => i !== index));
     };
+
+    const filteredData = tableData.filter((row) =>
+        row.mobile.includes(searchTerm)
+    );
 
     return (
         <div className="overflow-x-auto">
-            <h1 className="font-bold text-2xl mr-5">د درشۍ د مشتریانو لیست</h1>
+            <h1 className="font-bold text-2xl mr-5">د درشی د مشتریانو لیست</h1>
 
             <div className="flex w-full gap-10 justify-end mb-4">
                 <div className="flex items-end gap-10">
                     <input
                         type="text"
-                        placeholder="لـــــــــټون ..."
+                        placeholder="  لټـــــــــول ..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="border w-[30rem] p-2 rounded"
@@ -106,88 +131,91 @@ const Table = () => {
                         ریکارډ اضافه کول
                     </button>
                 </div>
-
                 <img src="/imgs/uniform.jpg" alt="" className="h-40 w-40" />
             </div>
 
             <div className="overflow-x-auto">
-                <table className="w-full bg-white border border-gray-200">
+                <table className="w-full border border-gray-200">
                     <thead>
                         <tr className="bg-gray-100">
-                            <th className="py-2 px-1 text-right text-gray-600">
-                                نوم
-                            </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
-                                مبایل
-                            </th>
-                            <th className="py-2 px-2 text-right text-gray-600">
-                                یخن قاک
-                            </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
-                                پتلون
-                            </th>
-                            <th className="py-2 px-2 text-right text-gray-600">
-                                غاړه
-                            </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
-                                ځګر
-                            </th>
-                            <th className="py-2 px-2 text-right text-gray-600">
-                                لسټوڼي
-                            </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
-                                د راوړلو تاریخ
-                            </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
-                                د تسلیمولو تاریخ
-                            </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
-                                مبایل
-                            </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
-                                شمیر
-                            </th>
-                            <th className="py-2 px-1 text-right text-gray-600">
-                                عملیې
-                            </th>
+                            {[
+                                "نوم",
+                                "مبایل",
+                                "یخن قاک",
+                                "پتلون",
+                                "غاړه",
+                                "ځګر",
+                                "لسټوڼي",
+                                "د راوړلو تاریخ",
+                                "د تسلیمولو تاریخ",
+                                "مشتري مبایل",
+                                "شمیر",
+                                "عملیې",
+                            ].map((header) => (
+                                <th
+                                    key={header}
+                                    className="py-2 px-1 text-right text-gray-600 border-b border-gray-300"
+                                >
+                                    {header}
+                                </th>
+                            ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {Array(3)
-                            .fill()
-                            .map((_, index) => (
-                                <tr
-                                    key={index}
-                                    className="border-b hover:bg-gray-50"
-                                >
-                                    <td className="py-2 px-1">عزیزالرحمن</td>
-                                    <td className="py-2 px-1">۰۷۰۲۴۹۲۶۸۲</td>
-                                    <td className="py-2 px-1">۱۲</td>
-                                    <td className="py-2 px-1">۲۳</td>
-                                    <td className="py-2 px-1">۱۰</td>
-                                    <td className="py-2 px-1">۱۲</td>
-                                    <td className="py-2 px-1">۸۹</td>
-
-                                    <td className="py-2 px-1">۱۴۰۳/۰۲/۲۱</td>
-                                    <td className="py-2 px-1">۱۴۰۳/۰۲/۲۱</td>
-                                    <td className="py-2 px-1">۰۷۰۲۴۹۲۸۱۷</td>
-                                    <td className="py-2 px-2">۳</td>
-                                    <td className="flex gap-2">
-                                        <button
-                                            onClick={() => handleUpdate(index)}
-                                            className="text-blue-600"
-                                        >
-                                            <FaEdit />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(index)}
-                                            className="text-red-600"
-                                        >
-                                            <MdDelete />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                        {filteredData.map((row, index) => (
+                            <tr
+                                key={index}
+                                className="border-b border-gray-300"
+                            >
+                                <td className="py-2 px-1 text-right">
+                                    {row.nom}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.mobile}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.yakhun_qak}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.patlun}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.ghara}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.zegar}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.lstoony}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.rawrul_tareekh}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.tasleem_tareekh}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.mushtari_mobile}
+                                </td>
+                                <td className="py-2 px-1 text-right">
+                                    {row.shamir}
+                                </td>
+                                <td className="py-2 flex gap-2 px-1 text-right">
+                                    <button
+                                        onClick={() => handleUpdate(index)}
+                                        className="text-blue-500"
+                                    >
+                                        <FaEdit />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(index)}
+                                        className="text-red-500 ml-2"
+                                    >
+                                        <MdDelete />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -216,13 +244,13 @@ const Table = () => {
                                 required: true,
                             },
                             {
-                                id: "iakhan qak",
+                                id: "yakhun_qak",
                                 label: "یخن قاک",
                                 type: "text",
                                 required: true,
                             },
                             {
-                                id: "pathlon",
+                                id: "patlun",
                                 label: "پتلون",
                                 type: "text",
                                 required: true,
@@ -234,32 +262,32 @@ const Table = () => {
                                 required: true,
                             },
                             {
-                                id: "zigar",
+                                id: "zegar",
                                 label: "ځګر",
                                 type: "text",
                                 required: true,
                             },
                             {
-                                id: "zagar",
-                                label: "لستوڼي",
+                                id: "lstoony",
+                                label: "لسټوڼي",
                                 type: "text",
                                 required: true,
                             },
                             {
                                 id: "rawrul_tareekh",
-                                label: "د تاریخ",
+                                label: "د راوړلو تاریخ",
                                 type: "date",
                                 required: true,
                             },
                             {
                                 id: "tasleem_tareekh",
-                                label: "د تاریخ",
+                                label: "د تسلیمولو تاریخ",
                                 type: "date",
                                 required: true,
                             },
                             {
-                                id: "c_mobile",
-                                label: "مبایل",
+                                id: "mushtari_mobile",
+                                label: "مشتري مبایل",
                                 type: "text",
                                 required: true,
                             },
