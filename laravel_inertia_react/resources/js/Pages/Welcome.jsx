@@ -9,7 +9,7 @@ export default function Welcome({ auth }) {
                         className="font-bold p-3 rounded-lg bg-white w-[8rem] text-gray-800"
                         href={route("dashboard")}
                     >
-                        اصلــــي صفحه(page)
+                        اصلــــي صفحه
                     </Link>
                 ) : (
                     <div className="flex p-10 gap-4 justify-end">

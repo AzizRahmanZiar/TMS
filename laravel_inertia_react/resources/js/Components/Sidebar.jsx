@@ -12,17 +12,31 @@ const Sidebar = () => (
                     to="/cloths"
                     className=" flex flex-row items-end p-4 hover:bg-gray-700"
                 >
-                    <PiPantsFill className="h-[2rem] w-[2rem]" />
-                    جــــامې
+                    جامې
                 </Link>
             </li>
             <li>
                 <Link
-                    to="/about"
+                    to="/uniform"
                     className=" flex flex-row items-end p-4 hover:bg-gray-700"
                 >
-                    <BsPersonStandingDress className="h-[2rem] w-[2rem]" />
-                    درشــــي
+                    درشي
+                </Link>
+            </li>
+            <li>
+                <Link
+                    to="/kortai"
+                    className=" flex flex-row items-end p-4 hover:bg-gray-700"
+                >
+                    کورتۍ
+                </Link>
+            </li>
+            <li>
+                <Link
+                    to="/sadrai"
+                    className=" flex flex-row items-end p-4 hover:bg-gray-700"
+                >
+                    صدرۍ
                 </Link>
             </li>
         </ul>

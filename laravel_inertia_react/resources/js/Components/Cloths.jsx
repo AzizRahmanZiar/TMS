@@ -16,6 +16,8 @@ const Table = () => {
         partog: "",
         ghara: "",
         shana: "",
+        pai_sta: "",
+        C_mobile: "",
         listoni: false,
         lemn: false,
         arabi: false,
@@ -50,6 +52,8 @@ const Table = () => {
             partog: "",
             ghara: "",
             shana: "",
+            pai_sta: "",
+            c_mobile: "",
             listoni: false,
             lemn: false,
             arabi: false,
@@ -78,17 +82,18 @@ const Table = () => {
     };
 
     const handleUpdate = (index) => {
-        // Fetch the row data based on index and set it in formData
         const rowData = {
-            nom: "عزیزالرحمن", // Example data; replace with actual data
-            mobile: "۰۷۰۲۴۹۲۶۸۲", // Example data; replace with actual data
-            rawrul_tareekh: "۱۴۰۳/۰۲/۲۱", // Example data; replace with actual data
-            tasleem_tareekh: "۱۴۰۳/۰۲/۲۱", // Example data; replace with actual data
-            qadd: "۱۲", // Example data; replace with actual data
-            zagar: "۱۰", // Example data; replace with actual data
-            partog: "۱۲", // Example data; replace with actual data
-            ghara: "۲۳", // Example data; replace with actual data
-            shana: "۲۳", // Example data; replace with actual data
+            nom: "عزیزالرحمن",
+            mobile: "۰۷۰۲۴۹۲۶۸۲",
+            rawrul_tareekh: "۱۴۰۳/۰۲/۲۱",
+            tasleem_tareekh: "۱۴۰۳/۰۲/۲۱",
+            qadd: "۱۲",
+            zagar: "۱۰",
+            partog: "۱۲",
+            ghara: "۲۳",
+            shana: "۲۳",
+            pai_sta: "۳",
+            mobile: "۰۷۰۲۴۹۲۶۸۲",
             listoni: false,
             lemn: false,
             arabi: false,
@@ -107,7 +112,6 @@ const Table = () => {
     };
 
     const handleDelete = (index) => {
-        // Logic to delete the row
         console.log("Delete row:", index);
     };
 
@@ -197,19 +201,19 @@ const Table = () => {
                                 لستوڼي
                             </th>
                             <th className="py-2 px-1 text-right text-gray-600">
-                                د جامو راوړلو تاریخ
+                                د راوړلو تاریخ
                             </th>
                             <th className="py-2 px-1 text-right text-gray-600">
-                                د جامو تسلیمولو تاریخ
+                                د تسلیمولو تاریخ
                             </th>
                             <th className="py-2 px-1 text-right text-gray-600">
                                 مبایل
                             </th>
                             <th className="py-2 px-1 text-right text-gray-600">
-                                جوړې
+                                شمیر
                             </th>
                             <th className="py-2 px-1 text-right text-gray-600">
-                                عملیات
+                                عملیې
                             </th>
                         </tr>
                     </thead>
@@ -309,13 +313,13 @@ const Table = () => {
                             },
                             {
                                 id: "rawrul_tareekh",
-                                label: "د جامو راوړلو تاریخ",
+                                label: "د راوړلو تاریخ",
                                 type: "date",
                                 required: true,
                             },
                             {
                                 id: "tasleem_tareekh",
-                                label: "د جامو تسلیمولو تاریخ",
+                                label: "د تسلیمولو تاریخ",
                                 type: "date",
                                 required: true,
                             },
@@ -349,6 +353,30 @@ const Table = () => {
                                 type: "text",
                                 required: true,
                             },
+                            {
+                                id: "lastoni",
+                                label: "لستوڼي",
+                                type: "text",
+                                required: true,
+                            },
+                            {
+                                id: "pai_tsa",
+                                label: "پایڅه",
+                                type: "text",
+                                required: true,
+                            },
+                            {
+                                id: "mobile",
+                                label: "مبایل",
+                                type: "text",
+                                required: true,
+                            },
+                            {
+                                id: "shamir",
+                                label: "شمیر",
+                                type: "text",
+                                required: true,
+                            },
                         ].map(({ id, label, type, required }) => (
                             <div key={id} className="flex flex-col">
                                 <label
@@ -368,7 +396,6 @@ const Table = () => {
                             </div>
                         ))}
 
-                        {/* Checkbox Group */}
                         {[
                             { name: "listoni", label: "لسټوڼي" },
                             { name: "lemn", label: "لمن" },

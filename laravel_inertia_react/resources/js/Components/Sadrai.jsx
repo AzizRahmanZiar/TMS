@@ -88,7 +88,7 @@ const Table = () => {
 
     return (
         <div className="overflow-x-auto">
-            <h1 className="font-bold text-2xl mr-5">د درشۍ د مشتریانو لیست</h1>
+            <h1 className="font-bold text-2xl mr-5">د صدری د مشتریانو لیست</h1>
 
             <div className="flex w-full gap-10 justify-end mb-4">
                 <div className="flex items-end gap-10">
@@ -107,7 +107,7 @@ const Table = () => {
                     </button>
                 </div>
 
-                <img src="/imgs/uniform.jpg" alt="" className="h-40 w-40" />
+                <img src="/imgs/sadrai.jpg" alt="" className="h-40 w-40" />
             </div>
 
             <div className="overflow-x-auto">
