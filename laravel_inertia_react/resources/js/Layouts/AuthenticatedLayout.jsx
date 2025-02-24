@@ -12,7 +12,9 @@ export default function AuthenticatedLayout({ header, children }) {
         useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900" dir="rtl">
+            {" "}
+            {/* Set direction to RTL */}
             <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
@@ -23,18 +25,23 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div className="hidden space-x-8 sm:-my-px sm:me-10 sm:flex">
+                                {" "}
+                                {/* Changed ms-10 to me-10 */}
                                 <NavLink
                                     href={route("dashboard")}
                                     active={route().current("dashboard")}
                                 >
-                                    Dashboard
+                                    اصـــــلي{" "}
+                                    {/* Translated "Dashboard" to "داشبورد" */}
                                 </NavLink>
                             </div>
                         </div>
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
+                        <div className="hidden sm:me-6 sm:flex sm:items-center">
+                            <div className="relative me-3">
+                                {" "}
+                                {/* Changed ms-3 to me-3 */}
                                 <Dropdown>
                                     <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
@@ -45,7 +52,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 {user.name}
 
                                                 <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
+                                                    className="-me-0.5 me-2 h-4 w-4" // Changed ms-2 to me-2
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 20 20"
                                                     fill="currentColor"
@@ -64,14 +71,16 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <Dropdown.Link
                                             href={route("profile.edit")}
                                         >
-                                            Profile
+                                            پروفایل{" "}
+                                            {/* Translated "Profile" to "پروفایل" */}
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route("logout")}
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            خارج شو{" "}
+                                            {/* Translated "Log Out" to "خارج شو" */}
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
@@ -132,7 +141,8 @@ export default function AuthenticatedLayout({ header, children }) {
                             href={route("dashboard")}
                             active={route().current("dashboard")}
                         >
-                            Dashboard
+                            اصـــــلي{" "}
+                            {/* Translated "Dashboard" to "داشبورد" */}
                         </ResponsiveNavLink>
                     </div>
 
@@ -148,20 +158,21 @@ export default function AuthenticatedLayout({ header, children }) {
 
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href={route("profile.edit")}>
-                                Profile
+                                پروفایل{" "}
+                                {/* Translated "Profile" to "پروفایل" */}
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 method="post"
                                 href={route("logout")}
                                 as="button"
                             >
-                                Log Out
+                                خارج شو{" "}
+                                {/* Translated "Log Out" to "خارج شو" */}
                             </ResponsiveNavLink>
                         </div>
                     </div>
                 </div>
             </nav>
-
             {header && (
                 <header className="bg-white shadow dark:bg-gray-800">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -169,7 +180,6 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
                 </header>
             )}
-
             <main>{children}</main>
         </div>
     );

@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 body {
-    direction: rtl;
     height: screen;
     overflow: hidden;
 }

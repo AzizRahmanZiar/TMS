@@ -3,7 +3,10 @@ import { Link } from "@inertiajs/react";
 export default function Welcome({ auth }) {
     return (
         <>
-            <div className="w-screen p-10 h-screen flex flex-col bg-gradient-to-br from-red-900 to-black">
+            <div
+                className="w-screen p-10 h-screen flex flex-col bg-gradient-to-br from-red-900 to-black"
+                dir="rtl"
+            >
                 {auth.user ? (
                     <Link
                         className="font-bold p-3 rounded-lg bg-white w-[8rem] text-gray-800"
@@ -12,7 +15,7 @@ export default function Welcome({ auth }) {
                         اصلــــي صفحه
                     </Link>
                 ) : (
-                    <div className="flex p-10 gap-4 justify-end">
+                    <div className="flex p-10 gap-4 justify-start">
                         <Link
                             className="text-2xl font-bold text-white"
                             href={route("login")}
@@ -27,7 +30,6 @@ export default function Welcome({ auth }) {
                         </Link>
                     </div>
                 )}
-
                 <div className="flex flex-col justify-center items-center flex-grow">
                     <h1 className="text-5xl font-bold text-white">
                         ښـــــه راغلاست!
