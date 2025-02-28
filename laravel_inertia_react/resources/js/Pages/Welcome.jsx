@@ -2,14 +2,26 @@ import { Link } from "@inertiajs/react";
 
 export default function Welcome({ auth }) {
     return (
-        <>
-            <div
-                className="w-screen p-10 h-screen flex flex-col bg-gradient-to-br from-red-900 to-black"
-                dir="rtl"
+        <div
+            className="relative w-screen h-screen flex flex-col p-10"
+            dir="rtl"
+        >
+            <video
+                className="absolute top-0 left-0 w-full h-full object-cover"
+                autoPlay
+                loop
+                muted
             >
+                <source src="./imgs/bg-1.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+
+            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
+
+            <div className="relative z-10 text-right">
                 {auth.user ? (
                     <Link
-                        className="font-bold p-3 rounded-lg bg-white w-[8rem] text-gray-800"
+                        className="font-bold p-3 rounded-lg text-xl hover:ring-2 border ring-white  w-[8rem] text-white bg-gray-800 shadow"
                         href={route("dashboard")}
                     >
                         اصلــــي صفحه
@@ -17,25 +29,20 @@ export default function Welcome({ auth }) {
                 ) : (
                     <div className="flex p-10 gap-4 justify-start">
                         <Link
-                            className="text-2xl font-bold text-white"
+                            className="text-xl font-semibold text-white bg-gray-800 hover:ring-2 border ring-white shadow p-2 rounded"
                             href={route("login")}
                         >
-                            داخل سئ
+                            Login
                         </Link>
                         <Link
-                            className="text-2xl font-bold text-white"
+                            className="text-xl font-semibold text-white bg-gray-800 hover:ring-2 border ring-white shadow p-2 rounded"
                             href={route("register")}
                         >
-                            ځان ثبت کړئ
+                            Register
                         </Link>
                     </div>
                 )}
-                <div className="flex flex-col justify-center items-center flex-grow">
-                    <h1 className="text-5xl font-bold text-white">
-                        ښـــــه راغلاست!
-                    </h1>
-                </div>
             </div>
-        </>
+        </div>
     );
 }

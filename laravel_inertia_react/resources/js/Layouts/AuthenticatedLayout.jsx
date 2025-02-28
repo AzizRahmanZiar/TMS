@@ -13,35 +13,28 @@ export default function AuthenticatedLayout({ header, children }) {
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900" dir="rtl">
-            {" "}
-            {/* Set direction to RTL */}
             <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
-                        <div className="flex">
+                        <div className="flex gap-5">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
                                     <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:me-10 sm:flex">
-                                {" "}
-                                {/* Changed ms-10 to me-10 */}
+                            <div className="hidden  space-x-8 sm:-my-px sm:me-10 sm:flex">
                                 <NavLink
                                     href={route("dashboard")}
                                     active={route().current("dashboard")}
                                 >
-                                    اصـــــلي{" "}
-                                    {/* Translated "Dashboard" to "داشبورد" */}
+                                    اصـــــلي صفحه
                                 </NavLink>
                             </div>
                         </div>
 
                         <div className="hidden sm:me-6 sm:flex sm:items-center">
                             <div className="relative me-3">
-                                {" "}
-                                {/* Changed ms-3 to me-3 */}
                                 <Dropdown>
                                     <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
@@ -52,7 +45,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 {user.name}
 
                                                 <svg
-                                                    className="-me-0.5 me-2 h-4 w-4" // Changed ms-2 to me-2
+                                                    className="-me-0.5 me-2 h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 20 20"
                                                     fill="currentColor"
@@ -71,8 +64,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <Dropdown.Link
                                             href={route("profile.edit")}
                                         >
-                                            پروفایل{" "}
-                                            {/* Translated "Profile" to "پروفایل" */}
+                                            پروفایل
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route("logout")}
@@ -80,7 +72,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                             as="button"
                                         >
                                             خارج شو{" "}
-                                            {/* Translated "Log Out" to "خارج شو" */}
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
@@ -141,8 +132,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             href={route("dashboard")}
                             active={route().current("dashboard")}
                         >
-                            اصـــــلي{" "}
-                            {/* Translated "Dashboard" to "داشبورد" */}
+                            اصـــــلي
                         </ResponsiveNavLink>
                     </div>
 
@@ -158,16 +148,14 @@ export default function AuthenticatedLayout({ header, children }) {
 
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href={route("profile.edit")}>
-                                پروفایل{" "}
-                                {/* Translated "Profile" to "پروفایل" */}
+                                پروفایل
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 method="post"
                                 href={route("logout")}
                                 as="button"
                             >
-                                خارج شو{" "}
-                                {/* Translated "Log Out" to "خارج شو" */}
+                                خارج شو
                             </ResponsiveNavLink>
                         </div>
                     </div>

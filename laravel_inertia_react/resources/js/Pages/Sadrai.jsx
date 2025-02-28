@@ -2,7 +2,7 @@ import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import React, { useState } from "react";
 
-const Table = () => {
+const Sadrai = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -15,36 +15,10 @@ const Table = () => {
         zegar: "",
         rawrul_tareekh: "",
         tasleem_tareekh: "",
-        mushtari_mobile: "",
-        shamir: "",
+        tidad: "",
     });
-
-    const [tableData, setTableData] = useState([
-        {
-            nom: "احمد",
-            mobile: "۰۷۰۱۲۳۴۵۶۷",
-            shana: "۵۶",
-            tenna: "۸۰",
-            ghara_dol: "کاټ",
-            zegar: "۴۰",
-            rawrul_tareekh: "۱۴۰۴-۰۳-۲۰",
-            tasleem_tareekh: "۱۴۰۶-۱۱-۲۰",
-            mushtari_mobile: "۰۷۰۹۲۸۴۵۶۷",
-            shamir: "۲",
-        },
-        {
-            nom: "نور",
-            mobile: "۰۷۰۲۲۹۴۸۶۷",
-            shana: "۷۸",
-            tenna: "۷۵",
-            ghara_dol: "کالري",
-            zegar: "۳۸",
-            rawrul_tareekh: "۱۴۰۲-۱۱-۱۲",
-            tasleem_tareekh: "۱۴۰۳-۱۰-۰۲",
-            mushtari_mobile: "۰۷۰۲۲۹۴۸۶۷",
-            shamir: "۳",
-        },
-    ]);
+    const [tableData, setTableData] = useState([]);
+    const [errors, setErrors] = useState({});
 
     const handleAddClick = () => {
         setIsEditing(false);
@@ -62,9 +36,9 @@ const Table = () => {
             zegar: "",
             rawrul_tareekh: "",
             tasleem_tareekh: "",
-            mushtari_mobile: "",
-            shamir: "",
+            tidad: "",
         });
+        setErrors({});
     };
 
     const closeModal = () => {
@@ -79,16 +53,76 @@ const Table = () => {
         }));
     };
 
+    const validateInput = (data) => {
+        const errors = {};
+        const englishOnlyRegex = /^[a-zA-Z]+$/; // Only English letters
+        const pashtoOnlyRegex = /^[\u0600-\u06FF]+$/; // Only Pashto letters
+        const numberOnlyRegex = /^[0-9]+$/; // Only English numbers
+
+        if (
+            !englishOnlyRegex.test(data.nom) &&
+            !pashtoOnlyRegex.test(data.nom)
+        ) {
+            errors.nom = "نوم صحي کړئ.";
+        }
+        if (
+            !(numberOnlyRegex.test(data.mobile) || /^[۰-۹]+$/.test(data.mobile))
+        ) {
+            errors.mobile = "مبایل نمبر صحي کړئ.";
+        }
+        if (!numberOnlyRegex.test(data.shana)) {
+            errors.shana = "شانه صحي کړئ.";
+        }
+        if (!numberOnlyRegex.test(data.tenna)) {
+            errors.tenna = "تنه صحي کړئ.";
+        }
+        if (
+            !englishOnlyRegex.test(data.ghara_dol) &&
+            !pashtoOnlyRegex.test(data.ghara_dol)
+        ) {
+            errors.ghara_dol = "د غاړي ډول صحي کړئ.";
+        }
+        if (!numberOnlyRegex.test(data.zegar)) {
+            errors.zegar = "ځګر صحي کړئ.";
+        }
+        if (!numberOnlyRegex.test(data.tidad)) {
+            errors.tidad = "تعداد صحي کړئ.";
+        }
+
+        const rawrulDate = new Date(data.rawrul_tareekh);
+        const tasleemDate = new Date(data.tasleem_tareekh);
+        if (tasleemDate <= rawrulDate) {
+            errors.tasleem_tareekh =
+                "د تسلیمولو تاریخ باید د راوړلو تاریخ څخه وروسته وي.";
+        }
+
+        return errors;
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        const validationErrors = validateInput(formData);
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
         if (isEditing) {
             setTableData((prevData) =>
                 prevData.map((data, index) =>
-                    index === formData.index ? formData : data
+                    index === formData.index
+                        ? {
+                              ...formData,
+                              disabled: formData.tasleem_tareekh !== "",
+                          }
+                        : data
                 )
             );
         } else {
-            setTableData((prevData) => [...prevData, formData]);
+            setTableData((prevData) => [
+                ...prevData,
+                { ...formData, disabled: formData.tasleem_tareekh !== "" },
+            ]);
         }
         closeModal();
     };
@@ -143,8 +177,7 @@ const Table = () => {
                                 "ځګر",
                                 "د راوړلو تاریخ",
                                 "د تسلیمولو تاریخ",
-                                "مشتري مبایل",
-                                "شمیر",
+                                "تعداد",
                                 "عملیې",
                             ].map((header) => (
                                 <th
@@ -160,7 +193,9 @@ const Table = () => {
                         {filteredData.map((row, index) => (
                             <tr
                                 key={index}
-                                className="border-b border-gray-300"
+                                className={`border-b border-gray-300 ${
+                                    row.disabled ? "bg-gray-200" : ""
+                                }`}
                             >
                                 <td className="py-2 px-1 text-right">
                                     {row.nom}
@@ -187,15 +222,13 @@ const Table = () => {
                                     {row.tasleem_tareekh}
                                 </td>
                                 <td className="py-2 px-1 text-right">
-                                    {row.mushtari_mobile}
-                                </td>
-                                <td className="py-2 px-1 text-right">
-                                    {row.shamir}
+                                    {row.tidad}
                                 </td>
                                 <td className="py-2 flex gap-2 px-1 text-right">
                                     <button
                                         onClick={() => handleUpdate(index)}
                                         className="text-blue-500"
+                                        disabled={row.disabled}
                                     >
                                         <FaEdit />
                                     </button>
@@ -269,17 +302,11 @@ const Table = () => {
                                 id: "tasleem_tareekh",
                                 label: "د تسلیمولو تاریخ",
                                 type: "date",
-                                required: true,
+                                required: false,
                             },
                             {
-                                id: "mushtari_mobile",
-                                label: "مشتري مبایل",
-                                type: "text",
-                                required: true,
-                            },
-                            {
-                                id: "shamir",
-                                label: "شمیر",
+                                id: "tidad",
+                                label: "تعداد",
                                 type: "text",
                                 required: true,
                             },
@@ -299,6 +326,11 @@ const Table = () => {
                                     required={required}
                                     className="border p-2 rounded"
                                 />
+                                {errors[id] && (
+                                    <span className="text-red-500">
+                                        {errors[id]}
+                                    </span>
+                                )}
                             </div>
                         ))}
 
@@ -324,4 +356,4 @@ const Table = () => {
     );
 };
 
-export default Table;
+export default Sadrai;

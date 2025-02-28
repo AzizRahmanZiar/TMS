@@ -4,16 +4,17 @@ import Cloths from "../Pages/Cloths";
 import Uniform from "../Pages/Uniform";
 import Sadrai from "../Pages/Sadrai";
 import Kortai from "../Pages/Kortai";
-import Dashboard from "../Pages/Dashboard";
 import Sidebar from "./Sidebar";
+import App from "../Pages/App";
 
 const Layout = () => (
     <Router>
         <div className="flex">
             <Sidebar />
+
             <div className="overflow-x-auto bg-white py-5 w-full">
                 <Routes>
-                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/dashboard" element={<App />} />
                     <Route path="/cloths" element={<Cloths />} />
                     <Route path="/uniform" element={<Uniform />} />
                     <Route path="/kortai" element={<Kortai />} />
