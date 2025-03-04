@@ -1,9 +1,19 @@
 <?php
 
+use App\Http\Controllers\ClothsController;
+use App\Http\Controllers\KortaiController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SadraiController;
+use App\Http\Controllers\UniformController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+
+Route::get('/cloths', [ClothsController::class, 'cloths'])->name('cloths');
+Route::get('/sadrai', [SadraiController::class, 'sadrai'])->name('sadrai');
+Route::get('/kortai', [KortaiController::class, 'kortai'])->name('kortai');
+Route::get('/uniform', [UniformController::class, 'uniform'])->name('uniform');
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -27,3 +37,5 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+

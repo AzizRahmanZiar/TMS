@@ -1,15 +1,12 @@
-import { BsPersonStandingDress } from "react-icons/bs";
-import { PiPantsFill } from "react-icons/pi";
-
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@inertiajs/react";
 
 const Sidebar = () => (
-    <div className="flex justify-center pt-5 w-40  h-screen bg-gray-800 text-white ">
+    <div className="flex justify-center pt-5 w-40 overflow-hidden  h-screen bg-gray-800 text-white ">
         <ul>
             <li>
                 <Link
-                    to="/cloths"
+                    href="/cloths"
                     className=" flex flex-row items-end p-4 hover:bg-gray-700"
                 >
                     جامې
@@ -17,7 +14,7 @@ const Sidebar = () => (
             </li>
             <li>
                 <Link
-                    to="/uniform"
+                    href="/uniform"
                     className=" flex flex-row items-end p-4 hover:bg-gray-700"
                 >
                     درشي
@@ -25,7 +22,7 @@ const Sidebar = () => (
             </li>
             <li>
                 <Link
-                    to="/kortai"
+                    href="/kortai"
                     className=" flex flex-row items-end p-4 hover:bg-gray-700"
                 >
                     کورتۍ
@@ -33,7 +30,7 @@ const Sidebar = () => (
             </li>
             <li>
                 <Link
-                    to="/sadrai"
+                    href="/sadrai"
                     className=" flex flex-row items-end p-4 hover:bg-gray-700"
                 >
                     صدرۍ
