@@ -9,6 +9,6 @@ class UniformController extends Controller
 {
     public function uniform()
     {
-        return Inertia::render('Uniform');
+        return Inertia::render('System/Uniform');
     }
 }

@@ -1,7 +1,7 @@
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import React, { useState } from "react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import Layout from "@/Layouts/Layout";
 
 const Uniform = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -153,7 +153,7 @@ const Uniform = () => {
     );
 
     return (
-        <AuthenticatedLayout>
+        <Layout>
             <div className="overflow-x-auto">
                 <h1 className="font-bold text-2xl mr-5">
                     د درشی د مشتریانو لیست
@@ -379,7 +379,7 @@ const Uniform = () => {
                     </div>
                 )}
             </div>
-        </AuthenticatedLayout>
+        </Layout>
     );
 };
 

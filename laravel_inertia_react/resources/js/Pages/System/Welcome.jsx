@@ -98,10 +98,10 @@ export default function Welcome({ auth }) {
                                 <div className="space-y-6">
                                     <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
                                         <p className="text-gray-400 text-sm mb-1">
-                                            کارن
+                                            کارمند
                                         </p>
                                         <p className="text-white font-medium">
-                                            {auth.user.name || "کارن"}
+                                            {auth.user.name || "کارمند"}
                                         </p>
                                     </div>
 

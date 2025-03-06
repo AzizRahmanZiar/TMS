@@ -9,6 +9,6 @@ class KortaiController extends Controller
 {
     public function kortai()
 {
-    return Inertia::render('Kortai');
+    return Inertia::render('System/Kortai');
 }
 }

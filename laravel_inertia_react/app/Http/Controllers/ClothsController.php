@@ -9,6 +9,6 @@ class ClothsController extends Controller
 {
     public function cloths()
 {
-    return Inertia::render('Cloths');
+    return Inertia::render('System/Cloths');
 }
 }

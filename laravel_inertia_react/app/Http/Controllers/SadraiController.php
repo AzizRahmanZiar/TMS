@@ -9,6 +9,6 @@ class SadraiController extends Controller
 {
     public function sadrai()
     {
-        return Inertia::render('Sadrai');
+        return Inertia::render('System/Sadrai');
     }
 }

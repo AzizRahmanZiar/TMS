@@ -1,11 +1,9 @@
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import React, { createContext, useEffect, useState } from "react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { useTableData } from "@/Contexts/SadraiContext";
+import React, { useEffect, useState } from "react";
+import Layout from "@/Layouts/Layout";
 
 const Sadrai = () => {
-    const { setRowCount } = useTableData();
     const [tableData, setTableData] = useState([
         {
             nom: "حبیب الله",
@@ -208,12 +206,8 @@ const Sadrai = () => {
         row.mobile.includes(searchTerm)
     );
 
-    useEffect(() => {
-        setRowCount(tableData.length);
-    }, [tableData, setRowCount]);
-
     return (
-        <AuthenticatedLayout>
+        <Layout>
             <div className="overflow-x-auto">
                 <h1 className="font-bold text-2xl mr-5">
                     د صدری د مشتریانو لیست
@@ -429,7 +423,7 @@ const Sadrai = () => {
                     </div>
                 )}
             </div>
-        </AuthenticatedLayout>
+        </Layout>
     );
 };
 
