@@ -22,7 +22,7 @@ const Shop = () => {
             rating: 4.8,
             price: "$$",
             address: "کابل، ۱۰ ناحیه، اصلي سړک",
-            image: "/images/shops/shop1.jpg",
+            image: "./imgs/1.jpg",
             tailors: 8,
             services: ["د ځانګړو جامو جوړول", "بدلونونه", "د ټوکر پلور"],
         },
@@ -34,7 +34,7 @@ const Shop = () => {
             rating: 4.5,
             price: "$",
             address: "هرات، مرکزي سیمه، د بازار سړک",
-            image: "/images/shops/shop2.jpg",
+            image: "./imgs/5.jpg",
             tailors: 5,
             services: ["د دودیزو جامو جوړول", "بدلونونه", "د ټوکر پلور"],
         },
@@ -46,7 +46,7 @@ const Shop = () => {
             rating: 4.9,
             price: "$$$",
             address: "مزار شریف، ۵ ناحیه، د واده مارکیټ",
-            image: "/images/shops/shop3.jpg",
+            image: "./imgs/3.jpg",
             tailors: 12,
             services: ["د واده جامو جوړول", "د واده جامو کرایه", "د ټوکر پلور"],
         },
@@ -58,7 +58,7 @@ const Shop = () => {
             rating: 4.3,
             price: "$$",
             address: "کندهار، اصلي سړک، د فیشن مارکیټ",
-            image: "/images/shops/shop4.jpg",
+            image: "./imgs/2.jpg",
             tailors: 6,
             services: ["د عصري جامو جوړول", "بدلونونه", "د ټوکر پلور"],
         },
@@ -70,7 +70,7 @@ const Shop = () => {
             rating: 4.7,
             price: "$$",
             address: "جلال آباد، ۳ ناحیه، د ماشومانو مارکیټ",
-            image: "/images/shops/shop5.jpg",
+            image: "./imgs/4.jpg",
             tailors: 4,
             services: ["د ماشومانو جامو جوړول", "بدلونونه", "د ټوکر پلور"],
         },
@@ -82,7 +82,7 @@ const Shop = () => {
             rating: 4.7,
             price: "$$",
             address: "جلال آباد، ۳ ناحیه، د ماشومانو مارکیټ",
-            image: "/images/shops/shop5.jpg",
+            image: "./imgs/6.jpg",
             tailors: 4,
             services: ["د ماشومانو جامو جوړول", "بدلونونه", "د ټوکر پلور"],
         },
@@ -155,12 +155,12 @@ const Shop = () => {
     return (
         <SiteLayout title="د خیاطۍ دوکانونه - خیاط ماسټر">
             {/* Hero Section */}
-            <section className="bg-indigo-600 text-white py-12">
+            <section className="bg-primary-50 text-primary-800 py-20">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-3xl md:text-4xl font-bold mb-4">
                         د خیاطۍ دوکانونه
                     </h1>
-                    <p className="text-lg md:text-xl max-w-3xl mx-auto">
+                    <p className="text-lg text-primary-700 md:text-xl max-w-3xl mx-auto">
                         د خپلو اړتیاوو لپاره غوره دوکان ومومئ. زموږ دوکانونه د
                         لوړ کیفیت خیاطۍ خدمتونه وړاندې کوي.
                     </p>
@@ -168,9 +168,9 @@ const Shop = () => {
             </section>
 
             {/* Search and Filter Section */}
-            <section className="py-8 bg-gray-100">
+            <section className="py-8 bg-primary-50">
                 <div className="container mx-auto px-4">
-                    <div className="bg-white p-6 rounded-lg shadow-md">
+                    <div className="bg-white text-primary-800 p-6 rounded-lg border">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div className="relative">
                                 <input
@@ -216,13 +216,13 @@ const Shop = () => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={handleFilter}
-                                    className="flex-1 bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 transition flex items-center justify-center"
+                                    className="flex-1 bg-secondary-600 text-white p-3 rounded-md hover:bg-secondary-700 transition flex items-center justify-center"
                                 >
                                     <FaFilter className="ml-2" /> فیلټر
                                 </button>
                                 <button
                                     onClick={resetFilters}
-                                    className="flex-1 bg-gray-200 text-gray-800 p-3 rounded-md hover:bg-gray-300 transition"
+                                    className="flex-1 bg-tertiary-700 text-white p-3 rounded-md hover:bg-tertiary-800 transition"
                                 >
                                     بیا تنظیم
                                 </button>
@@ -234,12 +234,12 @@ const Shop = () => {
 
             {/* Shops Listing */}
             <section className="py-12">
-                <div className="container mx-auto px-4">
+                <div className=" mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {shops.map((shop) => (
                             <div
                                 key={shop.id}
-                                className="bg-white rounded-lg shadow-md overflow-hidden"
+                                className="bg-white rounded-lg border overflow-hidden"
                             >
                                 <div className="relative">
                                     <img
@@ -248,7 +248,7 @@ const Shop = () => {
                                             `https://via.placeholder.com/400x300?text=${shop.name}`
                                         }
                                         alt={shop.name}
-                                        className="w-full h-64 object-cover"
+                                        className="w-full h-64 "
                                     />
                                     <div className="absolute bottom-0 right-0 left-0 bg-gradient-to-t from-black to-transparent p-4">
                                         <h3 className="text-white text-xl font-bold">
@@ -325,7 +325,7 @@ const Shop = () => {
                             </p>
                             <button
                                 onClick={resetFilters}
-                                className="mt-4 bg-indigo-600 text-white py-2 px-6 rounded hover:bg-indigo-700 transition"
+                                className="mt-4 bg-secondary-600 text-white py-2 px-6 rounded hover:bg-secondary-700 transition"
                             >
                                 فیلټرونه بیا تنظیم کړئ
                             </button>

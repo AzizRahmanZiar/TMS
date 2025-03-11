@@ -69,6 +69,12 @@ const Navbar = () => {
                     {/* Right side buttons */}
                     <div className="hidden md:flex items-center space-x-4 gap-5">
                         <Link
+                            href="./dashboard"
+                            className="bg-secondary-600 font-semibold text-primary-50 px-4 py-2 rounded-md hover:bg-secondary-700 transition text-center "
+                        >
+                            Dashboard
+                        </Link>
+                        <Link
                             href="#"
                             className="bg-primary-50 font-semibold text-primary-900 px-4 py-2 rounded-md hover:bg-white transition"
                         >
@@ -152,6 +158,12 @@ const Navbar = () => {
                             >
                                 <FaUser className="inline ml-2" />
                                 ننوتل
+                            </Link>
+                            <Link
+                                href="#"
+                                className="bg-blue-600 font-semibold text-primary-50 px-4 py-2 rounded-md hover:bg-blue-700 transition text-center "
+                            >
+                                Dashboard
                             </Link>
                         </div>
                     </div>

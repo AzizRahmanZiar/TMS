@@ -155,7 +155,7 @@ const Uniform = () => {
 
     return (
         <AuthenticatedLayout>
-            <div className="overflow-x-auto">
+            <div className="">
                 <h1 className="font-bold text-2xl mr-5">
                     د درشی د مشتریانو لیست
                 </h1>
@@ -179,7 +179,7 @@ const Uniform = () => {
                     <img src="/imgs/uniform.jpg" alt="" className="h-40 w-40" />
                 </div>
 
-                <div className="overflow-x-auto">
+                <div className="">
                     <table className="w-full border border-gray-200">
                         <thead>
                             <tr className="bg-gray-100">

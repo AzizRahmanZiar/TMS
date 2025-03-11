@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClothsController;
 use App\Http\Controllers\KortaiController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\SadraiController;
 use App\Http\Controllers\UniformController;
 
@@ -13,15 +14,15 @@ use Inertia\Inertia;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 
-/*
-Route::get('/', function () {
-    return Inertia::render('System/Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+
+// Route::get('/', function () {
+//     return Inertia::render('System/Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 
 
 
@@ -42,12 +43,13 @@ Route::get('/cloths', [ClothsController::class, 'cloths'])->name('cloths');
 Route::get('/sadrai', [SadraiController::class, 'sadrai'])->name('sadrai');
 Route::get('/kortai', [KortaiController::class, 'kortai'])->name('kortai');
 Route::get('/uniform', [UniformController::class, 'uniform'])->name('uniform');
+Route::get('/adminpost', [PostController::class, 'adminpost'])->name('adminpost');
 
-Route::get('/system', function () {
-    return Inertia::render('System/Dashboard');
-});
+// Route::get('/system', function () {
+//     return Inertia::render('System/Dashboard');
+// });
 
-*/
+
 
 Route::get('/', function () {
     return Inertia::render('Site/Home');

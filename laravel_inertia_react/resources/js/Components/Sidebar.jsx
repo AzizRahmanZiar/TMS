@@ -36,6 +36,14 @@ const Sidebar = () => (
                     صدرۍ
                 </Link>
             </li>
+            <li>
+                <Link
+                    href="/adminpost"
+                    className=" flex flex-row items-end p-4 hover:bg-gray-700"
+                >
+                    پوسټ
+                </Link>
+            </li>
         </ul>
     </div>
 );
