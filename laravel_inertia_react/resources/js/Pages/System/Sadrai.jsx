@@ -1,7 +1,8 @@
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
-import Layout from "@/Layouts/Layout";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+// import Layout from "@/Layouts/Layout";
 
 const Sadrai = () => {
     const [tableData, setTableData] = useState([
@@ -207,7 +208,7 @@ const Sadrai = () => {
     );
 
     return (
-        <Layout>
+        <AuthenticatedLayout>
             <div className="overflow-x-auto">
                 <h1 className="font-bold text-2xl mr-5">
                     د صدری د مشتریانو لیست
@@ -423,7 +424,7 @@ const Sadrai = () => {
                     </div>
                 )}
             </div>
-        </Layout>
+        </AuthenticatedLayout>
     );
 };
 

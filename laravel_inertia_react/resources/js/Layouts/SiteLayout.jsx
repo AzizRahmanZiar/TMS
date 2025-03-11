@@ -1,11 +1,14 @@
-import React from "react";
-import Navbar from "../Components/Navbar";
+import Navbar from "../../js/Components/Navbar";
+import Footer from "../../js/Components/Footer";
 
-export default function SiteLayout({ children }) {
+const SiteLayout = ({ children }) => {
     return (
         <div>
             <Navbar />
-            <main>{children}</main>
+            <main dir="rtl">{children}</main>
+            <Footer />
         </div>
     );
-}
+};
+
+export default SiteLayout;

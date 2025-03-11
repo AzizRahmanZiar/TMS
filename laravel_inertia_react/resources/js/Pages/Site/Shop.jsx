@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
 import { Link } from "@inertiajs/react";
 import SiteLayout from "../../Layouts/SiteLayout";
 import {
@@ -8,77 +7,84 @@ import {
     FaRegStar,
     FaSearch,
     FaFilter,
+    FaMapMarkerAlt,
     FaPhone,
 } from "react-icons/fa";
 
-const Tailors = () => {
-    // Sample data for tailors
-    const allTailors = [
+const Shop = () => {
+    // Sample data for shops
+    const allShops = [
         {
             id: 1,
-            name: "احمد رحیمي",
-            experience: "۱۵ کاله",
+            name: "د احمد خیاطي",
+            established: "۱۳۸۵",
             specialization: "رسمي جامې",
             rating: 4.8,
             price: "$$",
-            address: "کابل، ۱۰ ناحیه",
-            image: "./imgs/ahmad.jpg",
-            portfolio: ["./imgs/sadrai.jpg"],
+            address: "کابل، ۱۰ ناحیه، اصلي سړک",
+            image: "/images/shops/shop1.jpg",
+            tailors: 8,
+            services: ["د ځانګړو جامو جوړول", "بدلونونه", "د ټوکر پلور"],
         },
         {
             id: 2,
-            name: "محمد کریمي",
-            experience: "۱۰ کاله",
+            name: "د کریمي خیاطي",
+            established: "۱۳۹۰",
             specialization: "دودیزې جامې",
             rating: 4.5,
             price: "$",
-            address: "هرات، مرکزي سیمه",
-            image: "./imgs/noor.jpg",
-            portfolio: ["./imgs/kortai.jpg"],
+            address: "هرات، مرکزي سیمه، د بازار سړک",
+            image: "/images/shops/shop2.jpg",
+            tailors: 5,
+            services: ["د دودیزو جامو جوړول", "بدلونونه", "د ټوکر پلور"],
         },
         {
             id: 3,
-            name: "نور احمدي",
-            experience: "۱۲ کاله",
+            name: "د واده جامو مرکز",
+            established: "۱۳۸۸",
             specialization: "د واده جامې",
             rating: 4.9,
             price: "$$$",
-            address: "مزار شریف، ۵ ناحیه",
-            image: "./imgs/bilal.jpg",
-            portfolio: ["./imgs/uniform.jpg"],
+            address: "مزار شریف، ۵ ناحیه، د واده مارکیټ",
+            image: "/images/shops/shop3.jpg",
+            tailors: 12,
+            services: ["د واده جامو جوړول", "د واده جامو کرایه", "د ټوکر پلور"],
         },
         {
             id: 4,
-            name: "یوسف حکیمي",
-            experience: "۸ کاله",
+            name: "عصري فیشن",
+            established: "۱۳۹۵",
             specialization: "عصري فیشن",
             rating: 4.3,
             price: "$$",
-            address: "کندهار، اصلي سړک",
-            image: "./imgs/javid.jpg",
-            portfolio: ["./imgs/kortai.jpg", "./imgs/sadrai.jpg"],
+            address: "کندهار، اصلي سړک، د فیشن مارکیټ",
+            image: "/images/shops/shop4.jpg",
+            tailors: 6,
+            services: ["د عصري جامو جوړول", "بدلونونه", "د ټوکر پلور"],
         },
         {
             id: 5,
-            name: "تورګل نوري",
-            experience: "۲۰ کاله",
+            name: "د ماشومانو جامې",
+            established: "۱۳۹۲",
             specialization: "د ماشومانو جامې",
             rating: 4.7,
             price: "$$",
-            address: "جلال آباد، ۳ ناحیه",
-            image: "./imgs/M.jpg",
-            portfolio: ["./imgs/sadrai.jpg", "./imgs/cloths-3.jpg"],
+            address: "جلال آباد، ۳ ناحیه، د ماشومانو مارکیټ",
+            image: "/images/shops/shop5.jpg",
+            tailors: 4,
+            services: ["د ماشومانو جامو جوړول", "بدلونونه", "د ټوکر پلور"],
         },
         {
             id: 6,
-            name: "شاباز نوري",
-            experience: "۲۰ کاله",
+            name: "د ماشومانو جامې",
+            established: "۱۳۹۲",
             specialization: "د ماشومانو جامې",
             rating: 4.7,
             price: "$$",
-            address: "جلال آباد، ۳ ناحیه",
-            image: "./imgs/rahim.jpg",
-            portfolio: ["./imgs/cloths-3.jpg"],
+            address: "جلال آباد، ۳ ناحیه، د ماشومانو مارکیټ",
+            image: "/images/shops/shop5.jpg",
+            tailors: 4,
+            services: ["د ماشومانو جامو جوړول", "بدلونونه", "د ټوکر پلور"],
         },
     ];
 
@@ -86,35 +92,35 @@ const Tailors = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [specialization, setSpecialization] = useState("");
     const [priceRange, setPriceRange] = useState("");
-    const [tailors, setTailors] = useState(allTailors);
+    const [shops, setShops] = useState(allShops);
 
     // Function to handle filtering
     const handleFilter = () => {
-        let filtered = allTailors;
+        let filtered = allShops;
 
         if (searchTerm) {
             filtered = filtered.filter(
-                (tailor) =>
-                    tailor.name
+                (shop) =>
+                    shop.name
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase()) ||
-                    tailor.address
+                    shop.address
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase())
             );
         }
 
         if (specialization) {
-            filtered = filtered.filter((tailor) =>
-                tailor.specialization.includes(specialization)
+            filtered = filtered.filter((shop) =>
+                shop.specialization.includes(specialization)
             );
         }
 
         if (priceRange) {
-            filtered = filtered.filter((tailor) => tailor.price === priceRange);
+            filtered = filtered.filter((shop) => shop.price === priceRange);
         }
 
-        setTailors(filtered);
+        setShops(filtered);
     };
 
     // Function to reset filters
@@ -122,7 +128,7 @@ const Tailors = () => {
         setSearchTerm("");
         setSpecialization("");
         setPriceRange("");
-        setTailors(allTailors);
+        setShops(allShops);
     };
 
     // Function to render star ratings
@@ -147,27 +153,24 @@ const Tailors = () => {
     };
 
     return (
-        <SiteLayout>
+        <SiteLayout title="د خیاطۍ دوکانونه - خیاط ماسټر">
             {/* Hero Section */}
-            <section className="text-primary-900 py-10 lg:px-10 flex flex-col md:flex-row items-center">
-                <div className="mx-auto px-4 text-start md:w-1/2">
+            <section className="bg-indigo-600 text-white py-12">
+                <div className="container mx-auto px-4 text-center">
                     <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                        زموږ ماهر خیاطان
+                        د خیاطۍ دوکانونه
                     </h1>
                     <p className="text-lg md:text-xl max-w-3xl mx-auto">
-                        د خپلو اړتیاوو لپاره غوره خیاط ومومئ. زموږ مسلکي کسان د
-                        کلونو تجربه لري او په بیلابیلو سټایلونو کې تخصص لري.
+                        د خپلو اړتیاوو لپاره غوره دوکان ومومئ. زموږ دوکانونه د
+                        لوړ کیفیت خیاطۍ خدمتونه وړاندې کوي.
                     </p>
-                </div>
-                <div className=" md:w-1/2">
-                    <img src="./imgs/tailor-1.jpg" alt="tailor" />
                 </div>
             </section>
 
             {/* Search and Filter Section */}
             <section className="py-8 bg-gray-100">
                 <div className="container mx-auto px-4">
-                    <div className="bg-white p-6 rounded-lg border">
+                    <div className="bg-white p-6 rounded-lg shadow-md">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div className="relative">
                                 <input
@@ -213,13 +216,13 @@ const Tailors = () => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={handleFilter}
-                                    className="flex-1 bg-secondary-700 text-white p-3 rounded-md hover:bg-secondary-800 transition flex items-center justify-center"
+                                    className="flex-1 bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 transition flex items-center justify-center"
                                 >
                                     <FaFilter className="ml-2" /> فیلټر
                                 </button>
                                 <button
                                     onClick={resetFilters}
-                                    className="flex-1 bg-tertiary-600 text-primary-50 p-3 rounded-md hover:bg-tertiary-800 transition"
+                                    className="flex-1 bg-gray-200 text-gray-800 p-3 rounded-md hover:bg-gray-300 transition"
                                 >
                                     بیا تنظیم
                                 </button>
@@ -229,32 +232,32 @@ const Tailors = () => {
                 </div>
             </section>
 
-            {/* Tailors Listing */}
+            {/* Shops Listing */}
             <section className="py-12">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {tailors.map((tailor) => (
+                        {shops.map((shop) => (
                             <div
-                                key={tailor.id}
-                                className="bg-white rounded-lg border overflow-hidden"
+                                key={shop.id}
+                                className="bg-white rounded-lg shadow-md overflow-hidden"
                             >
                                 <div className="relative">
                                     <img
                                         src={
-                                            tailor.image ||
-                                            `https://via.placeholder.com/400x300?text=${tailor.name}`
+                                            shop.image ||
+                                            `https://via.placeholder.com/400x300?text=${shop.name}`
                                         }
-                                        alt={tailor.name}
-                                        className="w-full h-64"
+                                        alt={shop.name}
+                                        className="w-full h-64 object-cover"
                                     />
                                     <div className="absolute bottom-0 right-0 left-0 bg-gradient-to-t from-black to-transparent p-4">
                                         <h3 className="text-white text-xl font-bold">
-                                            {tailor.name}
+                                            {shop.name}
                                         </h3>
                                         <div className="flex text-white">
-                                            {renderRating(tailor.rating)}
+                                            {renderRating(shop.rating)}
                                             <span className="mr-2">
-                                                {tailor.rating}
+                                                {shop.rating}
                                             </span>
                                         </div>
                                     </div>
@@ -262,54 +265,47 @@ const Tailors = () => {
 
                                 <div className="p-6">
                                     <div className="mb-4">
-                                        <p className="text-primary-800">
-                                            <strong>تجربه:</strong>{" "}
-                                            {tailor.experience}
+                                        <p className="text-gray-700">
+                                            <strong>تاسیس:</strong>{" "}
+                                            {shop.established}
                                         </p>
-                                        <p className="text-primary-800">
+                                        <p className="text-gray-700">
                                             <strong>تخصص:</strong>{" "}
-                                            {tailor.specialization}
+                                            {shop.specialization}
                                         </p>
-                                        <p className="text-primary-800">
+                                        <p className="text-gray-700">
                                             <strong>د قیمت حد:</strong>{" "}
-                                            {tailor.price}
+                                            {shop.price}
                                         </p>
-                                        <p className="text-primary-800">
-                                            <strong>آدرس:</strong>{" "}
-                                            {tailor.address}
+                                        <p className="text-gray-700">
+                                            <strong>د خیاطانو شمیر:</strong>{" "}
+                                            {shop.tailors}
+                                        </p>
+                                        <p className="text-gray-700 flex items-start">
+                                            <FaMapMarkerAlt className="mt-1 ml-1 text-indigo-600" />
+                                            <span>{shop.address}</span>
                                         </p>
                                     </div>
 
-                                    <div className="mb-4 flex items-center gap-2">
-                                        <h4 className="font-semibold flex items-end gap-2 text-lg mb-2">
-                                            مسلک
-                                            <FaArrowLeft />
+                                    <div className="mb-4">
+                                        <h4 className="font-semibold text-lg mb-2">
+                                            خدمتونه
                                         </h4>
-                                        <div className="grid grid-cols-3 gap-2">
-                                            {tailor.portfolio.map(
-                                                (image, index) => (
-                                                    <img
-                                                        key={index}
-                                                        src={
-                                                            image ||
-                                                            `https://via.placeholder.com/100?text=Work${
-                                                                index + 1
-                                                            }`
-                                                        }
-                                                        alt={`Portfolio ${
-                                                            index + 1
-                                                        }`}
-                                                        className="w-10 h-10  rounded"
-                                                    />
+                                        <ul className="list-disc list-inside text-gray-700">
+                                            {shop.services.map(
+                                                (service, index) => (
+                                                    <li key={index}>
+                                                        {service}
+                                                    </li>
                                                 )
                                             )}
-                                        </div>
+                                        </ul>
                                     </div>
 
                                     <div className="flex gap-2">
                                         <Link
-                                            href={`/tailors/${tailor.id}`}
-                                            className="flex-1 bg-blue-500 text-primary-50 py-2 px-4 rounded text-center hover:bg-blue-600 transition"
+                                            href={`/tailoring-shop/${shop.id}`}
+                                            className="flex-1 bg-indigo-600 text-white py-2 px-4 rounded text-center hover:bg-indigo-700 transition"
                                         >
                                             جزئیات وګورئ
                                         </Link>
@@ -322,10 +318,10 @@ const Tailors = () => {
                         ))}
                     </div>
 
-                    {tailors.length === 0 && (
+                    {shops.length === 0 && (
                         <div className="text-center py-12">
                             <p className="text-xl text-gray-600">
-                                ستاسو د معیارونو سره سم هیڅ خیاط ونه موندل شو.
+                                ستاسو د معیارونو سره سم هیڅ دوکان ونه موندل شو.
                             </p>
                             <button
                                 onClick={resetFilters}
@@ -341,4 +337,4 @@ const Tailors = () => {
     );
 };
 
-export default Tailors;
+export default Shop;

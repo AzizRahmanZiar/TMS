@@ -1,27 +1,3 @@
-// import defaultTheme from "tailwindcss/defaultTheme";
-// import forms from "@tailwindcss/forms";
-// const rtl = require("tailwindcss-rtl");
-
-// /** @type {import('tailwindcss').Config} */
-// export default {
-//     content: [
-//         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
-//         "./storage/framework/views/*.php",
-//         "./resources/views/**/*.blade.php",
-//         "./resources/js/**/*.jsx",
-//     ],
-
-//     theme: {
-//         extend: {
-//             fontFamily: {
-//                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
-//             },
-//         },
-//     },
-
-//     plugins: [forms, rtl],
-// };
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     darkMode: ["class"],
@@ -41,58 +17,45 @@ module.exports = {
         },
         extend: {
             colors: {
-                border: "hsl(var(--border))",
-                input: "hsl(var(--input))",
-                ring: "hsl(var(--ring))",
-                background: "hsl(var(--background))",
-                foreground: "hsl(var(--foreground))",
                 primary: {
-                    DEFAULT: "hsl(var(--primary))",
-                    foreground: "hsl(var(--primary-foreground))",
+                    50: "#f7f7f8",
+                    100: "#efeef1",
+                    200: "#d8d6dd",
+                    300: "#b7b3bf",
+                    400: "#918899",
+                    500: "#736878",
+                    600: "#5d5361",
+                    700: "#4d444f",
+                    800: "#423b44",
+                    900: "#3a343b",
+                    950: "#1a171b",
                 },
                 secondary: {
-                    DEFAULT: "hsl(var(--secondary))",
-                    foreground: "hsl(var(--secondary-foreground))",
+                    50: "#fbf7f4",
+                    100: "#f5ebe4",
+                    200: "#ead5c7",
+                    300: "#ddb89f",
+                    400: "#cd9474",
+                    500: "#c17a55",
+                    600: "#b36447",
+                    700: "#954e3b",
+                    800: "#7a4234",
+                    900: "#65382f",
+                    950: "#351b16",
                 },
-                destructive: {
-                    DEFAULT: "hsl(var(--destructive))",
-                    foreground: "hsl(var(--destructive-foreground))",
+                tertiary: {
+                    50: "#f6f6f4",
+                    100: "#e7e6e2",
+                    200: "#d3d1c8",
+                    300: "#b5b2a5",
+                    400: "#989181",
+                    500: "#827867",
+                    600: "#6d6354",
+                    700: "#5b5246",
+                    800: "#4d463d",
+                    900: "#423d36",
+                    950: "#272320",
                 },
-                muted: {
-                    DEFAULT: "hsl(var(--muted))",
-                    foreground: "hsl(var(--muted-foreground))",
-                },
-                accent: {
-                    DEFAULT: "hsl(var(--accent))",
-                    foreground: "hsl(var(--accent-foreground))",
-                },
-                popover: {
-                    DEFAULT: "hsl(var(--popover))",
-                    foreground: "hsl(var(--popover-foreground))",
-                },
-                card: {
-                    DEFAULT: "hsl(var(--card))",
-                    foreground: "hsl(var(--card-foreground))",
-                },
-            },
-            borderRadius: {
-                lg: "var(--radius)",
-                md: "calc(var(--radius) - 2px)",
-                sm: "calc(var(--radius) - 4px)",
-            },
-            keyframes: {
-                "accordion-down": {
-                    from: { height: 0 },
-                    to: { height: "var(--radix-accordion-content-height)" },
-                },
-                "accordion-up": {
-                    from: { height: "var(--radix-accordion-content-height)" },
-                    to: { height: 0 },
-                },
-            },
-            animation: {
-                "accordion-down": "accordion-down 0.2s ease-out",
-                "accordion-up": "accordion-up 0.2s ease-out",
             },
         },
     },

@@ -1,7 +1,8 @@
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import React, { useState } from "react";
-import Layout from "@/Layouts/Layout";
+// import Layout from "@/Layouts/Layout";
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 const Kortai = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -161,7 +162,7 @@ const Kortai = () => {
     );
 
     return (
-        <Layout>
+        <AuthenticatedLayout>
             <div className="overflow-x-auto">
                 <h1 className="font-bold text-2xl mr-5">
                     د کورتۍ د مشتریانو لیست
@@ -397,7 +398,7 @@ const Kortai = () => {
                     </div>
                 )}
             </div>
-        </Layout>
+        </AuthenticatedLayout>
     );
 };
 
