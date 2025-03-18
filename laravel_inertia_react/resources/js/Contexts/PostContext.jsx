@@ -1,4 +1,3 @@
-// PostContext.js
 import { createContext, useContext, useState } from "react";
 
 const PostContext = createContext();

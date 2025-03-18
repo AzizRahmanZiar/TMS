@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClothsController;
 use App\Http\Controllers\KortaiController;
 use App\Http\Controllers\PostController;
@@ -28,22 +29,23 @@ use Illuminate\Foundation\Application;
 
 Route::get('/dashboard', function () {
     return Inertia::render('System/Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
 
 
+
+Route::get('/admin',[AdminController::class,'admin'])->name('admin');
 Route::get('/cloths', [ClothsController::class, 'cloths'])->name('cloths');
 Route::get('/sadrai', [SadraiController::class, 'sadrai'])->name('sadrai');
 Route::get('/kortai', [KortaiController::class, 'kortai'])->name('kortai');
 Route::get('/uniform', [UniformController::class, 'uniform'])->name('uniform');
 Route::get('/adminpost', [PostController::class, 'adminpost'])->name('adminpost');
+
 
 // Route::get('/system', function () {
 //     return Inertia::render('System/Dashboard');
@@ -55,6 +57,10 @@ Route::get('/', function () {
     return Inertia::render('Site/Home');
 });
 
+
+Route::get('/registration', function () {
+    return Inertia::render('Site/Registration');
+});
 
 Route::get('/tailor', function () {
     return Inertia::render('Site/Tailors');

@@ -75,7 +75,7 @@ const Navbar = () => {
                             Dashboard
                         </Link>
                         <Link
-                            href="#"
+                            href="./registration"
                             className="bg-primary-50 font-semibold text-primary-900 px-4 py-2 rounded-md hover:bg-white transition"
                         >
                             <FaUser className="inline mr-2" />

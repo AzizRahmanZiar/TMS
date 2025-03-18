@@ -1,9 +1,15 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { AiOutlinePlus } from "react-icons/ai";
+import {
+    AiOutlinePlus,
+    AiOutlineCheckCircle,
+    AiOutlineCloseCircle,
+} from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import { usePosts } from "../../Contexts/PostContext"; // Import the context
+import { usePosts } from "../../Contexts/postContext"; // Import the context
 
 const Post = () => {
     const { posts, setPosts } = usePosts(); // Use the context
@@ -12,39 +18,309 @@ const Post = () => {
     const [currentPost, setCurrentPost] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+
+    // Form validation states
+    const [formErrors, setFormErrors] = useState({});
+    const [formValues, setFormValues] = useState({
+        title: "",
+        description: "",
+        date: "",
+        author: "",
+        category: "",
+    });
+
+    // Character counters
+    const [titleChars, setTitleChars] = useState(0);
+    const [descriptionChars, setDescriptionChars] = useState(0);
+    const [authorChars, setAuthorChars] = useState(0);
+
+    // Set form values when editing
+    useEffect(() => {
+        if (currentPost) {
+            setFormValues({
+                title: currentPost.title || "",
+                description: currentPost.description || "",
+                date: currentPost.date || "",
+                author: currentPost.author || "",
+                category: currentPost.category || "",
+            });
+            setTitleChars(currentPost.title?.length || 0);
+            setDescriptionChars(currentPost.description?.length || 0);
+            setAuthorChars(currentPost.author?.length || 0);
+            setImagePreview(currentPost.image || null);
+        } else {
+            resetForm();
+        }
+    }, [currentPost]);
+
+    // Update resetForm function
+    const resetForm = () => {
+        setFormValues({
+            title: "",
+            description: "",
+            date: "",
+            author: "",
+            category: "",
+        });
+        setFormErrors({});
+        setTitleChars(0);
+        setDescriptionChars(0);
+        setAuthorChars(0);
+        setImagePreview(null);
+    };
 
     const handleAddPost = () => {
         setCurrentPost(null);
         setIsEditing(false);
         setShowForm(true);
-        setImageFile(null); // Reset image file
+        setImageFile(null);
+        setImagePreview(null);
+        resetForm();
     };
 
     const handleEditPost = (post) => {
         setCurrentPost(post);
         setIsEditing(true);
         setShowForm(true);
-        setImageFile(null); // Reset image file
+        setImageFile(null);
+        setImagePreview(post.image || null);
     };
 
     const handleCloseForm = () => {
         setShowForm(false);
+        resetForm();
+    };
+
+    // Handle input changes with validation
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+
+        // Update character counters
+        if (name === "title") {
+            setTitleChars(value.length);
+        } else if (name === "description") {
+            setDescriptionChars(value.length);
+        } else if (name === "author") {
+            setAuthorChars(value.length);
+        }
+
+        // Update form values
+        setFormValues({
+            ...formValues,
+            [name]: value,
+        });
+
+        // Validate on change
+        validateField(name, value);
+    };
+
+    // Validate a single field
+    const validateField = (name, value) => {
+        const errors = { ...formErrors };
+
+        switch (name) {
+            case "title":
+                if (!value.trim()) {
+                    errors.title = "عنوان اړین دی";
+                } else if (value.length < 3) {
+                    errors.title = "عنوان باید لږترلږه 3 توري ولري";
+                } else if (value.length > 100) {
+                    errors.title = "عنوان باید له 100 تورو څخه لږ وي";
+                } else if (/[^a-zA-Z\u0600-\u06FF\s]/.test(value)) {
+                    // Only allow letters and spaces (including Arabic/Persian characters)
+                    errors.title = "عنوان کې باید یوازې توري وي";
+                } else {
+                    delete errors.title;
+                }
+                break;
+
+            case "description":
+                if (!value.trim()) {
+                    errors.description = "تفصیل اړین دی";
+                } else if (value.length < 10) {
+                    errors.description = "تفصیل باید لږترلږه 10 توري ولري";
+                } else if (value.length > 2000) {
+                    errors.description = "تفصیل باید له 2000 تورو څخه لږ وي";
+                } else if (/[^a-zA-Z\u0600-\u06FF\s.,!?]/.test(value)) {
+                    // Only allow letters, spaces, and basic punctuation
+                    errors.description = "تفصیل کې باید یوازې توري وي";
+                } else {
+                    delete errors.description;
+                }
+                break;
+
+            case "date":
+                if (!value) {
+                    errors.date = "تاریخ اړین دی";
+                } else if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                    errors.date = "تاریخ باید په سمه بڼه وي (YYYY-MM-DD)";
+                } else {
+                    delete errors.date;
+                }
+                break;
+
+            case "author":
+                if (!value.trim()) {
+                    errors.author = "لیکوال اړین دی";
+                } else if (value.length < 2) {
+                    errors.author = "د لیکوال نوم باید لږترلږه 2 توري ولري";
+                } else if (value.length > 50) {
+                    errors.author = "د لیکوال نوم باید له 50 تورو څخه لږ وي";
+                } else if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(value)) {
+                    errors.author = "د لیکوال نوم کې باید یوازې توري وي";
+                } else {
+                    delete errors.author;
+                }
+                break;
+
+            case "category":
+                if (!value.trim()) {
+                    errors.category = "کټګورۍ اړینه ده";
+                } else if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(value)) {
+                    errors.category = "کټګورۍ کې باید یوازې توري وي";
+                } else {
+                    delete errors.category;
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        setFormErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    // Validate all fields
+    const validateForm = () => {
+        let isValid = true;
+        const newErrors = {};
+
+        // Validate title
+        if (!formValues.title.trim()) {
+            newErrors.title = "عنوان اړین دی";
+            isValid = false;
+        } else if (formValues.title.length < 3) {
+            newErrors.title = "عنوان باید لږترلږه 3 توري ولري";
+            isValid = false;
+        } else if (formValues.title.length > 100) {
+            newErrors.title = "عنوان باید له 100 تورو څخه لږ وي";
+            isValid = false;
+        } else if (/[^a-zA-Z\u0600-\u06FF\s]/.test(formValues.title)) {
+            newErrors.title = "عنوان کې باید یوازې توري وي";
+            isValid = false;
+        }
+
+        // Validate description
+        if (!formValues.description.trim()) {
+            newErrors.description = "تفصیل اړین دی";
+            isValid = false;
+        } else if (formValues.description.length < 10) {
+            newErrors.description = "تفصیل باید لږترلږه 10 توري ولري";
+            isValid = false;
+        } else if (formValues.description.length > 2000) {
+            newErrors.description = "تفصیل باید له 2000 تورو څخه لږ وي";
+            isValid = false;
+        } else if (
+            /[^a-zA-Z\u0600-\u06FF\s.,!?]/.test(formValues.description)
+        ) {
+            newErrors.description = "تفصیل کې باید یوازې توري وي";
+            isValid = false;
+        }
+
+        // Validate date
+        if (!formValues.date) {
+            newErrors.date = "تاریخ اړین دی";
+            isValid = false;
+        } else if (!/^\d{4}-\d{2}-\d{2}$/.test(formValues.date)) {
+            newErrors.date = "تاریخ باید په سمه بڼه وي (YYYY-MM-DD)";
+            isValid = false;
+        }
+
+        // Validate author
+        if (!formValues.author.trim()) {
+            newErrors.author = "لیکوال اړین دی";
+            isValid = false;
+        } else if (formValues.author.length < 2) {
+            newErrors.author = "د لیکوال نوم باید لږترلږه 2 توري ولري";
+            isValid = false;
+        } else if (formValues.author.length > 50) {
+            newErrors.author = "د لیکوال نوم باید له 50 تورو څخه لږ وي";
+            isValid = false;
+        } else if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(formValues.author)) {
+            newErrors.author = "د لیکوال نوم باید یوازې توري وي";
+            isValid = false;
+        }
+
+        // Validate category
+        if (!formValues.category.trim()) {
+            newErrors.category = "کټګورۍ اړینه ده";
+            isValid = false;
+        } else if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(formValues.category)) {
+            newErrors.category = "کټګورۍ کې باید یوازې توري وي";
+            isValid = false;
+        }
+
+        setFormErrors(newErrors);
+        return isValid;
+    };
+
+    // Handle image change
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (!file.type.startsWith("image/")) {
+                setFormErrors((prev) => ({
+                    ...prev,
+                    image: "یوازې عکسونه منل کیږي",
+                }));
+                setImageFile(null);
+                setImagePreview(currentPost?.image || null);
+                // Clear the file input
+                e.target.value = "";
+                return;
+            }
+
+            setImageFile(file);
+            setFormErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors.image;
+                return newErrors;
+            });
+
+            // Create preview
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setImageFile(null);
+            setImagePreview(currentPost?.image || null);
+        }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const formData = new FormData(e.target);
+
+        // Validate all fields
+        if (!validateForm()) {
+            return; // Stop submission if validation fails
+        }
+
         const newPost = {
             id: isEditing ? currentPost.id : posts.length + 1,
-            title: formData.get("title"),
-            description: formData.get("description"),
+            title: formValues.title,
+            description: formValues.description,
             image: imageFile
                 ? URL.createObjectURL(imageFile)
-                : currentPost?.image, // Use uploaded image or the current one
-            date: formData.get("date"),
-            author: formData.get("author"),
-            category: formData.get("category"),
+                : currentPost?.image,
+            date: formValues.date,
+            author: formValues.author,
+            category: formValues.category,
             comments: isEditing ? currentPost.comments : 0,
+            views: isEditing ? currentPost.views : 0,
         };
 
         if (isEditing) {
@@ -57,22 +333,37 @@ const Post = () => {
             setPosts((prevPosts) => [...prevPosts, newPost]);
         }
         setShowForm(false);
+        resetForm();
     };
 
     const handleDeletePost = (postId) => {
         setPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
     };
 
+    // Get input class based on validation state
+    const getInputClass = (fieldName) => {
+        const baseClass =
+            "border rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent";
+
+        if (formErrors[fieldName]) {
+            return `${baseClass} border-red-500 bg-red-50`;
+        } else if (formValues[fieldName] && formValues[fieldName].length > 0) {
+            return `${baseClass} border-green-500 bg-green-50`;
+        }
+
+        return `${baseClass} border-gray-300`;
+    };
+
     return (
         <AuthenticatedLayout>
-            <div className="border p-4 bg-gradient-to-b from-white to-gray-50 min-h-screen rounded-lg shadow-md">
+            <div className=" p-4 bg-gradient-to-b from-white to-gray-50 min-h-screen rounded-lg border">
                 {/* Search bar and Add Post button */}
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
                     <div className="relative w-full sm:w-1/2">
                         <input
                             type="text"
                             placeholder="د پوست نوم ولټوه..."
-                            className="border border-gray-300 rounded-lg p-3 w-full pl-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm"
+                            className="border border-gray-300 rounded-lg p-3 w-full pl-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -95,14 +386,14 @@ const Post = () => {
                     </div>
                     <button
                         onClick={handleAddPost}
-                        className="bg-blue-500 ml-10 text-white p-2 rounded"
+                        className="bg-blue-500 hover:bg-blue-600 transition-colors ml-10 text-white p-2 rounded-lg shadow-md flex items-center gap-2"
                     >
-                        اضافه کول
+                        <span>اضافه کول</span>
                     </button>
                 </div>
 
                 {/* Table section */}
-                <div className="overflow-x-auto border rounded-lg ">
+                <div className="overflow-x-auto border rounded-lg shadow-sm">
                     <table className="w-full">
                         <thead>
                             <tr className="bg-gray-50">
@@ -143,6 +434,7 @@ const Post = () => {
                                             <img
                                                 src={
                                                     post.image ||
+                                                    "/placeholder.svg" ||
                                                     "/placeholder.svg"
                                                 }
                                                 alt={post.title}
@@ -170,26 +462,26 @@ const Post = () => {
                                             </div>
                                         </td>
                                         <td className="py-4 px-4 text-right whitespace-nowrap">
-                                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full  ">
+                                            <span className=" inline-flex text-xs leading-5 font-semibold rounded-full  text-blue-800">
                                                 {post.category}
                                             </span>
                                         </td>
-                                        <td className="py-4 mt-6 px-4 flex justify-center gap-2 text-right">
+                                        <td className="py-4 mt-6 px-4 flex gap-2 text-right">
                                             <button
                                                 onClick={() =>
                                                     handleEditPost(post)
                                                 }
-                                                className="text-blue-500"
+                                                className="text-blue-500 hover:text-blue-700 transition-colors p-1 rounded-full hover:bg-blue-50"
                                             >
-                                                <FaEdit />
+                                                <FaEdit size={18} />
                                             </button>
                                             <button
                                                 onClick={() =>
                                                     handleDeletePost(post.id)
                                                 }
-                                                className="text-red-500 ml-2"
+                                                className="text-red-500 hover:text-red-700 transition-colors ml-2 p-1 rounded-full hover:bg-red-50"
                                             >
-                                                <MdDelete />
+                                                <MdDelete size={20} />
                                             </button>
                                         </td>
                                     </tr>
@@ -226,7 +518,7 @@ const Post = () => {
                         <div className="mt-6">
                             <button
                                 onClick={handleAddPost}
-                                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
                                 <AiOutlinePlus
                                     className="-ml-1 mr-2 h-5 w-5"
@@ -242,30 +534,45 @@ const Post = () => {
                 {showForm && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
                         <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
-                            <h2 className="text-xl font-bold mb-6 border-b pb-2">
-                                {isEditing ? "پوست سمول" : "نوې پوست اضافه کړئ"}
-                            </h2>
                             <form
                                 onSubmit={handleSubmit}
                                 className="grid grid-cols-2 gap-5"
                             >
-                                <div>
+                                <div className="relative">
                                     <label
                                         className="block text-sm font-medium text-gray-700 mb-1"
                                         htmlFor="title"
                                     >
-                                        عنوان
+                                        عنوان{" "}
                                     </label>
-                                    <input
-                                        type="text"
-                                        id="title"
-                                        name="title"
-                                        defaultValue={
-                                            currentPost ? currentPost.title : ""
-                                        }
-                                        required
-                                        className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            id="title"
+                                            name="title"
+                                            value={formValues.title}
+                                            onChange={handleInputChange}
+                                            className={getInputClass("title")}
+                                            maxLength={100}
+                                        />
+                                        {formValues.title && (
+                                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                {formErrors.title ? (
+                                                    <AiOutlineCloseCircle className="text-red-500" />
+                                                ) : (
+                                                    <AiOutlineCheckCircle className="text-green-500" />
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {formErrors.title && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.title}
+                                        </p>
+                                    )}
+                                    <p className="mt-1 text-xs text-gray-500 text-right">
+                                        {titleChars}/100
+                                    </p>
                                 </div>
 
                                 <div>
@@ -280,13 +587,32 @@ const Post = () => {
                                         id="image"
                                         name="image"
                                         accept="image/*"
-                                        onChange={(e) =>
-                                            setImageFile(e.target.files[0])
-                                        }
-                                        className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        onChange={handleImageChange}
+                                        className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                                     />
+                                    {imagePreview && (
+                                        <div className="mt-2">
+                                            <p className="text-sm text-gray-500 mb-1">
+                                                عکس اپلوډ کړئ
+                                            </p>
+                                            <img
+                                                src={
+                                                    imagePreview ||
+                                                    "/placeholder.svg"
+                                                }
+                                                alt="Preview"
+                                                className="h-20 w-20 object-cover rounded-md border border-gray-300"
+                                            />
+                                        </div>
+                                    )}
+                                    {formErrors.image && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.image}
+                                        </p>
+                                    )}
                                 </div>
-                                <div>
+
+                                <div className="relative">
                                     <label
                                         className="block text-sm font-medium text-gray-700 mb-1"
                                         htmlFor="date"
@@ -297,85 +623,139 @@ const Post = () => {
                                         type="date"
                                         id="date"
                                         name="date"
-                                        defaultValue={
-                                            currentPost ? currentPost.date : ""
-                                        }
-                                        required
-                                        className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        value={formValues.date}
+                                        onChange={handleInputChange}
+                                        className={getInputClass("date")}
                                     />
+                                    {formErrors.date && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.date}
+                                        </p>
+                                    )}
                                 </div>
-                                <div>
+
+                                <div className="relative">
                                     <label
                                         className="block text-sm font-medium text-gray-700 mb-1"
                                         htmlFor="author"
                                     >
-                                        لیکوال
+                                        لیکوال{" "}
                                     </label>
-                                    <input
-                                        type="text"
-                                        id="author"
-                                        name="author"
-                                        defaultValue={
-                                            currentPost
-                                                ? currentPost.author
-                                                : ""
-                                        }
-                                        required
-                                        className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            id="author"
+                                            name="author"
+                                            value={formValues.author}
+                                            onChange={handleInputChange}
+                                            className={getInputClass("author")}
+                                            maxLength={50}
+                                        />
+                                        {formValues.author && (
+                                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                {formErrors.author ? (
+                                                    <AiOutlineCloseCircle className="text-red-500" />
+                                                ) : (
+                                                    <AiOutlineCheckCircle className="text-green-500" />
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {formErrors.author && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.author}
+                                        </p>
+                                    )}
+                                    <p className="mt-1 text-xs text-gray-500 text-right">
+                                        {authorChars}/50
+                                    </p>
                                 </div>
-                                <div>
+
+                                <div className="relative">
                                     <label
                                         className="block text-sm font-medium text-gray-700 mb-1"
                                         htmlFor="category"
                                     >
-                                        کټګورۍ
+                                        کټګورۍ{" "}
                                     </label>
-                                    <input
-                                        type="text"
-                                        id="category"
-                                        name="category"
-                                        defaultValue={
-                                            currentPost
-                                                ? currentPost.category
-                                                : ""
-                                        }
-                                        required
-                                        className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            id="category"
+                                            name="category"
+                                            value={formValues.category}
+                                            onChange={handleInputChange}
+                                            className={getInputClass(
+                                                "category"
+                                            )}
+                                        />
+                                        {formValues.category && (
+                                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                {formErrors.category ? (
+                                                    <AiOutlineCloseCircle className="text-red-500" />
+                                                ) : (
+                                                    <AiOutlineCheckCircle className="text-green-500" />
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {formErrors.category && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.category}
+                                        </p>
+                                    )}
                                 </div>
 
-                                <div>
+                                <div className="relative col-span-2">
                                     <label
                                         className="block text-sm font-medium text-gray-700 mb-1"
                                         htmlFor="description"
                                     >
-                                        تفصیل
+                                        تفصیل{" "}
                                     </label>
-                                    <textarea
-                                        id="description"
-                                        name="description"
-                                        rows="3"
-                                        defaultValue={
-                                            currentPost
-                                                ? currentPost.description
-                                                : ""
-                                        }
-                                        required
-                                        className="border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    />
+                                    <div className="relative">
+                                        <textarea
+                                            id="description"
+                                            name="description"
+                                            rows="3"
+                                            value={formValues.description}
+                                            onChange={handleInputChange}
+                                            className={getInputClass(
+                                                "description"
+                                            )}
+                                            maxLength={2000}
+                                        />
+                                        {formValues.description && (
+                                            <div className="absolute top-3 right-3 flex items-center pointer-events-none">
+                                                {formErrors.description ? (
+                                                    <AiOutlineCloseCircle className="text-red-500" />
+                                                ) : (
+                                                    <AiOutlineCheckCircle className="text-green-500" />
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {formErrors.description && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.description}
+                                        </p>
+                                    )}
+                                    <p className="mt-1 text-xs text-gray-500 text-right">
+                                        {descriptionChars}/2000
+                                    </p>
                                 </div>
-                                <div className="flex justify-between pt-4 border-t col-span-2">
+
+                                <div className="flex justify-end gap-4 col-span-2">
                                     <button
                                         type="button"
                                         onClick={handleCloseForm}
-                                        className="bg-red-600 text-white px-5 py-2 rounded-lg  focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                                        className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                                     >
-                                        تړل
+                                        لغوکول
                                     </button>
                                     <button
                                         type="submit"
-                                        className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                        className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                                     >
                                         {isEditing ? "سمول" : "اضافه کول"}
                                     </button>

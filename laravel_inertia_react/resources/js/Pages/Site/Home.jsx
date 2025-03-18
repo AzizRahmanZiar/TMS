@@ -313,3 +313,18 @@ const Home = () => {
 };
 
 export default Home;
+
+// <section className="text-primary-900 py-10 lg:px-10 flex flex-col md:flex-row items-center">
+// <div className="mx-auto px-4 text-start md:w-1/2">
+//     <h1 className="text-3xl md:text-4xl font-bold mb-4">
+//         زموږ ماهر خیاطان
+//     </h1>
+//     <p className="text-lg md:text-xl max-w-3xl mx-auto">
+//         د خپلو اړتیاوو لپاره غوره خیاط ومومئ. زموږ مسلکي کسان د
+//         کلونو تجربه لري او په بیلابیلو سټایلونو کې تخصص لري.
+//     </p>
+// </div>
+// <div className=" md:w-1/2">
+//     <img src="./imgs/tailor-1.jpg" alt="tailor" />
+// </div>
+// </section>

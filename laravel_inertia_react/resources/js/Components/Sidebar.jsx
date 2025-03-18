@@ -2,12 +2,20 @@ import React from "react";
 import { Link } from "@inertiajs/react";
 
 const Sidebar = () => (
-    <div className="flex justify-center pt-5 w-40 overflow-hidden  h-screen bg-gray-800 text-white ">
+    <div className="flex justify-center pt-5 w-40 overflow-hidden h-screen bg-tertiary-600  text-white ">
         <ul>
             <li>
                 <Link
+                    href="/admin"
+                    className=" flex flex-row items-end font-semibold text-xl p-4 hover:bg-gray-700"
+                >
+                    اډمین
+                </Link>
+            </li>
+            <li>
+                <Link
                     href="/cloths"
-                    className=" flex flex-row items-end p-4 hover:bg-gray-700"
+                    className=" flex flex-row items-end font-semibold text-xl p-4 hover:bg-gray-700"
                 >
                     جامې
                 </Link>
@@ -15,7 +23,7 @@ const Sidebar = () => (
             <li>
                 <Link
                     href="/uniform"
-                    className=" flex flex-row items-end p-4 hover:bg-gray-700"
+                    className=" flex flex-row items-end font-semibold text-xl p-4 hover:bg-gray-700"
                 >
                     درشي
                 </Link>
@@ -23,7 +31,7 @@ const Sidebar = () => (
             <li>
                 <Link
                     href="/kortai"
-                    className=" flex flex-row items-end p-4 hover:bg-gray-700"
+                    className=" flex flex-row items-end p-4 font-semibold text-xl  hover:bg-gray-700"
                 >
                     کورتۍ
                 </Link>
@@ -31,7 +39,7 @@ const Sidebar = () => (
             <li>
                 <Link
                     href="/sadrai"
-                    className=" flex flex-row items-end p-4 hover:bg-gray-700"
+                    className=" flex flex-row items-end font-semibold text-xl  p-4 hover:bg-gray-700"
                 >
                     صدرۍ
                 </Link>
@@ -39,7 +47,7 @@ const Sidebar = () => (
             <li>
                 <Link
                     href="/adminpost"
-                    className=" flex flex-row items-end p-4 hover:bg-gray-700"
+                    className=" flex flex-row  font-semibold text-xl items-end p-4 hover:bg-gray-700"
                 >
                     پوسټ
                 </Link>
