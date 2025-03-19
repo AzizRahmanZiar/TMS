@@ -154,25 +154,27 @@ const Home = () => {
                         ماسټر خیاط
                     </h1>
                     <p className="text-xl md:text-2xl mb-8">
-                        د خیاطۍ د ماهرانو او استادانو سره ستاسو د خوښې جامې
+                        ستاسو د خوښې لباسونه دلته دي، زموږ ماهر خیاطان د ځانګړو
+                        پیښو لپاره ځانګړي لباسونه جوړوي، چې د هر ډول مناسبت
+                        لپاره مناسب وي. د خیاطۍ خدمات په غوره بیه، زموږ موخه
+                        ستاسو د خوښۍ او اطمینان تضمین دی. موږ د کیفیت او سټایل
+                        په اړه ژمن یو، ترڅو تاسو تل په زړه پورې ښکاره شئ.
                     </p>
-                    <div className="flex justify-center gap-4">
+                    <div>
                         <Link
                             href="/tailor"
                             className="bg-secondary-600 text-primary-50 px-6 py-3 rounded-md font-medium hover:bg-secondary-700 transition"
                         >
                             خیاط ومومئ
                         </Link>
-                        <Link
-                            href="/order"
-                            className="bg-transparent border-2 border-primary-700 hover:border-primary-900 text-primary-900 px-6 py-3 rounded-md font-medium hover:bg-primary-600 hover:text-white transition"
-                        >
-                            فرمایش ورکړئ
-                        </Link>
                     </div>
                 </div>
                 <div className=" md:w-1/2">
-                    <img src="./imgs/heroI.jpg" alt="hero" />
+                    <img
+                        src="./imgs/ilus-3.jpg"
+                        className="p-10 transform scale-x-[-1]"
+                        alt="hero"
+                    />
                 </div>
             </section>
 

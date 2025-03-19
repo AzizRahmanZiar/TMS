@@ -97,18 +97,29 @@ const Tailors = () => {
     return (
         <SiteLayout>
             {/* Hero Section */}
-            <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16">
-                <div className="container mx-auto px-4 text-center">
+
+            <section className="text-primary-900 py-10 lg:px-10 flex flex-col md:flex-row items-center">
+                <div className="mx-auto px-4 text-start md:w-1/2">
                     <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                        د خیاطانو لیست
+                        زموږ ماهر خیاطان
                     </h1>
-                    <p className="text-lg md:text-xl max-w-3xl mx-auto opacity-90">
-                        د خپلو اړتیاوو سره سم غوره خیاط ومومئ. زموږ خیاطان د لوړ
-                        کیفیت خدمتونه وړاندې کوي.
+                    <p className="text-lg md:text-xl max-w-3xl mx-auto mb-4">
+                        د خپلو اړتیاوو لپاره غوره خیاط ومومئ. زموږ مسلکي کسان د
+                        کلونو تجربه لري او په بیلابیلو سټایلونو کې تخصص لري.
+                        زموږ هدف د دې لپاره دی چې تاسو ته ځانګړي او د کیفیت
+                        لرونکي لباسونه وړاندې کړو، چې ستاسو د شخصیت او سټایل سره
+                        سمون خوري. د خیاطۍ هره پروژه د دقیقیت او خلاقیت سره
+                        ترسره کیږي، ترڅو تاسو تل خوشحاله او راضي پاتې شئ.
                     </p>
                 </div>
+                <div className=" md:w-1/2">
+                    <img
+                        src="./imgs/ilus-2.jpg"
+                        className="transform scale-x-[-1] p-10"
+                        alt="tailor"
+                    />
+                </div>
             </section>
-
             {/* Filter section */}
             <section className="py-8 bg-gray-50">
                 <div className="container mx-auto px-4">
@@ -142,7 +153,6 @@ const Tailors = () => {
                     </div>
                 </div>
             </section>
-
             {/* Tailors list */}
             <section className="py-12 bg-gray-50">
                 <div className="container mx-auto px-4">
