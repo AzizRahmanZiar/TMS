@@ -15,7 +15,10 @@ const Navbar = () => {
                             <span>
                                 <FaScissors className="text-primary-50" />
                             </span>
-                            <span className="text-primary-50">ماسټر خیاط</span>
+                            <span className="text-primary-50">
+                                {" "}
+                                د خیاطۍ آنلاین پلیټ فارم
+                            </span>
                         </div>
                     </Link>
 
