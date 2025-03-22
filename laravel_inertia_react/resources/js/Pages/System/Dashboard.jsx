@@ -492,11 +492,11 @@ export default function Dashboard() {
                                             </div>
                                             <div className="flex justify-between mt-1">
                                                 <span className="text-xs text-gray-500">
-                                                    اوسط ګټه:{" "}
+                                                    اوسط ګټه:
                                                     {formatNumber(
                                                         (
                                                             category.money /
-                                                            (category.items ||
+                                                            (category.value ||
                                                                 1)
                                                         ).toFixed(0)
                                                     )}{" "}

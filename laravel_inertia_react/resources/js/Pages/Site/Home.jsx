@@ -8,6 +8,7 @@ import {
     FaInfoCircle,
     FaArrowRight,
 } from "react-icons/fa";
+import Testimonials from "@/Components/Testimonials";
 
 const Home = () => {
     // Sample data for top designs
@@ -44,7 +45,7 @@ const Home = () => {
         },
         {
             id: 6,
-            name: "د ماښام جامې",
+            name: "د خوب جامې",
             rating: 4.8,
             image: "./imgs/6.jpg",
         },
@@ -221,76 +222,7 @@ const Home = () => {
             </section>
 
             {/* Testimonials Section */}
-            <section className="py-16 bg-white">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-primary-900 text-center mb-12">
-                        د پیرودونکو نظرونه
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {testimonials.map((testimonial) => (
-                            <div
-                                key={testimonial.id}
-                                className="bg-gray-50 p-6 rounded-lg border"
-                            >
-                                <p className="font-semibold">
-                                    {testimonial.name}
-                                </p>
-                                <p className="text-gray-700 mb-4">
-                                    "{testimonial.comment}"
-                                </p>
-
-                                <div className="mb-4">
-                                    {renderRating(testimonial.rating)}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Recent Posts Section */}
-            <section className="py-16 bg-gray-50">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-primary-900 text-center mb-12">
-                        تازه پوسټونه
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {recentPosts.map((post) => (
-                            <div
-                                key={post.id}
-                                className="bg-white rounded-lg border overflow-hidden"
-                            >
-                                <img
-                                    src={
-                                        post.image ||
-                                        `https://via.placeholder.com/600x400?text=${post.title}`
-                                    }
-                                    alt={post.title}
-                                    className="w-full h-48 "
-                                />
-                                <div className="p-6">
-                                    <h3 className="font-bold text-secondary-600 text-xl mb-2">
-                                        {post.title}
-                                    </h3>
-                                    <p className="text-tertiary-900 mb-4">
-                                        {post.excerpt}
-                                    </p>
-                                    <p className="text-primary-800 text-sm mb-2">
-                                        {post.date}
-                                    </p>
-                                    <Link
-                                        href={`/post/${post.id}`}
-                                        className="text-secondary-800 font-medium flex items-center hover:text-secondary-900"
-                                    >
-                                        نور ولولئ{" "}
-                                        <FaArrowRight className="mr-2" />
-                                    </Link>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+            <Testimonials />
 
             {/* Special Offers Section */}
             <section className="py-16 bg-tertiary-700 text-white">
@@ -315,18 +247,3 @@ const Home = () => {
 };
 
 export default Home;
-
-// <section className="text-primary-900 py-10 lg:px-10 flex flex-col md:flex-row items-center">
-// <div className="mx-auto px-4 text-start md:w-1/2">
-//     <h1 className="text-3xl md:text-4xl font-bold mb-4">
-//         زموږ ماهر خیاطان
-//     </h1>
-//     <p className="text-lg md:text-xl max-w-3xl mx-auto">
-//         د خپلو اړتیاوو لپاره غوره خیاط ومومئ. زموږ مسلکي کسان د
-//         کلونو تجربه لري او په بیلابیلو سټایلونو کې تخصص لري.
-//     </p>
-// </div>
-// <div className=" md:w-1/2">
-//     <img src="./imgs/tailor-1.jpg" alt="tailor" />
-// </div>
-// </section>
