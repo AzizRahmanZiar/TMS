@@ -590,21 +590,7 @@ const Post = () => {
                                         onChange={handleImageChange}
                                         className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                                     />
-                                    {imagePreview && (
-                                        <div className="mt-2">
-                                            <p className="text-sm text-gray-500 mb-1">
-                                                عکس اپلوډ کړئ
-                                            </p>
-                                            <img
-                                                src={
-                                                    imagePreview ||
-                                                    "/placeholder.svg"
-                                                }
-                                                alt="Preview"
-                                                className="h-20 w-20 object-cover rounded-md border border-gray-300"
-                                            />
-                                        </div>
-                                    )}
+
                                     {formErrors.image && (
                                         <p className="mt-1 text-sm text-red-600">
                                             {formErrors.image}

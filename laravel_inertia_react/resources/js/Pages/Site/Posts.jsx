@@ -1,203 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import { Link } from "@inertiajs/react";
-// import SiteLayout from "../../Layouts/SiteLayout";
-// import {
-//     FaCalendarAlt,
-//     FaUser,
-//     FaComment,
-//     FaSearch,
-//     FaArrowRight,
-// } from "react-icons/fa";
-// import { usePosts } from "@/Contexts/PostContext";
-
-// const Post = () => {
-//     const { posts, setPosts } = usePosts();
-
-//     const [searchTerm, setSearchTerm] = useState("");
-//     const [category, setCategory] = useState("");
-
-//     // د فلټر بېرته تنظیم کولو لپاره اصلي پوسټونه ذخیره کوو
-//     const [originalPosts, setOriginalPosts] = useState([]);
-
-//     // کله چې Component ماؤنټ شي، نو اصلي پوسټونه ذخیره کوو
-//     useEffect(() => {
-//         setOriginalPosts(posts);
-//     }, [posts]);
-
-//     // Get unique categories
-//     const categories = [...new Set(originalPosts.map((post) => post.category))];
-
-//     // Function to handle filtering
-//     const handleFilter = () => {
-//         let filtered = originalPosts;
-
-//         if (searchTerm) {
-//             filtered = filtered.filter(
-//                 (post) =>
-//                     post.title
-//                         .toLowerCase()
-//                         .includes(searchTerm.toLowerCase()) ||
-//                     post.description
-//                         .toLowerCase()
-//                         .includes(searchTerm.toLowerCase()) ||
-//                     post.author.toLowerCase().includes(searchTerm.toLowerCase())
-//             );
-//         }
-
-//         if (category) {
-//             filtered = filtered.filter((post) => post.category === category);
-//         }
-
-//         setPosts(filtered);
-//     };
-
-//     // Function to reset filters
-//     const resetFilters = () => {
-//         setSearchTerm("");
-//         setCategory("");
-//         setPosts(originalPosts);
-//     };
-
-//     return (
-//         <SiteLayout title="پوسټونه - خیاط ماسټر">
-//             {/* Hero Section */}
-//             <section className="text-primary-900 py-10 lg:px-10 flex flex-col md:flex-row items-center">
-//                 <div className="container mx-auto px-4 text-center w-1/2">
-//                     <h1 className="text-3xl md:text-4xl font-bold mb-4">
-//                         زموږ بلاګ
-//                     </h1>
-//                     <p className="text-lg md:text-xl max-w-3xl mx-auto">
-//                         د خیاطۍ، فیشن او د جامو په اړه تازه مقالې او معلومات
-//                         ترلاسه کړئ.
-//                     </p>
-//                 </div>
-//                 <div className="w-1/2">
-//                     <img src="./imgs/blog.jpg" alt="posts" />
-//                 </div>
-//             </section>
-
-//             {/* Search and Filter Section */}
-//             <section className="py-8 bg-gray-100">
-//                 <div className="container mx-auto px-4">
-//                     <div className="bg-white p-6 rounded-lg border">
-//                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-//                             <div className="relative">
-//                                 <input
-//                                     type="text"
-//                                     placeholder="د عنوان یا لیکوال له مخې لټون"
-//                                     className="w-full p-3 border border-gray-300 rounded-md pr-10"
-//                                     value={searchTerm}
-//                                     onChange={(e) =>
-//                                         setSearchTerm(e.target.value)
-//                                     }
-//                                 />
-//                                 <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400" />
-//                             </div>
-
-//                             <select
-//                                 className="w-full p-3 border border-gray-300  rounded-md"
-//                                 value={category}
-//                                 onChange={(e) => setCategory(e.target.value)}
-//                             >
-//                                 <option value="">ټولې کټګورۍ</option>
-//                                 {categories.map((cat, index) => (
-//                                     <option key={index} value={cat}>
-//                                         {cat}
-//                                     </option>
-//                                 ))}
-//                             </select>
-
-//                             <div className="flex gap-2">
-//                                 <button
-//                                     onClick={handleFilter}
-//                                     className="flex-1 bg-secondary-600 text-primary-50 p-3 rounded-md hover:bg-secondary-700 transition"
-//                                 >
-//                                     لټون
-//                                 </button>
-//                                 <button
-//                                     onClick={resetFilters}
-//                                     className="flex-1 bg-tertiary-600 text-primary-50 p-3 rounded-md hover:bg-tertiary-700 transition"
-//                                 >
-//                                     بیا تنظیم
-//                                 </button>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </section>
-
-//             {/* Posts Listing */}
-//             <section className="py-12">
-//                 <div className="container mx-auto px-4">
-//                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-//                         {posts.map((post) => (
-//                             <div
-//                                 key={post.id}
-//                                 className="bg-primary-50 rounded-lg border overflow-hidden"
-//                             >
-//                                 <img
-//                                     src={post.image}
-//                                     alt={post.title}
-//                                     className="w-full h-64"
-//                                 />
-//                                 <div className="p-6">
-//                                     <div className="flex justify-between items-center text-sm text-primary-500 mb-3">
-//                                         <div className="flex items-center">
-//                                             <FaCalendarAlt className="ml-1" />
-//                                             {post.date}
-//                                         </div>
-//                                         <div className="flex items-center">
-//                                             <FaUser className="ml-1" />
-//                                             {post.author}
-//                                         </div>
-//                                         <div className="flex items-center">
-//                                             <FaComment className="ml-1" />
-//                                             {post.comments}
-//                                         </div>
-//                                     </div>
-
-//                                     <h3 className="font-bold text-tertiary-700 text-xl mb-2">
-//                                         {post.title}
-//                                     </h3>
-//                                     <p className="text-primary-700 mb-4">
-//                                         {post.description}
-//                                     </p>
-
-//                                     <Link
-//                                         href="#"
-//                                         className="text-secondary-600 font-medium flex items-center hover:text-secondary-700 transition"
-//                                     >
-//                                         نور ولولئ
-//                                         <FaArrowRight className="mr-2" />
-//                                     </Link>
-//                                 </div>
-//                             </div>
-//                         ))}
-//                     </div>
-
-//                     {posts.length === 0 && (
-//                         <div className="text-center py-12">
-//                             <p className="text-xl text-gray-600">
-//                                 ستاسو د معیارونو سره سم هیڅ پوسټ ونه موندل شو.
-//                             </p>
-//                             <button
-//                                 onClick={resetFilters}
-//                                 className="mt-4 bg-secondary-600 text-primary-50 py-2 px-6 rounded hover:bg-secondary-700 transition"
-//                             >
-//                                 فیلټرونه بیا تنظیم کړئ
-//                             </button>
-//                         </div>
-//                     )}
-//                 </div>
-//             </section>
-//         </SiteLayout>
-//     );
-// };
-
-// export default Post;
-
-"use client";
-
 import { useState, useEffect, useRef } from "react";
 import { Link } from "@inertiajs/react";
 import SiteLayout from "../../Layouts/SiteLayout";
@@ -210,8 +10,10 @@ import {
     FaUpload,
 } from "react-icons/fa";
 import { usePosts } from "@/Contexts/PostContext";
+import { useRate } from "@/Contexts/RatingContext";
 
 const Post = () => {
+    const { rate, setRating } = useRate();
     const { posts, setPosts } = usePosts();
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -383,6 +185,22 @@ const Post = () => {
         if (!validateForm()) {
             return;
         }
+
+        // Create a new rating object
+        const newRating = {
+            id: Date.now(), // Generate a unique ID
+            username: formData.username,
+            author: selectedPost.author, // Save the post author as the author
+            userEmail: formData.userEmail,
+            comment: formData.comment,
+            rating: selectedRating,
+            userImage: previewUrl, // Use the preview URL for the image
+            postId: selectedPost.id, // Reference to the original post
+            date: new Date().toISOString().split("T")[0], // Current date
+        };
+
+        // Update the rating in the context
+        setRating([...rate, newRating]);
 
         // Update only the rating on the post
         const updatedPosts = posts.map((post) => {
@@ -593,6 +411,7 @@ const Post = () => {
                                                 <img
                                                     src={
                                                         previewUrl ||
+                                                        "/placeholder.svg" ||
                                                         "/placeholder.svg"
                                                     }
                                                     alt="Preview"
@@ -724,29 +543,32 @@ const Post = () => {
                         {posts.map((post) => (
                             <div
                                 key={post.id}
-                                className="bg-primary-50 rounded-lg border overflow-hidden"
+                                className="bg-primary-50 w-96 rounded-lg border overflow-hidden"
                             >
                                 <img
                                     src={post.image || "/placeholder.svg"}
                                     alt={post.title}
-                                    className="w-full h-64"
+                                    className="w-full h-44"
                                 />
                                 <div className="p-6">
-                                    <div className="flex flex-col space-y-3 mb-4">
+                                    <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div className="flex items-center">
+                                            <FaUser className="ml-1 text-primary-500" />
+
+                                            <span className="font-medium ml-2">
+                                                خیاط:
+                                            </span>
+                                            <span>{post.author}</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <FaCalendarAlt className="ml-1 text-primary-500" />
                                             <span className="font-medium ml-2">
                                                 نېټه:
                                             </span>
-                                            <FaCalendarAlt className="ml-1 text-primary-500" />
+
                                             <span>{post.date}</span>
                                         </div>
-                                        <div className="flex items-center">
-                                            <span className="font-medium ml-2">
-                                                لیکوال:
-                                            </span>
-                                            <FaUser className="ml-1 text-primary-500" />
-                                            <span>{post.author}</span>
-                                        </div>
+
                                         <div className="flex items-center">
                                             <span className="font-medium ml-2">
                                                 درجه:
@@ -765,7 +587,7 @@ const Post = () => {
                                                 <span className="font-medium ml-2">
                                                     کټګوري:
                                                 </span>
-                                                <span className="bg-tertiary-100 text-tertiary-700 px-2 py-1 rounded-md">
+                                                <span className=" text-tertiary-700 px-2 py-1 rounded-md">
                                                     {post.category}
                                                 </span>
                                             </div>
@@ -773,19 +595,11 @@ const Post = () => {
                                     </div>
 
                                     <h3 className="font-bold text-tertiary-700 text-xl mb-2">
-                                        {post.title}
+                                        {post.title}:
                                     </h3>
                                     <p className="text-primary-700 mb-4">
                                         {post.description}
                                     </p>
-
-                                    <Link
-                                        href="#"
-                                        className="text-secondary-600 font-medium flex items-center hover:text-secondary-700 transition"
-                                    >
-                                        نور ولولئ
-                                        <FaArrowRight className="mr-2" />
-                                    </Link>
                                 </div>
                             </div>
                         ))}

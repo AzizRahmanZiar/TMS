@@ -11,6 +11,7 @@ import { UniformProvider } from "./Contexts/UniformContext";
 import { KortaiProvider } from "./Contexts/KortaiContext";
 import { AdminProvider } from "./Contexts/AdminContext";
 import { RegProvider } from "./Contexts/RegContext";
+import { RatingProvider } from "./Contexts/RatingContext";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -25,21 +26,23 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <RegProvider>
-                <AdminProvider>
-                    <ClothsProvider>
-                        <UniformProvider>
-                            <KortaiProvider>
-                                <SadraiProvider>
-                                    <PostProvider>
-                                        <App {...props} />{" "}
-                                    </PostProvider>
-                                </SadraiProvider>
-                            </KortaiProvider>
-                        </UniformProvider>
-                    </ClothsProvider>
-                </AdminProvider>
-            </RegProvider>
+            <RatingProvider>
+                <RegProvider>
+                    <AdminProvider>
+                        <ClothsProvider>
+                            <UniformProvider>
+                                <KortaiProvider>
+                                    <SadraiProvider>
+                                        <PostProvider>
+                                            <App {...props} />{" "}
+                                        </PostProvider>
+                                    </SadraiProvider>
+                                </KortaiProvider>
+                            </UniformProvider>
+                        </ClothsProvider>
+                    </AdminProvider>
+                </RegProvider>
+            </RatingProvider>
         );
     },
     progress: {
