@@ -6,7 +6,7 @@ const About = () => {
     // Sample team members data
     const teamMembers = [
         {
-            name: "احمد رحیمي",
+            name: "lkadsjfljfljlkds رحیمي",
             position: "بنسټګر او ماهر خیاط",
             bio: "د خیاطۍ په برخه کې د ۲۰+ کلونو تجربه لري او په رسمي جامو کې تخصص لري.",
             image: "./imgs/ahmad.jpg",
