@@ -1,13 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import {
     MdDelete,
-    // MdSearch,
-    // MdAdd,
+   
     MdClose,
     MdCheck,
-    // MdOutlineCalendarMonth,
-    // MdOutlinePhone,
-    // MdOutlinePersonOutline,
+
 } from "react-icons/md";
 import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
@@ -24,7 +21,7 @@ const Sadrai = () => {
         key: null,
         direction: "asc",
     });
-    const [activeTab, setActiveTab] = useState("all"); // 'all', 'active', 'completed'
+    const [activeTab, setActiveTab] = useState("all");
     const modalRef = useRef(null);
 
     // New state variables
@@ -385,7 +382,7 @@ const Sadrai = () => {
                             onClick={handleAddClick}
                             className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors duration-300 shadow-md"
                         >
-                            {/* <MdAdd className="mr-2 text-xl" />  */}
+
                             نوی ریکارډ اضافه کول
                         </button>
                     </div>
@@ -400,7 +397,7 @@ const Sadrai = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 outline-none"
                             />
-                            {/* <MdSearch className="absolute right-3 top-3.5 text-gray-400 text-xl" /> */}
+
                         </div>
                         <div className="flex gap-2">
                             <button
@@ -445,73 +442,61 @@ const Sadrai = () => {
                                 <tr>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("nom")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         نوم
-                                        {/* {getSortIcon("nom")}
-                                        </div> */}
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("mobile")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         مبایل
-                                        {/* {getSortIcon("mobile")}
-                                        </div> */}
+
                                     </th>
                                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         اندازې
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("ghara_dol")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
-                                        د غاړي ډول{" "}
-                                        {/* {getSortIcon("ghara_dol")}
-                                        </div> */}
+
+                                        د غاړي ډول
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() =>
-                                        //     requestSort("rawrul_tareekh")
-                                        // }
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
-                                        د راوړلو تاریخ{" "}
-                                        {/* {getSortIcon("rawrul_tareekh")}
-                                        </div> */}
+
+                                        د راوړلو تاریخ
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() =>
-                                        //     requestSort("tasleem_tareekh")
-                                        // }
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
-                                        د تسلیمولو تاریخ{" "}
-                                        {/* {getSortIcon("tasleem_tareekh")}
-                                        </div> */}
+
+                                        د تسلیمولو تاریخ
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("tidad")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         تعداد
-                                        {/* {getSortIcon("tidad")}
-                                        </div> */}
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("money")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         پیسې
-                                        {/* {getSortIcon("money")}
-                                        </div> */}
+
                                     </th>
                                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         عملیې
@@ -528,24 +513,13 @@ const Sadrai = () => {
                                             }`}
                                         >
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                {/* <div className="flex items-center"> */}
-                                                {/* <div className="flex-shrink-0 h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600">
-                                                        <MdOutlinePersonOutline className="h-5 w-5" />
-                                                    </div> */}
-                                                {/* <div className="mr-4">
-                                                        <div className="text-sm font-medium text-gray-900"> */}
-                                                {row.nom}
-                                                {/* </div>
-                                                    </div>
-                                                </div> */}
+
                                             </td>
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                {/* <div className="flex items-center">
-                                                    <MdOutlinePhone className="text-gray-500 ml-1" />
-                                                    <div className="text-sm text-gray-500"> */}
+
                                                 {row.mobile}
-                                                {/* </div>
-                                                </div> */}
+
+
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="text-sm text-gray-900">
@@ -573,20 +547,16 @@ const Sadrai = () => {
                                                 </span>
                                             </td>
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                {/* <div className="flex items-center">
-                                                    <MdOutlineCalendarMonth className="text-gray-500 ml-1" />
-                                                    <div className="text-sm text-gray-500"> */}
+
                                                 {row.rawrul_tareekh}
-                                                {/* </div>
-                                                </div> */}
+
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 {row.tasleem_tareekh ? (
                                                     <div className="flex text-sm items-center">
-                                                        {/* <MdOutlineCalendarMonth className="text-green-500 ml-1" /> */}
-                                                        {/* <div className="text-sm text-green-500"> */}
+
                                                         {row.tasleem_tareekh}
-                                                        {/* </div> */}
+
                                                     </div>
                                                 ) : (
                                                     <span className="inline-flex items-center py-0.5 rounded-full text-xs font-medium  text-yellow-800">
@@ -672,38 +642,18 @@ const Sadrai = () => {
                             ref={modalRef}
                             className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
                         >
-                            {/* <div className="bg-purple-600 text-white px-6 py-4 flex justify-between items-center rounded-t-lg">
-                                <h2 className="text-xl font-bold">
-                                    {isEditing
-                                        ? "ریکارډ تازه کول"
-                                        : "نوی ریکارډ اضافه کول"}
-                                </h2>
-                                <button
-                                    onClick={closeModal}
-                                    className="text-white hover:bg-purple-700 rounded-full p-1"
-                                >
-                                    <MdClose className="h-6 w-6" />
-                                </button>
-                            </div> */}
+
 
                             <form onSubmit={handleSubmit} className="p-6">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    {/* Personal Information */}
-                                    {/* <div className="md:col-span-3">
-                                        <h3 className="text-lg font-medium text-gray-900 mb-4 border-b pb-2">
-                                            د مشتري معلومات
-                                        </h3>
-                                    </div> */}
+
 
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="nom"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            نوم{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            نوم
                                         </label>
                                         <input
                                             id="nom"
@@ -734,10 +684,7 @@ const Sadrai = () => {
                                             htmlFor="mobile"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            مبایل نمبر{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            مبایل نمبر
                                         </label>
                                         <input
                                             id="mobile"
@@ -797,22 +744,14 @@ const Sadrai = () => {
                                         )}
                                     </div>
 
-                                    {/* Measurements */}
-                                    {/* <div className="md:col-span-3 mt-4">
-                                        <h3 className="text-lg font-medium text-gray-900 mb-4 border-b pb-2">
-                                            د اندازو معلومات
-                                        </h3>
-                                    </div> */}
 
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="shana"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            شانه{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            شانه
+
                                         </label>
                                         <input
                                             id="shana"
@@ -843,10 +782,7 @@ const Sadrai = () => {
                                             htmlFor="tenna"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            تنه{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            تنه
                                         </label>
                                         <input
                                             id="tenna"
@@ -877,10 +813,7 @@ const Sadrai = () => {
                                             htmlFor="ghara_dol"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            د غاړي ډول{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            د غاړي ډول
                                         </label>
                                         <input
                                             id="ghara_dol"
@@ -911,10 +844,8 @@ const Sadrai = () => {
                                             htmlFor="zegar"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            ځګر{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            ځګر
+
                                         </label>
                                         <input
                                             id="zegar"
@@ -945,10 +876,8 @@ const Sadrai = () => {
                                             htmlFor="tidad"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            تعداد{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            تعداد
+
                                         </label>
                                         <input
                                             id="tidad"
@@ -980,10 +909,8 @@ const Sadrai = () => {
                                             htmlFor="rawrul_tareekh"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            د راوړلو تاریخ{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            د راوړلو تاریخ
+
                                         </label>
                                         <input
                                             id="rawrul_tareekh"
@@ -1114,9 +1041,7 @@ const Sadrai = () => {
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
                         <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
                             <div className="bg-purple-600 text-white px-6 py-2 flex justify-between items-center rounded-t-lg">
-                                {/* <h2 className="text-xl font-bold">
-                                    د صدری اندازې
-                                </h2> */}
+
                                 <button
                                     onClick={() =>
                                         setShowMeasurementsModal(false)
@@ -1128,23 +1053,7 @@ const Sadrai = () => {
                             </div>
 
                             <div className="p-6">
-                                {/* <div className="mb-4">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                        د مشتري معلومات
-                                    </h3>
-                                    <p className="text-gray-700">
-                                        <span className="font-medium">
-                                            نوم:
-                                        </span>{" "}
-                                        {selectedRow.nom}
-                                    </p>
-                                    <p className="text-gray-700">
-                                        <span className="font-medium">
-                                            مبایل:
-                                        </span>{" "}
-                                        {selectedRow.mobile}
-                                    </p>
-                                </div> */}
+
 
                                 <div className="mb-4">
                                     <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -1179,17 +1088,7 @@ const Sadrai = () => {
                                     </div>
                                 </div>
 
-                                {/* <div className="mt-6 flex justify-end">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setShowMeasurementsModal(false)
-                                        }
-                                        className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                    >
-                                        بندول
-                                    </button>
-                                </div> */}
+
                             </div>
                         </div>
                     </div>

@@ -1,13 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import {
     MdDelete,
-    // MdSearch,
-    // MdAdd,
     MdClose,
     MdCheck,
-    // MdOutlineCalendarMonth,
-    // MdOutlinePhone,
-    // MdOutlinePersonOutline,
     MdOutlineCheckBox,
     MdOutlineCheckBoxOutlineBlank,
 } from "react-icons/md";
@@ -26,7 +21,7 @@ const Cloths = () => {
         key: null,
         direction: "asc",
     });
-    const [activeTab, setActiveTab] = useState("all"); // 'all', 'active', 'completed'
+    const [activeTab, setActiveTab] = useState("all");
     const modalRef = useRef(null);
 
     const [formData, setFormData] = useState({
@@ -1255,13 +1250,6 @@ const Cloths = () => {
                                         )}
                                     </div>
 
-                                    {/* Features/Checkboxes */}
-                                    {/* <div className="md:col-span-3 mt-4">
-                                        <h3 className="text-lg font-medium text-gray-900 mb-4 border-b pb-2">
-                                            خصوصیات
-                                        </h3>
-                                    </div> */}
-
                                     {checkboxGroups.map((group, groupIndex) => (
                                         <div
                                             key={groupIndex}
@@ -1405,24 +1393,6 @@ const Cloths = () => {
                             </div>
 
                             <div className="p-6">
-                                {/* <div className="mb-4">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                        د مشتري معلومات
-                                    </h3>
-                                    <p className="text-gray-700">
-                                        <span className="font-medium">
-                                            نوم:
-                                        </span>{" "}
-                                        {selectedRow.nom}
-                                    </p>
-                                    <p className="text-gray-700">
-                                        <span className="font-medium">
-                                            مبایل:
-                                        </span>{" "}
-                                        {selectedRow.mobile}
-                                    </p>
-                                </div> */}
-
                                 <div className="mb-4">
                                     <h3 className="text-lg font-medium text-gray-900 mb-2">
                                         خصوصیات
@@ -1486,18 +1456,6 @@ const Cloths = () => {
                                         ))}
                                     </div>
                                 </div>
-
-                                {/* <div className="mt-6 flex justify-end">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setShowFeaturesModal(false)
-                                        }
-                                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    >
-                                        بندول
-                                    </button>
-                                </div> */}
                             </div>
                         </div>
                     </div>
@@ -1522,24 +1480,6 @@ const Cloths = () => {
                             </div>
 
                             <div className="p-6">
-                                {/* <div className="mb-4">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                        د مشتري معلومات
-                                    </h3>
-                                    <p className="text-gray-700">
-                                        <span className="font-medium">
-                                            نوم:
-                                        </span>{" "}
-                                        {selectedRow.nom}
-                                    </p>
-                                    <p className="text-gray-700">
-                                        <span className="font-medium">
-                                            مبایل:
-                                        </span>{" "}
-                                        {selectedRow.mobile}
-                                    </p>
-                                </div> */}
-
                                 <div className="mb-4">
                                     <h3 className="text-lg font-medium text-gray-900 mb-2">
                                         اندازې
@@ -1575,18 +1515,6 @@ const Cloths = () => {
                                         ))}
                                     </div>
                                 </div>
-
-                                {/* <div className="mt-6 flex justify-end">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setShowMeasurementsModal(false)
-                                        }
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    >
-                                        بندول
-                                    </button>
-                                </div> */}
                             </div>
                         </div>
                     </div>

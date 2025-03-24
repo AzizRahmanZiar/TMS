@@ -805,13 +805,6 @@ const Kortai = () => {
                                         )}
                                     </div>
 
-                                    {/* Measurements */}
-                                    {/* <div className="md:col-span-3 mt-4">
-                                        <h3 className="text-lg font-medium text-gray-900 mb-4 border-b pb-2">
-                                            د اندازو معلومات
-                                        </h3>
-                                    </div> */}
-
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="shana"
@@ -1204,24 +1197,6 @@ const Kortai = () => {
                             </div>
 
                             <div className="p-6">
-                                {/* <div className="mb-4">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                        د مشتري معلومات
-                                    </h3>
-                                    <p className="text-gray-700">
-                                        <span className="font-medium">
-                                            نوم:
-                                        </span>{" "}
-                                        {selectedRow.nom}
-                                    </p>
-                                    <p className="text-gray-700">
-                                        <span className="font-medium">
-                                            مبایل:
-                                        </span>{" "}
-                                        {selectedRow.mobile}
-                                    </p>
-                                </div> */}
-
                                 <div className="mb-4">
                                     <h3 className="text-lg font-medium text-gray-900 mb-2">
                                         اندازې
@@ -1262,18 +1237,6 @@ const Kortai = () => {
                                         ))}
                                     </div>
                                 </div>
-
-                                {/* <div className="mt-6 flex justify-end">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setShowMeasurementsModal(false)
-                                        }
-                                        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    >
-                                        بندول
-                                    </button>
-                                </div> */}
                             </div>
                         </div>
                     </div>
