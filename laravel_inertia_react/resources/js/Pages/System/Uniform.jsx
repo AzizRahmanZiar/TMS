@@ -1,17 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import {
-    MdDelete,
-    MdSearch,
-    MdAdd,
-    MdClose,
-    MdCheck,
-    MdOutlineCalendarMonth,
-    MdOutlinePhone,
-    MdOutlinePersonOutline,
-} from "react-icons/md";
+import { MdDelete, MdClose, MdCheck } from "react-icons/md";
 import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { useUniform } from "@/Contexts/UniformContext";
+import SystemLayout from "@/Layouts/SystemLayout";
 
 const Uniform = () => {
     const { uniform, setUniform } = useUniform();
@@ -367,7 +358,7 @@ const Uniform = () => {
     ];
 
     return (
-        <AuthenticatedLayout>
+        <SystemLayout>
             <div className="container mx-auto px-4 py-6">
                 {/* Header Section */}
                 <div className="bg-white rounded-lg border p-6 mb-6">
@@ -1068,7 +1059,7 @@ const Uniform = () => {
                     </div>
                 )}
             </div>
-        </AuthenticatedLayout>
+        </SystemLayout>
     );
 };
 

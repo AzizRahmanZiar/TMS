@@ -17,7 +17,6 @@ import { useCloths } from "@/Contexts/ClothsContext";
 import { useUniform } from "@/Contexts/UniformContext";
 import { useKortai } from "@/Contexts/KortaiContext";
 import { useSadrai } from "@/Contexts/SadraiContext";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import {
     Chart as ChartJS,
     ArcElement,
@@ -31,6 +30,7 @@ import {
     BarElement,
 } from "chart.js";
 import { Pie, Bar } from "react-chartjs-2";
+import SystemLayout from "@/Layouts/SystemLayout";
 
 // Register ChartJS components
 ChartJS.register(
@@ -187,7 +187,7 @@ export default function Dashboard() {
     };
 
     return (
-        <AuthenticatedLayout>
+        <SystemLayout>
             <div className="p-4 md:p-6 bg-gray-50">
                 <h1 className="text-2xl font-bold mb-6 text-gray-800">
                     خیاطي مدیریت سیستم
@@ -514,6 +514,6 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </SystemLayout>
     );
 }

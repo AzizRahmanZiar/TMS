@@ -1,7 +1,7 @@
 "use client";
 
 import { useReg } from "@/Contexts/RegContext";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import SystemLayout from "@/Layouts/SystemLayout";
 import { useState, useEffect } from "react";
 import { FaEdit, FaTrash, FaUser, FaSearch, FaUsers } from "react-icons/fa";
 
@@ -107,7 +107,7 @@ const Admin = () => {
     };
 
     return (
-        <AuthenticatedLayout>
+        <SystemLayout>
             <div className="bg-gray-50 min-h-screen">
                 <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                     <div className="bg-white rounded-2xl border overflow-hidden">
@@ -392,7 +392,7 @@ const Admin = () => {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </SystemLayout>
     );
 };
 

@@ -1,15 +1,14 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+
 import {
-    AiOutlinePlus,
+
     AiOutlineCheckCircle,
     AiOutlineCloseCircle,
 } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { usePosts } from "../../Contexts/postContext"; // Import the context
+import SystemLayout from '@/Layouts/SystemLayout';
 
 const Post = () => {
     const { posts, setPosts } = usePosts(); // Use the context
@@ -28,12 +27,14 @@ const Post = () => {
         date: "",
         author: "",
         category: "",
+        email: "", // Added email field
     });
 
     // Character counters
     const [titleChars, setTitleChars] = useState(0);
     const [descriptionChars, setDescriptionChars] = useState(0);
     const [authorChars, setAuthorChars] = useState(0);
+    const [emailChars, setEmailChars] = useState(0); // Added email character counter
 
     // Set form values when editing
     useEffect(() => {
@@ -44,10 +45,12 @@ const Post = () => {
                 date: currentPost.date || "",
                 author: currentPost.author || "",
                 category: currentPost.category || "",
+                email: currentPost.email || "", // Added email field
             });
             setTitleChars(currentPost.title?.length || 0);
             setDescriptionChars(currentPost.description?.length || 0);
             setAuthorChars(currentPost.author?.length || 0);
+            setEmailChars(currentPost.email?.length || 0); // Added email character counter
             setImagePreview(currentPost.image || null);
         } else {
             resetForm();
@@ -62,11 +65,13 @@ const Post = () => {
             date: "",
             author: "",
             category: "",
+            email: "", // Added email field
         });
         setFormErrors({});
         setTitleChars(0);
         setDescriptionChars(0);
         setAuthorChars(0);
+        setEmailChars(0); // Reset email character counter
         setImagePreview(null);
     };
 
@@ -103,6 +108,8 @@ const Post = () => {
             setDescriptionChars(value.length);
         } else if (name === "author") {
             setAuthorChars(value.length);
+        } else if (name === "email") {
+            setEmailChars(value.length);
         }
 
         // Update form values
@@ -184,6 +191,16 @@ const Post = () => {
                 }
                 break;
 
+            case "email":
+                if (!value.trim()) {
+                    errors.email = "ایمیل اړین دی";
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    errors.email = "ایمیل باید په سمه بڼه وي";
+                } else {
+                    delete errors.email;
+                }
+                break;
+
             default:
                 break;
         }
@@ -262,6 +279,15 @@ const Post = () => {
             isValid = false;
         }
 
+        // Validate email
+        if (!formValues.email.trim()) {
+            newErrors.email = "ایمیل اړین دی";
+            isValid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
+            newErrors.email = "ایمیل باید په سمه بڼه وي";
+            isValid = false;
+        }
+
         setFormErrors(newErrors);
         return isValid;
     };
@@ -319,6 +345,7 @@ const Post = () => {
             date: formValues.date,
             author: formValues.author,
             category: formValues.category,
+            email: formValues.email, // Added email field
             comments: isEditing ? currentPost.comments : 0,
             views: isEditing ? currentPost.views : 0,
         };
@@ -355,7 +382,7 @@ const Post = () => {
     };
 
     return (
-        <AuthenticatedLayout>
+        <SystemLayout>
             <div className=" p-4 bg-gradient-to-b from-white to-gray-50 min-h-screen rounded-lg border">
                 {/* Search bar and Add Post button */}
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
@@ -413,6 +440,9 @@ const Post = () => {
                                     لیکوال
                                 </th>
                                 <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                                    ایمیل
+                                </th>
+                                <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                                     کټګورۍ
                                 </th>
                                 <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
@@ -462,7 +492,12 @@ const Post = () => {
                                             </div>
                                         </td>
                                         <td className="py-4 px-4 text-right whitespace-nowrap">
-                                            <span className=" inline-flex text-xs leading-5 font-semibold rounded-full  text-blue-800">
+                                            <div className="text-sm text-gray-500">
+                                                {post.email}
+                                            </div>
+                                        </td>
+                                        <td className="py-4 px-4 text-right whitespace-nowrap">
+                                            <span className="inline-flex text-xs leading-5 font-semibold rounded-full text-blue-800">
                                                 {post.category}
                                             </span>
                                         </td>
@@ -511,22 +546,6 @@ const Post = () => {
                         <h3 className="mt-2 text-sm font-medium text-gray-900">
                             هیڅ پوست ونه موندل شو
                         </h3>
-                        <p className="mt-1 text-sm text-gray-500">
-                            د نوي پوست د اضافه کولو لپاره، د اضافه کولو تڼۍ
-                            کیکاږئ.
-                        </p>
-                        <div className="mt-6">
-                            <button
-                                onClick={handleAddPost}
-                                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                            >
-                                <AiOutlinePlus
-                                    className="-ml-1 mr-2 h-5 w-5"
-                                    aria-hidden="true"
-                                />
-                                نوی پوست اضافه کړئ
-                            </button>
-                        </div>
                     </div>
                 )}
 
@@ -660,6 +679,43 @@ const Post = () => {
                                 <div className="relative">
                                     <label
                                         className="block text-sm font-medium text-gray-700 mb-1"
+                                        htmlFor="email"
+                                    >
+                                        ایمیل{" "}
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            value={formValues.email}
+                                            onChange={handleInputChange}
+                                            className={getInputClass("email")}
+                                            placeholder="example@domain.com"
+                                        />
+                                        {formValues.email && (
+                                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                {formErrors.email ? (
+                                                    <AiOutlineCloseCircle className="text-red-500" />
+                                                ) : (
+                                                    <AiOutlineCheckCircle className="text-green-500" />
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {formErrors.email && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.email}
+                                        </p>
+                                    )}
+                                    <p className="mt-1 text-xs text-gray-500 text-right">
+                                        {emailChars}/100
+                                    </p>
+                                </div>
+
+                                <div className="relative">
+                                    <label
+                                        className="block text-sm font-medium text-gray-700 mb-1"
                                         htmlFor="category"
                                     >
                                         کټګورۍ{" "}
@@ -751,7 +807,7 @@ const Post = () => {
                     </div>
                 )}
             </div>
-        </AuthenticatedLayout>
+        </SystemLayout>
     );
 };
 

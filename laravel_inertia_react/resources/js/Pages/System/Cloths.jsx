@@ -6,9 +6,9 @@ import {
     MdOutlineCheckBox,
     MdOutlineCheckBoxOutlineBlank,
 } from "react-icons/md";
-import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";;
 import { useCloths } from "@/Contexts/ClothsContext";
+import SystemLayout from "@/Layouts/SystemLayout";
 
 const Cloths = () => {
     const { cloths, setCloths } = useCloths();
@@ -428,7 +428,7 @@ const Cloths = () => {
     };
 
     return (
-        <AuthenticatedLayout>
+        <SystemLayout>
             <div className="container mx-auto px-4 py-6">
                 {/* Header Section */}
                 <div className="bg-white rounded-lg border p-6 mb-6">
@@ -1520,7 +1520,7 @@ const Cloths = () => {
                     </div>
                 )}
             </div>
-        </AuthenticatedLayout>
+        </SystemLayout>
     );
 };
 

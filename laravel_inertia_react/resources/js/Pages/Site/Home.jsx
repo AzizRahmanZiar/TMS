@@ -1,16 +1,34 @@
 import { Link } from "@inertiajs/react";
 import SiteLayout from "../../Layouts/SiteLayout";
-import { FaStar, FaStarHalfAlt, FaRegStar, FaInfoCircle } from "react-icons/fa";
 import { useRate } from "@/Contexts/RatingContext";
 import { usePosts } from "@/Contexts/PostContext";
+import { motion } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
 
 const Home = () => {
     const { rate } = useRate();
     const { posts } = usePosts();
+    const [currentTestimonial, setCurrentTestimonial] = useState(0);
+    const testimonialRef = useRef(null);
 
-    // Function to get average rating for a post
+    // Function to get all ratings for a post
+    const getPostRatings = (postId) => {
+        return rate.filter((rating) => rating.postId === postId);
+    };
+
+    // Function to get ratings with comments for a post
+    const getPostCommentRatings = (postId) => {
+        return rate.filter(
+            (rating) =>
+                rating.postId === postId &&
+                rating.comment &&
+                rating.comment.trim() !== ""
+        );
+    };
+
+    // Function to get average rating for a post (from all ratings)
     const getPostRating = (postId) => {
-        const postRatings = rate.filter((rating) => rating.postId === postId);
+        const postRatings = getPostRatings(postId);
         if (postRatings.length === 0) return 0;
 
         const sum = postRatings.reduce(
@@ -20,273 +38,573 @@ const Home = () => {
         return sum / postRatings.length;
     };
 
+    // Function to get average rating from comments for a post
+    const getPostCommentRating = (postId) => {
+        const commentRatings = getPostCommentRatings(postId);
+        if (commentRatings.length === 0) return 0;
+
+        const sum = commentRatings.reduce(
+            (total, rating) => total + rating.rating,
+            0
+        );
+        return sum / commentRatings.length;
+    };
+
     // Create an array of posts with their ratings
-    const postsWithRatings = posts.map((post) => ({
-        ...post,
-        averageRating: getPostRating(post.id),
-    }));
+    const postsWithRatings = posts.map((post) => {
+        const postRatings = getPostRatings(post.id);
+        const commentRatings = getPostCommentRatings(post.id);
+
+        return {
+            ...post,
+            ratings: postRatings,
+            commentRatings: commentRatings,
+            hasRatings: postRatings.length > 0,
+            hasCommentRatings: commentRatings.length > 0,
+            averageRating: getPostRating(post.id),
+            averageCommentRating: getPostCommentRating(post.id),
+        };
+    });
+
+    // Filter posts that have at least one rating
+    const ratedPosts = postsWithRatings.filter((post) => post.hasRatings);
 
     // Sort by rating (highest first) and take top 10
-    const topDesigns = postsWithRatings
+    const topDesigns = ratedPosts
         .sort((a, b) => b.averageRating - a.averageRating)
         .slice(0, 10);
 
-    // Function to render star ratings
-    const renderRating = (rating) => {
-        const stars = [];
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 !== 0;
+    // Modify the testimonials data preparation to:
+    // 1. Limit to 15 testimonials
+    // 2. Sort by newest first (assuming newer ratings have higher IDs)
+    const testimonialsWithComments = rate
+        .filter((rating) => rating.comment && rating.comment.trim() !== "")
+        .sort((a, b) => b.id - a.id) // Sort by newest first (assuming higher ID = newer)
+        .slice(0, 15); // Limit to 15 testimonials
 
-        for (let i = 1; i <= 5; i++) {
-            if (i <= fullStars) {
-                stars.push(<FaStar key={i} className="text-yellow-400" />);
-            } else if (i === fullStars + 1 && hasHalfStar) {
-                stars.push(
-                    <FaStarHalfAlt key={i} className="text-yellow-400" />
-                );
-            } else {
-                stars.push(<FaRegStar key={i} className="text-yellow-400" />);
-            }
-        }
+    // Handle testimonial navigation
+    const nextTestimonial = () => {
+        setCurrentTestimonial((prev) =>
+            prev === testimonialsWithComments.length - 1 ? 0 : prev + 1
+        );
+    };
 
-        return <div className="flex">{stars}</div>;
+    const prevTestimonial = () => {
+        setCurrentTestimonial((prev) =>
+            prev === 0 ? testimonialsWithComments.length - 1 : prev - 1
+        );
+    };
+
+    // Auto-scroll testimonials
+    useEffect(() => {
+        const interval = setInterval(() => {
+            nextTestimonial();
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Animation variants
+    const fadeIn = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { duration: 0.6 } },
+    };
+
+    const fadeInUp = {
+        hidden: { opacity: 0, y: 60 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+    };
+
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+            },
+        },
+    };
+
+    const cardVariants = {
+        hidden: { opacity: 0, y: 50 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 12,
+            },
+        },
+        hover: {
+            y: -12,
+            boxShadow:
+                "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 10,
+            },
+        },
     };
 
     return (
         <SiteLayout>
             {/* Hero Section */}
             <section className="text-primary-900 py-10 lg:px-10 flex flex-col md:flex-row items-center">
-                <div className=" mx-auto px-4 text-start md:w-1/2">
-                    <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                <motion.div
+                    className="mx-auto px-4 text-start md:w-1/2"
+                    initial="hidden"
+                    animate="visible"
+                    variants={fadeIn}
+                >
+                    <motion.h1
+                        className="text-4xl md:text-6xl font-bold mb-4"
+                        variants={fadeInUp}
+                    >
                         ماسټر خیاط
-                    </h1>
-                    <p className="text-xl md:text-2xl mb-8">
-                        ستاسو د خوښې لباسونه دلته دي، زموږ ماهر خیاطان د ځانګړو
-                        پیښو لپاره ځانګړي لباسونه جوړوي، چې د هر ډول مناسبت
-                        لپاره مناسب وي. د خیاطۍ خدمات په غوره بیه، زموږ موخه
-                        ستاسو د خوښۍ او اطمینان تضمین دی. موږ د کیفیت او سټایل
-                        په اړه ژمن یو، ترڅو تاسو تل په زړه پورې ښکاره شئ.
-                    </p>
-                    <div>
+                    </motion.h1>
+                    <motion.p
+                        className="text-xl md:text-2xl mb-8"
+                        variants={fadeInUp}
+                    >
+                        ستاسو د خوښې لباسونه دلته دي، د خیاطۍ خدمات په غوره بیه،
+                        زموږ موخه ستاسو د خوښۍ او اطمینان تضمین دی. موږ د کیفیت
+                        او سټایل په اړه ژمن یو، ترڅو تاسو تل په زړه پورې ښکاره
+                        شئ.
+                    </motion.p>
+                    <motion.div
+                        variants={fadeInUp}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
                         <Link
                             href="/tailor"
                             className="bg-secondary-600 text-primary-50 px-6 py-3 rounded-md font-medium hover:bg-secondary-700 transition"
                         >
                             خیاط ومومئ
                         </Link>
-                    </div>
-                </div>
-                <div className=" md:w-1/2">
-                    <img
+                    </motion.div>
+                </motion.div>
+                <motion.div
+                    className="md:w-1/2"
+                    initial={{ opacity: 0, x: 100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                    <motion.img
                         src="./imgs/ilus-3.jpg"
                         className="p-10 transform scale-x-[-1]"
                         alt="hero"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ type: "spring", stiffness: 300 }}
                     />
-                </div>
+                </motion.div>
             </section>
 
-            {/* Top 10 Designs Section */}
-
-            <section className="py-20 bg-gradient-to-b from-primary-50 to-primary-100">
-                <div className="container mx-auto px-4 md:px-8 lg:px-12">
-                    <div className="max-w-3xl mx-auto text-center mb-16">
-                        <h2 className="text-4xl font-bold text-primary-900 mb-4">
-                            غوره ۱۰ ډیزاینونه
-                        </h2>
-                        <div className="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
-                        <p className="text-lg text-primary-700">
-                            زموږ تر ټولو مشهور او غوره ډیزاینونه وګورئ
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-                        {topDesigns.map((design) => (
-                            <div
-                                key={design.id}
-                                className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+            {/* Top 10 Designs Section - Only show if there are rated designs */}
+            {topDesigns.length > 0 && (
+                <section className="py-20 bg-gradient-to-b from-primary-50 to-primary-100">
+                    <div className="container mx-auto px-4 md:px-8 lg:px-12">
+                        <motion.div
+                            className="max-w-3xl mx-auto text-center mb-16"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, amount: 0.3 }}
+                            variants={fadeInUp}
+                        >
+                            <motion.h2
+                                className="text-4xl font-bold text-primary-900 mb-4"
+                                variants={fadeInUp}
                             >
-                                {/* Image container with overlay effect */}
-                                <div className="relative overflow-hidden">
-                                    <img
-                                        src={
-                                            design.image ||
-                                            `https://via.placeholder.com/300x400?text=${
-                                                design.title || "Design"
-                                            }`
-                                        }
-                                        alt={design.title}
-                                        className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
-                                    />
+                                غوره ۱۰ ډیزاینونه
+                            </motion.h2>
+                            <motion.div
+                                className="w-24 h-1 bg-secondary-500 mx-auto mb-6"
+                                initial={{ width: 0 }}
+                                whileInView={{ width: 96 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.8 }}
+                            ></motion.div>
+                            <motion.p
+                                className="text-lg text-primary-700"
+                                variants={fadeInUp}
+                            >
+                                زموږ تر ټولو مشهور او غوره ډیزاینونه وګورئ
+                            </motion.p>
+                        </motion.div>
 
-                                    {/* Gradient overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        {/* Center the cards on smaller screens */}
+                        <motion.div
+                            className="flex flex-wrap justify-center gap-8"
+                            variants={staggerContainer}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, amount: 0.1 }}
+                        >
+                            {topDesigns.map((design, index) => (
+                                <motion.div
+                                    key={design.id}
+                                    className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 w-full sm:w-64 md:w-72 lg:w-56"
+                                    variants={cardVariants}
+                                    whileHover="hover"
+                                    custom={index}
+                                >
+                                    {/* Image container with overlay effect */}
+                                    <div className="relative overflow-hidden">
+                                        <motion.img
+                                            src={
+                                                design.image ||
+                                                `https://via.placeholder.com/300x400?text=${
+                                                    design.title || "Design"
+                                                }`
+                                            }
+                                            alt={design.title}
+                                            className="w-full h-56 object-cover"
+                                            whileHover={{ scale: 1.1 }}
+                                            transition={{ duration: 0.5 }}
+                                        />
 
-                                    {/* Category badge */}
-                                    {design.category && (
-                                        <div className="absolute top-3 right-3">
-                                            <span className="bg-secondary-500 text-white text-xs font-medium px-2.5 py-1 rounded-full shadow-lg">
-                                                {design.category}
-                                            </span>
+                                        {/* Gradient overlay */}
+                                        <motion.div
+                                            className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100"
+                                            initial={{ opacity: 0 }}
+                                            whileHover={{ opacity: 1 }}
+                                            transition={{ duration: 0.3 }}
+                                        ></motion.div>
+
+                                        {/* Category badge */}
+                                        {design.category && (
+                                            <motion.div
+                                                className="absolute top-3 right-3"
+                                                initial={{
+                                                    scale: 0.8,
+                                                    opacity: 0,
+                                                }}
+                                                animate={{
+                                                    scale: 1,
+                                                    opacity: 1,
+                                                }}
+                                                transition={{
+                                                    delay: index * 0.05,
+                                                }}
+                                            >
+                                                <span className="bg-secondary-500 text-white text-xs font-medium px-2.5 py-1 rounded-full shadow-lg">
+                                                    {design.category}
+                                                </span>
+                                            </motion.div>
+                                        )}
+                                    </div>
+
+                                    {/* Content */}
+                                    <div className="p-4">
+                                        <h3 className="font-bold text-primary-900 text-lg mb-2 line-clamp-1">
+                                            {design.title}
+                                        </h3>
+
+                                        <div className="flex justify-between items-center">
+                                            {/* Rating Badge */}
+                                            <motion.div
+                                                className="flex items-center"
+                                                initial={{
+                                                    scale: 0.9,
+                                                    opacity: 0,
+                                                }}
+                                                animate={{
+                                                    scale: 1,
+                                                    opacity: 1,
+                                                }}
+                                                transition={{
+                                                    delay: 0.2 + index * 0.05,
+                                                }}
+                                            >
+                                                <span className="bg-primary-100 text-primary-900 text-xs font-medium px-2.5 py-1 rounded-full shadow-lg flex items-center">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-3.5 w-3.5 text-yellow-400 mr-1"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                    </svg>
+                                                    {design.averageRating.toFixed(
+                                                        1
+                                                    )}
+                                                    <span className="ml-1 text-xs text-primary-600">
+                                                        ({design.ratings.length}
+                                                        )
+                                                    </span>
+                                                </span>
+                                            </motion.div>
                                         </div>
-                                    )}
-                                </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
+                </section>
+            )}
 
-                                {/* Content */}
-                                <div className="p-4">
-                                    <h3 className="font-bold text-primary-900 text-lg mb-2 line-clamp-1">
-                                        {design.title}
-                                    </h3>
+            {/* Testimonials Section - Simple Reliable Carousel */}
+            {testimonialsWithComments.length > 0 && (
+                <section className="py-20 bg-gradient-to-br from-tertiary-50 to-tertiary-100">
+                    <div className="container mx-auto px-4">
+                        <div className="max-w-3xl mx-auto text-center mb-16">
+                            <h2 className="text-4xl font-bold text-primary-900 mb-4">
+                                زموږ د پیرودونکو نظرونه
+                            </h2>
+                            <div className="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
+                            <p className="text-lg text-primary-700">
+                                وګورئ چې زموږ پیرودونکي د زموږ خدماتو په اړه څه
+                                وايي
+                            </p>
+                        </div>
 
-                                    <div className="flex justify-between items-center">
-                                        {/* Rating */}
-                                        <div className="flex items-center bg-primary-50 px-2 py-1 rounded-lg">
-                                            <div className="flex">
+                        {/* Simple Testimonial Display */}
+                        <div className="max-w-4xl mx-auto">
+                            {/* Current Testimonial */}
+                            {testimonialsWithComments.length > 0 && (
+                                <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+                                    <div className="flex flex-col md:flex-row">
+                                        {/* Left side - User info */}
+                                        <div className="md:w-1/3 bg-gradient-to-br from-tertiary-600 to-tertiary-800 p-8 text-white flex flex-col justify-center items-center">
+                                            <div className="w-24 h-24 rounded-full border-4 border-white overflow-hidden shadow-lg mb-4">
+                                                <img
+                                                    src={
+                                                        testimonialsWithComments[
+                                                            currentTestimonial
+                                                        ].userImage ||
+                                                        "./imgs/avatar-placeholder.jpg" ||
+                                                        "/placeholder.svg" ||
+                                                        "/placeholder.svg" ||
+                                                        "/placeholder.svg" ||
+                                                        "/placeholder.svg" ||
+                                                        "/placeholder.svg" ||
+                                                        "/placeholder.svg"
+                                                    }
+                                                    alt={
+                                                        testimonialsWithComments[
+                                                            currentTestimonial
+                                                        ].username
+                                                    }
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <h3 className="font-bold text-xl mb-2 text-center">
+                                                {
+                                                    testimonialsWithComments[
+                                                        currentTestimonial
+                                                    ].username
+                                                }
+                                            </h3>
+
+                                            {/* Rating stars */}
+                                            <div className="flex justify-center mt-2 mb-4">
                                                 {[1, 2, 3, 4, 5].map((star) => (
                                                     <svg
                                                         key={star}
                                                         xmlns="http://www.w3.org/2000/svg"
-                                                        className={`h-4 w-4 ${
+                                                        className={`h-5 w-5 ${
                                                             star <=
-                                                            Math.floor(
-                                                                design.averageRating
-                                                            )
-                                                                ? "text-yellow-400"
-                                                                : star <=
-                                                                      Math.ceil(
-                                                                          design.averageRating
-                                                                      ) &&
-                                                                  star -
-                                                                      design.averageRating <
-                                                                      1
-                                                                ? "text-yellow-400"
-                                                                : "text-gray-300"
+                                                            testimonialsWithComments[
+                                                                currentTestimonial
+                                                            ].rating
+                                                                ? "text-yellow-300"
+                                                                : "text-gray-400"
                                                         }`}
                                                         viewBox="0 0 20 20"
                                                         fill="currentColor"
                                                     >
-                                                        {star <=
-                                                            Math.floor(
-                                                                design.averageRating
-                                                            ) ||
-                                                        (star <=
-                                                            Math.ceil(
-                                                                design.averageRating
-                                                            ) &&
-                                                            star -
-                                                                design.averageRating <
-                                                                1) ? (
-                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        ) : (
-                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        )}
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                     </svg>
                                                 ))}
                                             </div>
-                                            <span className="mr-1 text-sm font-medium text-primary-900">
-                                                {design.averageRating.toFixed(
-                                                    1
-                                                )}
-                                            </span>
+
+                                            {/* Small decorative element */}
+                                            <div className="w-12 h-1 bg-white opacity-50 rounded-full"></div>
+                                        </div>
+
+                                        {/* Right side - Testimonial content */}
+                                        <div className="md:w-2/3 p-8 md:p-10 flex flex-col justify-center">
+                                            {/* Quote icon */}
+                                            <div className="text-tertiary-400 mb-6">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="40"
+                                                    height="40"
+                                                    viewBox="0 0 24 24"
+                                                    fill="currentColor"
+                                                >
+                                                    <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" />
+                                                </svg>
+                                            </div>
+
+                                            {/* Testimonial text */}
+                                            <p className="text-primary-700 text-lg md:text-xl leading-relaxed mb-8 italic">
+                                                {
+                                                    testimonialsWithComments[
+                                                        currentTestimonial
+                                                    ].comment
+                                                }
+                                            </p>
+
+                                            {/* Decorative line */}
+                                            <div className="w-16 h-1 bg-tertiary-500 rounded-full mt-auto"></div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+                            )}
 
-            {/* Testimonials Section */}
-            <section className="py-16 bg-gradient-to-b from-primary-50 to-primary-100">
-                <div className="container mx-auto px-4">
-                    <div className="max-w-3xl mx-auto text-center mb-16">
-                        <h2 className="text-4xl font-bold text-primary-900 mb-4">
-                            زموږ د پیرودونکو نظرونه
-                        </h2>
-                        <div className="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
-                        <p className="text-lg text-primary-700">
-                            وګورئ چې زموږ پیرودونکي د زموږ خدماتو په اړه څه وايي
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {rate.slice(0, 6).map((testimonial) => (
-                            <div
-                                key={testimonial.id}
-                                className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group"
-                            >
-                                <div className="relative">
-                                    {/* Decorative top bar */}
-                                    <div className="h-3 bg-gradient-to-r from-secondary-400 to-tertiary-500"></div>
-
-                                    {/* Quote icon */}
-                                    <div className="absolute -bottom-6 right-6 w-12 h-12 rounded-full bg-tertiary-500 flex items-center justify-center shadow-md">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-6 w-6 text-white"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-                                            />
-                                        </svg>
-                                    </div>
-                                </div>
-
-                                <div className="p-6 pt-10">
-                                    {/* User info */}
-                                    <div className="flex items-center">
-                                        <img
-                                            src={
-                                                testimonial.userImage ||
-                                                "./imgs/avatar-placeholder.jpg"
-                                            }
-                                            alt={testimonial.username}
-                                            className="w-12 h-12 rounded-full border-2 border-secondary-400 object-cover mr-4"
+                            {/* Navigation Controls */}
+                            <div className="flex justify-between items-center mt-8">
+                                <button
+                                    onClick={prevTestimonial}
+                                    className="group bg-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-tertiary-500 transition-colors duration-300"
+                                    aria-label="Previous testimonial"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-6 w-6 text-tertiary-500 group-hover:text-white transition-colors duration-300"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M15 19l-7-7 7-7"
                                         />
-                                        <div>
-                                            <h3 className="font-bold text-primary-900">
-                                                {testimonial.username}
-                                            </h3>
-                                        </div>
-                                    </div>
-                                    {/* Testimonial text */}
-                                    <p className="text-primary-700 mb-6 text-lg leading-relaxed">
-                                        "{testimonial.comment}"
-                                    </p>
+                                    </svg>
+                                </button>
 
-                                    {/* Divider */}
-                                    <div className="w-16 h-0.5 bg-primary-200 mb-4"></div>
+                                {/* Dots Indicator - Limited to 5 with only one active */}
+                                <div className="flex items-center gap-3">
+                                    {[
+                                        ...Array(
+                                            Math.min(
+                                                5,
+                                                testimonialsWithComments.length
+                                            )
+                                        ),
+                                    ].map((_, index) => {
+                                        // Calculate which testimonial this dot represents
+                                        const dotsCount = Math.min(
+                                            5,
+                                            testimonialsWithComments.length
+                                        );
+                                        const totalTestimonials =
+                                            testimonialsWithComments.length;
+
+                                        // Calculate the range of testimonials this dot represents
+                                        const startIndex = Math.floor(
+                                            index *
+                                                (totalTestimonials / dotsCount)
+                                        );
+                                        const endIndex =
+                                            Math.floor(
+                                                (index + 1) *
+                                                    (totalTestimonials /
+                                                        dotsCount)
+                                            ) - 1;
+
+                                        // This dot is active if currentTestimonial is within its range
+                                        const isActive =
+                                            currentTestimonial >= startIndex &&
+                                            currentTestimonial <= endIndex;
+
+                                        return (
+                                            <button
+                                                key={index}
+                                                onClick={() =>
+                                                    setCurrentTestimonial(
+                                                        startIndex
+                                                    )
+                                                }
+                                                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                                                    isActive
+                                                        ? "bg-tertiary-500 w-6"
+                                                        : "bg-tertiary-300 hover:bg-tertiary-400"
+                                                }`}
+                                                aria-label={`Go to testimonial group ${
+                                                    index + 1
+                                                }`}
+                                            />
+                                        );
+                                    })}
                                 </div>
+
+                                <button
+                                    onClick={nextTestimonial}
+                                    className="group bg-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-tertiary-500 transition-colors duration-300"
+                                    aria-label="Next testimonial"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-6 w-6 text-tertiary-500 group-hover:text-white transition-colors duration-300"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M9 5l7 7-7 7"
+                                        />
+                                    </svg>
+                                </button>
                             </div>
-                        ))}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
 
             {/* Special Offers Section */}
-            <section className="py-16 bg-tertiary-700 text-white">
+            <motion.section
+                className="py-16 bg-tertiary-700 text-white"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+            >
                 <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl font-bold mb-6">
+                    <motion.h2
+                        className="text-3xl font-bold mb-6"
+                        initial={{ y: 30, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                    >
                         ځانګړي وړاندیزونه
-                    </h2>
-                    <p className="text-xl mb-8 max-w-3xl mx-auto">
+                    </motion.h2>
+                    <motion.p
+                        className="text-xl mb-8 max-w-3xl mx-auto"
+                        initial={{ y: 30, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                    >
                         په خپل لومړي فرمایش کې ۲۰٪ تخفیف ترلاسه کړئ! د نویو
                         پیرودونکو لپاره د محدود وخت وړاندیز.
-                    </p>
-                    <Link
-                        href="/order"
-                        className="bg-white text-primary-900 px-6 py-3 rounded-md font-medium hover:bg-primary-100 transition inline-block"
+                    </motion.p>
+                    <motion.div
+                        initial={{ y: 30, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                     >
-                        اوس فرمایش ورکړئ
-                    </Link>
+                        <Link
+                            href="/order"
+                            className="bg-white text-primary-900 px-6 py-3 rounded-md font-medium hover:bg-primary-100 transition inline-block"
+                        >
+                            اوس فرمایش ورکړئ
+                        </Link>
+                    </motion.div>
                 </div>
-            </section>
+            </motion.section>
         </SiteLayout>
     );
 };

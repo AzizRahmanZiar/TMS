@@ -1,5 +1,5 @@
-import Navbar from "../../js/Components/Navbar";
-import Footer from "../../js/Components/Footer";
+import Footer from "@/Components/Footer";
+import Navbar from "@/Components/Navbar";
 
 const SiteLayout = ({ children }) => {
     return (

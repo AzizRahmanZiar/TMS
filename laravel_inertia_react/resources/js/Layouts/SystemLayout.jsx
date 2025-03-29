@@ -1,7 +1,7 @@
 import Sidebar from "@/Components/Sidebar";
 import { Link } from "@inertiajs/react";
 
-export default function AuthenticatedLayout({ children }) {
+export default function SystemLayout({ children }) {
     return (
         <div className="h-screen overflow-hidden bg-gray-100" dir="rtl">
             <nav className="bg-primary-800 text-primary-50">
