@@ -1,5 +1,6 @@
 import React from "react";
 import SiteLayout from "../../Layouts/SiteLayout";
+import { motion } from "framer-motion";
 import { FaCheck, FaUsers, FaHandshake, FaAward } from "react-icons/fa";
 
 const About = () => {
@@ -14,7 +15,6 @@ const About = () => {
         {
             name: " ابراهیم ",
             position: "مشر ډیزاینر",
-            position: "مشر ډیزاینر",
             bio: "د واده او رسمي جامو په ډیزاین کې تخصص لري او عصري سټایل ورسره یوځای کوي.",
             image: "./imgs/javid.jpg",
         },
@@ -22,7 +22,7 @@ const About = () => {
             name: "محمد کریمي",
             position: "د دودیزو جامو متخصص",
             bio: "دودیزې تخنیکونه ساتي او په عین وخت کې عصري عناصر ورسره یوځای کوي.",
-            image: "./imgs/noor.jpg",
+            image: "./imgs/ahmad.jpg",
         },
         {
             name: " زرمت شاه",
@@ -66,26 +66,72 @@ const About = () => {
         },
     ];
 
+    // Animation variants
+    const fadeIn = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.6 },
+        },
+    };
+
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2,
+            },
+        },
+    };
+
+    const timelineAnimation = {
+        hidden: { opacity: 0, x: -50 },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: { duration: 0.5 },
+        },
+    };
+
     return (
         <SiteLayout title="زموږ په اړه - خیاط ماسټر">
             {/* Hero Section */}
-            <section className="bg-primary-50 text-primary-900 py-20">
+            <motion.section
+                className="bg-primary-50 text-primary-900 py-20"
+                initial="hidden"
+                animate="visible"
+                variants={fadeIn}
+            >
                 <div className="container mx-auto px-4 text-center">
-                    <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                    <motion.h1
+                        className="text-3xl md:text-4xl font-bold mb-4"
+                        variants={fadeIn}
+                    >
                         د خیاط ماسټر په اړه
-                    </h1>
-                    <p className="text-lg md:text-xl max-w-3xl mx-auto">
+                    </motion.h1>
+                    <motion.p
+                        className="text-lg md:text-xl max-w-3xl mx-auto"
+                        variants={fadeIn}
+                    >
                         د ۱۳۸۴ کال راهیسې د پیرودونکو او ماهرو خیاطانو ترمنځ
                         اړیکه ټینګوو.
-                    </p>
+                    </motion.p>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Our Story */}
             <section className="py-16">
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row items-center gap-12">
-                        <div className="md:w-1/2">
+                        <motion.div
+                            className="md:w-1/2"
+                            initial={{ opacity: 0, x: -50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.6 }}
+                            viewport={{ once: true }}
+                        >
                             <h2 className="text-3xl text-primary-800 font-bold mb-6">
                                 زموږ کیسه
                             </h2>
@@ -110,40 +156,84 @@ const About = () => {
                                 تخنیکونو کې تخصص لري، له دودیزو څخه نیولې تر
                                 عصري فیشن پورې.
                             </p>
-                        </div>
+                        </motion.div>
 
-                        <div className="md:w-1/2">
-                            <img
+                        <motion.div
+                            className="md:w-1/2"
+                            initial={{ opacity: 0, x: 50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.6 }}
+                            viewport={{ once: true }}
+                        >
+                            <motion.img
                                 src="/images/about/story.jpg"
                                 alt="زموږ کیسه"
-                                className="rounded-lg w-full h-auto object-cover"
+                                className="rounded-lg w-full h-auto object-cover shadow-lg"
                                 onError={(e) => {
-                                    e.target.src = "./imgs/team-1.jpg";
+                                    e.target.src = "./imgs/team.jpg";
                                 }}
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 0.3 }}
                             />
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </section>
 
             {/* Our Mission */}
-            <section className="py-16 bg-primary-50">
+            <motion.section
+                className="py-16 bg-primary-50"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+            >
                 <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl text-primary-800 font-bold mb-6">
+                    <motion.h2
+                        className="text-3xl text-primary-800 font-bold mb-6"
+                        initial={{ opacity: 0, y: -20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        viewport={{ once: true }}
+                    >
                         زموږ ماموریت
-                    </h2>
-                    <p className="text-primary-700 mb-8 max-w-3xl mx-auto">
+                    </motion.h2>
+                    <motion.p
+                        className="text-primary-700 mb-8 max-w-3xl mx-auto"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        viewport={{ once: true }}
+                    >
                         د استثنایي خیاطۍ خدماتو وړاندې کول چې دودیز کسب له عصري
                         ډیزاین سره یوځای کوي، ډاډ ترلاسه کوي چې هر پیرودونکی په
                         بشپړ ډول برابرې، لوړ کیفیت جامې ترلاسه کوي چې د هغوی
                         شخصي سټایل منعکس کوي.
-                    </p>
+                    </motion.p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                        <div className="bg-white p-6 rounded-lg border">
-                            <div className="bg-primary-50 text-tertiary-700 hover:bg-tertiary-700 hover:text-primary-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <motion.div
+                        className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+                        variants={staggerContainer}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.3 }}
+                    >
+                        <motion.div
+                            className="bg-white p-6 rounded-lg border shadow-md"
+                            variants={fadeIn}
+                            whileHover={{
+                                y: -10,
+                                boxShadow:
+                                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                            }}
+                        >
+                            <motion.div
+                                className="bg-primary-50 text-tertiary-700 hover:bg-tertiary-700 hover:text-primary-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                                whileHover={{ rotate: 360 }}
+                                transition={{ duration: 0.6 }}
+                            >
                                 <FaUsers className="text-2xl" />
-                            </div>
+                            </motion.div>
                             <h3 className="text-xl text-primary-700 font-bold mb-2">
                                 پیرودونکي محوري
                             </h3>
@@ -151,12 +241,24 @@ const About = () => {
                                 موږ د پیرودونکو رضایت ته لومړیتوب ورکوو د شخصي
                                 خدمت او جزئیاتو ته پاملرنې له لارې.
                             </p>
-                        </div>
+                        </motion.div>
 
-                        <div className="bg-white p-6 rounded-lg border">
-                            <div className="bg-primary-50 text-tertiary-700 hover:bg-tertiary-700 hover:text-primary-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <motion.div
+                            className="bg-white p-6 rounded-lg border shadow-md"
+                            variants={fadeIn}
+                            whileHover={{
+                                y: -10,
+                                boxShadow:
+                                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                            }}
+                        >
+                            <motion.div
+                                className="bg-primary-50 text-tertiary-700 hover:bg-tertiary-700 hover:text-primary-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                                whileHover={{ rotate: 360 }}
+                                transition={{ duration: 0.6 }}
+                            >
                                 <FaHandshake className="text-2xl" />
-                            </div>
+                            </motion.div>
                             <h3 className="text-xl text-primary-700 font-bold mb-2">
                                 د کیفیت کسب
                             </h3>
@@ -164,12 +266,24 @@ const About = () => {
                                 موږ په هر ګنډل، ټوکر او بشپړ شوي جامو کې د کیفیت
                                 لوړ معیارونه ساتو.
                             </p>
-                        </div>
+                        </motion.div>
 
-                        <div className="bg-white p-6 rounded-lg border">
-                            <div className="bg-primary-50 text-tertiary-700 hover:bg-tertiary-700 hover:text-primary-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <motion.div
+                            className="bg-white p-6 rounded-lg border shadow-md"
+                            variants={fadeIn}
+                            whileHover={{
+                                y: -10,
+                                boxShadow:
+                                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                            }}
+                        >
+                            <motion.div
+                                className="bg-primary-50 text-tertiary-700 hover:bg-tertiary-700 hover:text-primary-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                                whileHover={{ rotate: 360 }}
+                                transition={{ duration: 0.6 }}
+                            >
                                 <FaAward className="text-2xl" />
-                            </div>
+                            </motion.div>
                             <h3 className="text-xl text-primary-700 font-bold mb-2">
                                 نوښت
                             </h3>
@@ -178,32 +292,58 @@ const About = () => {
                                 کوو ترڅو د پیرودونکو بدلیدونکو اړتیاوو ته ځواب
                                 ووایو.
                             </p>
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Our Team */}
             <section className="py-16 bg-primary-50">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl text-primary-900 font-bold mb-8 text-center">
+                    <motion.h2
+                        className="text-3xl text-primary-900 font-bold mb-8 text-center"
+                        initial={{ opacity: 0, y: -20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        viewport={{ once: true }}
+                    >
                         زموږ ټیم سره وپیژنئ
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    </motion.h2>
+                    <motion.div
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+                        variants={staggerContainer}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.3 }}
+                    >
                         {teamMembers.map((member, index) => (
-                            <div
+                            <motion.div
                                 key={index}
-                                className="bg-white rounded-lg border overflow-hidden"
+                                className="bg-white rounded-lg border overflow-hidden shadow-md"
+                                variants={fadeIn}
+                                whileHover={{
+                                    y: -10,
+                                    boxShadow:
+                                        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                                }}
                             >
-                                <img
+                                <motion.img
                                     src={
                                         member.image ||
                                         `https://via.placeholder.com/300x300?text=${member.name}`
                                     }
                                     alt={member.name}
                                     className="w-full h-64 object-cover"
+                                    whileHover={{ scale: 1.05 }}
+                                    transition={{ duration: 0.3 }}
                                 />
-                                <div className="p-6">
+                                <motion.div
+                                    className="p-6"
+                                    initial={{ opacity: 0 }}
+                                    whileInView={{ opacity: 1 }}
+                                    transition={{ delay: 0.2 }}
+                                    viewport={{ once: true }}
+                                >
                                     <h3 className="text-xl text-primary-900 font-bold mb-1">
                                         {member.name}
                                     </h3>
@@ -213,35 +353,72 @@ const About = () => {
                                     <p className="text-primary-600">
                                         {member.bio}
                                     </p>
-                                </div>
-                            </div>
+                                </motion.div>
+                            </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 
             {/* Timeline */}
             <section className="py-16">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl text-primary-900 font-bold mb-12 text-center">
+                    <motion.h2
+                        className="text-3xl text-primary-900 font-bold mb-12 text-center"
+                        initial={{ opacity: 0, y: -20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        viewport={{ once: true }}
+                    >
                         زموږ سفر
-                    </h2>
+                    </motion.h2>
                     <div className="max-w-4xl mx-auto">
                         {timeline.map((item, index) => (
-                            <div key={index} className="flex mb-8 relative">
+                            <motion.div
+                                key={index}
+                                className="flex mb-8 relative"
+                                variants={timelineAnimation}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true, amount: 0.3 }}
+                                transition={{ delay: index * 0.2 }}
+                            >
                                 {/* Timeline line */}
                                 {index < timeline.length - 1 && (
-                                    <div className="absolute right-6 top-10 bottom-0 w-0.5 bg-primary-200"></div>
+                                    <motion.div
+                                        className="absolute right-6 top-10 bottom-0 w-0.5 bg-primary-200"
+                                        initial={{ height: 0 }}
+                                        whileInView={{ height: "100%" }}
+                                        transition={{ duration: 1, delay: 0.5 }}
+                                        viewport={{ once: true }}
+                                    ></motion.div>
                                 )}
 
                                 {/* Year bubble */}
-                                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-secondary-700 text-primary-50 flex items-center justify-center z-10">
+                                <motion.div
+                                    className="flex-shrink-0 w-12 h-12 rounded-full bg-secondary-700 text-primary-50 flex items-center justify-center z-10"
+                                    whileHover={{
+                                        scale: 1.2,
+                                        backgroundColor: "#4338ca",
+                                    }}
+                                    transition={{
+                                        type: "spring",
+                                        stiffness: 300,
+                                    }}
+                                >
                                     {item.year.slice(-2)}
-                                </div>
+                                </motion.div>
 
                                 {/* Content */}
                                 <div className="mr-6">
-                                    <div className="bg-white p-6 rounded-lg border">
+                                    <motion.div
+                                        className="bg-white p-6 rounded-lg border shadow-md"
+                                        whileHover={{
+                                            y: -5,
+                                            boxShadow:
+                                                "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                                        }}
+                                    >
                                         <h3 className="text-xl text-primary-800 font-bold mb-2">
                                             {item.title}
                                         </h3>
@@ -251,40 +428,68 @@ const About = () => {
                                         <div className="text-sm text-secondary-900 mt-3">
                                             {item.year}
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 </div>
             </section>
 
             {/* Call to Action */}
-            <section>
-                <div className=" mx-auto px-4 text-center bg-primary-50 py-20">
-                    <h2 className="text-3xl text-primary-900 font-bold mb-6">
+            <motion.section
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+            >
+                <div className="mx-auto px-4 text-center bg-primary-50 py-20">
+                    <motion.h2
+                        className="text-3xl text-primary-900 font-bold mb-6"
+                        initial={{ opacity: 0, y: -20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        viewport={{ once: true }}
+                    >
                         د لوړ کیفیت خیاطۍ تجربه کولو ته چمتو یاست؟
-                    </h2>
-                    <p className="text-xl text-secondary-900 mb-8 max-w-3xl mx-auto">
+                    </motion.h2>
+                    <motion.p
+                        className="text-xl text-secondary-900 mb-8 max-w-3xl mx-auto"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        viewport={{ once: true }}
+                    >
                         د زرګونو راضي پیرودونکو سره یوځای شئ چې د خیاط ماسټر سره
                         یې بشپړ برابروالی موندلی دی.
-                    </p>
+                    </motion.p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a
+                        <motion.a
                             href="/tailors"
                             className="bg-tertiary-700 text-primary-50 py-3 px-8 rounded-md font-medium hover:bg-tertiary-800 transition"
+                            whileHover={{
+                                scale: 1.05,
+                                backgroundColor: "#7e22ce",
+                            }}
+                            whileTap={{ scale: 0.95 }}
                         >
                             خیاط ومومئ
-                        </a>
-                        <a
+                        </motion.a>
+                        <motion.a
                             href="/order"
-                            className="bg-transparent border-2 border-secondary-600 text-primary-800 py-3 px-8 rounded-md font-medium  hover:text-primary-50 hover:bg-secondary-700 transition"
+                            className="bg-transparent border-2 border-secondary-600 text-primary-800 py-3 px-8 rounded-md font-medium hover:text-primary-50 hover:bg-secondary-700 transition"
+                            whileHover={{
+                                scale: 1.05,
+                                backgroundColor: "#4338ca",
+                                color: "#ffffff",
+                            }}
+                            whileTap={{ scale: 0.95 }}
                         >
                             فرمایش ورکړئ
-                        </a>
+                        </motion.a>
                     </div>
                 </div>
-            </section>
+            </motion.section>
         </SiteLayout>
     );
 };
