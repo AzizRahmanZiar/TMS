@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     SadraiController,
     UniformController
 };
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -16,10 +17,6 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Site/Home');
 })->name('home');
-
-Route::get('/registration', function () {
-    return Inertia::render('Site/Registration');
-})->name('register');
 
 Route::get('/tailor', function () {
     return Inertia::render('Site/Tailors');
