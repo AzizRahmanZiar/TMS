@@ -6,6 +6,27 @@ import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
+import {
+    FaImage,
+    FaUser,
+    FaEnvelope,
+    FaLock,
+    FaUserTie,
+    FaBriefcase,
+    FaCertificate,
+    FaTools,
+    FaClock,
+    FaStore,
+    FaMapMarkerAlt,
+    FaUsers,
+    FaCalendarAlt,
+    FaPhone,
+    FaCreditCard,
+    FaFacebook,
+    FaInstagram,
+    FaTelegram,
+} from "react-icons/fa";
+import { MdWorkOutline } from "react-icons/md";
 
 export default function Register({ roles = {} }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -41,7 +62,6 @@ export default function Register({ roles = {} }) {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route("register.store"), {
             onSuccess: () => {
                 reset();
@@ -50,260 +70,413 @@ export default function Register({ roles = {} }) {
     };
 
     return (
-        <GuestLayout>
-            <Head title="Register" />
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-10">
+            <div
+                className="max-w-4xl mx-auto p-8 bg-white rounded-2xl border"
+                dir="rtl"
+            >
+                <h2 className="text-3xl font-bold mb-8 text-center text-gray-800 border-b pb-4">
+                    ثبت نام
+                </h2>
 
-            <form onSubmit={submit} className="space-y-6">
-                <div>
-                    <InputLabel htmlFor="name" value="Name" />
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData("name", e.target.value)}
-                    />
-                    <InputError message={errors.name} className="mt-2" />
-                </div>
-
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData("email", e.target.value)}
-                    />
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div>
-                    <InputLabel htmlFor="password" value="Password" />
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData("password", e.target.value)}
-                    />
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div>
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData("password_confirmation", e.target.value)
-                        }
-                    />
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
-
-                <div>
-                    <InputLabel htmlFor="role" value="Role" />
-                    <select
-                        id="role"
-                        name="role"
-                        value={data.role}
-                        className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                        onChange={(e) => setData("role", e.target.value)}
-                    >
-                        <option value="">Select a role</option>
-                        {Object.entries(roles).map(([value, label]) => (
-                            <option key={value} value={value}>
-                                {label}
-                            </option>
-                        ))}
-                    </select>
-                    <InputError message={errors.role} className="mt-2" />
-                </div>
-
-                <div>
-                    <InputLabel htmlFor="profile_image" value="Profile Image" />
-                    <input
-                        type="file"
-                        id="profile_image"
-                        name="profile_image"
-                        className="mt-1 block w-full"
-                        onChange={(e) =>
-                            setData("profile_image", e.target.files[0])
-                        }
-                    />
-                    <InputError
-                        message={errors.profile_image}
-                        className="mt-2"
-                    />
-                </div>
-
-                {data.role === "tailor" && (
-                    <>
-                        <div>
-                            <InputLabel
-                                htmlFor="experience"
-                                value="Experience"
-                            />
-                            <TextInput
-                                id="experience"
-                                type="number"
-                                name="experience"
-                                value={data.experience}
-                                className="mt-1 block w-full"
-                                onChange={(e) =>
-                                    setData("experience", e.target.value)
-                                }
-                            />
-                            <InputError
-                                message={errors.experience}
-                                className="mt-2"
-                            />
-                        </div>
-
-                        <div>
-                            <InputLabel htmlFor="career" value="Career" />
-                            <TextInput
-                                id="career"
-                                name="career"
-                                value={data.career}
-                                className="mt-1 block w-full"
-                                onChange={(e) =>
-                                    setData("career", e.target.value)
-                                }
-                            />
-                            <InputError
-                                message={errors.career}
-                                className="mt-2"
-                            />
-                        </div>
-
-                        <div>
-                            <InputLabel
-                                htmlFor="previous_work"
-                                value="Previous Work"
-                            />
-                            <TextInput
-                                id="previous_work"
-                                name="previous_work"
-                                value={data.previous_work}
-                                className="mt-1 block w-full"
-                                onChange={(e) =>
-                                    setData("previous_work", e.target.value)
-                                }
-                            />
-                            <InputError
-                                message={errors.previous_work}
-                                className="mt-2"
-                            />
-                        </div>
-
-                        <div>
-                            <InputLabel
-                                htmlFor="certifications"
-                                value="Certifications"
-                            />
-                            <TextInput
-                                id="certifications"
-                                name="certifications"
-                                value={data.certifications}
-                                className="mt-1 block w-full"
-                                onChange={(e) =>
-                                    setData("certifications", e.target.value)
-                                }
-                            />
-                            <InputError
-                                message={errors.certifications}
-                                className="mt-2"
-                            />
-                        </div>
-
-                        <div>
-                            <InputLabel htmlFor="skills" value="Skills" />
-                            <TextInput
-                                id="skills"
-                                name="skills"
-                                value={data.skills}
-                                className="mt-1 block w-full"
-                                onChange={(e) =>
-                                    setData("skills", e.target.value)
-                                }
-                            />
-                            <InputError
-                                message={errors.skills}
-                                className="mt-2"
-                            />
-                        </div>
-
-                        <div>
-                            <InputLabel
-                                htmlFor="work_availability"
-                                value="Work Availability"
-                            />
-                            <select
-                                id="work_availability"
-                                name="work_availability"
-                                value={data.work_availability}
-                                className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                onChange={(e) =>
-                                    setData("work_availability", e.target.value)
-                                }
-                            >
-                                <option value="">Select availability</option>
-                                <option value="Full-time">Full-time</option>
-                                <option value="Part-time">Part-time</option>
-                            </select>
-                            <InputError
-                                message={errors.work_availability}
-                                className="mt-2"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    name="addShop"
-                                    checked={data.addShop}
+                <form onSubmit={submit} className="space-y-8">
+                    {/* Section 1: User Information */}
+                    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <h3 className="text-xl font-semibold mb-6 text-gray-800 flex items-center">
+                            <span className="bg-blue-100 text-blue-600 rounded-full w-8 h-8 inline-flex items-center justify-center ml-2">
+                                1
+                            </span>
+                            د کارکوونکي معلومات
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block mb-2 font-medium text-gray-700">
+                                    <FaUser className="inline ml-2 text-blue-600" />
+                                    نوم
+                                </label>
+                                <TextInput
+                                    id="name"
+                                    name="name"
+                                    value={data.name}
+                                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all ${
+                                        errors.name
+                                            ? "border-red-500 bg-red-50"
+                                            : "border-gray-300"
+                                    }`}
+                                    autoComplete="name"
+                                    isFocused={true}
                                     onChange={(e) =>
-                                        setData("addShop", e.target.checked)
+                                        setData("name", e.target.value)
                                     }
-                                    className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
                                 />
-                                <span className="ml-2 text-sm text-gray-600">
-                                    Add Shop Information
-                                </span>
-                            </label>
-                        </div>
+                                <InputError
+                                    message={errors.name}
+                                    className="mt-2"
+                                />
+                            </div>
 
-                        {data.addShop && (
-                            <>
+                            <div>
+                                <label className="block mb-2 font-medium text-gray-700">
+                                    <FaEnvelope className="inline ml-2 text-blue-600" />
+                                    بریښنالیک
+                                </label>
+                                <TextInput
+                                    id="email"
+                                    type="email"
+                                    name="email"
+                                    value={data.email}
+                                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all ${
+                                        errors.email
+                                            ? "border-red-500 bg-red-50"
+                                            : "border-gray-300"
+                                    }`}
+                                    autoComplete="username"
+                                    onChange={(e) =>
+                                        setData("email", e.target.value)
+                                    }
+                                />
+                                <InputError
+                                    message={errors.email}
+                                    className="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block mb-2 font-medium text-gray-700">
+                                    <FaLock className="inline ml-2 text-blue-600" />
+                                    پټنوم
+                                </label>
+                                <TextInput
+                                    id="password"
+                                    type="password"
+                                    name="password"
+                                    value={data.password}
+                                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all ${
+                                        errors.password
+                                            ? "border-red-500 bg-red-50"
+                                            : "border-gray-300"
+                                    }`}
+                                    autoComplete="new-password"
+                                    onChange={(e) =>
+                                        setData("password", e.target.value)
+                                    }
+                                />
+                                <InputError
+                                    message={errors.password}
+                                    className="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block mb-2 font-medium text-gray-700">
+                                    <FaLock className="inline ml-2 text-blue-600" />
+                                    پټنوم تایید کړئ
+                                </label>
+                                <TextInput
+                                    id="password_confirmation"
+                                    type="password"
+                                    name="password_confirmation"
+                                    value={data.password_confirmation}
+                                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all ${
+                                        errors.password_confirmation
+                                            ? "border-red-500 bg-red-50"
+                                            : "border-gray-300"
+                                    }`}
+                                    autoComplete="new-password"
+                                    onChange={(e) =>
+                                        setData(
+                                            "password_confirmation",
+                                            e.target.value
+                                        )
+                                    }
+                                />
+                                <InputError
+                                    message={errors.password_confirmation}
+                                    className="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block mb-2 font-medium text-gray-700">
+                                    <FaUserTie className="inline ml-2 text-blue-600" />
+                                    رول
+                                </label>
+                                <select
+                                    id="role"
+                                    name="role"
+                                    value={data.role}
+                                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all ${
+                                        errors.role
+                                            ? "border-red-500 bg-red-50"
+                                            : "border-gray-300"
+                                    }`}
+                                    onChange={(e) =>
+                                        setData("role", e.target.value)
+                                    }
+                                >
+                                    <option value="">رول وټاکئ</option>
+                                    {Object.entries(roles).map(
+                                        ([value, label]) => (
+                                            <option key={value} value={value}>
+                                                {label}
+                                            </option>
+                                        )
+                                    )}
+                                </select>
+                                <InputError
+                                    message={errors.role}
+                                    className="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block mb-2 font-medium text-gray-700">
+                                    <FaUser className="inline ml-2 text-blue-600" />
+                                    پروفایل
+                                </label>
+                                <input
+                                    type="file"
+                                    id="profile_image"
+                                    name="profile_image"
+                                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all ${
+                                        errors.profile_image
+                                            ? "border-red-500 bg-red-50"
+                                            : "border-gray-300"
+                                    }`}
+                                    onChange={(e) =>
+                                        setData(
+                                            "profile_image",
+                                            e.target.files[0]
+                                        )
+                                    }
+                                />
+                                <InputError
+                                    message={errors.profile_image}
+                                    className="mt-2"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Section 2: Tailor Information */}
+                    {data.role === "tailor" && (
+                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <h3 className="text-xl font-semibold mb-6 text-gray-800 flex items-center">
+                                <span className="bg-green-100 text-green-600 rounded-full w-8 h-8 inline-flex items-center justify-center ml-2">
+                                    2
+                                </span>
+                                د خیاط معلومات
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <InputLabel
-                                        htmlFor="tailoring_name"
-                                        value="Tailoring Name"
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaBriefcase className="inline ml-2 text-amber-600" />
+                                        تجربه (کلونه)
+                                    </label>
+                                    <TextInput
+                                        id="experience"
+                                        type="number"
+                                        name="experience"
+                                        value={data.experience}
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 transition-all ${
+                                            errors.experience
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
+                                        onChange={(e) =>
+                                            setData(
+                                                "experience",
+                                                e.target.value
+                                            )
+                                        }
                                     />
+                                    <InputError
+                                        message={errors.experience}
+                                        className="mt-2"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaUserTie className="inline ml-2 text-indigo-600" />
+                                        مسلک/تخصص
+                                    </label>
+                                    <TextInput
+                                        id="career"
+                                        name="career"
+                                        value={data.career}
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 transition-all ${
+                                            errors.career
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
+                                        onChange={(e) =>
+                                            setData("career", e.target.value)
+                                        }
+                                    />
+                                    <InputError
+                                        message={errors.career}
+                                        className="mt-2"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaUserTie className="inline ml-2 text-indigo-600" />
+                                        مخکیني کارونه
+                                    </label>
+                                    <TextInput
+                                        id="previous_work"
+                                        name="previous_work"
+                                        value={data.previous_work}
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 transition-all ${
+                                            errors.previous_work
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
+                                        onChange={(e) =>
+                                            setData(
+                                                "previous_work",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                    <InputError
+                                        message={errors.previous_work}
+                                        className="mt-2"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaCertificate className="inline ml-2 text-yellow-600" />
+                                        تصدیقنامې
+                                    </label>
+                                    <TextInput
+                                        id="certifications"
+                                        name="certifications"
+                                        value={data.certifications}
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 transition-all ${
+                                            errors.certifications
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
+                                        onChange={(e) =>
+                                            setData(
+                                                "certifications",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                    <InputError
+                                        message={errors.certifications}
+                                        className="mt-2"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaTools className="inline ml-2 text-gray-600" />
+                                        مهارتونه
+                                    </label>
+                                    <TextInput
+                                        id="skills"
+                                        name="skills"
+                                        value={data.skills}
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 transition-all ${
+                                            errors.skills
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
+                                        onChange={(e) =>
+                                            setData("skills", e.target.value)
+                                        }
+                                    />
+                                    <InputError
+                                        message={errors.skills}
+                                        className="mt-2"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <MdWorkOutline className="inline ml-2 text-orange-600" />
+                                        د کار وخت
+                                    </label>
+                                    <select
+                                        id="work_availability"
+                                        name="work_availability"
+                                        value={data.work_availability}
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 transition-all ${
+                                            errors.work_availability
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
+                                        onChange={(e) =>
+                                            setData(
+                                                "work_availability",
+                                                e.target.value
+                                            )
+                                        }
+                                    >
+                                        <option value="">وخت انتخاب کړئ</option>
+                                        <option value="Full-time">
+                                            مکمل وخت
+                                        </option>
+                                        <option value="Part-time">
+                                            نیم وخت
+                                        </option>
+                                    </select>
+                                    <InputError
+                                        message={errors.work_availability}
+                                        className="mt-2"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mt-6">
+                                <label className="flex items-center cursor-pointer p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                                    <input
+                                        type="checkbox"
+                                        name="addShop"
+                                        checked={data.addShop}
+                                        onChange={(e) =>
+                                            setData("addShop", e.target.checked)
+                                        }
+                                        className="rounded text-green-500 focus:ring-2 focus:ring-green-300 ml-2"
+                                    />
+                                    <span className="text-gray-700 font-medium">
+                                        زه غواړم چې خیاطي اضافه کړم
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Section 3: Shop Information */}
+                    {data.role === "tailor" && data.addShop && (
+                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <h3 className="text-xl font-semibold mb-6 text-gray-800 flex items-center">
+                                <span className="bg-purple-100 text-purple-600 rounded-full w-8 h-8 inline-flex items-center justify-center ml-2">
+                                    3
+                                </span>
+                                د خیاطۍ معلومات
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaStore className="inline ml-2 text-indigo-600" />
+                                        د خیاطۍ نوم
+                                    </label>
                                     <TextInput
                                         id="tailoring_name"
                                         name="tailoring_name"
                                         value={data.tailoring_name}
-                                        className="mt-1 block w-full"
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all ${
+                                            errors.tailoring_name
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
                                         onChange={(e) =>
                                             setData(
                                                 "tailoring_name",
@@ -318,15 +491,19 @@ export default function Register({ roles = {} }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="tailoring_address"
-                                        value="Tailoring Address"
-                                    />
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaMapMarkerAlt className="inline ml-2 text-red-600" />
+                                        آدرس
+                                    </label>
                                     <TextInput
                                         id="tailoring_address"
                                         name="tailoring_address"
                                         value={data.tailoring_address}
-                                        className="mt-1 block w-full"
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all ${
+                                            errors.tailoring_address
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
                                         onChange={(e) =>
                                             setData(
                                                 "tailoring_address",
@@ -341,16 +518,20 @@ export default function Register({ roles = {} }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="tailor_count"
-                                        value="Number of Tailors"
-                                    />
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaUsers className="inline ml-2 text-blue-600" />
+                                        د خیاطانو شمیر
+                                    </label>
                                     <TextInput
                                         id="tailor_count"
                                         type="number"
                                         name="tailor_count"
                                         value={data.tailor_count}
-                                        className="mt-1 block w-full"
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all ${
+                                            errors.tailor_count
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
                                         onChange={(e) =>
                                             setData(
                                                 "tailor_count",
@@ -365,16 +546,20 @@ export default function Register({ roles = {} }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="published_year"
-                                        value="Year Established"
-                                    />
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaCalendarAlt className="inline ml-2 text-teal-600" />
+                                        د تاسیس کال
+                                    </label>
                                     <TextInput
                                         id="published_year"
                                         type="number"
                                         name="published_year"
                                         value={data.published_year}
-                                        className="mt-1 block w-full"
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all ${
+                                            errors.published_year
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
                                         onChange={(e) =>
                                             setData(
                                                 "published_year",
@@ -389,15 +574,19 @@ export default function Register({ roles = {} }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="contact_number"
-                                        value="Contact Number"
-                                    />
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaPhone className="inline ml-2 text-green-600" />
+                                        د اړیکو شمیره
+                                    </label>
                                     <TextInput
                                         id="contact_number"
                                         name="contact_number"
                                         value={data.contact_number}
-                                        className="mt-1 block w-full"
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all ${
+                                            errors.contact_number
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
                                         onChange={(e) =>
                                             setData(
                                                 "contact_number",
@@ -412,16 +601,20 @@ export default function Register({ roles = {} }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="shop_email"
-                                        value="Shop Email"
-                                    />
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaEnvelope className="inline ml-2 text-blue-600" />
+                                        د خیاطۍ ایمیل
+                                    </label>
                                     <TextInput
                                         id="shop_email"
                                         type="email"
                                         name="shop_email"
                                         value={data.shop_email}
-                                        className="mt-1 block w-full"
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all ${
+                                            errors.shop_email
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
                                         onChange={(e) =>
                                             setData(
                                                 "shop_email",
@@ -436,15 +629,19 @@ export default function Register({ roles = {} }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="working_hours"
-                                        value="Working Hours"
-                                    />
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaClock className="inline ml-2 text-orange-600" />
+                                        د کار ساعتونه
+                                    </label>
                                     <TextInput
                                         id="working_hours"
                                         name="working_hours"
                                         value={data.working_hours}
-                                        className="mt-1 block w-full"
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all ${
+                                            errors.working_hours
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
                                         onChange={(e) =>
                                             setData(
                                                 "working_hours",
@@ -459,15 +656,19 @@ export default function Register({ roles = {} }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="services"
-                                        value="Services"
-                                    />
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaTools className="inline ml-2 text-gray-600" />
+                                        وړاندې شوي خدمتونه
+                                    </label>
                                     <TextInput
                                         id="services"
                                         name="services"
                                         value={data.services}
-                                        className="mt-1 block w-full"
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all ${
+                                            errors.services
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
                                         onChange={(e) =>
                                             setData("services", e.target.value)
                                         }
@@ -478,13 +679,13 @@ export default function Register({ roles = {} }) {
                                     />
                                 </div>
 
-                                <div>
-                                    <InputLabel
-                                        htmlFor="payment_methods"
-                                        value="Payment Methods"
-                                    />
-                                    <div className="mt-2 space-y-2">
-                                        <label className="flex items-center">
+                                <div className="md:col-span-2">
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaCreditCard className="inline ml-2 text-slate-600" />
+                                        د تادیې میتودونه
+                                    </label>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        <label className="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-purple-50 transition-colors">
                                             <input
                                                 type="checkbox"
                                                 name="payment_methods"
@@ -515,13 +716,14 @@ export default function Register({ roles = {} }) {
                                                         methods
                                                     );
                                                 }}
-                                                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                                className="rounded text-purple-500 focus:ring-2 focus:ring-purple-300 ml-2"
                                             />
-                                            <span className="ml-2 text-sm text-gray-600">
-                                                Cash
+                                            <span className="text-gray-700">
+                                                نقد
                                             </span>
                                         </label>
-                                        <label className="flex items-center">
+
+                                        <label className="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-purple-50 transition-colors">
                                             <input
                                                 type="checkbox"
                                                 name="payment_methods"
@@ -554,10 +756,10 @@ export default function Register({ roles = {} }) {
                                                         methods
                                                     );
                                                 }}
-                                                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                                className="rounded text-purple-500 focus:ring-2 focus:ring-purple-300 ml-2"
                                             />
-                                            <span className="ml-2 text-sm text-gray-600">
-                                                Bank Transfer
+                                            <span className="text-gray-700">
+                                                د بانک لیږد
                                             </span>
                                         </label>
                                     </div>
@@ -567,17 +769,21 @@ export default function Register({ roles = {} }) {
                                     />
                                 </div>
 
-                                <div>
-                                    <InputLabel
-                                        htmlFor="shop_images"
-                                        value="Shop Images"
-                                    />
+                                <div className="md:col-span-2">
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaImage className="inline ml-2 text-violet-600" />
+                                        د خیاطۍ تصویر
+                                    </label>
                                     <input
                                         type="file"
                                         id="shop_images"
                                         name="shop_images"
                                         multiple
-                                        className="mt-1 block w-full"
+                                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all file:ml-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 ${
+                                            errors.shop_images
+                                                ? "border-red-500 bg-red-50"
+                                                : "border-gray-300"
+                                        }`}
                                         onChange={(e) =>
                                             setData(
                                                 "shop_images",
@@ -592,15 +798,15 @@ export default function Register({ roles = {} }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="social_links.facebook"
-                                        value="Facebook Link"
-                                    />
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaFacebook className="inline ml-2 text-[#1877F2]" />
+                                        د فیسبوک لینک
+                                    </label>
                                     <TextInput
                                         id="social_links.facebook"
                                         name="social_links.facebook"
                                         value={data.social_links.facebook}
-                                        className="mt-1 block w-full"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all"
                                         onChange={(e) =>
                                             setData("social_links", {
                                                 ...data.social_links,
@@ -617,15 +823,15 @@ export default function Register({ roles = {} }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="social_links.instagram"
-                                        value="Instagram Link"
-                                    />
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaInstagram className="inline ml-2 text-[#E1306C]" />
+                                        د انستګرام لینک
+                                    </label>
                                     <TextInput
                                         id="social_links.instagram"
                                         name="social_links.instagram"
                                         value={data.social_links.instagram}
-                                        className="mt-1 block w-full"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all"
                                         onChange={(e) =>
                                             setData("social_links", {
                                                 ...data.social_links,
@@ -642,15 +848,15 @@ export default function Register({ roles = {} }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel
-                                        htmlFor="social_links.telegram"
-                                        value="Telegram Link"
-                                    />
+                                    <label className="block mb-2 font-medium text-gray-700">
+                                        <FaTelegram className="inline ml-2 text-[#0088cc]" />
+                                        د ټلګرام لینک
+                                    </label>
                                     <TextInput
                                         id="social_links.telegram"
                                         name="social_links.telegram"
                                         value={data.social_links.telegram}
-                                        className="mt-1 block w-full"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300 focus:border-purple-500 transition-all"
                                         onChange={(e) =>
                                             setData("social_links", {
                                                 ...data.social_links,
@@ -665,17 +871,21 @@ export default function Register({ roles = {} }) {
                                         className="mt-2"
                                     />
                                 </div>
-                            </>
-                        )}
-                    </>
-                )}
+                            </div>
+                        </div>
+                    )}
 
-                <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ml-4" disabled={processing}>
-                        Register
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
+                    <div className="flex justify-start">
+                        <button
+                            type="submit"
+                            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 px-10 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transform hover:-translate-y-1"
+                            disabled={processing}
+                        >
+                            ثبت کول
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     );
 }
