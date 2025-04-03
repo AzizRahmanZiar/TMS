@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\Roles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -43,6 +45,27 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            // 'role' => Roles::class,
         ];
+    }
+
+    public function hasRole(Roles $role): bool
+    {
+        return $this->role === $role->value;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRole(Roles::ADMIN);
+    }
+
+    public function isTailor(): bool
+    {
+        return $this->hasRole(Roles::TAILOR);
+    }
+
+    public function isCustomer(): bool
+    {
+        return $this->hasRole(Roles::CUSTOMER);
     }
 }

@@ -1,3 +1,4 @@
+import React from "react";
 import {
     FaCalendarWeek,
     FaCalendarAlt,
@@ -45,7 +46,7 @@ ChartJS.register(
     Title
 );
 
-export default function Dashboard() {
+const Dashboard = () => {
     const { cloths } = useCloths();
     const { uniform } = useUniform();
     const { kortai } = useKortai();
@@ -516,4 +517,6 @@ export default function Dashboard() {
             </div>
         </SystemLayout>
     );
-}
+};
+
+export default Dashboard;
