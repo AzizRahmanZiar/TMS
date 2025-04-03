@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ClothsController extends Controller
 {
     public function cloths()
-{
-    return Inertia::render('System/Cloths');
-}
+    {
+        return Inertia::render('System/Cloths');
+    }
 }

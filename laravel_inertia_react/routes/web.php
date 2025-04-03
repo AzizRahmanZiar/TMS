@@ -6,20 +6,14 @@ use App\Http\Controllers\KortaiController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SadraiController;
 use App\Http\Controllers\UniformController;
-
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-
-
-
 
 Route::get('/dashboard', function () {
     return Inertia::render('System/Dashboard');
 })->name('dashboard');
 
-
-Route::get('/admin',[AdminController::class,'admin'])->name('admin');
+Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
 Route::get('/cloths', [ClothsController::class, 'cloths'])->name('cloths');
 Route::get('/sadrai', [SadraiController::class, 'sadrai'])->name('sadrai');
 Route::get('/kortai', [KortaiController::class, 'kortai'])->name('kortai');
@@ -29,7 +23,6 @@ Route::get('/adminpost', [PostController::class, 'adminpost'])->name('adminpost'
 Route::get('/', function () {
     return Inertia::render('Site/Home');
 });
-
 
 Route::get('/registration', function () {
     return Inertia::render('Site/Registration');
