@@ -5,7 +5,7 @@ const SiteLayout = ({ children }) => {
     return (
         <div>
             <Navbar />
-            <main dir="rtl">{children}</main>
+            <main>{children}</main>
             <Footer />
         </div>
     );

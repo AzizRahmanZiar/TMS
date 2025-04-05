@@ -1,52 +1,27 @@
 "use client";
 
-import { useReg } from "@/Contexts/RegContext";
+import { usePage, router } from "@inertiajs/react";
 import SystemLayout from "@/Layouts/SystemLayout";
 import { useState, useEffect } from "react";
-import { FaEdit, FaTrash, FaUser, FaSearch, FaUsers } from "react-icons/fa";
+import { FaEdit, FaUser, FaSearch, FaUsers } from "react-icons/fa";
 
 const Admin = () => {
-    const { reg, setReg } = useReg();
-    const [users, setUsers] = useState([]);
+    const { auth, flash } = usePage().props;
     const [searchTerm, setSearchTerm] = useState("");
-    const [confirmDelete, setConfirmDelete] = useState(null);
     const [editingUser, setEditingUser] = useState(null);
     const [editForm, setEditForm] = useState({
-        username: "",
+        name: "",
         email: "",
         role: "",
     });
 
-    // Process images when reg changes
+    // Show success message
     useEffect(() => {
-        if (reg && reg.length > 0) {
-            const processedUsers = reg.map((user) => {
-                // Process profile image if it exists and is a File
-                let profileImageUrl = null;
-                if (user.profileImage instanceof File) {
-                    profileImageUrl = URL.createObjectURL(user.profileImage);
-                }
-
-                return {
-                    ...user,
-                    profileImageUrl,
-                };
-            });
-
-            setUsers(processedUsers);
-        } else {
-            setUsers([]);
+        if (flash.message) {
+            // You can implement a toast notification here
+            console.log(flash.message);
         }
-
-        // Cleanup function to revoke object URLs
-        return () => {
-            users.forEach((user) => {
-                if (user.profileImageUrl) {
-                    URL.revokeObjectURL(user.profileImageUrl);
-                }
-            });
-        };
-    }, [reg]);
+    }, [flash.message]);
 
     // Handle search
     const handleSearch = (e) => {
@@ -54,26 +29,19 @@ const Admin = () => {
     };
 
     // Filter users based on search term
+    const users = auth.user ? [auth.user] : [];
     const filteredUsers = users.filter(
         (user) =>
-            user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.role?.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
-    // Handle delete user
-    const handleDelete = (index) => {
-        const newReg = [...reg];
-        newReg.splice(index, 1);
-        setReg(newReg);
-        setConfirmDelete(null);
-    };
 
     // Handle edit user
     const handleEdit = (user, index) => {
         setEditingUser(index);
         setEditForm({
-            username: user.username || "",
+            name: user.name || "",
             email: user.email || "",
             role: user.role || "",
         });
@@ -81,15 +49,16 @@ const Admin = () => {
 
     // Handle save edit
     const handleSaveEdit = (index) => {
-        const newReg = [...reg];
-        newReg[index] = {
-            ...newReg[index],
-            username: editForm.username,
-            email: editForm.email,
-            role: editForm.role,
-        };
-        setReg(newReg);
-        setEditingUser(null);
+        const user = users[index];
+        router.put(route("user.update", user.id), editForm, {
+            onSuccess: () => {
+                setEditingUser(null);
+            },
+            onError: (errors) => {
+                // You can implement error handling here
+                console.error(errors);
+            },
+        });
     };
 
     // Handle cancel edit
@@ -108,15 +77,15 @@ const Admin = () => {
 
     return (
         <SystemLayout>
-            <div className="bg-gray-50 min-h-screen">
-                <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-                    <div className="bg-white rounded-2xl border overflow-hidden">
+            <div className="p-6">
+                <div className="bg-white rounded-lg border p-6">
+                    <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
                         {/* Header */}
-                        <div className="p-6 border-b border-gray-200 from-blue-600">
+                        <div className="p-6 border-b border-gray-200">
                             <div className="flex flex-col md:flex-row md:items-center justify-between">
                                 <div className="flex items-center gap-5">
-                                    <FaUsers className="h-8 w-8" />
-                                    <h2 className="text-2xl font-bold">
+                                    <FaUsers className="h-8 w-8 text-gray-600" />
+                                    <h2 className="text-2xl font-bold text-gray-900">
                                         د یوزرانو لیست
                                     </h2>
                                 </div>
@@ -125,7 +94,7 @@ const Admin = () => {
                                         <input
                                             type="text"
                                             placeholder="Search users..."
-                                            className="pl-10 pr-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
+                                            className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 w-full md:w-64"
                                             value={searchTerm}
                                             onChange={handleSearch}
                                         />
@@ -138,49 +107,45 @@ const Admin = () => {
                         {/* Table */}
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
+                                <thead className="bg-gray-100">
                                     <tr>
-                                        <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            یوزر
+                                        <th className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                            نوم
                                         </th>
-
-                                        <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            ایمېل
+                                        <th className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                            ایمیل
                                         </th>
-                                        <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
                                             رول
                                         </th>
-                                        <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            پروفایل
-                                        </th>
-                                        <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
                                             عملیې
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                                <tbody className="bg-gray-50 divide-y divide-gray-200">
                                     {filteredUsers.length > 0 ? (
                                         filteredUsers.map((user, index) => (
                                             <tr
                                                 key={index}
-                                                className="hover:bg-gray-50 transition duration-150"
+                                                className="hover:bg-gray-100 transition duration-150"
                                             >
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     {editingUser === index ? (
                                                         <input
                                                             type="text"
-                                                            name="username"
+                                                            name="name"
                                                             value={
-                                                                editForm.username
+                                                                editForm.name
                                                             }
                                                             onChange={
                                                                 handleFormChange
                                                             }
-                                                            className="text-sm font-medium text-gray-900 border rounded px-2 py-1 w-full"
+                                                            className="text-sm font-medium text-gray-900 border border-gray-200 rounded px-2 py-1 w-full"
                                                         />
                                                     ) : (
                                                         <div className="text-sm font-medium text-gray-900">
-                                                            {user.username ||
+                                                            {user.name ||
                                                                 "No name"}
                                                         </div>
                                                     )}
@@ -196,7 +161,7 @@ const Admin = () => {
                                                             onChange={
                                                                 handleFormChange
                                                             }
-                                                            className="text-sm text-gray-900 border rounded px-2 py-1 w-full"
+                                                            className="text-sm text-gray-900 border border-gray-200 rounded px-2 py-1 w-full"
                                                         />
                                                     ) : (
                                                         <div className="text-sm text-gray-900">
@@ -215,7 +180,7 @@ const Admin = () => {
                                                             onChange={
                                                                 handleFormChange
                                                             }
-                                                            className="text-sm"
+                                                            className="text-sm border border-gray-200 rounded px-2 py-1 w-full"
                                                         >
                                                             <option value="User">
                                                                 User
@@ -228,44 +193,19 @@ const Admin = () => {
                                                             </option>
                                                         </select>
                                                     ) : (
-                                                        <span
-                                                            className=" py-1 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                            "
-                                                        >
+                                                        <span className="py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-200 text-gray-800 px-2">
                                                             {user.role ||
                                                                 "Unknown"}
                                                         </span>
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="flex items-center">
-                                                        <div className="h-12 w-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
-                                                            {user.profileImageUrl ? (
-                                                                <img
-                                                                    src={
-                                                                        user.profileImageUrl ||
-                                                                        "/placeholder.svg"
-                                                                    }
-                                                                    alt={
-                                                                        user.username
-                                                                    }
-                                                                    className="h-full w-full object-cover"
-                                                                />
-                                                            ) : (
-                                                                <div className="h-full w-full flex items-center justify-center">
-                                                                    <FaUser className="text-gray-400 text-xl" />
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <div className="flex gap-2">
+                                                    <div className="flex gap-2 justify-end">
                                                         {editingUser ===
                                                         index ? (
                                                             <>
                                                                 <button
-                                                                    className="text-white bg-green-500 hover:bg-green-600 px-2 py-1 rounded-md text-xs transition duration-150"
+                                                                    className="text-gray-50 bg-gray-600 hover:bg-gray-700 px-2 py-1 rounded-md text-xs transition duration-150"
                                                                     onClick={() =>
                                                                         handleSaveEdit(
                                                                             index
@@ -275,7 +215,7 @@ const Admin = () => {
                                                                     Save
                                                                 </button>
                                                                 <button
-                                                                    className="bg-red-500 text-white hover:bg-red-600 px-2 py-1 rounded-md text-xs transition duration-150"
+                                                                    className="bg-gray-200 text-gray-900 hover:bg-gray-300 px-2 py-1 rounded-md text-xs transition duration-150"
                                                                     onClick={
                                                                         handleCancelEdit
                                                                     }
@@ -285,7 +225,7 @@ const Admin = () => {
                                                             </>
                                                         ) : (
                                                             <button
-                                                                className="text-blue-600  hover:text-blue-700 transition duration-150"
+                                                                className="text-gray-600 hover:text-gray-700 transition duration-150"
                                                                 title="Edit user"
                                                                 onClick={() =>
                                                                     handleEdit(
@@ -297,44 +237,6 @@ const Admin = () => {
                                                                 <FaEdit />
                                                             </button>
                                                         )}
-
-                                                        {confirmDelete ===
-                                                        index ? (
-                                                            <div className="flex items-center gap-2">
-                                                                <button
-                                                                    className="text-white bg-green-500 hover:bg-green-600 px-2 py-1 rounded-md text-xs transition duration-150"
-                                                                    onClick={() =>
-                                                                        handleDelete(
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Confirm
-                                                                </button>
-                                                                <button
-                                                                    className="text-white bg-red-500 hover:bg-red-600 px-2 py-1 rounded-md text-xs transition duration-150"
-                                                                    onClick={() =>
-                                                                        setConfirmDelete(
-                                                                            null
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Cancel
-                                                                </button>
-                                                            </div>
-                                                        ) : (
-                                                            <button
-                                                                className="text-red-600 hover:text-red-700 transition duration-150"
-                                                                title="Delete user"
-                                                                onClick={() =>
-                                                                    setConfirmDelete(
-                                                                        index
-                                                                    )
-                                                                }
-                                                            >
-                                                                <FaTrash />
-                                                            </button>
-                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -342,7 +244,7 @@ const Admin = () => {
                                     ) : (
                                         <tr>
                                             <td
-                                                colSpan="5"
+                                                colSpan="4"
                                                 className="px-6 py-10 text-center text-gray-500"
                                             >
                                                 <div className="flex flex-col items-center">
@@ -363,30 +265,14 @@ const Admin = () => {
                             </table>
                         </div>
 
-                        {/* Footer with pagination (placeholder) */}
-                        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
-                            <div className="flex justify-between items-center">
-                                <div className="text-sm text-gray-500">
-                                    Showing{" "}
-                                    <span className="font-medium">
-                                        {filteredUsers.length}
-                                    </span>{" "}
-                                    users
-                                </div>
-                                <div className="flex space-x-2">
-                                    <button
-                                        className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-                                        disabled
-                                    >
-                                        Previous
-                                    </button>
-                                    <button
-                                        className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-                                        disabled
-                                    >
-                                        Next
-                                    </button>
-                                </div>
+                        {/* Footer with user count */}
+                        <div className="bg-gray-100 px-6 py-4 border-t border-gray-200">
+                            <div className="text-sm text-gray-600">
+                                Showing{" "}
+                                <span className="font-medium">
+                                    {filteredUsers.length}
+                                </span>{" "}
+                                users
                             </div>
                         </div>
                     </div>

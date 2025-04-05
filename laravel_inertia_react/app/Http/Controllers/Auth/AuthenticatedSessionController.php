@@ -33,6 +33,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Redirect to the system dashboard which will give access to all system pages
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 
-import {
-
-    AiOutlineCheckCircle,
-    AiOutlineCloseCircle,
-} from "react-icons/ai";
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { usePosts } from "../../Contexts/postContext"; // Import the context
-import SystemLayout from '@/Layouts/SystemLayout';
+import SystemLayout from "@/Layouts/SystemLayout";
 
 const Post = () => {
     const { posts, setPosts } = usePosts(); // Use the context
@@ -383,7 +379,7 @@ const Post = () => {
 
     return (
         <SystemLayout>
-            <div className=" p-4 bg-gradient-to-b from-white to-gray-50 min-h-screen rounded-lg border">
+            <div className="p-6">
                 {/* Search bar and Add Post button */}
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
                     <div className="relative w-full sm:w-1/2">

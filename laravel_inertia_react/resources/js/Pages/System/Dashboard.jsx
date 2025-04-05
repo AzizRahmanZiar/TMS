@@ -189,46 +189,43 @@ const Dashboard = () => {
 
     return (
         <SystemLayout>
-            <div className="p-4 md:p-6 bg-gray-50">
-                <h1 className="text-2xl font-bold mb-6 text-gray-800">
-                    خیاطي مدیریت سیستم
-                </h1>
-
+            <div className="p-6" dir="rtl">
                 {/* Summary Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     {categoryData.map((category, index) => {
                         const Icon = category.icon;
                         return (
                             <div
                                 key={index}
-                                className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:translate-y-[-2px]"
+                                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] border border-gray-100 overflow-hidden group"
                             >
                                 <div
-                                    className={`${category.bgColor} p-3 flex justify-between items-center`}
+                                    className={`${category.bgColor} p-4 flex justify-between items-center relative overflow-hidden`}
                                 >
-                                    <div className="text-white">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent"></div>
+                                    <div className="text-white relative z-10">
                                         <h2 className="text-lg font-semibold">
                                             {category.name}
                                         </h2>
                                     </div>
-                                    <div className="text-white bg-white/20 p-2 rounded-lg">
-                                        <Icon className="w-5 h-5" />
+                                    <div className="text-white bg-white/20 p-3 rounded-xl backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
+                                        <Icon className="w-6 h-6" />
                                     </div>
                                 </div>
-                                <div className="p-4">
-                                    <div className="flex justify-between items-center">
+                                <div className="p-5">
+                                    <div className="flex justify-between items-center mb-3">
                                         <span className="text-gray-600 text-sm">
                                             جمله عاید:
                                         </span>
-                                        <span className="font-bold text-gray-800">
+                                        <span className="font-bold text-gray-800 text-lg">
                                             {formatNumber(category.money)}
                                         </span>
                                     </div>
-                                    <div className="flex justify-between items-center mt-2">
+                                    <div className="flex justify-between items-center">
                                         <span className="text-gray-600 text-sm">
                                             تعداد:
                                         </span>
-                                        <span className="font-bold text-gray-800">
+                                        <span className="font-bold text-gray-800 text-lg">
                                             {formatNumber(category.value)}
                                         </span>
                                     </div>
@@ -239,80 +236,84 @@ const Dashboard = () => {
                 </div>
 
                 {/* Total Revenue Card */}
-                <div className="mb-6">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md">
-                        <div className="bg-green-600 p-4 flex justify-between items-center">
+                <div className="mb-8">
+                    <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                        <div className="p-6 flex justify-between items-center">
                             <div className="text-white">
-                                <h2 className="text-lg font-semibold">
+                                <h2 className="text-xl font-semibold mb-1">
                                     مجموعي ټول عاید
                                 </h2>
+                                <p className="text-green-100 text-sm">
+                                    د ټولو کټګوریو څخه
+                                </p>
                             </div>
-                            <div className="text-white bg-white/20 p-3 rounded-lg">
-                                <FaDollarSign className="w-6 h-6" />
+                            <div className="text-white bg-white/20 p-4 rounded-xl backdrop-blur-sm">
+                                <FaDollarSign className="w-8 h-8" />
                             </div>
                         </div>
-                        <div className="p-6 text-center">
-                            <span className="text-3xl font-bold text-gray-800">
+                        <div className="p-6 bg-white/10 backdrop-blur-sm">
+                            <span className="text-4xl font-bold text-white">
                                 {formatNumber(totalRevenue)}
                             </span>
+                            <span className="text-green-100 ml-2">افغانۍ</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Time-based Revenue Section */}
-                <div className="mb-6">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center space-x-4 rtl:space-x-reverse">
-                            <div className="bg-blue-100 p-3 rounded-full">
-                                <FaCalendarDay className="h-6 w-6 text-blue-600" />
+                <div className="mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
+                            <div className="bg-blue-100 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                                <FaCalendarDay className="h-7 w-7 text-blue-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-gray-500 mb-1">
                                     ورځنی عاید
                                 </p>
-                                <p className="text-xl font-bold text-gray-800">
+                                <p className="text-2xl font-bold text-gray-800">
                                     {formatNumber(dailyRevenue)}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center space-x-4 rtl:space-x-reverse">
-                            <div className="bg-indigo-100 p-3 rounded-full">
-                                <FaCalendarWeek className="h-6 w-6 text-indigo-600" />
+                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
+                            <div className="bg-indigo-100 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                                <FaCalendarWeek className="h-7 w-7 text-indigo-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-gray-500 mb-1">
                                     هفتنی عاید
                                 </p>
-                                <p className="text-xl font-bold text-gray-800">
+                                <p className="text-2xl font-bold text-gray-800">
                                     {formatNumber(weeklyRevenue)}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center space-x-4 rtl:space-x-reverse">
-                            <div className="bg-purple-100 p-3 rounded-full">
-                                <FaCalendarAlt className="h-6 w-6 text-purple-600" />
+                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
+                            <div className="bg-purple-100 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                                <FaCalendarAlt className="h-7 w-7 text-purple-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-gray-500 mb-1">
                                     میاشتنۍ عاید
                                 </p>
-                                <p className="text-xl font-bold text-gray-800">
+                                <p className="text-2xl font-bold text-gray-800">
                                     {formatNumber(monthlyRevenue)}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center space-x-4 rtl:space-x-reverse">
-                            <div className="bg-green-100 p-3 rounded-full">
-                                <FaCalendarAlt className="h-6 w-6 text-green-600" />
+                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
+                            <div className="bg-green-100 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                                <FaCalendarAlt className="h-7 w-7 text-green-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-gray-500 mb-1">
                                     کلنۍ عاید
                                 </p>
-                                <p className="text-xl font-bold text-gray-800">
+                                <p className="text-2xl font-bold text-gray-800">
                                     {formatNumber(yearlyRevenue)}
                                 </p>
                             </div>
@@ -321,20 +322,20 @@ const Dashboard = () => {
                 </div>
 
                 {/* Charts Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     {/* Pie Chart - Revenue Distribution */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-4 bg-purple-600 flex justify-between items-center">
-                            <div className="text-purple-50">
+                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                        <div className="p-4 bg-gradient-to-r from-purple-600 to-indigo-600 flex justify-between items-center">
+                            <div className="text-white">
                                 <h2 className="text-lg font-semibold">
                                     د عاید وېش د خیاطي ډول پر اساس
                                 </h2>
                             </div>
-                            <div className="text-purple-50 bg-white/20 p-3 rounded-lg">
+                            <div className="text-white bg-white/20 p-3 rounded-xl backdrop-blur-sm">
                                 <FaChartPie className="w-6 h-6" />
                             </div>
                         </div>
-                        <div className="p-4" style={{ height: "300px" }}>
+                        <div className="p-6" style={{ height: "300px" }}>
                             <Pie
                                 data={pieChartData}
                                 options={{
@@ -343,6 +344,12 @@ const Dashboard = () => {
                                     plugins: {
                                         legend: {
                                             position: "bottom",
+                                            labels: {
+                                                padding: 20,
+                                                font: {
+                                                    size: 12,
+                                                },
+                                            },
                                         },
                                     },
                                 }}
@@ -351,18 +358,18 @@ const Dashboard = () => {
                     </div>
 
                     {/* Bar Chart - Quantity Comparison */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-4 bg-indigo-500 flex justify-between items-center">
-                            <div className="text-indigo-50">
+                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                        <div className="p-4 bg-gradient-to-r from-indigo-600 to-blue-600 flex justify-between items-center">
+                            <div className="text-white">
                                 <h2 className="text-lg font-semibold">
                                     د توکو تعداد مقایسه
                                 </h2>
                             </div>
-                            <div className="text-indigo-50 bg-white/20 p-3 rounded-lg">
+                            <div className="text-white bg-white/20 p-3 rounded-xl backdrop-blur-sm">
                                 <FaChartBar className="w-6 h-6" />
                             </div>
                         </div>
-                        <div className="p-4" style={{ height: "300px" }}>
+                        <div className="p-6" style={{ height: "300px" }}>
                             <Bar
                                 data={barChartData}
                                 options={{
@@ -376,6 +383,14 @@ const Dashboard = () => {
                                     scales: {
                                         y: {
                                             beginAtZero: true,
+                                            grid: {
+                                                color: "rgba(0, 0, 0, 0.1)",
+                                            },
+                                        },
+                                        x: {
+                                            grid: {
+                                                display: false,
+                                            },
                                         },
                                     },
                                 }}
@@ -385,19 +400,19 @@ const Dashboard = () => {
                 </div>
 
                 {/* Most Profitable Categories */}
-                <div className="mb-6">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-4 bg-green-600 flex justify-between items-center">
-                            <div className="text-green-50">
+                <div className="mb-8">
+                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                        <div className="p-4 bg-gradient-to-r from-green-600 to-emerald-600 flex justify-between items-center">
+                            <div className="text-white">
                                 <h2 className="text-lg font-semibold">
                                     ترټوډېره ګټه لرونکي کټګورۍ
                                 </h2>
                             </div>
-                            <div className="text-green-50 bg-white/20 p-3 rounded-lg">
+                            <div className="text-white bg-white/20 p-3 rounded-xl backdrop-blur-sm">
                                 <FaTrophy className="w-6 h-6" />
                             </div>
                         </div>
-                        <div className="p-4">
+                        <div className="p-6">
                             {categoriesByProfit.map((category, index) => {
                                 const Icon = category.icon;
                                 const percentage =
@@ -405,12 +420,12 @@ const Dashboard = () => {
                                 return (
                                     <div
                                         key={index}
-                                        className="bg-gray-50 rounded-lg p-4 mb-3 hover:shadow-md transition-shadow"
+                                        className="bg-gray-50 rounded-xl p-5 mb-4 hover:shadow-md transition-all duration-300 last:mb-0"
                                     >
                                         <div className="flex flex-col md:flex-row md:items-center">
-                                            <div className="flex items-center mb-3 md:mb-0">
+                                            <div className="flex items-center mb-4 md:mb-0">
                                                 <div
-                                                    className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${
+                                                    className={`w-12 h-12 rounded-xl flex items-center justify-center mr-4 ${
                                                         index === 0
                                                             ? "bg-yellow-100"
                                                             : index === 1
@@ -421,7 +436,7 @@ const Dashboard = () => {
                                                     }`}
                                                 >
                                                     <span
-                                                        className={`text-lg font-bold ${
+                                                        className={`text-xl font-bold ${
                                                             index === 0
                                                                 ? "text-yellow-600"
                                                                 : index === 1
@@ -436,7 +451,7 @@ const Dashboard = () => {
                                                 </div>
                                                 <div className="flex items-center">
                                                     <div
-                                                        className="w-8 h-8 rounded-full flex items-center justify-center mr-2"
+                                                        className="w-10 h-10 rounded-xl flex items-center justify-center mr-3"
                                                         style={{
                                                             backgroundColor:
                                                                 category.color +
@@ -444,31 +459,31 @@ const Dashboard = () => {
                                                         }}
                                                     >
                                                         <Icon
-                                                            className="w-4 h-4"
+                                                            className="w-5 h-5"
                                                             style={{
                                                                 color: category.color,
                                                             }}
                                                         />
                                                     </div>
-                                                    <h3 className="font-medium text-gray-800">
+                                                    <h3 className="font-semibold text-gray-800 text-lg">
                                                         {category.name}
                                                     </h3>
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-wrap gap-4 md:ml-auto">
+                                            <div className="flex flex-wrap gap-6 md:ml-auto">
                                                 <div className="text-center">
-                                                    <div className="text-xs text-gray-500">
+                                                    <div className="text-sm text-gray-500 mb-1">
                                                         تعداد
                                                     </div>
-                                                    <div className="font-medium">
+                                                    <div className="font-semibold text-gray-800">
                                                         {formatNumber(
                                                             category.value
                                                         )}
                                                     </div>
                                                 </div>
                                                 <div className="text-center">
-                                                    <div className="text-xs text-gray-500">
+                                                    <div className="text-sm text-gray-500 mb-1">
                                                         ټوله ګټه
                                                     </div>
                                                     <div className="font-bold text-gray-800">
@@ -480,10 +495,10 @@ const Dashboard = () => {
                                             </div>
                                         </div>
 
-                                        <div className="mt-3">
-                                            <div className="w-full bg-gray-200 rounded-full h-2">
+                                        <div className="mt-4">
+                                            <div className="w-full bg-gray-200 rounded-full h-2.5">
                                                 <div
-                                                    className="h-2 rounded-full"
+                                                    className="h-2.5 rounded-full transition-all duration-500"
                                                     style={{
                                                         width: `${percentage}%`,
                                                         backgroundColor:
@@ -491,8 +506,8 @@ const Dashboard = () => {
                                                     }}
                                                 ></div>
                                             </div>
-                                            <div className="flex justify-between mt-1">
-                                                <span className="text-xs text-gray-500">
+                                            <div className="flex justify-between mt-2">
+                                                <span className="text-sm text-gray-500">
                                                     اوسط ګټه:
                                                     {formatNumber(
                                                         (
@@ -503,7 +518,12 @@ const Dashboard = () => {
                                                     )}{" "}
                                                     افغانۍ
                                                 </span>
-                                                <span className="text-xs text-gray-500">
+                                                <span
+                                                    className="text-sm font-medium"
+                                                    style={{
+                                                        color: category.color,
+                                                    }}
+                                                >
                                                     {percentage.toFixed(0)}%
                                                 </span>
                                             </div>

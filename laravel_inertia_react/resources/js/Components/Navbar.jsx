@@ -6,10 +6,14 @@ import { FaScissors } from "react-icons/fa6";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { url } = usePage();
+    const { url, auth } = usePage().props;
+    const user = auth?.user;
 
     // Function to check if a link is active
     const isActive = (path) => {
+        // Check if url is defined
+        if (!url || !path) return false;
+
         // Remove trailing slash for comparison
         const currentPath =
             url.endsWith("/") && url !== "/" ? url.slice(0, -1) : url;
@@ -117,15 +121,7 @@ const Navbar = () => {
                     {/* Logo with animated scissors */}
                     <motion.div whileHover={{ scale: 1.05 }}>
                         <Link href="/" className="text-2xl font-bold">
-                            <div className="flex items-end space-x-2">
-                                <motion.span
-                                    variants={scissorsVariants}
-                                    initial="initial"
-                                    animate="animate"
-                                    whileHover="hover"
-                                >
-                                    <FaScissors className="text-primary-50" />
-                                </motion.span>
+                            <div className="flex items-end space-x-2 rtl:space-x-reverse">
                                 <motion.span
                                     className="text-primary-50"
                                     initial={{ opacity: 0 }}
@@ -134,25 +130,33 @@ const Navbar = () => {
                                 >
                                     ماسټر خیاط
                                 </motion.span>
+                                <motion.span
+                                    variants={scissorsVariants}
+                                    initial="initial"
+                                    animate="animate"
+                                    whileHover="hover"
+                                >
+                                    <FaScissors className="text-primary-50" />
+                                </motion.span>
                             </div>
                         </Link>
                     </motion.div>
 
                     {/* Desktop Navigation */}
                     <motion.div
-                        className="hidden md:flex items-center space-x-8"
+                        className="hidden md:flex items-center gap-8 rtl:gap-8"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.4 }}
                     >
                         {[
-                            { href: "/shop", text: "دوکانونه" },
+                            { href: "/", text: "کور" },
+                            { href: "/about", text: "زموږ په اړه" },
                             { href: "/post", text: "پوسټونه" },
                             { href: "/order", text: "فرمایش" },
-                            { href: "/about", text: "زموږ په اړه" },
+                            { href: "/shop", text: "دوکانونه" },
                             { href: "/contact", text: "اړیکه" },
                             { href: "/tailor", text: "خیاطان" },
-                            { href: "/", text: "کور" },
                         ].map((link, index) => (
                             <motion.div
                                 key={index}
@@ -180,26 +184,45 @@ const Navbar = () => {
 
                     {/* Right side buttons */}
                     <motion.div
-                        className="hidden md:flex items-center space-x-4 gap-5"
+                        className="hidden md:flex items-center gap-8 rtl:gap-8"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5 }}
                     >
+                        {user && (
+                            <motion.div
+                                variants={buttonVariants}
+                                whileHover="hover"
+                                whileTap="tap"
+                            >
+                                <Link
+                                    href="./dashboard"
+                                    className={`font-semibold px-4 py-2 rounded-md transition text-center ${
+                                        isActive("./dashboard") ||
+                                        isActive("/dashboard")
+                                            ? "bg-secondary-700 text-primary-50"
+                                            : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
+                                    }`}
+                                >
+                                    Dashboard
+                                </Link>
+                            </motion.div>
+                        )}
                         <motion.div
                             variants={buttonVariants}
                             whileHover="hover"
                             whileTap="tap"
                         >
                             <Link
-                                href="./dashboard"
-                                className={`font-semibold px-4 py-2 rounded-md transition text-center ${
-                                    isActive("./dashboard") ||
-                                    isActive("/dashboard")
-                                        ? "bg-secondary-700 text-primary-50"
-                                        : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
+                                href="/login"
+                                className={`font-semibold px-4 py-2 rounded-md transition ${
+                                    isActive("./login") || isActive("/login")
+                                        ? "bg-white text-primary-900"
+                                        : "bg-primary-50 text-primary-900 hover:bg-white"
                                 }`}
                             >
-                                Dashboard
+                                <FaUser className="inline ml-2" />
+                                ننوتل
                             </Link>
                         </motion.div>
                         <motion.div
@@ -208,16 +231,15 @@ const Navbar = () => {
                             whileTap="tap"
                         >
                             <Link
-                                href="./registration"
+                                href="./register"
                                 className={`font-semibold px-4 py-2 rounded-md transition ${
-                                    isActive("./registration") ||
-                                    isActive("/registration")
-                                        ? "bg-white text-primary-900"
-                                        : "bg-primary-50 text-primary-900 hover:bg-white"
+                                    isActive("./register") ||
+                                    isActive("/register")
+                                        ? "bg-secondary-700 text-primary-50"
+                                        : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
                                 }`}
                             >
-                                <FaUser className="inline mr-2" />
-                                ننوتل
+                                ثبت نام
                             </Link>
                         </motion.div>
                     </motion.div>
@@ -304,17 +326,37 @@ const Navbar = () => {
                                         </Link>
                                     </motion.div>
                                 ))}
+                                {user && (
+                                    <motion.div
+                                        variants={mobileItemVariants}
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        <Link
+                                            href="/dashboard"
+                                            className={`font-semibold px-4 py-2 rounded-md transition text-center block ${
+                                                isActive("/dashboard")
+                                                    ? "bg-secondary-700 text-primary-50"
+                                                    : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
+                                            }`}
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            Dashboard
+                                        </Link>
+                                    </motion.div>
+                                )}
                                 <motion.div
                                     variants={mobileItemVariants}
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                 >
                                     <Link
-                                        href="/registration"
+                                        href="/login"
                                         className={`font-semibold px-4 py-2 rounded-md transition text-center block ${
-                                            isActive("/registration")
-                                                ? "bg-blue-700 text-primary-50"
-                                                : "bg-blue-600 text-primary-50 hover:bg-blue-700"
+                                            isActive("./login") ||
+                                            isActive("/login")
+                                                ? "bg-secondary-700 text-primary-50"
+                                                : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
                                         }`}
                                         onClick={() => setIsOpen(false)}
                                     >
@@ -328,15 +370,15 @@ const Navbar = () => {
                                     whileTap={{ scale: 0.98 }}
                                 >
                                     <Link
-                                        href="/dashboard"
+                                        href="/register"
                                         className={`font-semibold px-4 py-2 rounded-md transition text-center block ${
-                                            isActive("/dashboard")
-                                                ? "bg-blue-700 text-primary-50"
-                                                : "bg-blue-600 text-primary-50 hover:bg-blue-700"
+                                            isActive("/register")
+                                                ? "bg-secondary-700 text-primary-50"
+                                                : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
                                         }`}
                                         onClick={() => setIsOpen(false)}
                                     >
-                                        Dashboard
+                                        ثبت نام
                                     </Link>
                                 </motion.div>
                             </motion.div>

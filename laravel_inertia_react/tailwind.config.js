@@ -2,10 +2,10 @@
 module.exports = {
     darkMode: ["class"],
     content: [
-        "./pages/**/*.{js,jsx}",
-        "./components/**/*.{js,jsx}",
-        "./**/*.{js,jsx}",
-        "*.{js,ts,jsx,tsx,mdx}",
+        "./resources/js/**/*.{js,jsx}",
+        "./resources/views/**/*.blade.php",
+        "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
+        "./storage/framework/views/*.php",
     ],
     theme: {
         container: {
@@ -59,5 +59,110 @@ module.exports = {
             },
         },
     },
-    plugins: [],
+    plugins: [
+        function ({ addComponents }) {
+            addComponents({
+                ".rtl": {
+                    direction: "rtl",
+                    textAlign: "right",
+                },
+                ".rtl .space-x-4 > :not([hidden]) ~ :not([hidden])": {
+                    "--tw-space-x-reverse": "1",
+                },
+                ".rtl .space-x-reverse > :not([hidden]) ~ :not([hidden])": {
+                    "--tw-space-x-reverse": "0",
+                },
+                ".rtl input, .rtl textarea": {
+                    textAlign: "right",
+                },
+                ".rtl table": {
+                    textAlign: "right",
+                },
+                ".rtl ul, .rtl ol": {
+                    paddingRight: "1.5rem",
+                    paddingLeft: "0",
+                },
+                ".rtl .flex-row": {
+                    flexDirection: "row-reverse",
+                },
+                ".rtl .mr-1": {
+                    marginLeft: "0.25rem",
+                    marginRight: "0",
+                },
+                ".rtl .mr-2": {
+                    marginLeft: "0.5rem",
+                    marginRight: "0",
+                },
+                ".rtl .mr-3": {
+                    marginLeft: "0.75rem",
+                    marginRight: "0",
+                },
+                ".rtl .mr-4": {
+                    marginLeft: "1rem",
+                    marginRight: "0",
+                },
+                ".rtl .ml-1": {
+                    marginRight: "0.25rem",
+                    marginLeft: "0",
+                },
+                ".rtl .ml-2": {
+                    marginRight: "0.5rem",
+                    marginLeft: "0",
+                },
+                ".rtl .ml-3": {
+                    marginRight: "0.75rem",
+                    marginLeft: "0",
+                },
+                ".rtl .ml-4": {
+                    marginRight: "1rem",
+                    marginLeft: "0",
+                },
+                ".rtl .pr-1": {
+                    paddingLeft: "0.25rem",
+                    paddingRight: "0",
+                },
+                ".rtl .pr-2": {
+                    paddingLeft: "0.5rem",
+                    paddingRight: "0",
+                },
+                ".rtl .pr-3": {
+                    paddingLeft: "0.75rem",
+                    paddingRight: "0",
+                },
+                ".rtl .pr-4": {
+                    paddingLeft: "1rem",
+                    paddingRight: "0",
+                },
+                ".rtl .pl-1": {
+                    paddingRight: "0.25rem",
+                    paddingLeft: "0",
+                },
+                ".rtl .pl-2": {
+                    paddingRight: "0.5rem",
+                    paddingLeft: "0",
+                },
+                ".rtl .pl-3": {
+                    paddingRight: "0.75rem",
+                    paddingLeft: "0",
+                },
+                ".rtl .pl-4": {
+                    paddingRight: "1rem",
+                    paddingLeft: "0",
+                },
+                ".rtl .rounded-l": {
+                    borderRadius: "0 0.25rem 0.25rem 0",
+                },
+                ".rtl .rounded-r": {
+                    borderRadius: "0.25rem 0 0 0.25rem",
+                },
+                ".rtl .icon": {
+                    transform: "scaleX(-1)",
+                },
+                ".rtl .dropdown-menu": {
+                    right: "auto",
+                    left: "0",
+                },
+            });
+        },
+    ],
 };

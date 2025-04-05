@@ -6,7 +6,7 @@ import {
     MdOutlineCheckBox,
     MdOutlineCheckBoxOutlineBlank,
 } from "react-icons/md";
-import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";;
+import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { useCloths } from "@/Contexts/ClothsContext";
 import SystemLayout from "@/Layouts/SystemLayout";
 
@@ -429,7 +429,7 @@ const Cloths = () => {
 
     return (
         <SystemLayout>
-            <div className="container mx-auto px-4 py-6">
+            <div className="p-6">
                 {/* Header Section */}
                 <div className="bg-white rounded-lg border p-6 mb-6">
                     <div className="flex flex-col md:flex-row justify-between items-center mb-6">

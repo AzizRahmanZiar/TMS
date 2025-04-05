@@ -14,17 +14,40 @@ export default function Login({ status, canResetPassword }) {
         remember: false,
     });
 
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!data.email.trim()) {
+            newErrors.email = "بریښنالیک اړین دی";
+        } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(data.email)
+        ) {
+            newErrors.email = "بریښنالیک ناسم دی";
+        }
+
+        if (!data.password) {
+            newErrors.password = "پټنوم اړین دی";
+        }
+
+        return newErrors;
+    };
+
     const submit = (e) => {
         e.preventDefault();
+
+        const formErrors = validateForm();
+        if (Object.keys(formErrors).length > 0) {
+            return;
+        }
 
         post(route("login"), {
             onFinish: () => reset("password"),
             onSuccess: (page) => {
                 const userRole = page.props.auth.user?.role;
                 if (userRole === "admin") {
-                    router.visit(route("admin.dashboard"));
+                    router.visit(route("dashboard"));
                 } else if (userRole === "tailor") {
-                    router.visit(route("tailor.dashboard"));
+                    router.visit(route("dashboard"));
                 } else {
                     router.visit(route("home"));
                 }
@@ -37,12 +60,12 @@ export default function Login({ status, canResetPassword }) {
             <Head title="ننوتل" />
 
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div className="mb-4 font-medium text-sm text-green-600">
                     {status}
                 </div>
             )}
 
-            <form onSubmit={submit} dir="rtl">
+            <form onSubmit={submit}>
                 <div>
                     <InputLabel htmlFor="email" value="بریښنالیک" />
 

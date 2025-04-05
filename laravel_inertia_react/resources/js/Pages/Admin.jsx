@@ -8,7 +8,6 @@ const Admin = () => {
             <AppLayout>
                 <div className="p-6">
                     <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-                    {/* Admin content here */}
                 </div>
             </AppLayout>
         </ProtectedRoute>
