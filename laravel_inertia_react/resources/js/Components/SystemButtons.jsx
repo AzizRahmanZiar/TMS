@@ -1,0 +1,91 @@
+import React from "react";
+import { FaEdit, FaTrash, FaCheck, FaTimes } from "react-icons/fa";
+
+const SystemButtons = ({
+    type,
+    onClick,
+    isActive = false,
+    className = "",
+    disabled = false,
+    icon = false,
+    title = "",
+}) => {
+    const getButtonContent = () => {
+        switch (type) {
+            case "add":
+                return "نوی ریکارډ اضافه کول";
+            case "all":
+                return "ټول";
+            case "active":
+                return "فعال";
+            case "completed":
+                return "بشپړ شوي";
+            case "edit":
+                return icon ? <FaEdit className="h-5 w-5" /> : "سمول";
+            case "delete":
+                return icon ? <FaTrash className="h-5 w-5" /> : "حذف کول";
+            case "submit":
+                return icon ? <FaCheck className="h-5 w-5" /> : "ثبت کول";
+            case "cancel":
+                return icon ? <FaTimes className="h-5 w-5" /> : "لغو کول";
+            default:
+                return "";
+        }
+    };
+
+    const getButtonStyles = () => {
+        const baseStyles =
+            "px-4 py-2 rounded-lg transition-colors duration-300";
+
+        switch (type) {
+            case "add":
+                return `${baseStyles} bg-purple-600 hover:bg-purple-700 text-white shadow-md`;
+            case "all":
+            case "active":
+                return `${baseStyles} ${
+                    isActive
+                        ? "bg-purple-600 text-white"
+                        : "bg-gray-200 text-gray-700"
+                }`;
+            case "completed":
+                return `${baseStyles} ${
+                    isActive
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 text-gray-700"
+                }`;
+            case "edit":
+                return `${baseStyles} ${
+                    icon
+                        ? "text-purple-600 hover:text-purple-900 p-1 rounded-full hover:bg-purple-100"
+                        : "bg-purple-600 hover:bg-purple-700 text-white"
+                }`;
+            case "delete":
+                return `${baseStyles} ${
+                    icon
+                        ? "text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-100"
+                        : "bg-red-600 hover:bg-red-700 text-white"
+                }`;
+            case "submit":
+                return `${baseStyles} bg-purple-600 hover:bg-purple-700 text-white`;
+            case "cancel":
+                return `${baseStyles} bg-red-500 hover:bg-red-600 text-white`;
+            default:
+                return baseStyles;
+        }
+    };
+
+    return (
+        <button
+            onClick={onClick}
+            className={`${getButtonStyles()} ${className} ${
+                disabled ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={disabled}
+            title={title}
+        >
+            {getButtonContent()}
+        </button>
+    );
+};
+
+export default SystemButtons;

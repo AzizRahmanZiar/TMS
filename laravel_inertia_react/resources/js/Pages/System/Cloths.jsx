@@ -9,6 +9,8 @@ import {
 import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { useCloths } from "@/Contexts/ClothsContext";
 import SystemLayout from "@/Layouts/SystemLayout";
+import SearchBar from "@/Components/SearchBar";
+import SystemButtons from "@/Components/SystemButtons";
 
 const Cloths = () => {
     const { cloths, setCloths } = useCloths();
@@ -427,6 +429,10 @@ const Cloths = () => {
         setShowMeasurementsModal(true);
     };
 
+    const handleSearch = (value) => {
+        setSearchTerm(value);
+    };
+
     return (
         <SystemLayout>
             <div className="p-6">
@@ -443,57 +449,41 @@ const Cloths = () => {
                                 د جامو د مشتریانو لیست
                             </h1>
                         </div>
-                        <button
+                        <SystemButtons
+                            type="add"
                             onClick={handleAddClick}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors duration-300 shadow-md"
+                            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors duration-300 shadow-md"
                         >
                             نوی ریکارډ اضافه کول
-                        </button>
+                        </SystemButtons>
                     </div>
 
                     {/* Search and Filter Section */}
                     <div className="flex flex-col md:flex-row gap-4 items-center">
                         <div className="relative flex-1">
-                            <input
-                                type="text"
+                            <SearchBar
                                 placeholder="د نوم یا مبایل نمبر په اساس لټون..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 outline-none"
+                                onSearch={handleSearch}
+                                initialValue={searchTerm}
+                                className="w-full"
                             />
-                            {/* <MdSearch className="absolute right-3 top-3.5 text-gray-400 text-xl" /> */}
                         </div>
                         <div className="flex gap-2">
-                            <button
+                            <SystemButtons
+                                type="all"
                                 onClick={() => setActiveTab("all")}
-                                className={`px-4 py-2 rounded-lg ${
-                                    activeTab === "all"
-                                        ? "bg-indigo-600 text-white"
-                                        : "bg-gray-200 text-gray-700"
-                                }`}
-                            >
-                                ټول
-                            </button>
-                            <button
+                                isActive={activeTab === "all"}
+                            />
+                            <SystemButtons
+                                type="active"
                                 onClick={() => setActiveTab("active")}
-                                className={`px-4 py-2 rounded-lg ${
-                                    activeTab === "active"
-                                        ? "bg-green-600 text-white"
-                                        : "bg-gray-200 text-gray-700"
-                                }`}
-                            >
-                                فعال
-                            </button>
-                            <button
+                                isActive={activeTab === "active"}
+                            />
+                            <SystemButtons
+                                type="completed"
                                 onClick={() => setActiveTab("completed")}
-                                className={`px-4 py-2 rounded-lg ${
-                                    activeTab === "completed"
-                                        ? "bg-blue-600 text-white"
-                                        : "bg-gray-200 text-gray-700"
-                                }`}
-                            >
-                                بشپړ شوي
-                            </button>
+                                isActive={activeTab === "completed"}
+                            />
                         </div>
                     </div>
                 </div>
@@ -712,35 +702,29 @@ const Cloths = () => {
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <div className="flex  space-x-2">
-                                                    <button
+                                                    <SystemButtons
+                                                        type="edit"
                                                         onClick={() =>
                                                             handleUpdate(index)
                                                         }
-                                                        className={`text-indigo-600 hover:text-indigo-900 p-1 rounded-full hover:bg-indigo-100 transition-colors ${
-                                                            row.disabled
-                                                                ? "opacity-50 cursor-not-allowed"
-                                                                : ""
-                                                        }`}
                                                         disabled={row.disabled}
+                                                        icon={true}
                                                         title={
                                                             row.disabled
                                                                 ? "تسلیم شوي ریکارډونه نشي سمولی"
                                                                 : "سمول"
                                                         }
-                                                    >
-                                                        <FaEdit className="h-5 w-5" />
-                                                    </button>
-                                                    <button
+                                                    />
+                                                    <SystemButtons
+                                                        type="delete"
                                                         onClick={() =>
                                                             handleDeleteClick(
                                                                 index
                                                             )
                                                         }
-                                                        className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-100 transition-colors"
+                                                        icon={true}
                                                         title="حذف کول"
-                                                    >
-                                                        <MdDelete className="h-5 w-5" />
-                                                    </button>
+                                                    />
                                                 </div>
                                             </td>
                                         </tr>
@@ -763,7 +747,7 @@ const Cloths = () => {
                     <div className="px-4 py-3 bg-gray-50 border-t border-gray-200 sm:px-6">
                         <div className="flex items-center justify-between">
                             <div className="text-sm text-gray-700">
-                                ټول{" "}
+                                ټول
                                 <span className="font-medium">
                                     {filteredData.length}
                                 </span>{" "}
@@ -1291,19 +1275,14 @@ const Cloths = () => {
                                 </div>
 
                                 <div className="mt-8 flex gap-5">
-                                    <button
-                                        type="button"
+                                    <SystemButtons
+                                        type="cancel"
                                         onClick={closeModal}
-                                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
-                                    >
-                                        لغو کول
-                                    </button>
-                                    <button
+                                    />
+                                    <SystemButtons
                                         type="submit"
-                                        className="inline-flex justify-center px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    >
-                                        {isEditing ? "تازه کول" : "ثبت کول"}
-                                    </button>
+                                        onClick={handleSubmit}
+                                    />
                                 </div>
                             </form>
                         </div>

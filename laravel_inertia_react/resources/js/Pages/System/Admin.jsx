@@ -4,6 +4,7 @@ import { usePage, router } from "@inertiajs/react";
 import SystemLayout from "@/Layouts/SystemLayout";
 import { useState, useEffect } from "react";
 import { FaEdit, FaUser, FaSearch, FaUsers } from "react-icons/fa";
+import SearchBar from "@/Components/SearchBar";
 
 const Admin = () => {
     const { auth, flash } = usePage().props;
@@ -89,17 +90,16 @@ const Admin = () => {
                                         د یوزرانو لیست
                                     </h2>
                                 </div>
-                                <div className="mt-4 md:mt-0 flex items-center">
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            placeholder="Search users..."
-                                            className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 w-full md:w-64"
-                                            value={searchTerm}
-                                            onChange={handleSearch}
+                                <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                                    <div className="w-full">
+                                        <SearchBar
+                                            placeholder="د ادمین نوم ولټوه..."
+                                            onSearch={handleSearch}
+                                            initialValue={searchTerm}
+                                            className="w-full"
                                         />
-                                        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                                     </div>
+                                    {/* Add your admin-specific buttons or actions here */}
                                 </div>
                             </div>
                         </div>

@@ -3,6 +3,8 @@ import { MdDelete, MdClose, MdCheck } from "react-icons/md";
 import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { useUniform } from "@/Contexts/UniformContext";
 import SystemLayout from "@/Layouts/SystemLayout";
+import SearchBar from "@/Components/SearchBar";
+import SystemButtons from "@/Components/SystemButtons";
 
 const Uniform = () => {
     const { uniform, setUniform } = useUniform();
@@ -357,6 +359,10 @@ const Uniform = () => {
         { id: "lstoony", label: "لسټوڼي" },
     ];
 
+    const handleSearch = (value) => {
+        setSearchTerm(value);
+    };
+
     return (
         <SystemLayout>
             <div className="p-6">
@@ -375,7 +381,7 @@ const Uniform = () => {
                         </div>
                         <button
                             onClick={handleAddClick}
-                            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors duration-300 shadow-md"
+                            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors duration-300 shadow-md"
                         >
                             نوی ریکارډ اضافه کول
                         </button>
@@ -384,45 +390,29 @@ const Uniform = () => {
                     {/* Search and Filter Section */}
                     <div className="flex flex-col md:flex-row gap-4 items-center">
                         <div className="relative flex-1">
-                            <input
-                                type="text"
+                            <SearchBar
                                 placeholder="د نوم یا مبایل نمبر په اساس لټون..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 outline-none"
+                                onSearch={handleSearch}
+                                initialValue={searchTerm}
+                                className="w-full"
                             />
                         </div>
                         <div className="flex gap-2">
-                            <button
+                            <SystemButtons
+                                type="all"
                                 onClick={() => setActiveTab("all")}
-                                className={`px-4 py-2 rounded-lg ${
-                                    activeTab === "all"
-                                        ? "bg-green-600 text-white"
-                                        : "bg-gray-200 text-gray-700"
-                                }`}
-                            >
-                                ټول
-                            </button>
-                            <button
+                                isActive={activeTab === "all"}
+                            />
+                            <SystemButtons
+                                type="active"
                                 onClick={() => setActiveTab("active")}
-                                className={`px-4 py-2 rounded-lg ${
-                                    activeTab === "active"
-                                        ? "bg-blue-600 text-white"
-                                        : "bg-gray-200 text-gray-700"
-                                }`}
-                            >
-                                فعال
-                            </button>
-                            <button
+                                isActive={activeTab === "active"}
+                            />
+                            <SystemButtons
+                                type="completed"
                                 onClick={() => setActiveTab("completed")}
-                                className={`px-4 py-2 rounded-lg ${
-                                    activeTab === "completed"
-                                        ? "bg-purple-600 text-white"
-                                        : "bg-gray-200 text-gray-700"
-                                }`}
-                            >
-                                بشپړ شوي
-                            </button>
+                                isActive={activeTab === "completed"}
+                            />
                         </div>
                     </div>
                 </div>
@@ -521,35 +511,29 @@ const Uniform = () => {
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <div className="flex">
-                                                    <button
+                                                    <SystemButtons
+                                                        type="edit"
                                                         onClick={() =>
                                                             handleUpdate(index)
                                                         }
-                                                        className={`text-green-600 hover:text-green-900 p-1 rounded-full hover:bg-green-100 transition-colors ${
-                                                            row.disabled
-                                                                ? "opacity-50 cursor-not-allowed"
-                                                                : ""
-                                                        }`}
                                                         disabled={row.disabled}
+                                                        icon={true}
                                                         title={
                                                             row.disabled
                                                                 ? "تسلیم شوي ریکارډونه نشي سمولی"
                                                                 : "سمول"
                                                         }
-                                                    >
-                                                        <FaEdit className="h-5 w-5" />
-                                                    </button>
-                                                    <button
+                                                    />
+                                                    <SystemButtons
+                                                        type="delete"
                                                         onClick={() =>
                                                             handleDeleteClick(
                                                                 index
                                                             )
                                                         }
-                                                        className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-100 transition-colors"
+                                                        icon={true}
                                                         title="حذف کول"
-                                                    >
-                                                        <MdDelete className="h-5 w-5" />
-                                                    </button>
+                                                    />
                                                 </div>
                                             </td>
                                         </tr>
@@ -935,19 +919,14 @@ const Uniform = () => {
                                 </div>
 
                                 <div className="mt-8 flex justify-end gap-4">
-                                    <button
-                                        type="button"
+                                    <SystemButtons
+                                        type="cancel"
                                         onClick={closeModal}
-                                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-white bg-red-500  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
-                                    >
-                                        لغو کول
-                                    </button>
-                                    <button
+                                    />
+                                    <SystemButtons
                                         type="submit"
-                                        className="inline-flex justify-center px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                                    >
-                                        {isEditing ? "تازه کول" : "ثبت کول"}
-                                    </button>
+                                        onClick={handleSubmit}
+                                    />
                                 </div>
                             </form>
                         </div>
