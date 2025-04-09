@@ -6,6 +6,7 @@ import { FaEdit } from "react-icons/fa";
 import { usePosts } from "../../Contexts/postContext"; // Import the context
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
+import SystemButtons from "@/Components/SystemButtons";
 
 const Post = () => {
     const { posts, setPosts } = usePosts(); // Use the context
@@ -395,12 +396,11 @@ const Post = () => {
                             className="w-full"
                         />
                     </div>
-                    <button
+                    <SystemButtons
+                        type="add"
                         onClick={handleAddPost}
-                        className="bg-blue-500 hover:bg-blue-600 transition-colors ml-10 text-white p-2 rounded-lg shadow-md flex items-center gap-2"
-                    >
-                        <span>اضافه کول</span>
-                    </button>
+                        title="نوی پوست اضافه کول"
+                    />
                 </div>
 
                 {/* Table section */}
@@ -485,23 +485,27 @@ const Post = () => {
                                                 {post.category}
                                             </span>
                                         </td>
-                                        <td className="py-4 mt-6 px-4 flex gap-2 text-right">
-                                            <button
-                                                onClick={() =>
-                                                    handleEditPost(post)
-                                                }
-                                                className="text-blue-500 hover:text-blue-700 transition-colors p-1 rounded-full hover:bg-blue-50"
-                                            >
-                                                <FaEdit size={18} />
-                                            </button>
-                                            <button
-                                                onClick={() =>
-                                                    handleDeletePost(post.id)
-                                                }
-                                                className="text-red-500 hover:text-red-700 transition-colors ml-2 p-1 rounded-full hover:bg-red-50"
-                                            >
-                                                <MdDelete size={20} />
-                                            </button>
+                                        <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <div className="flex gap-2">
+                                                <SystemButtons
+                                                    type="edit"
+                                                    onClick={() =>
+                                                        handleEditPost(post)
+                                                    }
+                                                    icon={true}
+                                                    title="سمول"
+                                                />
+                                                <SystemButtons
+                                                    type="delete"
+                                                    onClick={() =>
+                                                        handleDeletePost(
+                                                            post.id
+                                                        )
+                                                    }
+                                                    icon={true}
+                                                    title="حذف کول"
+                                                />
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -770,23 +774,19 @@ const Post = () => {
                                         {descriptionChars}/2000
                                     </p>
                                 </div>
-
-                                <div className="flex justify-end gap-4 col-span-2">
-                                    <button
-                                        type="button"
-                                        onClick={handleCloseForm}
-                                        className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                                    >
-                                        لغوکول
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                                    >
-                                        {isEditing ? "سمول" : "اضافه کول"}
-                                    </button>
-                                </div>
                             </form>
+                            <div className="flex justify-end gap-4 mt-6">
+                                <SystemButtons
+                                    type="cancel"
+                                    onClick={handleCloseForm}
+                                    title="لغو کول"
+                                />
+                                <SystemButtons
+                                    type="submit"
+                                    onClick={handleSubmit}
+                                    title={isEditing ? "سمول" : "اضافه کول"}
+                                />
+                            </div>
                         </div>
                     </div>
                 )}

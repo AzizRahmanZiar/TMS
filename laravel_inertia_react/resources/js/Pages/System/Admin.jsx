@@ -5,6 +5,7 @@ import SystemLayout from "@/Layouts/SystemLayout";
 import { useState, useEffect } from "react";
 import { FaEdit, FaUser, FaSearch, FaUsers } from "react-icons/fa";
 import SearchBar from "@/Components/SearchBar";
+import SystemButtons from "@/Components/SystemButtons";
 
 const Admin = () => {
     const { auth, flash } = usePage().props;
@@ -74,6 +75,12 @@ const Admin = () => {
             ...prev,
             [name]: value,
         }));
+    };
+
+    // Handle delete user
+    const handleDeleteUser = (index) => {
+        // Implement delete logic here
+        console.log(`Deleting user at index: ${index}`);
     };
 
     return (
@@ -200,42 +207,53 @@ const Admin = () => {
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <div className="flex gap-2 justify-end">
+                                                    <div className="flex gap-2">
                                                         {editingUser ===
                                                         index ? (
                                                             <>
-                                                                <button
-                                                                    className="text-gray-50 bg-gray-600 hover:bg-gray-700 px-2 py-1 rounded-md text-xs transition duration-150"
+                                                                <SystemButtons
+                                                                    type="submit"
                                                                     onClick={() =>
                                                                         handleSaveEdit(
                                                                             index
                                                                         )
                                                                     }
-                                                                >
-                                                                    Save
-                                                                </button>
-                                                                <button
-                                                                    className="bg-gray-200 text-gray-900 hover:bg-gray-300 px-2 py-1 rounded-md text-xs transition duration-150"
+                                                                    icon={true}
+                                                                    title="ثبت کول"
+                                                                />
+                                                                <SystemButtons
+                                                                    type="cancel"
                                                                     onClick={
                                                                         handleCancelEdit
                                                                     }
-                                                                >
-                                                                    Cancel
-                                                                </button>
+                                                                    icon={true}
+                                                                    title="لغو کول"
+                                                                />
                                                             </>
                                                         ) : (
-                                                            <button
-                                                                className="text-gray-600 hover:text-gray-700 transition duration-150"
-                                                                title="Edit user"
-                                                                onClick={() =>
-                                                                    handleEdit(
-                                                                        user,
-                                                                        index
-                                                                    )
-                                                                }
-                                                            >
-                                                                <FaEdit />
-                                                            </button>
+                                                            <>
+                                                                <SystemButtons
+                                                                    type="edit"
+                                                                    onClick={() =>
+                                                                        handleEdit(
+                                                                            user,
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                    icon={true}
+                                                                    title="سمول"
+                                                                />
+                                                                <SystemButtons
+                                                                    type="delete"
+                                                                    onClick={() =>
+                                                                        handleDeleteUser(
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                    icon={true}
+                                                                    title="حذف کول"
+                                                                />
+                                                            </>
                                                         )}
                                                     </div>
                                                 </td>
