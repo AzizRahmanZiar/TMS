@@ -1,9 +1,5 @@
 import React from "react";
-import Checkbox from "@/Components/Checkbox";
-import InputError from "@/Components/InputError";
-import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
-import TextInput from "@/Components/TextInput";
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, Link, useForm, router } from "@inertiajs/react";
 
@@ -67,46 +63,66 @@ export default function Login({ status, canResetPassword }) {
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="email" value="بریښنالیک" />
+                    <label
+                        htmlFor="email"
+                        className="block font-medium text-sm text-gray-700"
+                    >
+                        بریښنالیک
+                    </label>
 
-                    <TextInput
+                    <input
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                         autoComplete="username"
-                        isFocused={true}
+                        autoFocus
                         onChange={(e) => setData("email", e.target.value)}
                     />
 
-                    <InputError message={errors.email} className="mt-2" />
+                    {errors.email && (
+                        <p className="mt-2 text-sm text-red-600">
+                            {errors.email}
+                        </p>
+                    )}
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="پټنوم" />
+                    <label
+                        htmlFor="password"
+                        className="block font-medium text-sm text-gray-700"
+                    >
+                        پټنوم
+                    </label>
 
-                    <TextInput
+                    <input
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                         autoComplete="current-password"
                         onChange={(e) => setData("password", e.target.value)}
                     />
 
-                    <InputError message={errors.password} className="mt-2" />
+                    {errors.password && (
+                        <p className="mt-2 text-sm text-red-600">
+                            {errors.password}
+                        </p>
+                    )}
                 </div>
 
                 <div className="mt-4 block">
                     <label className="flex items-center">
-                        <Checkbox
+                        <input
+                            type="checkbox"
                             name="remember"
                             checked={data.remember}
                             onChange={(e) =>
                                 setData("remember", e.target.checked)
                             }
+                            className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
                         />
                         <span className="mr-2 text-sm text-gray-600">
                             ما په یاد ولره
@@ -123,7 +139,6 @@ export default function Login({ status, canResetPassword }) {
                             پټنوم مو هیر شوی؟
                         </Link>
                     )}
-                    {/* <Link href={route("registration")}>رجستر</Link> */}
                     <PrimaryButton className="ml-4" disabled={processing}>
                         {processing ? "د ننوتلو په حال کې..." : "ننوتل"}
                     </PrimaryButton>
