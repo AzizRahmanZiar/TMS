@@ -24,7 +24,7 @@ const Sidebar = () => {
     // Define menu items with their required roles
     const menuItems = [
         {
-            title: "Dashboard",
+            title: "ډشبورډ",
             href: "/dashboard",
             role: "admin,tailor",
         },
