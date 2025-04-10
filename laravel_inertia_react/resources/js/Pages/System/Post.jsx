@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
-import { MdDelete } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
 import { usePosts } from "../../Contexts/postContext"; // Import the context
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";

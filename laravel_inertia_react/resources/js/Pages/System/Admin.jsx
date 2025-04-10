@@ -1,9 +1,7 @@
-"use client";
-
 import { usePage, router } from "@inertiajs/react";
 import SystemLayout from "@/Layouts/SystemLayout";
 import { useState, useEffect } from "react";
-import { FaEdit, FaUser, FaSearch, FaUsers } from "react-icons/fa";
+import { FaUser, FaUsers } from "react-icons/fa";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
 

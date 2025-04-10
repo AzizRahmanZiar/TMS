@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { MdDelete, MdClose, MdCheck } from "react-icons/md";
-import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 
 import { useKortai } from "@/Contexts/KortaiContext";
 import SystemLayout from "@/Layouts/SystemLayout";
@@ -432,73 +432,60 @@ const Kortai = () => {
                                 <tr>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("nom")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         نوم
-                                        {/* {getSortIcon("nom")} */}
-                                        {/* </div> */}
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("mobile")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         مبایل
-                                        {/* {getSortIcon("mobile")}
-                                        </div> */}
+
                                     </th>
                                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         اندازې
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("ghara_dol")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
-                                        د غاړي ډول{" "}
-                                        {/* {getSortIcon("ghara_dol")} */}
-                                        {/* </div> */}
+
+                                        د غاړي ډول
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() =>
-                                        //     requestSort("rawrul_tareekh")
-                                        // }
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
-                                        د راوړلو تاریخ{" "}
-                                        {/* {getSortIcon("rawrul_tareekh")} */}
-                                        {/* </div> */}
+
+                                        د راوړلو تاریخ
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() =>
-                                        // requestSort("tasleem_tareekh")
-                                        // }
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
-                                        د تسلیمولو تاریخ{" "}
-                                        {/* {getSortIcon("tasleem_tareekh")} */}
-                                        {/* </div> */}
+
+                                        د تسلیمولو تاریخ
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("tidad")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         تعداد
-                                        {/* {getSortIcon("tidad")}
-                                        </div> */}
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("money")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         پیسې
-                                        {/* {getSortIcon("money")}
-                                        </div> */}
+
                                     </th>
                                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         عملیې
@@ -515,24 +502,14 @@ const Kortai = () => {
                                             }`}
                                         >
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                {/* <div className="flex items-center">
-                                                    <div className="flex-shrink-0 h-10 w-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                                                        <MdOutlinePersonOutline className="h-5 w-5" />
-                                                    </div>
-                                                    <div className="mr-4">
-                                                        <div className="text-sm font-medium text-gray-900"> */}
+
                                                 {row.nom}
-                                                {/* </div>
-                                                    </div>
-                                                </div> */}
+
                                             </td>
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                {/* <div className="flex items-center">
-                                                    <MdOutlinePhone className="text-gray-500 ml-1" />
-                                                    <div className="text-sm text-gray-500"> */}
+
                                                 {row.mobile}
-                                                {/* </div>
-                                                </div> */}
+
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="text-sm text-gray-900">
@@ -560,20 +537,16 @@ const Kortai = () => {
                                                 </span>
                                             </td>
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                {/* <div className="flex items-center">
-                                                    <MdOutlineCalendarMonth className="text-gray-500 ml-1" />
-                                                    <div className="text-sm text-gray-500"> */}
+
                                                 {row.rawrul_tareekh}
-                                                {/* </div>
-                                                </div> */}
+
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 {row.tasleem_tareekh ? (
                                                     <div className="flex items-center">
-                                                        {/* <MdOutlineCalendarMonth className="text-green-500 ml-1" /> */}
-                                                        {/* <div className="text-sm text-green-500"> */}
+
                                                         {row.tasleem_tareekh}
-                                                        {/* </div> */}
+
                                                     </div>
                                                 ) : (
                                                     <span className="inline-flex items-center  py-0.5 rounded-full text-xs font-medium  text-yellow-800">
@@ -582,9 +555,9 @@ const Kortai = () => {
                                                 )}
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {/* <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium  text-green-800"> */}
+
                                                 {row.tidad}
-                                                {/* </span> */}
+
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 {row.money} افغانۍ
@@ -653,38 +626,17 @@ const Kortai = () => {
                             ref={modalRef}
                             className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
                         >
-                            {/* <div className="bg-green-600 text-white px-6 py-4 flex justify-between items-center rounded-t-lg">
-                                <h2 className="text-xl font-bold">
-                                    {isEditing
-                                        ? "ریکارډ تازه کول"
-                                        : "نوی ریکارډ اضافه کول"}
-                                </h2>
-                                <button
-                                    onClick={closeModal}
-                                    className="text-white hover:bg-green-700 rounded-full p-1"
-                                >
-                                    <MdClose className="h-6 w-6" />
-                                </button>
-                            </div> */}
+
 
                             <form onSubmit={handleSubmit} className="p-6">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    {/* Personal Information */}
-                                    {/* <div className="md:col-span-3">
-                                        <h3 className="text-lg font-medium text-gray-900 mb-4 border-b pb-2">
-                                            د مشتري معلومات
-                                        </h3>
-                                    </div> */}
 
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="nom"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            نوم{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            نوم
                                         </label>
                                         <input
                                             id="nom"
@@ -715,10 +667,7 @@ const Kortai = () => {
                                             htmlFor="mobile"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            مبایل نمبر{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            مبایل نمبر
                                         </label>
                                         <input
                                             id="mobile"
@@ -749,10 +698,7 @@ const Kortai = () => {
                                             htmlFor="money"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            پیسې{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            پیسې
                                         </label>
                                         <input
                                             id="money"
@@ -783,10 +729,7 @@ const Kortai = () => {
                                             htmlFor="shana"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            شانه{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            شانه
                                         </label>
                                         <input
                                             id="shana"
@@ -817,10 +760,7 @@ const Kortai = () => {
                                             htmlFor="tenna"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            تنه{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            تنه
                                         </label>
                                         <input
                                             id="tenna"
@@ -851,10 +791,7 @@ const Kortai = () => {
                                             htmlFor="lstoony_ojd"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            لستوڼی اوږدوالی{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            لستوڼی اوږدوالی
                                         </label>
                                         <input
                                             id="lstoony_ojd"
@@ -885,10 +822,7 @@ const Kortai = () => {
                                             htmlFor="lstoony_browali"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            لستوڼی بروالی{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            لستوڼی بروالی
                                         </label>
                                         <input
                                             id="lstoony_browali"
@@ -919,10 +853,7 @@ const Kortai = () => {
                                             htmlFor="ghara_dol"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            د غاړي ډول{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            د غاړي ډول
                                         </label>
                                         <input
                                             id="ghara_dol"
@@ -953,10 +884,7 @@ const Kortai = () => {
                                             htmlFor="zegar"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            ځګر{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            ځګر
                                         </label>
                                         <input
                                             id="zegar"
@@ -987,10 +915,7 @@ const Kortai = () => {
                                             htmlFor="tidad"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            تعداد{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            تعداد
                                         </label>
                                         <input
                                             id="tidad"
@@ -1022,10 +947,7 @@ const Kortai = () => {
                                             htmlFor="rawrul_tareekh"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            د راوړلو تاریخ{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            د راوړلو تاریخ
                                         </label>
                                         <input
                                             id="rawrul_tareekh"
@@ -1151,9 +1073,7 @@ const Kortai = () => {
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
                         <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
                             <div className="bg-green-600 text-white px-6 py-2 flex justify-between items-center rounded-t-lg">
-                                {/* <h2 className="text-xl font-bold">
-                                    د کورتۍ اندازې
-                                </h2> */}
+
                                 <button
                                     onClick={() =>
                                         setShowMeasurementsModal(false)

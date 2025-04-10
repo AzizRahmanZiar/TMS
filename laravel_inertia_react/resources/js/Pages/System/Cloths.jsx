@@ -6,7 +6,7 @@ import {
     MdOutlineCheckBox,
     MdOutlineCheckBoxOutlineBlank,
 } from "react-icons/md";
-import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { useCloths } from "@/Contexts/ClothsContext";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
@@ -496,21 +496,19 @@ const Cloths = () => {
                                 <tr>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("nom")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         نوم
-                                        {/* {getSortIcon("nom")} */}
-                                        {/* </div> */}
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("mobile")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         مبایل
-                                        {/* {getSortIcon("mobile")} */}
-                                        {/* </div> */}
+
                                     </th>
                                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         اندازې
@@ -520,43 +518,36 @@ const Cloths = () => {
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() =>
-                                        // requestSort("rawrul_tareekh")
-                                        // }
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         د راوړلو تاریخ
-                                        {/* {getSortIcon("rawrul_tareekh")} */}
-                                        {/* </div> */}
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() =>
-                                        //     requestSort("tasleem_tareekh")
-                                        // }
+
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         د تسلیمولو تاریخ
-                                        {/* {getSortIcon("tasleem_tareekh")} */}
-                                        {/* </div> */}
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("tidad")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         تعداد
-                                        {/* {getSortIcon("tidad")} */}
-                                        {/* </div> */}
+
                                     </th>
                                     <th
                                         className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                        // onClick={() => requestSort("money")}
+
                                     >
-                                        {/* <div className="flex items-center justify-end"> */}
+
                                         پیسې
-                                        {/* {getSortIcon("money")} */}
-                                        {/* </div> */}
+
                                     </th>
                                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         عملیې
@@ -573,24 +564,14 @@ const Cloths = () => {
                                             }`}
                                         >
                                             <td className="px-4 text-sm py-4 whitespace-nowrap">
-                                                {/* <div className="flex items-center"> */}
-                                                {/* <div className="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
-                                                        <MdOutlinePersonOutline className="h-5 w-5" />
-                                                    </div> */}
-                                                {/* <div className="mr-4"> */}
-                                                {/* <div className=" font-medium text-gray-900"> */}
+
                                                 {row.nom}
-                                                {/* </div> */}
-                                                {/* </div> */}
-                                                {/* </div> */}
+
                                             </td>
                                             <td className="px-4 py-4  text-xs whitespace-nowrap">
-                                                {/* <div className="flex items-center"> */}
-                                                {/* <MdOutlinePhone className="text-gray-500 ml-1" /> */}
-                                                {/* <div className="text-sm"> */}
+
                                                 {row.mobile}
-                                                {/* </div> */}
-                                                {/* </div> */}
+
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="text-sm text-gray-900">
@@ -632,7 +613,7 @@ const Cloths = () => {
                                                             کالري
                                                         </span>
                                                     )}
-                                                    {/* Show more button if there are more features */}
+
                                                     {(row.lastoni_goti ||
                                                         row.bin_kat ||
                                                         row.makh_jib ||
@@ -661,9 +642,7 @@ const Cloths = () => {
                                                                     row.lastoni_2,
                                                                 ]
 
-                                                                // .filter(
-                                                                //     Boolean
-                                                                // ).length
+
                                                             }
                                                             نور...
                                                         </button>
@@ -671,20 +650,16 @@ const Cloths = () => {
                                                 </div>
                                             </td>
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                {/* <div className="flex items-center"> */}
-                                                {/* <MdOutlineCalendarMonth className="text-gray-500 ml-1" /> */}
-                                                {/* <div className=" text-gray-500"> */}
+
                                                 {row.rawrul_tareekh}
-                                                {/* </div> */}
-                                                {/* </div> */}
+
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 {row.tasleem_tareekh ? (
                                                     <div className="flex text-sm">
-                                                        {/* <MdOutlineCalendarMonth className="text-green-500 ml-1" /> */}
-                                                        {/* <div className="text-sm text-green-500"> */}
+
                                                         {row.tasleem_tareekh}
-                                                        {/* </div> */}
+
                                                     </div>
                                                 ) : (
                                                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium  text-yellow-800">
@@ -693,9 +668,9 @@ const Cloths = () => {
                                                 )}
                                             </td>
                                             <td className="px-4 text-sm py-4 whitespace-nowrap">
-                                                {/* <span className="inline-flex py-1 rounded-full text-xs font-medium text-indigo-800"> */}
+
                                                 {row.tidad}
-                                                {/* </span> */}
+
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-sm">
                                                 {row.money} افغانۍ
@@ -764,38 +739,17 @@ const Cloths = () => {
                             ref={modalRef}
                             className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[95vh] overflow-y-auto"
                         >
-                            {/* <div className="bg-indigo-600 text-white px-6 py-4 flex justify-between items-center rounded-t-lg">
-                                <h2 className="text-xl font-bold">
-                                    {isEditing
-                                        ? "ریکارډ تازه کول"
-                                        : "نوی ریکارډ اضافه کول"}
-                                </h2>
-                                <button
-                                    onClick={closeModal}
-                                    className="text-white hover:bg-indigo-700 rounded-full p-1"
-                                >
-                                    <MdClose className="h-6 w-6" />
-                                </button>
-                            </div> */}
+
 
                             <form onSubmit={handleSubmit} className="p-6">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                                    {/* Personal Information */}
-                                    {/* <div className="md:col-span-3">
-                                        <h3 className="text-lg font-medium text-gray-900 mb-4 border-b pb-2">
-                                            د مشتري معلومات
-                                        </h3>
-                                    </div> */}
-
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="nom"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            نوم{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            نوم
+
                                         </label>
                                         <input
                                             id="nom"
@@ -826,10 +780,7 @@ const Cloths = () => {
                                             htmlFor="mobile"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            مبایل نمبر{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            مبایل نمبر
                                         </label>
                                         <input
                                             id="mobile"
@@ -860,10 +811,7 @@ const Cloths = () => {
                                             htmlFor="money"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            پیسې{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            پیسې
                                         </label>
                                         <input
                                             id="money"
@@ -889,22 +837,14 @@ const Cloths = () => {
                                         )}
                                     </div>
 
-                                    {/* Measurements */}
-                                    {/* <div className="md:col-span-3 mt-4">
-                                        <h3 className="text-lg font-medium text-gray-900 mb-4 border-b pb-2">
-                                            د اندازو معلومات
-                                        </h3>
-                                    </div> */}
+
 
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="qadd"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            قد{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            قد
                                         </label>
                                         <input
                                             id="qadd"
@@ -935,10 +875,7 @@ const Cloths = () => {
                                             htmlFor="shana"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            شانه{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            شانه
                                         </label>
                                         <input
                                             id="shana"
@@ -969,10 +906,7 @@ const Cloths = () => {
                                             htmlFor="ghara"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            غاړه{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            غاړه
                                         </label>
                                         <input
                                             id="ghara"
@@ -1003,10 +937,7 @@ const Cloths = () => {
                                             htmlFor="zegar"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            ځګر{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            ځګر
                                         </label>
                                         <input
                                             id="zegar"
@@ -1037,10 +968,7 @@ const Cloths = () => {
                                             htmlFor="lstoony"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            لستوڼي اندازه{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            لستوڼي اندازه
                                         </label>
                                         <input
                                             id="lstoony"
@@ -1071,10 +999,7 @@ const Cloths = () => {
                                             htmlFor="partog"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            پرتوګ{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            پرتوګ
                                         </label>
                                         <input
                                             id="partog"
@@ -1105,10 +1030,7 @@ const Cloths = () => {
                                             htmlFor="pai_tsa"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            پایڅه{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            پایڅه
                                         </label>
                                         <input
                                             id="pai_tsa"
@@ -1139,10 +1061,7 @@ const Cloths = () => {
                                             htmlFor="tidad"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            تعداد{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            تعداد
                                         </label>
                                         <input
                                             id="tidad"
@@ -1174,10 +1093,7 @@ const Cloths = () => {
                                             htmlFor="rawrul_tareekh"
                                             className="block text-sm font-medium text-gray-700"
                                         >
-                                            د راوړلو تاریخ{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            د راوړلو تاریخ
                                         </label>
                                         <input
                                             id="rawrul_tareekh"
@@ -1360,9 +1276,7 @@ const Cloths = () => {
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
                         <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
                             <div className="bg-blue-600 text-white px-6 py-2 flex justify-between items-center rounded-t-lg">
-                                {/* <h2 className="text-xl font-bold">
-                                    د جامې خصوصیات
-                                </h2> */}
+
                                 <button
                                     onClick={() => setShowFeaturesModal(false)}
                                     className="text-white hover:bg-blue-700 rounded-full p-1"

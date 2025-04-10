@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { MdDelete, MdClose, MdCheck } from "react-icons/md";
-import { FaEdit, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { useSadrai } from "@/Contexts/SadraiContext";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
