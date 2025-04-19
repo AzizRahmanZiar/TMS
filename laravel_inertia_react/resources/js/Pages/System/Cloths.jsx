@@ -11,6 +11,7 @@ import { useCloths } from "@/Contexts/ClothsContext";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
+import { GiClothes } from "react-icons/gi";
 
 const Cloths = () => {
     const { cloths, setCloths } = useCloths();
@@ -440,22 +441,12 @@ const Cloths = () => {
                 <div className="bg-white rounded-lg border p-6 mb-6">
                     <div className="flex flex-col md:flex-row justify-between items-center mb-6">
                         <div className="flex items-center gap-5 mb-4 md:mb-0">
-                            <img
-                                src="/imgs/cloths-3.jpg"
-                                alt="Tailoring"
-                                className="h-20 w-20 rounded-full object-cover border-4 border-indigo-100 mr-4"
-                            />
-                            <h1 className="text-2xl font-bold text-gray-800">
+                            <GiClothes className="h-20 w-20   text-secondary-900" />
+                            <h1 className=" font-amiri text-3xl text-gray-800">
                                 د جامو د مشتریانو لیست
                             </h1>
                         </div>
-                        <SystemButtons
-                            type="add"
-                            onClick={handleAddClick}
-                            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors duration-300 shadow-md"
-                        >
-                            نوی ریکارډ اضافه کول
-                        </SystemButtons>
+                        <SystemButtons type="add" onClick={handleAddClick} />
                     </div>
 
                     {/* Search and Filter Section */}
@@ -494,21 +485,11 @@ const Cloths = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th
-                                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-
-                                    >
-
+                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
                                         نوم
-
                                     </th>
-                                    <th
-                                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-
-                                    >
-
+                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
                                         مبایل
-
                                     </th>
                                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         اندازې
@@ -516,38 +497,17 @@ const Cloths = () => {
                                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         خصوصیات
                                     </th>
-                                    <th
-                                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-
-                                    >
-
+                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
                                         د راوړلو تاریخ
-
                                     </th>
-                                    <th
-                                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-
-
-                                    >
-
+                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
                                         د تسلیمولو تاریخ
-
                                     </th>
-                                    <th
-                                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-
-                                    >
-
+                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
                                         تعداد
-
                                     </th>
-                                    <th
-                                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-
-                                    >
-
+                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
                                         پیسې
-
                                     </th>
                                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         عملیې
@@ -564,14 +524,10 @@ const Cloths = () => {
                                             }`}
                                         >
                                             <td className="px-4 text-sm py-4 whitespace-nowrap">
-
                                                 {row.nom}
-
                                             </td>
                                             <td className="px-4 py-4  text-xs whitespace-nowrap">
-
                                                 {row.mobile}
-
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="text-sm text-gray-900">
@@ -630,36 +586,28 @@ const Cloths = () => {
                                                             }
                                                             className="inline-flex items-center rounded text-xs font-medium  text-blue-800 cursor-pointer "
                                                         >
-                                                            {
-                                                                [
-                                                                    row.lastoni_goti,
-                                                                    row.bin_kat,
-                                                                    row.makh_jib,
-                                                                    row.tarikhzi,
-                                                                    row.shabazi,
-                                                                    row.arabi,
-                                                                    row.lemen,
-                                                                    row.lastoni_2,
-                                                                ]
-
-
-                                                            }
+                                                            {[
+                                                                row.lastoni_goti,
+                                                                row.bin_kat,
+                                                                row.makh_jib,
+                                                                row.tarikhzi,
+                                                                row.shabazi,
+                                                                row.arabi,
+                                                                row.lemen,
+                                                                row.lastoni_2,
+                                                            ]}
                                                             نور...
                                                         </button>
                                                     )}
                                                 </div>
                                             </td>
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
-
                                                 {row.rawrul_tareekh}
-
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 {row.tasleem_tareekh ? (
                                                     <div className="flex text-sm">
-
                                                         {row.tasleem_tareekh}
-
                                                     </div>
                                                 ) : (
                                                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium  text-yellow-800">
@@ -668,9 +616,7 @@ const Cloths = () => {
                                                 )}
                                             </td>
                                             <td className="px-4 text-sm py-4 whitespace-nowrap">
-
                                                 {row.tidad}
-
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-sm">
                                                 {row.money} افغانۍ
@@ -739,8 +685,6 @@ const Cloths = () => {
                             ref={modalRef}
                             className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[95vh] overflow-y-auto"
                         >
-
-
                             <form onSubmit={handleSubmit} className="p-6">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                                     <div className="space-y-2">
@@ -749,7 +693,6 @@ const Cloths = () => {
                                             className="block text-sm font-medium text-gray-700"
                                         >
                                             نوم
-
                                         </label>
                                         <input
                                             id="nom"
@@ -836,8 +779,6 @@ const Cloths = () => {
                                             </p>
                                         )}
                                     </div>
-
-
 
                                     <div className="space-y-2">
                                         <label
@@ -1276,7 +1217,6 @@ const Cloths = () => {
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
                         <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
                             <div className="bg-blue-600 text-white px-6 py-2 flex justify-between items-center rounded-t-lg">
-
                                 <button
                                     onClick={() => setShowFeaturesModal(false)}
                                     className="text-white hover:bg-blue-700 rounded-full p-1"

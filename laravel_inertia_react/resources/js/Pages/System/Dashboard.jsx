@@ -32,6 +32,7 @@ import {
 } from "chart.js";
 import { Pie, Bar } from "react-chartjs-2";
 import SystemLayout from "@/Layouts/SystemLayout";
+import { usePage } from "@inertiajs/react";
 
 // Register ChartJS components
 ChartJS.register(
@@ -47,6 +48,15 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+    const { auth } = usePage().props;
+    const user = auth.user;
+
+    // Redirect admin users to admin page
+    if (user?.role === "admin") {
+        window.location.href = "/admin";
+        return null;
+    }
+
     const { cloths } = useCloths();
     const { uniform } = useUniform();
     const { kortai } = useKortai();

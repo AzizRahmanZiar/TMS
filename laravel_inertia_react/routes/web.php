@@ -56,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
         // Admin routes
         Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
         Route::put('/user/{user}', [AdminController::class, 'update'])->name('user.update');
+        Route::delete('/user/{user}', [AdminController::class, 'destroy'])->name('user.delete');
 
         // Tailor routes
         Route::get('/cloths', [ClothsController::class, 'cloths'])->name('cloths');

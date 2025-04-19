@@ -72,13 +72,7 @@ class RegisterController extends Controller
 
         $user->save();
 
-        // Redirect based on role
-        if ($user->role === Roles::ADMIN->value) {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->role === Roles::TAILOR->value) {
-            return redirect()->route('tailor.dashboard');
-        }
-
-        return redirect()->route('home');
+        // Redirect to login page after successful registration
+        return redirect()->route('login')->with('success', 'Registration successful! Please login.');
     }
 }

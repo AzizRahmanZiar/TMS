@@ -394,11 +394,7 @@ const Post = () => {
                             className="w-full"
                         />
                     </div>
-                    <SystemButtons
-                        type="add"
-                        onClick={handleAddPost}
-                        title="نوی پوست اضافه کول"
-                    />
+                    <SystemButtons type="add" onClick={handleAddPost} />
                 </div>
 
                 {/* Table section */}

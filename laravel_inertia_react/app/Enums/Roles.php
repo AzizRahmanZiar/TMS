@@ -7,6 +7,7 @@ enum Roles: string
     case ADMIN = 'admin';
     case TAILOR = 'tailor';
     case USER = 'user';
+    case CUSTOMER = 'customer';
 
     public function label(): string
     {
@@ -14,6 +15,7 @@ enum Roles: string
             self::ADMIN => 'مدیر',
             self::TAILOR => 'خیاط',
             self::USER => 'کاربر',
+            self::CUSTOMER => 'مشتری',
         };
     }
 

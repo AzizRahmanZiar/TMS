@@ -11,15 +11,11 @@ const Navbar = () => {
 
     // Function to check if a link is active
     const isActive = (path) => {
-        // Check if url is defined
         if (!url || !path) return false;
-
-        // Remove trailing slash for comparison
         const currentPath =
             url.endsWith("/") && url !== "/" ? url.slice(0, -1) : url;
         const linkPath =
             path.endsWith("/") && path !== "/" ? path.slice(0, -1) : path;
-
         return currentPath === linkPath;
     };
 
@@ -189,59 +185,80 @@ const Navbar = () => {
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5 }}
                     >
-                        {user && (
-                            <motion.div
-                                variants={buttonVariants}
-                                whileHover="hover"
-                                whileTap="tap"
-                            >
-                                <Link
-                                    href="./dashboard"
-                                    className={`font-semibold px-4 py-2 rounded-md transition text-center ${
-                                        isActive("./dashboard") ||
-                                        isActive("/dashboard")
-                                            ? "bg-secondary-700 text-primary-50"
-                                            : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
-                                    }`}
+                        {user ? (
+                            <>
+                                {(user.role === "admin" ||
+                                    user.role === "tailor") && (
+                                    <motion.div
+                                        variants={buttonVariants}
+                                        whileHover="hover"
+                                        whileTap="tap"
+                                    >
+                                        <Link
+                                            href={route("dashboard")}
+                                            className={`font-semibold px-4 py-2 rounded-md transition text-center ${
+                                                isActive(route("dashboard"))
+                                                    ? "bg-secondary-700 text-primary-50"
+                                                    : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
+                                            }`}
+                                        >
+                                            Dashboard
+                                        </Link>
+                                    </motion.div>
+                                )}
+                                <motion.div
+                                    variants={buttonVariants}
+                                    whileHover="hover"
+                                    whileTap="tap"
                                 >
-                                    Dashboard
-                                </Link>
-                            </motion.div>
+                                    <Link
+                                        href={route("logout")}
+                                        method="post"
+                                        as="button"
+                                        className="font-semibold px-4 py-2 rounded-md transition bg-primary-50 text-primary-900 hover:bg-white"
+                                    >
+                                        <FaUser className="inline ml-2" />
+                                        وتل
+                                    </Link>
+                                </motion.div>
+                            </>
+                        ) : (
+                            <>
+                                <motion.div
+                                    variants={buttonVariants}
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                >
+                                    <Link
+                                        href={route("login")}
+                                        className={`font-semibold px-4 py-2 rounded-md transition ${
+                                            isActive(route("login"))
+                                                ? "bg-white text-primary-900"
+                                                : "bg-primary-50 text-primary-900 hover:bg-white"
+                                        }`}
+                                    >
+                                        <FaUser className="inline ml-2" />
+                                        ننوتل
+                                    </Link>
+                                </motion.div>
+                                <motion.div
+                                    variants={buttonVariants}
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                >
+                                    <Link
+                                        href={route("register")}
+                                        className={`font-semibold px-4 py-2 rounded-md transition ${
+                                            isActive(route("register"))
+                                                ? "bg-secondary-700 text-primary-50"
+                                                : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
+                                        }`}
+                                    >
+                                        ثبت نام
+                                    </Link>
+                                </motion.div>
+                            </>
                         )}
-                        <motion.div
-                            variants={buttonVariants}
-                            whileHover="hover"
-                            whileTap="tap"
-                        >
-                            <Link
-                                href="/login"
-                                className={`font-semibold px-4 py-2 rounded-md transition ${
-                                    isActive("./login") || isActive("/login")
-                                        ? "bg-white text-primary-900"
-                                        : "bg-primary-50 text-primary-900 hover:bg-white"
-                                }`}
-                            >
-                                <FaUser className="inline ml-2" />
-                                ننوتل
-                            </Link>
-                        </motion.div>
-                        <motion.div
-                            variants={buttonVariants}
-                            whileHover="hover"
-                            whileTap="tap"
-                        >
-                            <Link
-                                href="./register"
-                                className={`font-semibold px-4 py-2 rounded-md transition ${
-                                    isActive("./register") ||
-                                    isActive("/register")
-                                        ? "bg-secondary-700 text-primary-50"
-                                        : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
-                                }`}
-                            >
-                                ثبت نام
-                            </Link>
-                        </motion.div>
                     </motion.div>
 
                     {/* Mobile menu button */}
@@ -249,61 +266,38 @@ const Navbar = () => {
                         className="md:hidden flex items-center"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
+                        transition={{ delay: 0.6 }}
                     >
-                        <motion.button
+                        <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="p-2 rounded-md text-primary-50"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                            className="text-primary-50 hover:text-primary-400 focus:outline-none"
                         >
-                            <AnimatePresence mode="wait">
-                                {isOpen ? (
-                                    <motion.div
-                                        key="close"
-                                        initial={{ rotate: -90, opacity: 0 }}
-                                        animate={{ rotate: 0, opacity: 1 }}
-                                        exit={{ rotate: 90, opacity: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                    >
-                                        <FaTimes size={24} />
-                                    </motion.div>
-                                ) : (
-                                    <motion.div
-                                        key="menu"
-                                        initial={{ rotate: 90, opacity: 0 }}
-                                        animate={{ rotate: 0, opacity: 1 }}
-                                        exit={{ rotate: -90, opacity: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                    >
-                                        <FaBars size={24} />
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </motion.button>
+                            {isOpen ? (
+                                <FaTimes className="h-6 w-6" />
+                            ) : (
+                                <FaBars className="h-6 w-6" />
+                            )}
+                        </button>
                     </motion.div>
                 </div>
 
-                {/* Mobile Menu */}
+                {/* Mobile menu */}
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            className="md:hidden mt-4 pb-4 overflow-hidden"
+                            className="md:hidden mt-4"
                             variants={mobileMenuVariants}
                             initial="hidden"
                             animate="visible"
                             exit="exit"
                         >
-                            <motion.div
-                                className="flex flex-col space-y-4"
-                                dir="rtl"
-                            >
+                            <div className="flex flex-col space-y-4 rtl:space-y-4">
                                 {[
                                     { href: "/", text: "کور" },
-                                    { href: "/shop", text: "دوکانونه" },
+                                    { href: "/about", text: "زموږ په اړه" },
                                     { href: "/post", text: "پوسټونه" },
                                     { href: "/order", text: "فرمایش" },
-                                    { href: "/about", text: "زموږ په اړه" },
+                                    { href: "/shop", text: "دوکانونه" },
                                     { href: "/contact", text: "اړیکه" },
                                     { href: "/tailor", text: "خیاطان" },
                                 ].map((link, index) => (
@@ -311,77 +305,86 @@ const Navbar = () => {
                                         key={index}
                                         variants={mobileItemVariants}
                                         custom={index}
-                                        whileHover={{ x: 5 }}
                                     >
                                         <Link
                                             href={link.href}
-                                            className={`font-semibold transition py-2 block ${
+                                            className={`block px-4 py-2 font-semibold transition ${
                                                 isActive(link.href)
                                                     ? "text-secondary-400"
                                                     : "text-primary-50 hover:text-primary-400"
                                             }`}
-                                            onClick={() => setIsOpen(false)}
                                         >
                                             {link.text}
                                         </Link>
                                     </motion.div>
                                 ))}
-                                {user && (
-                                    <motion.div
-                                        variants={mobileItemVariants}
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                    >
-                                        <Link
-                                            href="/dashboard"
-                                            className={`font-semibold px-4 py-2 rounded-md transition text-center block ${
-                                                isActive("/dashboard")
-                                                    ? "bg-secondary-700 text-primary-50"
-                                                    : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
-                                            }`}
-                                            onClick={() => setIsOpen(false)}
+                                {user ? (
+                                    <>
+                                        {(user.role === "admin" ||
+                                            user.role === "tailor") && (
+                                            <motion.div
+                                                variants={mobileItemVariants}
+                                            >
+                                                <Link
+                                                    href={route("dashboard")}
+                                                    className={`block px-4 py-2 font-semibold transition ${
+                                                        isActive(
+                                                            route("dashboard")
+                                                        )
+                                                            ? "text-secondary-400"
+                                                            : "text-primary-50 hover:text-primary-400"
+                                                    }`}
+                                                >
+                                                    Dashboard
+                                                </Link>
+                                            </motion.div>
+                                        )}
+                                        <motion.div
+                                            variants={mobileItemVariants}
                                         >
-                                            Dashboard
-                                        </Link>
-                                    </motion.div>
+                                            <Link
+                                                href={route("logout")}
+                                                method="post"
+                                                as="button"
+                                                className="block px-4 py-2 font-semibold text-primary-50 hover:text-primary-400"
+                                            >
+                                                وتل
+                                            </Link>
+                                        </motion.div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <motion.div
+                                            variants={mobileItemVariants}
+                                        >
+                                            <Link
+                                                href={route("login")}
+                                                className={`block px-4 py-2 font-semibold transition ${
+                                                    isActive(route("login"))
+                                                        ? "text-secondary-400"
+                                                        : "text-primary-50 hover:text-primary-400"
+                                                }`}
+                                            >
+                                                ننوتل
+                                            </Link>
+                                        </motion.div>
+                                        <motion.div
+                                            variants={mobileItemVariants}
+                                        >
+                                            <Link
+                                                href={route("register")}
+                                                className={`block px-4 py-2 font-semibold transition ${
+                                                    isActive(route("register"))
+                                                        ? "text-secondary-400"
+                                                        : "text-primary-50 hover:text-primary-400"
+                                                }`}
+                                            >
+                                                ثبت نام
+                                            </Link>
+                                        </motion.div>
+                                    </>
                                 )}
-                                <motion.div
-                                    variants={mobileItemVariants}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                >
-                                    <Link
-                                        href="/login"
-                                        className={`font-semibold px-4 py-2 rounded-md transition text-center block ${
-                                            isActive("./login") ||
-                                            isActive("/login")
-                                                ? "bg-secondary-700 text-primary-50"
-                                                : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
-                                        }`}
-                                        onClick={() => setIsOpen(false)}
-                                    >
-                                        <FaUser className="inline ml-2" />
-                                        ننوتل
-                                    </Link>
-                                </motion.div>
-                                <motion.div
-                                    variants={mobileItemVariants}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                >
-                                    <Link
-                                        href="/register"
-                                        className={`font-semibold px-4 py-2 rounded-md transition text-center block ${
-                                            isActive("/register")
-                                                ? "bg-secondary-700 text-primary-50"
-                                                : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
-                                        }`}
-                                        onClick={() => setIsOpen(false)}
-                                    >
-                                        ثبت نام
-                                    </Link>
-                                </motion.div>
-                            </motion.div>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>

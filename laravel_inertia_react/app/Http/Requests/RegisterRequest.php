@@ -17,7 +17,7 @@ class RegisterRequest extends FormRequest
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
             'role' => 'required|string|in:' . implode(',', Roles::values()),
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
@@ -26,6 +26,9 @@ class RegisterRequest extends FormRequest
         if ($this->input('role') === 'tailor') {
             $rules['experience'] = 'required|integer|min:0';
             $rules['career'] = 'required|string|max:255';
+            $rules['previous_work'] = 'required|string|max:255';
+            $rules['certifications'] = 'required|string|max:255';
+            $rules['skills'] = 'required|string|max:255';
             $rules['work_availability'] = 'required|in:Full-time,Part-time';
 
             // If addShop is true, add shop-related required fields
@@ -58,7 +61,6 @@ class RegisterRequest extends FormRequest
             'email.unique' => 'دا بریښنالیک دمخه ثبت شوی دی',
             'password.required' => 'پټنوم اړین دی',
             'password.min' => 'پټنوم باید لږ تر لږه ۸ حروف ولري',
-            'password.confirmed' => 'پټنومونه سره سمون نه لري',
             'role.required' => 'رول غوره کړئ',
             'role.in' => 'ناسم رول غوره کړی',
 
@@ -71,6 +73,12 @@ class RegisterRequest extends FormRequest
             'experience.integer' => 'تجربه باید یو شمیر وي',
             'experience.min' => 'تجربه باید له ۰ څخه زیاته وي',
             'career.max' => 'مسلک باید له ۲۵۵ حروفو څخه کم وي',
+            'previous_work.required' => 'مخکینی کار اړین دی',
+            'previous_work.max' => 'مخکینی کار باید له ۲۵۵ حروفو څخه کم وي',
+            'certifications.required' => 'تصدیقنامې اړینې دي',
+            'certifications.max' => 'تصدیقنامې باید له ۲۵۵ حروفو څخه کم وي',
+            'skills.required' => 'مهارتونه اړین دي',
+            'skills.max' => 'مهارتونه باید له ۲۵۵ حروفو څخه کم وي',
             'work_availability.in' => 'ناسمه دنده غوره کړی',
 
             // Shop information

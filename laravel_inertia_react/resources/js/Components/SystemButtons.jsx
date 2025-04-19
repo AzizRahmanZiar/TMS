@@ -35,22 +35,27 @@ const SystemButtons = ({
 
     const getButtonStyles = () => {
         const baseStyles =
-            "px-4 py-2 rounded-lg transition-colors duration-300";
+            "px-4 py-2 rounded-lg transition-colors font-amiri text-xl duration-300";
 
         switch (type) {
             case "add":
-                return `${baseStyles} bg-purple-600 hover:bg-purple-700 text-white shadow-md`;
+                return `${baseStyles} bg-tertiary-700 hover:bg-tertiary-800 text-white px-6 py-2 rounded-lg flex items-center transition-colors duration-300 shadow-md`;
             case "all":
+                return `${baseStyles} ${
+                    isActive
+                        ? "bg-secondary-800 text-white"
+                        : "bg-gray-200 text-gray-00"
+                }`;
             case "active":
                 return `${baseStyles} ${
                     isActive
-                        ? "bg-purple-600 text-white"
-                        : "bg-gray-200 text-gray-700"
+                        ? "bg-secondary-800 text-white"
+                        : "bg-gray-200 text-gray-00"
                 }`;
             case "completed":
                 return `${baseStyles} ${
                     isActive
-                        ? "bg-blue-600 text-white"
+                        ? "bg-secondary-900 text-white"
                         : "bg-gray-200 text-gray-700"
                 }`;
             case "edit":
@@ -66,9 +71,9 @@ const SystemButtons = ({
                         : "bg-red-600 hover:bg-red-700 text-white"
                 }`;
             case "submit":
-                return `${baseStyles} bg-purple-600 hover:bg-purple-700 text-white`;
+                return `${baseStyles} bg-tertiary-700 hover:bg-tertiary-800 text-white`;
             case "cancel":
-                return `${baseStyles} bg-red-500 hover:bg-red-600 text-white`;
+                return `${baseStyles} bg-secondary-600 hover:bg-secondary-700 text-white`;
             default:
                 return baseStyles;
         }

@@ -37,16 +37,11 @@ export default function Login({ status, canResetPassword }) {
         }
 
         post(route("login"), {
+            preserveScroll: true,
+            preserveState: true,
             onFinish: () => reset("password"),
-            onSuccess: (page) => {
-                const userRole = page.props.auth.user?.role;
-                if (userRole === "admin") {
-                    router.visit(route("dashboard"));
-                } else if (userRole === "tailor") {
-                    router.visit(route("dashboard"));
-                } else {
-                    router.visit(route("home"));
-                }
+            onSuccess: () => {
+                // The redirection will be handled by the LoginController
             },
         });
     };
@@ -60,12 +55,12 @@ export default function Login({ status, canResetPassword }) {
                     {status}
                 </div>
             )}
-
-            <form onSubmit={submit}>
+            <h1 className="text-center font-amiri text-2xl">داخلـــــــېدل</h1>
+            <form onSubmit={submit} className="px-6 py-10">
                 <div>
                     <label
                         htmlFor="email"
-                        className="block font-medium text-sm text-gray-700"
+                        className="block  font-amiri text-xl text-gray-700"
                     >
                         بریښنالیک
                     </label>
@@ -75,7 +70,7 @@ export default function Login({ status, canResetPassword }) {
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                        className="mt-1 block w-full outline-none focus:border-primary-500 border-b"
                         autoComplete="username"
                         autoFocus
                         onChange={(e) => setData("email", e.target.value)}
@@ -91,7 +86,7 @@ export default function Login({ status, canResetPassword }) {
                 <div className="mt-4">
                     <label
                         htmlFor="password"
-                        className="block font-medium text-sm text-gray-700"
+                        className="block font-amiri text-xl text-gray-700"
                     >
                         پټنوم
                     </label>
@@ -101,7 +96,7 @@ export default function Login({ status, canResetPassword }) {
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                        className="mt-1 block w-full outline-none  focus:border-primary-500  border-b"
                         autoComplete="current-password"
                         onChange={(e) => setData("password", e.target.value)}
                     />
@@ -122,9 +117,9 @@ export default function Login({ status, canResetPassword }) {
                             onChange={(e) =>
                                 setData("remember", e.target.checked)
                             }
-                            className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                            className="rounded border-gray-300 text-indigo-600  focus:ring-indigo-500"
                         />
-                        <span className="mr-2 text-sm text-gray-600">
+                        <span className="mr-2 text-xl font-amiri text-gray-600">
                             ما په یاد ولره
                         </span>
                     </label>
@@ -139,8 +134,11 @@ export default function Login({ status, canResetPassword }) {
                             پټنوم مو هیر شوی؟
                         </Link>
                     )}
-                    <PrimaryButton className="ml-4" disabled={processing}>
-                        {processing ? "د ننوتلو په حال کې..." : "ننوتل"}
+                    <PrimaryButton
+                        className="ml-4 font-amiri"
+                        disabled={processing}
+                    >
+                        {processing ? "د ننوتلو په حال کې..." : "داخل سئ"}
                     </PrimaryButton>
                 </div>
             </form>

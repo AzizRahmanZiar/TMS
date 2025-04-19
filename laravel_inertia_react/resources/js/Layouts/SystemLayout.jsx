@@ -12,17 +12,31 @@ const SystemLayout = ({ children }) => {
         return null; // ProtectedRoute will handle the redirect
     }
 
+    // Get the current path
+    const currentPath = window.location.pathname;
+
+    // Determine which roles can access the current path
+    let allowedRoles = [];
+    if (currentPath === "/admin") {
+        allowedRoles = ["admin"];
+    } else if (currentPath === "/dashboard") {
+        allowedRoles = ["tailor"];
+    } else if (
+        currentPath.startsWith("/cloths") ||
+        currentPath.startsWith("/uniform") ||
+        currentPath.startsWith("/kortai") ||
+        currentPath.startsWith("/sadrai") ||
+        currentPath.startsWith("/adminpost")
+    ) {
+        allowedRoles = ["tailor"];
+    }
+
     return (
-        <ProtectedRoute roles={["admin", "tailor"]}>
-            <div className="flex  h-screen rtl">
+        <ProtectedRoute roles={allowedRoles}>
+            <div className="flex h-screen rtl">
                 <Sidebar />
                 <div className="flex w-full border-r-0.5 border-primary-500 flex-col">
-                    <header className="flex w-full h-20 justify-between items-center bg-primary-700 p-6 shadow-md">
-                        <h1 className="text-3xl font-bold text-primary-50 flex items-center gap-3">
-                            <span className="text-4xl font-reem">
-                                خیــــــــــــاطي مدیریت سیستم
-                            </span>
-                        </h1>
+                    <header className="flex w-full h-20 justify-end items-center bg-primary-700 p-6 shadow-md">
                         <div className="flex items-center space-x-4 rtl:space-x-reverse">
                             {/* Notifications */}
                             <div className="relative">
@@ -43,9 +57,16 @@ const SystemLayout = ({ children }) => {
                                 href={route("logout")}
                                 method="post"
                                 as="button"
-                                className="bg-secondary-500 hover:bg-secondary-400 text-white px-4 py-2 rounded-md transition-colors shadow-md"
+                                className="bg-secondary-500 hover:bg-secondary-400 text-white px-4 py-2 rounded-md transition-colors shadow-md font-amiri text-xl"
                             >
-                                لګاوټ
+                                وتـــــــل
+                            </Link>
+
+                            <Link
+                                href="/"
+                                className="bg-tertiary-500 hover:bg-tertiary-400 text-white px-4 py-2 rounded-md transition-colors shadow-md font-amiri text-xl"
+                            >
+                                کـــــــور
                             </Link>
                         </div>
                     </header>

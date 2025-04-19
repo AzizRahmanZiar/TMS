@@ -90,4 +90,9 @@ class User extends Authenticatable
     {
         return $this->hasRole(Roles::USER);
     }
+
+    public function isCustomer(): bool
+    {
+        return $this->hasRole(Roles::CUSTOMER);
+    }
 }

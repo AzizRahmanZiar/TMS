@@ -5,6 +5,7 @@ import { useUniform } from "@/Contexts/UniformContext";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
+import { GiArmoredPants } from "react-icons/gi";
 
 const Uniform = () => {
     const { uniform, setUniform } = useUniform();
@@ -370,21 +371,12 @@ const Uniform = () => {
                 <div className="bg-white rounded-lg border p-6 mb-6">
                     <div className="flex flex-col md:flex-row justify-between items-center mb-6">
                         <div className="flex gap-5 items-center mb-4 md:mb-0">
-                            <img
-                                src="/imgs/uniform.jpg"
-                                alt="Uniform"
-                                className="h-20 w-20 rounded-full object-cover border-4 border-green-100 mr-4"
-                            />
-                            <h1 className="text-2xl font-bold text-gray-800">
+                            <GiArmoredPants className="h-20 w-20   text-secondary-900" />
+                            <h1 className=" font-amiri text-3xl text-gray-800">
                                 د درشی د مشتریانو لیست
                             </h1>
                         </div>
-                        <button
-                            onClick={handleAddClick}
-                            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors duration-300 shadow-md"
-                        >
-                            نوی ریکارډ اضافه کول
-                        </button>
+                        <SystemButtons type="add" onClick={handleAddClick} />
                     </div>
 
                     {/* Search and Filter Section */}

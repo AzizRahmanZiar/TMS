@@ -10,7 +10,11 @@ class AdminController extends Controller
 {
     public function admin()
     {
-        return Inertia::render('System/Admin');
+        $users = User::select('id', 'name', 'email', 'role', 'created_at')->get();
+
+        return Inertia::render('System/Admin', [
+            'users' => $users
+        ]);
     }
 
     public function update(Request $request, User $user)
@@ -24,5 +28,16 @@ class AdminController extends Controller
         $user->update($validated);
 
         return redirect()->back()->with('message', 'User updated successfully.');
+    }
+
+    public function destroy(User $user)
+    {
+        // Prevent deleting the last admin
+        if ($user->role === 'admin' && User::where('role', 'admin')->count() <= 1) {
+            return back()->with('error', 'Cannot delete the last admin user.');
+        }
+
+        $user->delete();
+        return back()->with('message', 'User deleted successfully.');
     }
 }
