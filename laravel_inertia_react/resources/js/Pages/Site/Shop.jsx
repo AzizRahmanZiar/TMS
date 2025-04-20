@@ -231,9 +231,9 @@ const Shop = () => {
                 animate="visible"
                 variants={fadeIn}
             >
-                <div className="container mx-auto px-4 text-center">
+                <div className=" mx-auto px-4 ">
                     <motion.h1
-                        className="text-3xl md:text-5xl font-bold mb-6"
+                        className="text-3xl md:text-5xl max-w-3xl mx-auto font-bold mb-6"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.6 }}
@@ -279,7 +279,7 @@ const Shop = () => {
                                 <input
                                     type="text"
                                     placeholder="د نوم یا موقعیت له مخې لټون"
-                                    className="w-full p-3 border border-primary-200 rounded-lg pr-10 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
+                                    className="w-full p-3 border border-primary-200 outline-none rounded-lg pr-10 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                     value={searchTerm}
                                     onChange={(e) =>
                                         setSearchTerm(e.target.value)
@@ -289,24 +289,24 @@ const Shop = () => {
                             </motion.div>
 
                             <div className="flex gap-2">
-                                <motion.button
+                                <button
                                     onClick={handleFilter}
-                                    className="flex-1 bg-secondary-600 text-white p-3 rounded-lg hover:bg-secondary-700 transition duration-300 shadow-md flex items-center justify-center"
+                                    className="flex-1 bg-secondary-600 text-white px-3 py-4 rounded-lg hover:bg-secondary-700 transition duration-300 shadow-md flex items-center justify-center"
                                     variants={buttonVariants}
                                     whileHover="hover"
                                     whileTap="tap"
                                 >
                                     <FaFilter className="ml-2" /> فیلټر
-                                </motion.button>
-                                <motion.button
+                                </button>
+                                <button
                                     onClick={resetFilters}
-                                    className="flex-1 bg-tertiary-600 text-white p-3 rounded-lg hover:bg-tertiary-700 transition duration-300 shadow-md"
+                                    className="flex-1 bg-tertiary-600 text-white px-3 py-4 rounded-lg hover:bg-tertiary-700 transition duration-300 shadow-md"
                                     variants={buttonVariants}
                                     whileHover="hover"
                                     whileTap="tap"
                                 >
                                     بیا تنظیم
-                                </motion.button>
+                                </button>
                             </div>
                         </div>
                     </motion.div>

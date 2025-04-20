@@ -105,9 +105,9 @@ const Order = () => {
                 animate="visible"
                 variants={fadeIn}
             >
-                <div className="container mx-auto px-4 text-center">
+                <div className=" mx-auto px-4">
                     <motion.h1
-                        className="text-3xl md:text-4xl font-bold mb-4"
+                        className="text-3xl md:text-4xl max-w-3xl mx-auto  font-bold mb-4"
                         variants={fadeIn}
                     >
                         فرمایش ورکړئ
@@ -169,7 +169,7 @@ const Order = () => {
                                             className="block text-gray-700 mb-2"
                                             htmlFor="name"
                                         >
-                                            بشپړ نوم *
+                                            نوم
                                         </label>
                                         <input
                                             type="text"
@@ -177,7 +177,7 @@ const Order = () => {
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
-                                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
+                                            className="w-full p-3 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                             required
                                         />
                                     </motion.div>
@@ -193,7 +193,7 @@ const Order = () => {
                                             className="block text-gray-700 mb-2"
                                             htmlFor="phone"
                                         >
-                                            د تلیفون شمیره *
+                                            د تلیفون شمیره
                                         </label>
                                         <input
                                             type="tel"
@@ -201,7 +201,7 @@ const Order = () => {
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
+                                            className="w-full p-3 outline-none border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                             required
                                         />
                                     </motion.div>
@@ -225,7 +225,7 @@ const Order = () => {
                                             name="email"
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
+                                            className="w-full p-3 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                         />
                                     </motion.div>
 
@@ -240,7 +240,7 @@ const Order = () => {
                                             className="block text-gray-700 mb-2"
                                             htmlFor="address"
                                         >
-                                            آدرس *
+                                            آدرس
                                         </label>
                                         <input
                                             type="text"
@@ -248,7 +248,7 @@ const Order = () => {
                                             name="address"
                                             value={formData.address}
                                             onChange={handleChange}
-                                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
+                                            className="w-full p-3 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                             required
                                         />
                                     </motion.div>
@@ -263,17 +263,12 @@ const Order = () => {
                                 transition={{ delay: 0.5 }}
                                 viewport={{ once: true }}
                             >
-                                <motion.button
+                                <button
                                     type="submit"
                                     className="bg-secondary-600 text-white py-3 px-8 rounded-md font-medium hover:bg-secondary-700 transition shadow-md"
-                                    whileHover={{
-                                        scale: 1.05,
-                                        backgroundColor: "#4338ca",
-                                    }}
-                                    whileTap={{ scale: 0.95 }}
                                 >
                                     فرمایش ثبت کړئ
-                                </motion.button>
+                                </button>
                             </motion.div>
                         </motion.form>
                     </motion.div>

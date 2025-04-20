@@ -165,15 +165,10 @@ const About = () => {
                             transition={{ duration: 0.6 }}
                             viewport={{ once: true }}
                         >
-                            <motion.img
-                                src="/images/about/story.jpg"
+                            <img
+                                src="./imgs/team.jpg"
                                 alt="زموږ کیسه"
-                                className="rounded-lg w-full h-auto object-cover shadow-lg"
-                                onError={(e) => {
-                                    e.target.src = "./imgs/team.jpg";
-                                }}
-                                whileHover={{ scale: 1.05 }}
-                                transition={{ duration: 0.3 }}
+                                className="rounded-lg w-full h-auto"
                             />
                         </motion.div>
                     </div>
@@ -464,29 +459,18 @@ const About = () => {
                         یې بشپړ برابروالی موندلی دی.
                     </motion.p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <motion.a
+                        <a
                             href="/tailors"
-                            className="bg-tertiary-700 text-primary-50 py-3 px-8 rounded-md font-medium hover:bg-tertiary-800 transition"
-                            whileHover={{
-                                scale: 1.05,
-                                backgroundColor: "#7e22ce",
-                            }}
-                            whileTap={{ scale: 0.95 }}
+                            className="bg-tertiary-700 text-primary-50 py-3 px-4 rounded-md font-medium hover:bg-tertiary-800 transition"
                         >
                             خیاط ومومئ
-                        </motion.a>
-                        <motion.a
+                        </a>
+                        <a
                             href="/order"
-                            className="bg-transparent border-2 border-secondary-600 text-primary-800 py-3 px-8 rounded-md font-medium hover:text-primary-50 hover:bg-secondary-700 transition"
-                            whileHover={{
-                                scale: 1.05,
-                                backgroundColor: "#4338ca",
-                                color: "#ffffff",
-                            }}
-                            whileTap={{ scale: 0.95 }}
+                            className="bg-transparent border-2 border-secondary-600 text-primary-800 py-3 px-4 rounded-md font-medium hover:text-primary-50 hover:bg-secondary-700 transition"
                         >
                             فرمایش ورکړئ
-                        </motion.a>
+                        </a>
                     </div>
                 </div>
             </motion.section>

@@ -175,8 +175,8 @@ const Home = () => {
                     </motion.p>
                     <motion.div
                         variants={fadeInUp}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ scale: 1 }}
+                        whileTap={{ scale: 1 }}
                     >
                         <Link
                             href="/tailor"
@@ -192,12 +192,10 @@ const Home = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                    <motion.img
+                    <img
                         src="./imgs/ilus-3.jpg"
                         className="p-10 transform scale-x-[-1]"
                         alt="hero"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ type: "spring", stiffness: 300 }}
                     />
                 </motion.div>
             </section>
