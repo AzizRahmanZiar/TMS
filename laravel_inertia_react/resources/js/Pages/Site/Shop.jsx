@@ -19,91 +19,69 @@ import {
     FaChevronLeft,
     FaChevronRight,
 } from "react-icons/fa";
-import { useReg } from "@/Contexts/RegContext";
+import { Head } from '@inertiajs/react';
 
-const Shop = () => {
-    const { reg } = useReg(); // Access the reg context
+const Shop = ({ shops }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [specialization, setSpecialization] = useState("");
     const [priceRange, setPriceRange] = useState("");
-    const [shops, setShops] = useState([]);
     const [processedShops, setProcessedShops] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 9;
 
-    // Extract shops from reg data on component mount
+    // Process shop data
     useEffect(() => {
-        if (reg && reg.length > 0) {
-            // Filter only users with role "Tailor" and addShop=true
-            const shopsList = reg.filter(
-                (user) => user.role === "Tailor" && user.addShop
-            );
-            setShops(shopsList);
-        } else {
-            setShops([]);
-        }
-        setLoading(false);
-    }, [reg]);
-
-    // Process shop images
-    useEffect(() => {
-        const processShopImages = async () => {
+        if (shops && shops.length > 0) {
             const processed = shops.map((shop) => {
                 // Create a new object with all the shop properties
                 const processedShop = { ...shop };
 
                 // Process shop images if they exist
-                if (shop.shopImages && shop.shopImages.length > 0) {
-                    processedShop.shopImageUrls = shop.shopImages
-                        .map((image) => {
-                            if (image instanceof File) {
-                                return URL.createObjectURL(image);
-                            }
-                            return null;
-                        })
-                        .filter(Boolean);
+                if (shop.shop_images) {
+                    try {
+                        const images = JSON.parse(shop.shop_images);
+                        processedShop.shopImageUrls = images.map(image => `/storage/${image}`);
+                    } catch (e) {
+                        processedShop.shopImageUrls = [];
+                    }
                 } else {
                     processedShop.shopImageUrls = [];
+                }
+
+                // Process social links if they exist
+                if (shop.social_links) {
+                    try {
+                        processedShop.socialLinks = JSON.parse(shop.social_links);
+                    } catch (e) {
+                        processedShop.socialLinks = {};
+                    }
+                } else {
+                    processedShop.socialLinks = {};
                 }
 
                 return processedShop;
             });
 
             setProcessedShops(processed);
-        };
-
-        processShopImages();
-
-        // Cleanup function to revoke object URLs
-        return () => {
-            processedShops.forEach((shop) => {
-                if (shop.shopImageUrls) {
-                    shop.shopImageUrls.forEach((url) => {
-                        if (url) URL.revokeObjectURL(url);
-                    });
-                }
-            });
-        };
+        }
     }, [shops]);
 
     // Function to handle filtering
     const handleFilter = () => {
-        if (!reg) return;
+        if (!shops) return;
 
-        let filtered = reg.filter(
-            (user) => user.role === "Tailor" && user.addShop
-        );
+        let filtered = shops;
 
         if (searchTerm) {
             filtered = filtered.filter(
                 (shop) =>
-                    (shop.tailoringName &&
-                        shop.tailoringName
+                    (shop.tailoring_name &&
+                        shop.tailoring_name
                             .toLowerCase()
                             .includes(searchTerm.toLowerCase())) ||
-                    (shop.tailoringAddress &&
-                        shop.tailoringAddress
+                    (shop.tailoring_address &&
+                        shop.tailoring_address
                             .toLowerCase()
                             .includes(searchTerm.toLowerCase()))
             );
@@ -125,7 +103,7 @@ const Shop = () => {
             filtered = filtered.filter(() => true);
         }
 
-        setShops(filtered);
+        setProcessedShops(filtered);
         setCurrentPage(1);
     };
 
@@ -135,11 +113,8 @@ const Shop = () => {
         setSpecialization("");
         setPriceRange("");
 
-        if (reg) {
-            const shopsList = reg.filter(
-                (user) => user.role === "Tailor" && user.addShop
-            );
-            setShops(shopsList);
+        if (shops) {
+            setProcessedShops(shops);
         }
         setCurrentPage(1);
     };
@@ -224,6 +199,7 @@ const Shop = () => {
 
     return (
         <SiteLayout title="د خیاطۍ دوکانونه - خیاط ماسټر">
+            <Head title="Shops" />
             {/* Hero Section */}
             <motion.section
                 className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-20"
@@ -252,81 +228,82 @@ const Shop = () => {
                 </div>
             </motion.section>
 
-            {/* Search and Filter Section */}
+            {/* Filter section */}
             <motion.section
-                className="py-10 bg-primary-50 top-0 z-20 border"
+                className="py-8 bg-white shadow-md"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
             >
                 <div className="container mx-auto px-4">
                     <motion.div
                         className="bg-white p-6 rounded-xl border"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
+                        whileHover={{
+                            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+                        }}
                     >
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <motion.div
-                                className="relative"
-                                whileHover={{ scale: 1.01 }}
-                                transition={{
-                                    type: "spring",
-                                    stiffness: 400,
-                                    damping: 10,
-                                }}
-                            >
+                        <div className="flex flex-col md:flex-row gap-4">
+                            <div className="flex flex-1 items-center gap-2 border border-primary-200 p-3 rounded-lg bg-white">
+                                <FaSearch className="text-primary-400" />
                                 <input
                                     type="text"
-                                    placeholder="د نوم یا موقعیت له مخې لټون"
-                                    className="w-full p-3 border border-primary-200 outline-none rounded-lg pr-10 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
+                                    placeholder="د دوکان نوم یا آدرس ولټوئ..."
                                     value={searchTerm}
                                     onChange={(e) =>
                                         setSearchTerm(e.target.value)
                                     }
+                                    className="flex-1 outline-none"
                                 />
-                                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400" />
-                            </motion.div>
-
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={handleFilter}
-                                    className="flex-1 bg-secondary-600 text-white px-3 py-4 rounded-lg hover:bg-secondary-700 transition duration-300 shadow-md flex items-center justify-center"
-                                    variants={buttonVariants}
-                                    whileHover="hover"
-                                    whileTap="tap"
-                                >
-                                    <FaFilter className="ml-2" /> فیلټر
-                                </button>
-                                <button
-                                    onClick={resetFilters}
-                                    className="flex-1 bg-tertiary-600 text-white px-3 py-4 rounded-lg hover:bg-tertiary-700 transition duration-300 shadow-md"
-                                    variants={buttonVariants}
-                                    whileHover="hover"
-                                    whileTap="tap"
-                                >
-                                    بیا تنظیم
-                                </button>
                             </div>
+                            <div className="flex flex-1 items-center gap-2 border border-primary-200 p-3 rounded-lg bg-white">
+                                <FaFilter className="text-primary-400" />
+                                <select
+                                    value={specialization}
+                                    onChange={(e) =>
+                                        setSpecialization(e.target.value)
+                                    }
+                                    className="flex-1 outline-none bg-transparent"
+                                >
+                                    <option value="">ټول تخصصونه</option>
+                                    <option value="Wedding">د واده جامې</option>
+                                    <option value="Traditional">
+                                        دودیز جامې
+                                    </option>
+                                    <option value="Modern">مدرن جامې</option>
+                                </select>
+                            </div>
+                            <motion.button
+                                onClick={handleFilter}
+                                className="bg-secondary-600 hover:bg-secondary-700 text-white py-4 px-6 rounded-lg transition duration-200 shadow-md"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                لټون
+                            </motion.button>
+                            <motion.button
+                                onClick={resetFilters}
+                                className="bg-primary-500 hover:bg-primary-600 text-white py-4 px-6 rounded-lg transition duration-200 shadow-md"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                ریسیټ
+                            </motion.button>
                         </div>
                     </motion.div>
                 </div>
             </motion.section>
 
-            {/* Shops Listing */}
-            <section className="py-12 bg-primary-50">
-                <div className="mx-auto px-4">
+            {/* Shops list */}
+            <section className="py-12 bg-gray-50">
+                <div className="container mx-auto px-4">
                     {loading ? (
                         <motion.div
                             className="flex justify-center items-center py-20"
-                            animate={{ rotate: 360 }}
-                            transition={{
-                                repeat: Number.POSITIVE_INFINITY,
-                                duration: 1,
-                                ease: "linear",
-                            }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                         >
-                            <div className="rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary-500"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary-500"></div>
                         </motion.div>
                     ) : (
                         <>
@@ -340,387 +317,130 @@ const Shop = () => {
                                     paginatedShops.map((shop, index) => (
                                         <motion.div
                                             key={index}
-                                            className="bg-white rounded-xl overflow-hidden shadow-lg border border-primary-100 transition duration-300"
+                                            className="bg-white rounded-xl overflow-hidden shadow-lg border border-primary-100 hover:shadow-xl transition duration-300"
                                             variants={cardVariants}
                                             whileHover="hover"
                                             custom={index}
                                         >
-                                            <div className="relative h-44 bg-gradient-to-r from-primary-100 to-secondary-100">
+                                            {/* Shop Images Carousel */}
+                                            <div className="relative h-48 bg-gray-100">
                                                 {shop.shopImageUrls &&
-                                                shop.shopImageUrls.length >
-                                                    0 ? (
-                                                    <motion.img
-                                                        src={
-                                                            shop
-                                                                .shopImageUrls[0] ||
-                                                            "/placeholder.svg"
-                                                        }
-                                                        alt={shop.tailoringName}
+                                                shop.shopImageUrls.length > 0 ? (
+                                                    <img
+                                                        src={shop.shopImageUrls[0]}
+                                                        alt={shop.tailoring_name}
                                                         className="w-full h-full object-cover"
-                                                        initial={{ scale: 1.1 }}
-                                                        animate={{ scale: 1 }}
-                                                        transition={{
-                                                            duration: 0.5,
-                                                        }}
-                                                        whileHover={{
-                                                            scale: 1.05,
-                                                        }}
                                                     />
                                                 ) : (
-                                                    <motion.div
-                                                        className="w-full h-full flex items-center justify-center"
-                                                        whileHover={{
-                                                            backgroundColor:
-                                                                "#f0f9ff",
-                                                        }}
-                                                    >
-                                                        <FaStore className="text-6xl text-primary-300" />
-                                                    </motion.div>
+                                                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                                                        <FaStore className="text-4xl text-gray-400" />
+                                                    </div>
                                                 )}
-
-                                                <motion.div
-                                                    className="absolute bottom-0 right-0 left-0 bg-gradient-to-t from-black to-transparent p-4"
-                                                    initial={{
-                                                        opacity: 0,
-                                                        y: 10,
-                                                    }}
-                                                    animate={{
-                                                        opacity: 1,
-                                                        y: 0,
-                                                    }}
-                                                    transition={{
-                                                        delay: 0.2,
-                                                        duration: 0.4,
-                                                    }}
-                                                >
-                                                    <h3 className="text-white text-xl font-bold">
-                                                        {shop.tailoringName ||
-                                                            "خیاطي دوکان"}
-                                                    </h3>
-                                                </motion.div>
                                             </div>
 
                                             <div className="p-6">
-                                                <motion.div
-                                                    className="space-y-3 mb-6"
+                                                <motion.h2
+                                                    className="text-xl font-bold text-primary-800 mb-2"
                                                     initial={{ opacity: 0 }}
                                                     animate={{ opacity: 1 }}
                                                     transition={{
-                                                        delay: 0.3,
-                                                        duration: 0.5,
+                                                        delay: 0.3 + index * 0.05,
                                                     }}
                                                 >
-                                                    <div className="grid grid-cols-2 gap-2 mb-10">
-                                                        <motion.div
-                                                            className="flex items-start"
-                                                            whileHover={{
-                                                                x: 3,
-                                                            }}
-                                                            transition={{
-                                                                type: "spring",
-                                                                stiffness: 400,
-                                                                damping: 10,
-                                                            }}
-                                                        >
-                                                            <FaMapMarkerAlt className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    پته:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {shop.tailoringAddress ||
-                                                                        "نامعلوم"}
-                                                                </p>
-                                                            </div>
-                                                        </motion.div>
+                                                    {shop.tailoring_name}
+                                                </motion.h2>
 
-                                                        <motion.div
-                                                            className="flex items-start"
-                                                            whileHover={{
-                                                                x: 3,
-                                                            }}
-                                                            transition={{
-                                                                type: "spring",
-                                                                stiffness: 400,
-                                                                damping: 10,
-                                                            }}
-                                                        >
-                                                            <FaUsers className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    د خیاطانو
-                                                                    شمیر:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {shop.tailorCount ||
-                                                                        "نامعلوم"}
-                                                                </p>
-                                                            </div>
-                                                        </motion.div>
-
-                                                        <motion.div
-                                                            className="flex items-start"
-                                                            whileHover={{
-                                                                x: 3,
-                                                            }}
-                                                            transition={{
-                                                                type: "spring",
-                                                                stiffness: 400,
-                                                                damping: 10,
-                                                            }}
-                                                        >
-                                                            <FaCalendarAlt className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    تاسیس:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {shop.publishedYear ||
-                                                                        "نامعلوم"}
-                                                                </p>
-                                                            </div>
-                                                        </motion.div>
-
-                                                        <motion.div
-                                                            className="flex items-start"
-                                                            whileHover={{
-                                                                x: 3,
-                                                            }}
-                                                            transition={{
-                                                                type: "spring",
-                                                                stiffness: 400,
-                                                                damping: 10,
-                                                            }}
-                                                        >
-                                                            <FaPhone className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    تماس نمبر:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {shop.contactNumber ||
-                                                                        "نامعلوم"}
-                                                                </p>
-                                                            </div>
-                                                        </motion.div>
+                                                <motion.div
+                                                    className="space-y-3"
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{
+                                                        delay: 0.4 + index * 0.05,
+                                                    }}
+                                                >
+                                                    <div className="flex items-start">
+                                                        <FaMapMarkerAlt className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {shop.tailoring_address}
+                                                        </p>
                                                     </div>
 
-                                                    {shop.shopEmail && (
-                                                        <motion.div
-                                                            className="flex items-start"
-                                                            whileHover={{
-                                                                x: 3,
-                                                            }}
-                                                            transition={{
-                                                                type: "spring",
-                                                                stiffness: 400,
-                                                                damping: 10,
-                                                            }}
-                                                        >
-                                                            <FaEnvelope className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    بریښنالیک:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {
-                                                                        shop.shopEmail
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                        </motion.div>
-                                                    )}
+                                                    <div className="flex items-start">
+                                                        <FaPhone className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {shop.contact_number}
+                                                        </p>
+                                                    </div>
 
-                                                    {shop.workingHours && (
-                                                        <motion.div
-                                                            className="flex items-start"
-                                                            whileHover={{
-                                                                x: 3,
-                                                            }}
-                                                            transition={{
-                                                                type: "spring",
-                                                                stiffness: 400,
-                                                                damping: 10,
-                                                            }}
-                                                        >
-                                                            <FaClock className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    کاري
-                                                                    ساعتونه:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {
-                                                                        shop.workingHours
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                        </motion.div>
-                                                    )}
-                                                </motion.div>
+                                                    <div className="flex items-start">
+                                                        <FaEnvelope className="text-primary-500 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {shop.shop_email}
+                                                        </p>
+                                                    </div>
 
-                                                {shop.services && (
-                                                    <motion.div
-                                                        className="mb-4 flex items-center gap-2 rounded-lg"
-                                                        initial={{
-                                                            opacity: 0,
-                                                            y: 10,
-                                                        }}
-                                                        animate={{
-                                                            opacity: 1,
-                                                            y: 0,
-                                                        }}
-                                                        transition={{
-                                                            delay: 0.4,
-                                                            duration: 0.5,
-                                                        }}
-                                                    >
-                                                        <h4 className="font-semibold text-primary-700 flex items-center">
-                                                            <FaTools className="ml-1" />{" "}
-                                                            خدمتونه:
-                                                        </h4>
-                                                        <p className="text-primary-700">
+                                                    <div className="flex items-start">
+                                                        <FaClock className="text-secondary-600 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {shop.working_hours}
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="flex items-start">
+                                                        <FaTools className="text-tertiary-600 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
                                                             {shop.services}
                                                         </p>
-                                                    </motion.div>
-                                                )}
+                                                    </div>
 
-                                                {shop.paymentMethods &&
-                                                    shop.paymentMethods.length >
-                                                        0 && (
-                                                        <motion.div
-                                                            className="mb-4 flex gap-3"
-                                                            initial={{
-                                                                opacity: 0,
-                                                                y: 10,
-                                                            }}
-                                                            animate={{
-                                                                opacity: 1,
-                                                                y: 0,
-                                                            }}
-                                                            transition={{
-                                                                delay: 0.5,
-                                                                duration: 0.5,
-                                                            }}
-                                                        >
-                                                            <h4 className="font-semibold text-primary-700 mb-2 flex items-center">
-                                                                <FaCreditCard className="ml-1" />{" "}
-                                                                د تادیاتو طریقې:
-                                                            </h4>
-                                                            <div className="flex flex-wrap gap-2">
-                                                                {shop.paymentMethods.map(
-                                                                    (
-                                                                        method,
-                                                                        idx
-                                                                    ) => (
-                                                                        <motion.span
-                                                                            key={
-                                                                                idx
-                                                                            }
-                                                                            className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm"
-                                                                            whileHover={{
-                                                                                backgroundColor:
-                                                                                    "#e0f2fe",
-                                                                                scale: 1.05,
-                                                                            }}
-                                                                        >
-                                                                            {
-                                                                                method
-                                                                            }
-                                                                        </motion.span>
-                                                                    )
-                                                                )}
-                                                            </div>
-                                                        </motion.div>
-                                                    )}
+                                                    <div className="flex items-start">
+                                                        <FaCreditCard className="text-primary-600 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {shop.payment_methods}
+                                                        </p>
+                                                    </div>
+                                                </motion.div>
 
+                                                {/* Social Links */}
                                                 {shop.socialLinks && (
                                                     <motion.div
-                                                        className="mb-6 flex gap-3"
-                                                        initial={{
-                                                            opacity: 0,
-                                                            y: 10,
-                                                        }}
-                                                        animate={{
-                                                            opacity: 1,
-                                                            y: 0,
-                                                        }}
+                                                        className="mt-4 flex space-x-4"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
                                                         transition={{
-                                                            delay: 0.6,
-                                                            duration: 0.5,
+                                                            delay: 0.5 + index * 0.05,
                                                         }}
                                                     >
-                                                        <h4 className="font-semibold text-primary-700 mb-2">
-                                                            ټولنیزې شبکې:
-                                                        </h4>
-                                                        <div className="flex gap-4">
-                                                            {shop.socialLinks
-                                                                .facebook && (
-                                                                <motion.a
-                                                                    href={
-                                                                        shop
-                                                                            .socialLinks
-                                                                            .facebook
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-2xl text-primary-600 hover:text-primary-700 transition"
-                                                                    whileHover={{
-                                                                        scale: 1.2,
-                                                                        rotate: 5,
-                                                                    }}
-                                                                    whileTap={{
-                                                                        scale: 0.9,
-                                                                    }}
-                                                                >
-                                                                    <FaFacebook />
-                                                                </motion.a>
-                                                            )}
-                                                            {shop.socialLinks
-                                                                .instagram && (
-                                                                <motion.a
-                                                                    href={
-                                                                        shop
-                                                                            .socialLinks
-                                                                            .instagram
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-2xl text-secondary-600 hover:text-secondary-700 transition"
-                                                                    whileHover={{
-                                                                        scale: 1.2,
-                                                                        rotate: 5,
-                                                                    }}
-                                                                    whileTap={{
-                                                                        scale: 0.9,
-                                                                    }}
-                                                                >
-                                                                    <FaInstagram />
-                                                                </motion.a>
-                                                            )}
-                                                            {shop.socialLinks
-                                                                .telegram && (
-                                                                <motion.a
-                                                                    href={
-                                                                        shop
-                                                                            .socialLinks
-                                                                            .telegram
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-2xl text-tertiary-600 hover:text-tertiary-700 transition"
-                                                                    whileHover={{
-                                                                        scale: 1.2,
-                                                                        rotate: 5,
-                                                                    }}
-                                                                    whileTap={{
-                                                                        scale: 0.9,
-                                                                    }}
-                                                                >
-                                                                    <FaTelegram />
-                                                                </motion.a>
-                                                            )}
-                                                        </div>
+                                                        {shop.socialLinks.facebook && (
+                                                            <a
+                                                                href={shop.socialLinks.facebook}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-primary-600 hover:text-primary-800"
+                                                            >
+                                                                <FaFacebook className="text-xl" />
+                                                            </a>
+                                                        )}
+                                                        {shop.socialLinks.instagram && (
+                                                            <a
+                                                                href={shop.socialLinks.instagram}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-primary-600 hover:text-primary-800"
+                                                            >
+                                                                <FaInstagram className="text-xl" />
+                                                            </a>
+                                                        )}
+                                                        {shop.socialLinks.telegram && (
+                                                            <a
+                                                                href={shop.socialLinks.telegram}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-primary-600 hover:text-primary-800"
+                                                            >
+                                                                <FaTelegram className="text-xl" />
+                                                            </a>
+                                                        )}
                                                     </motion.div>
                                                 )}
                                             </div>
@@ -729,26 +449,23 @@ const Shop = () => {
                                 ) : (
                                     <motion.div
                                         className="col-span-3 text-center py-16"
-                                        variants={fadeInUp}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ duration: 0.5 }}
                                     >
                                         <motion.div
                                             className="bg-white p-8 rounded-xl border max-w-lg mx-auto"
-                                            initial={{ opacity: 0, scale: 0.9 }}
-                                            animate={{ opacity: 1, scale: 1 }}
+                                            initial={{ scale: 0.9 }}
+                                            animate={{ scale: 1 }}
                                             transition={{ duration: 0.5 }}
                                         >
                                             <motion.div
                                                 className="text-primary-400 text-6xl mb-4"
-                                                animate={{
-                                                    rotateY: [0, 180, 360],
-                                                    scale: [1, 1.1, 1],
-                                                }}
+                                                initial={{ y: -20 }}
+                                                animate={{ y: 0 }}
                                                 transition={{
-                                                    duration: 2,
-                                                    ease: "easeInOut",
-                                                    times: [0, 0.5, 1],
-                                                    repeat: Number.POSITIVE_INFINITY,
-                                                    repeatDelay: 3,
+                                                    duration: 0.5,
+                                                    delay: 0.2,
                                                 }}
                                             >
                                                 <FaStore className="mx-auto" />
@@ -758,8 +475,8 @@ const Shop = () => {
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 transition={{
-                                                    delay: 0.3,
                                                     duration: 0.5,
+                                                    delay: 0.3,
                                                 }}
                                             >
                                                 هیڅ دوکان ونه موندل شو
@@ -769,13 +486,13 @@ const Shop = () => {
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 transition={{
-                                                    delay: 0.5,
                                                     duration: 0.5,
+                                                    delay: 0.4,
                                                 }}
                                             >
-                                                ستاسو د معیارونو سره سم هیڅ
-                                                دوکان ونه موندل شو یا په دې وخت
-                                                کې هیڅ دوکان نشته.
+                                                په دې وخت کې هیڅ دوکان نشته یا
+                                                ستاسو د لټون معیارونه هیڅ پایله
+                                                نلري.
                                             </motion.p>
                                         </motion.div>
                                     </motion.div>
@@ -788,7 +505,7 @@ const Shop = () => {
                                     className="mt-12 flex justify-center"
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.7, duration: 0.5 }}
+                                    transition={{ duration: 0.5, delay: 0.7 }}
                                 >
                                     <nav className="flex items-center gap-1">
                                         <motion.button
@@ -806,13 +523,13 @@ const Shop = () => {
                                                     ? {
                                                           scale: 1.1,
                                                           backgroundColor:
-                                                              "#e0f2fe",
+                                                              "rgba(0,0,0,0.05)",
                                                       }
                                                     : {}
                                             }
                                             whileTap={
                                                 currentPage !== 1
-                                                    ? { scale: 0.9 }
+                                                    ? { scale: 0.95 }
                                                     : {}
                                             }
                                         >
@@ -839,20 +556,23 @@ const Shop = () => {
                                                                 ? "bg-secondary-600 text-white"
                                                                 : "text-primary-700 hover:bg-primary-100"
                                                         }`}
-                                                        whileHover={
-                                                            currentPage !==
-                                                            i + 1
-                                                                ? { scale: 1.1 }
-                                                                : {}
-                                                        }
-                                                        whileTap={{
-                                                            scale: 0.9,
+                                                        whileHover={{
+                                                            scale: 1.1,
                                                         }}
-                                                        initial={{ opacity: 0 }}
-                                                        animate={{ opacity: 1 }}
+                                                        whileTap={{
+                                                            scale: 0.95,
+                                                        }}
+                                                        initial={{
+                                                            opacity: 0,
+                                                            y: 10,
+                                                        }}
+                                                        animate={{
+                                                            opacity: 1,
+                                                            y: 0,
+                                                        }}
                                                         transition={{
-                                                            delay: 0.1 * i,
-                                                            duration: 0.3,
+                                                            delay:
+                                                                0.8 + i * 0.05,
                                                         }}
                                                     >
                                                         {i + 1}
@@ -868,8 +588,8 @@ const Shop = () => {
                                                         initial={{ opacity: 0 }}
                                                         animate={{ opacity: 1 }}
                                                         transition={{
-                                                            delay: 0.1 * i,
-                                                            duration: 0.3,
+                                                            delay:
+                                                                0.8 + i * 0.05,
                                                         }}
                                                     >
                                                         ...
@@ -896,13 +616,13 @@ const Shop = () => {
                                                     ? {
                                                           scale: 1.1,
                                                           backgroundColor:
-                                                              "#e0f2fe",
+                                                              "rgba(0,0,0,0.05)",
                                                       }
                                                     : {}
                                             }
                                             whileTap={
                                                 currentPage !== totalPages
-                                                    ? { scale: 0.9 }
+                                                    ? { scale: 0.95 }
                                                     : {}
                                             }
                                         >

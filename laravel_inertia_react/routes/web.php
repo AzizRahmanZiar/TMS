@@ -6,6 +6,7 @@ use App\Http\Controllers\{
     KortaiController,
     PostController,
     SadraiController,
+    SiteController,
     UniformController
 };
 use App\Http\Controllers\Auth\RegisterController;
@@ -18,9 +19,8 @@ Route::get('/', function () {
     return Inertia::render('Site/Home');
 })->name('home');
 
-Route::get('/tailor', function () {
-    return Inertia::render('Site/Tailors');
-})->name('tailors');
+Route::get('/tailor', [SiteController::class, 'tailors'])->name('tailors');
+Route::get('/shop', [SiteController::class, 'shops'])->name('shop');
 
 Route::get('/post', function () {
     return Inertia::render('Site/Posts');
@@ -29,10 +29,6 @@ Route::get('/post', function () {
 Route::get('/order', function () {
     return Inertia::render('Site/Order');
 })->name('order');
-
-Route::get('/shop', function () {
-    return Inertia::render('Site/Shop');
-})->name('shop');
 
 Route::get('/contact', function () {
     return Inertia::render('Site/Contact');

@@ -1,200 +1,47 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import SiteLayout from "../../Layouts/SiteLayout";
 import {
     FaSearch,
+    FaFilter,
     FaUser,
+    FaEnvelope,
     FaBriefcase,
-    FaCertificate,
+    FaGraduationCap,
     FaTools,
-    FaHistory,
     FaClock,
+    FaStore,
     FaChevronLeft,
     FaChevronRight,
-    FaEnvelope,
 } from "react-icons/fa";
-import SiteLayout from "../../Layouts/SiteLayout";
-import { useReg } from "@/Contexts/RegContext";
-import { useRate } from "@/Contexts/RatingContext";
-import { usePosts } from "@/Contexts/PostContext";
+import { Head } from '@inertiajs/react';
 
-const Tailors = () => {
-    const { reg } = useReg();
-    const { rate } = useRate();
-    const { posts } = usePosts();
-
-    const [tailors, setTailors] = useState([]);
+const Tailors = ({ tailors }) => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [experience, setExperience] = useState("");
     const [processedTailors, setProcessedTailors] = useState([]);
-    const [favorites, setFavorites] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 9;
 
-    // Animation variants
-    const fadeIn = {
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { duration: 0.6 } },
-    };
-
-    const fadeInUp = {
-        hidden: { opacity: 0, y: 60 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-    };
-
-    const staggerContainer = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-            },
-        },
-    };
-
-    const cardVariants = {
-        hidden: { opacity: 0, y: 50 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                type: "spring",
-                stiffness: 100,
-                damping: 12,
-            },
-        },
-        hover: {
-            y: -12,
-            boxShadow:
-                "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-            transition: {
-                type: "spring",
-                stiffness: 400,
-                damping: 10,
-            },
-        },
-    };
-
-    const progressBarVariants = {
-        hidden: { width: 0 },
-        visible: (percentage) => ({
-            width: `${percentage}%`,
-            transition: {
-                duration: 1,
-                ease: "easeOut",
-                delay: 0.3,
-            },
-        }),
-    };
-
-    // Calculate tailor ratings based on post ratings
-    const getTailorRatings = useMemo(() => {
-        const tailorRatings = {};
-
-        // Go through all ratings
-        rate.forEach((rating) => {
-            // Find the post this rating belongs to
-            const post = posts.find((post) => post.id === rating.postId);
-
-            if (post) {
-                // Get the author of the post (tailor name)
-                const tailorName = post.author;
-                const tailorEmail = post.email; // Get email from post if available
-
-                // Create a unique key using both name and email when available
-                const tailorKey = tailorEmail
-                    ? `${tailorName}:${tailorEmail}`
-                    : tailorName;
-
-                // If this tailor doesn't have ratings yet, initialize
-                if (!tailorRatings[tailorKey]) {
-                    tailorRatings[tailorKey] = {
-                        totalRating: 0,
-                        count: 0,
-                    };
-                }
-
-                // Add this rating to the tailor's total
-                tailorRatings[tailorKey].totalRating += rating.rating;
-                tailorRatings[tailorKey].count += 1;
-            }
-        });
-
-        // Calculate average ratings
-        const averageRatings = {};
-        Object.keys(tailorRatings).forEach((tailorKey) => {
-            const { totalRating, count } = tailorRatings[tailorKey];
-            averageRatings[tailorKey] = count > 0 ? totalRating / count : 0;
-        });
-
-        return averageRatings;
-    }, [rate, posts]);
-
-    // Filter tailors from reg data
+    // Process tailor data
     useEffect(() => {
-        if (reg && reg.length > 0) {
-            // Filter only users with role "Tailor"
-            const tailorsList = reg.filter((user) => user.role === "Tailor");
-            setTailors(tailorsList);
-        } else {
-            setTailors([]);
+        if (tailors && tailors.length > 0) {
+            setProcessedTailors(tailors);
         }
-        setLoading(false);
-    }, [reg]);
+    }, [tailors]);
 
-    // Process images when tailors change
-    useEffect(() => {
-        const processTailorImages = async () => {
-            const processed = tailors.map((tailor) => {
-                // Create a new object with all the tailor properties
-                const processedTailor = { ...tailor };
-
-                // Process profile image if it exists and is a File
-                if (tailor.profileImage instanceof File) {
-                    processedTailor.profileImageUrl = URL.createObjectURL(
-                        tailor.profileImage
-                    );
-                }
-
-                // Create the same key format used in getTailorRatings
-                const tailorKey = tailor.email
-                    ? `${tailor.username}:${tailor.email}`
-                    : tailor.username;
-
-                // Add rating from our calculated ratings
-                processedTailor.rating = getTailorRatings[tailorKey] || 0;
-
-                return processedTailor;
-            });
-
-            setProcessedTailors(processed);
-        };
-
-        processTailorImages();
-
-        // Cleanup function to revoke object URLs
-        return () => {
-            processedTailors.forEach((tailor) => {
-                if (tailor.profileImageUrl) {
-                    URL.revokeObjectURL(tailor.profileImageUrl);
-                }
-            });
-        };
-    }, [tailors, getTailorRatings]);
-
-    // Filter function
+    // Function to handle filtering
     const handleFilter = () => {
-        if (!reg) return;
+        if (!tailors) return;
 
-        let filtered = reg.filter((user) => user.role === "Tailor");
+        let filtered = tailors;
 
         if (searchTerm) {
             filtered = filtered.filter(
                 (tailor) =>
-                    tailor.username
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
-                    (tailor.career &&
-                        tailor.career
+                    (tailor.name &&
+                        tailor.name
                             .toLowerCase()
                             .includes(searchTerm.toLowerCase())) ||
                     (tailor.email &&
@@ -203,24 +50,32 @@ const Tailors = () => {
                             .includes(searchTerm.toLowerCase()))
             );
         }
-        setTailors(filtered);
+
+        if (experience) {
+            filtered = filtered.filter(
+                (tailor) =>
+                    tailor.experience &&
+                    tailor.experience >= parseInt(experience)
+            );
+        }
+
+        setProcessedTailors(filtered);
         setCurrentPage(1);
     };
 
-    // Reset filters
+    // Function to reset filters
     const resetFilters = () => {
         setSearchTerm("");
-        if (reg) {
-            setTailors(reg.filter((user) => user.role === "Tailor"));
-        }
+        setExperience("");
+        setProcessedTailors(tailors);
         setCurrentPage(1);
     };
 
     // Pagination logic
-    const paginatedTailors = useMemo(() => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        return processedTailors.slice(startIndex, startIndex + itemsPerPage);
-    }, [processedTailors, currentPage, itemsPerPage]);
+    const paginatedTailors = processedTailors.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
     const totalPages = Math.ceil(processedTailors.length / itemsPerPage);
 
@@ -231,49 +86,72 @@ const Tailors = () => {
         }
     };
 
+    // Animation variants
+    const fadeIn = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { duration: 0.6 },
+        },
+    };
+
+    const cardVariants = {
+        hidden: { opacity: 0, y: 30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+            },
+        },
+        hover: {
+            y: -10,
+            boxShadow:
+                "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 10,
+            },
+        },
+    };
+
     return (
-        <SiteLayout>
+        <SiteLayout title="د خیاطانو پروفایلونه - خیاط ماسټر">
+            <Head title="Tailors" />
             {/* Hero Section */}
-            <section className="text-primary-900 py-10 lg:px-10 flex flex-col md:flex-row items-center">
-                <motion.div
-                    className="mx-auto px-4 text-start md:w-1/2"
-                    initial="hidden"
-                    animate="visible"
-                    variants={fadeIn}
-                >
+            <motion.section
+                className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-20"
+                initial="hidden"
+                animate="visible"
+                variants={fadeIn}
+            >
+                <div className="mx-auto px-4">
                     <motion.h1
-                        className="text-3xl md:text-4xl font-bold mb-4"
-                        variants={fadeInUp}
+                        className="text-3xl md:text-5xl max-w-3xl mx-auto font-bold mb-6"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.6 }}
                     >
-                        زموږ ماهر خیاطان
+                        د خیاطانو پروفایلونه
                     </motion.h1>
                     <motion.p
-                        className="text-lg md:text-xl max-w-3xl mx-auto mb-4"
-                        variants={fadeInUp}
+                        className="text-lg md:text-xl max-w-3xl mx-auto opacity-90"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4, duration: 0.6 }}
                     >
-                        د خپلو اړتیاوو لپاره غوره خیاط ومومئ. زموږ مسلکي کسان د
-                        کلونو تجربه لري او په بیلابیلو سټایلونو کې تخصص لري.
+                        د خپلو اړتیاوو لپاره غوره خیاط ومومئ. زموږ خیاطان د لوړ
+                        کیفیت خیاطۍ مهارتونه لري.
                     </motion.p>
-                </motion.div>
-                <motion.div
-                    className="md:w-1/2"
-                    initial={{ opacity: 0, x: 100 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                >
-                    <motion.img
-                        src="./imgs/ilus-2.jpg"
-                        className="transform scale-x-[-1] p-10"
-                        alt="tailor"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                    />
-                </motion.div>
-            </section>
+                </div>
+            </motion.section>
 
             {/* Filter section */}
             <motion.section
-                className="py-8 bg-primary-50 top-0 z-20 border"
+                className="py-8 bg-white shadow-md"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
@@ -290,7 +168,7 @@ const Tailors = () => {
                                 <FaSearch className="text-primary-400" />
                                 <input
                                     type="text"
-                                    placeholder="د خیاط نوم، تخصص یا ایمیل ولیکئ..."
+                                    placeholder="د خیاط نوم یا بریښنالیک ولټوئ..."
                                     value={searchTerm}
                                     onChange={(e) =>
                                         setSearchTerm(e.target.value)
@@ -298,9 +176,25 @@ const Tailors = () => {
                                     className="flex-1 outline-none"
                                 />
                             </div>
+                            <div className="flex flex-1 items-center gap-2 border border-primary-200 p-3 rounded-lg bg-white">
+                                <FaFilter className="text-primary-400" />
+                                <select
+                                    value={experience}
+                                    onChange={(e) =>
+                                        setExperience(e.target.value)
+                                    }
+                                    className="flex-1 outline-none bg-transparent"
+                                >
+                                    <option value="">ټول تجربې</option>
+                                    <option value="1">1 کاله</option>
+                                    <option value="2">2 کاله</option>
+                                    <option value="5">5 کاله</option>
+                                    <option value="10">10 کاله</option>
+                                </select>
+                            </div>
                             <motion.button
                                 onClick={handleFilter}
-                                className="bg-secondary-600 hover:bg-secondary-700 text-white py-4 px-3 rounded-lg transition duration-200 shadow-md"
+                                className="bg-secondary-600 hover:bg-secondary-700 text-white py-4 px-6 rounded-lg transition duration-200 shadow-md"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -308,7 +202,7 @@ const Tailors = () => {
                             </motion.button>
                             <motion.button
                                 onClick={resetFilters}
-                                className="bg-primary-500 hover:bg-primary-600 text-white py-4 px-3 rounded-lg transition duration-200 shadow-md"
+                                className="bg-primary-500 hover:bg-primary-600 text-white py-4 px-6 rounded-lg transition duration-200 shadow-md"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -320,7 +214,7 @@ const Tailors = () => {
             </motion.section>
 
             {/* Tailors list */}
-            <section className="py-12 bg-primary-50">
+            <section className="py-12 bg-gray-50">
                 <div className="container mx-auto px-4">
                     {loading ? (
                         <motion.div
@@ -335,9 +229,17 @@ const Tailors = () => {
                         <>
                             <motion.div
                                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                                variants={staggerContainer}
                                 initial="hidden"
                                 animate="visible"
+                                variants={{
+                                    hidden: { opacity: 0 },
+                                    visible: {
+                                        opacity: 1,
+                                        transition: {
+                                            staggerChildren: 0.1,
+                                        },
+                                    },
+                                }}
                             >
                                 {paginatedTailors.length > 0 ? (
                                     paginatedTailors.map((tailor, index) => (
@@ -348,285 +250,87 @@ const Tailors = () => {
                                             whileHover="hover"
                                             custom={index}
                                         >
-                                            <div className="relative">
-                                                <motion.div
-                                                    className="h-32 bg-gradient-to-r from-secondary-400 to-tertiary-400"
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ opacity: 1 }}
-                                                    transition={{
-                                                        duration: 0.5,
-                                                    }}
-                                                ></motion.div>
-
-                                                <div className="absolute -bottom-10 inset-x-0 flex justify-center">
-                                                    <motion.div
-                                                        className="w-24 h-24 rounded-full overflow-hidden border-4 border-white bg-white flex items-center justify-center shadow-lg"
-                                                        initial={{
-                                                            scale: 0,
-                                                            opacity: 0,
-                                                        }}
-                                                        animate={{
-                                                            scale: 1,
-                                                            opacity: 1,
-                                                        }}
-                                                        transition={{
-                                                            type: "spring",
-                                                            stiffness: 260,
-                                                            damping: 20,
-                                                            delay:
-                                                                0.2 +
-                                                                index * 0.05,
-                                                        }}
-                                                    >
-                                                        {tailor.profileImageUrl ? (
-                                                            <motion.img
-                                                                src={
-                                                                    tailor.profileImageUrl ||
-                                                                    "/placeholder.svg"
-                                                                }
-                                                                alt={
-                                                                    tailor.username
-                                                                }
+                                            <div className="p-6">
+                                                <div className="flex items-center gap-4 mb-4">
+                                                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                                        {tailor.profile_photo_url ? (
+                                                            <img
+                                                                src={tailor.profile_photo_url}
+                                                                alt={tailor.name}
                                                                 className="w-full h-full object-cover"
-                                                                whileHover={{
-                                                                    scale: 1.1,
-                                                                }}
-                                                                transition={{
-                                                                    duration: 0.3,
-                                                                }}
                                                             />
                                                         ) : (
-                                                            <FaUser className="text-primary-300 text-4xl" />
+                                                            <FaUser className="text-3xl text-gray-400" />
                                                         )}
-                                                    </motion.div>
-                                                </div>
-                                            </div>
-
-                                            <div className="pt-12 p-6">
-                                                <div className="text-center mb-4">
-                                                    <motion.h2
-                                                        className="text-xl font-bold text-primary-800"
-                                                        initial={{ opacity: 0 }}
-                                                        animate={{ opacity: 1 }}
-                                                        transition={{
-                                                            delay:
-                                                                0.3 +
-                                                                index * 0.05,
-                                                        }}
-                                                    >
-                                                        {tailor.username}
-                                                    </motion.h2>
-                                                    <motion.p
-                                                        className="text-secondary-600 font-medium"
-                                                        initial={{ opacity: 0 }}
-                                                        animate={{ opacity: 1 }}
-                                                        transition={{
-                                                            delay:
-                                                                0.4 +
-                                                                index * 0.05,
-                                                        }}
-                                                    >
-                                                        {tailor.career ||
-                                                            "خیاط"}
-                                                    </motion.p>
-
-                                                    <motion.div
-                                                        className="mt-4 px-4"
-                                                        initial={{ opacity: 0 }}
-                                                        animate={{ opacity: 1 }}
-                                                        transition={{
-                                                            delay:
-                                                                0.5 +
-                                                                index * 0.05,
-                                                        }}
-                                                    >
-                                                        {/* Percentage-based rating with animation */}
-                                                        <div className="w-full">
-                                                            <div className="flex justify-between text-xs mb-1">
-                                                                <span className="font-medium text-primary-700">
-                                                                    درجه بندي
-                                                                </span>
-                                                                <motion.span
-                                                                    className="font-bold text-primary-900"
-                                                                    initial={{
-                                                                        opacity: 0,
-                                                                    }}
-                                                                    animate={{
-                                                                        opacity: 1,
-                                                                    }}
-                                                                    transition={{
-                                                                        delay:
-                                                                            0.6 +
-                                                                            index *
-                                                                                0.05,
-                                                                    }}
-                                                                >
-                                                                    {tailor.rating >
-                                                                    0
-                                                                        ? (
-                                                                              (tailor.rating /
-                                                                                  5) *
-                                                                              100
-                                                                          ).toFixed(
-                                                                              0
-                                                                          )
-                                                                        : 0}
-                                                                    %
-                                                                </motion.span>
-                                                            </div>
-                                                            <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                                                <motion.div
-                                                                    className="bg-secondary-500 h-2.5 rounded-full"
-                                                                    variants={
-                                                                        progressBarVariants
-                                                                    }
-                                                                    initial="hidden"
-                                                                    animate="visible"
-                                                                    custom={
-                                                                        tailor.rating >
-                                                                        0
-                                                                            ? (tailor.rating /
-                                                                                  5) *
-                                                                              100
-                                                                            : 0
-                                                                    }
-                                                                ></motion.div>
-                                                            </div>
+                                                    </div>
+                                                    <div>
+                                                        <motion.h2
+                                                            className="text-xl font-bold text-primary-800"
+                                                            initial={{ opacity: 0 }}
+                                                            animate={{ opacity: 1 }}
+                                                            transition={{
+                                                                delay: 0.3 + index * 0.05,
+                                                            }}
+                                                        >
+                                                            {tailor.name}
+                                                        </motion.h2>
+                                                        {tailor.has_shop && (
                                                             <motion.div
-                                                                className="text-xs text-right mt-1 text-primary-600"
-                                                                initial={{
-                                                                    opacity: 0,
-                                                                }}
-                                                                animate={{
-                                                                    opacity: 1,
-                                                                }}
+                                                                className="flex items-center gap-1 text-sm text-secondary-600"
+                                                                initial={{ opacity: 0 }}
+                                                                animate={{ opacity: 1 }}
                                                                 transition={{
-                                                                    delay:
-                                                                        0.7 +
-                                                                        index *
-                                                                            0.05,
+                                                                    delay: 0.4 + index * 0.05,
                                                                 }}
                                                             >
-                                                                {(() => {
-                                                                    const tailorKey =
-                                                                        tailor.email
-                                                                            ? `${tailor.username}:${tailor.email}`
-                                                                            : tailor.username;
-                                                                    const ratingInfo =
-                                                                        Object.entries(
-                                                                            getTailorRatings
-                                                                        ).find(
-                                                                            ([
-                                                                                key,
-                                                                            ]) =>
-                                                                                key ===
-                                                                                tailorKey
-                                                                        );
-                                                                    return ratingInfo
-                                                                        ? ratingInfo[1]
-                                                                            ? ratingInfo[1]
-                                                                                  .count
-                                                                            : 0
-                                                                        : 0;
-                                                                })()}{" "}
-                                                                کاروونکي
+                                                                <FaStore className="text-sm" />
+                                                                <span>د دوکان لرونکی</span>
                                                             </motion.div>
-                                                        </div>
-                                                    </motion.div>
+                                                        )}
+                                                    </div>
                                                 </div>
 
                                                 <motion.div
-                                                    className="space-y-3 mb-6"
-                                                    initial={{
-                                                        opacity: 0,
-                                                        y: 20,
-                                                    }}
-                                                    animate={{
-                                                        opacity: 1,
-                                                        y: 0,
-                                                    }}
+                                                    className="space-y-3"
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    animate={{ opacity: 1, y: 0 }}
                                                     transition={{
-                                                        delay:
-                                                            0.6 + index * 0.05,
+                                                        delay: 0.4 + index * 0.05,
                                                     }}
                                                 >
                                                     <div className="flex items-start">
+                                                        <FaEnvelope className="text-primary-500 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {tailor.email}
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="flex items-start">
                                                         <FaBriefcase className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
-                                                        <div className="flex gap-2 items-center">
-                                                            <p className="text-sm text-primary-500">
-                                                                تجربه:
-                                                            </p>
-                                                            <p className="font-medium">
-                                                                {tailor.experience
-                                                                    ? `${tailor.experience} کاله`
-                                                                    : "نامعلوم"}
-                                                            </p>
-                                                        </div>
+                                                        <p className="text-sm text-gray-600">
+                                                            {tailor.career}
+                                                        </p>
                                                     </div>
 
                                                     <div className="flex items-start">
-                                                        <FaTools className="text-tertiary-600 mt-1 ml-2 flex-shrink-0" />
-                                                        <div className="flex gap-2 items-center">
-                                                            <p className="text-sm text-primary-500">
-                                                                مهارتونه:
-                                                            </p>
-                                                            <p className="font-medium">
-                                                                {tailor.skills ||
-                                                                    "هیڅ مهارت نشته"}
-                                                            </p>
-                                                        </div>
+                                                        <FaGraduationCap className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {tailor.certifications}
+                                                        </p>
                                                     </div>
 
                                                     <div className="flex items-start">
-                                                        <FaCertificate className="text-secondary-400 mt-1 ml-2 flex-shrink-0" />
-                                                        <div className="flex gap-2 items-center">
-                                                            <p className="text-sm text-primary-500">
-                                                                تصدیق‌نامه:
-                                                            </p>
-                                                            <p className="font-medium">
-                                                                {tailor.certifications ||
-                                                                    "هیڅ معلومات نشته"}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex items-start">
-                                                        <FaHistory className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
-                                                        <div className="flex gap-2 items-center">
-                                                            <p className="text-sm text-primary-500">
-                                                                مخکیني کارونه:
-                                                            </p>
-                                                            <p className="font-medium">
-                                                                {tailor.previousWork ||
-                                                                    "هیڅ معلومات نشته"}
-                                                            </p>
-                                                        </div>
+                                                        <FaTools className="text-primary-600 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {tailor.skills}
+                                                        </p>
                                                     </div>
 
                                                     <div className="flex items-start">
                                                         <FaClock className="text-secondary-600 mt-1 ml-2 flex-shrink-0" />
-                                                        <div className="flex gap-2 items-center">
-                                                            <p className="text-sm text-primary-500">
-                                                                کاري شتون:
-                                                            </p>
-                                                            <p className="font-medium">
-                                                                {tailor.workAvailability ||
-                                                                    "نامعلوم"}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex items-start">
-                                                        <FaEnvelope className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
-                                                        <div className="flex gap-2 items-center">
-                                                            <p className="text-sm text-primary-500">
-                                                                ایمیل:
-                                                            </p>
-                                                            <p className="font-medium">
-                                                                {tailor.email ||
-                                                                    "هیڅ معلومات نشته"}
-                                                            </p>
-                                                        </div>
+                                                        <p className="text-sm text-gray-600">
+                                                            {tailor.work_availability}
+                                                        </p>
                                                     </div>
                                                 </motion.div>
                                             </div>
@@ -723,7 +427,6 @@ const Tailors = () => {
                                         </motion.button>
 
                                         {[...Array(totalPages)].map((_, i) => {
-                                            // Show limited page numbers with ellipsis
                                             if (
                                                 i === 0 ||
                                                 i === totalPages - 1 ||
