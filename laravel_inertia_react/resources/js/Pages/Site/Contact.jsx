@@ -248,9 +248,9 @@ const Contact = () => {
                 animate="visible"
                 variants={fadeIn}
             >
-                <div className="mx-auto px-4 text-center">
+                <div className="mx-auto px-4 ">
                     <motion.h1
-                        className="text-3xl md:text-5xl font-bold mb-4"
+                        className="text-3xl md:text-5xl max-w-3xl mx-auto font-bold mb-4"
                         variants={fadeIn}
                     >
                         زموږ سره اړیکه
@@ -337,7 +337,7 @@ const Contact = () => {
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
-                                            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
+                                            className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
                                                 errors.name
                                                     ? "border-red-500"
                                                     : "border-primary-300"
@@ -364,7 +364,7 @@ const Contact = () => {
                                             name="email"
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
+                                            className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
                                                 errors.email
                                                     ? "border-red-500"
                                                     : "border-primary-300"
@@ -393,7 +393,7 @@ const Contact = () => {
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
+                                            className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
                                                 errors.phone
                                                     ? "border-red-500"
                                                     : "border-primary-300"
@@ -420,7 +420,7 @@ const Contact = () => {
                                             name="subject"
                                             value={formData.subject}
                                             onChange={handleChange}
-                                            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
+                                            className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
                                                 errors.subject
                                                     ? "border-red-500"
                                                     : "border-primary-300"
@@ -447,7 +447,7 @@ const Contact = () => {
                                         name="message"
                                         value={formData.message}
                                         onChange={handleChange}
-                                        className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
+                                        className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
                                             errors.message
                                                 ? "border-red-500"
                                                 : "border-primary-300"
@@ -464,7 +464,7 @@ const Contact = () => {
 
                                 <motion.button
                                     type="submit"
-                                    className="bg-secondary-700 text-white py-3 px-8 rounded-md font-medium hover:bg-secondary-800 transition-all duration-300 shadow-md hover:shadow-lg"
+                                    className="bg-secondary-700  text-white py-3 px-8 rounded-md font-medium hover:bg-secondary-800 transition-all duration-300 shadow-md hover:shadow-lg"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >

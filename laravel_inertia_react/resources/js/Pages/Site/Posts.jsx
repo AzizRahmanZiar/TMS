@@ -7,7 +7,6 @@ import {
     FaUser,
     FaStar,
     FaSearch,
-    FaArrowRight,
     FaUpload,
 } from "react-icons/fa";
 import { usePosts } from "@/Contexts/PostContext";
@@ -605,10 +604,7 @@ const Post = () => {
                 animate="visible"
                 variants={fadeIn}
             >
-                <motion.div
-                    className="container mx-auto px-4 text-center w-1/2"
-                    variants={fadeIn}
-                >
+                <motion.div className=" mx-auto px-4  w-1/2" variants={fadeIn}>
                     <motion.h1
                         className="text-3xl md:text-4xl font-bold mb-4"
                         initial={{ opacity: 0, y: -20 }}
@@ -623,8 +619,7 @@ const Post = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
                     >
-                        د خیاطۍ، فیشن او د جامو په اړه تازه مقالې او معلومات
-                        ترلاسه کړئ.
+                        د خیاطۍ، فیشن او د جامو په اړه تازه معلومات ترلاسه کړئ.
                     </motion.p>
                 </motion.div>
                 <motion.div
@@ -660,7 +655,7 @@ const Post = () => {
                                 <input
                                     type="text"
                                     placeholder="د عنوان یا لیکوال له مخې لټون"
-                                    className="w-full p-3 border border-gray-300 rounded-md pr-10 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
+                                    className="w-full p-3 border border-gray-300 outline-none rounded-md pr-10 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                     value={searchTerm}
                                     onChange={(e) =>
                                         setSearchTerm(e.target.value)
@@ -685,28 +680,18 @@ const Post = () => {
                             </motion.select>
 
                             <div className="flex gap-2">
-                                <motion.button
+                                <button
                                     onClick={handleFilter}
-                                    className="flex-1 bg-secondary-600 text-primary-50 p-3 rounded-md hover:bg-secondary-700 transition"
-                                    whileHover={{
-                                        scale: 1.05,
-                                        backgroundColor: "#4338ca",
-                                    }}
-                                    whileTap={{ scale: 0.95 }}
+                                    className="flex-1 bg-secondary-600 text-primary-50 px-3 py-4 rounded-md hover:bg-secondary-700 transition"
                                 >
                                     لټون
-                                </motion.button>
-                                <motion.button
+                                </button>
+                                <button
                                     onClick={resetFilters}
-                                    className="flex-1 bg-tertiary-600 text-primary-50 p-3 rounded-md hover:bg-tertiary-700 transition"
-                                    whileHover={{
-                                        scale: 1.05,
-                                        backgroundColor: "#9333ea",
-                                    }}
-                                    whileTap={{ scale: 0.95 }}
+                                    className="flex-1 bg-tertiary-600 text-primary-50 px-3 py-4 rounded-md hover:bg-tertiary-700 transition"
                                 >
                                     بیا تنظیم
-                                </motion.button>
+                                </button>
                             </div>
                         </div>
                     </motion.div>
@@ -840,17 +825,12 @@ const Post = () => {
                             <p className="text-xl text-gray-600">
                                 ستاسو د معیارونو سره سم هیڅ پوسټ ونه موندل شو.
                             </p>
-                            <motion.button
+                            <button
                                 onClick={resetFilters}
                                 className="mt-4 bg-secondary-600 text-primary-50 py-2 px-6 rounded hover:bg-secondary-700 transition"
-                                whileHover={{
-                                    scale: 1.05,
-                                    backgroundColor: "#4338ca",
-                                }}
-                                whileTap={{ scale: 0.95 }}
                             >
                                 فیلټرونه بیا تنظیم کړئ
-                            </motion.button>
+                            </button>
                         </motion.div>
                     )}
                 </div>
