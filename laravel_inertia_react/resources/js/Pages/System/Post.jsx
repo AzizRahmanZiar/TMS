@@ -366,9 +366,7 @@ const Post = () => {
                                 <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                                     عکس
                                 </th>
-                                <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                                    عنوان
-                                </th>
+                               
                                 <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                                     تفصیل
                                 </th>
@@ -410,11 +408,7 @@ const Post = () => {
                                                 className="h-16 w-16 object-cover rounded-md shadow-sm"
                                             />
                                         </td>
-                                        <td className="py-4 px-4 text-right whitespace-nowrap">
-                                            <div className="text-sm font-medium text-gray-900">
-                                                {post.title}
-                                            </div>
-                                        </td>
+                                        
                                         <td className="py-4 px-4 text-right">
                                             <div className="text-sm text-gray-500 line-clamp-2">
                                                 {post.description}
