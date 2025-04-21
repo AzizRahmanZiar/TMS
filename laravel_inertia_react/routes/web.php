@@ -59,6 +59,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/uniform', [UniformController::class, 'uniform'])->name('uniform');
         Route::get('/kortai', [KortaiController::class, 'kortai'])->name('kortai');
         Route::get('/sadrai', [SadraiController::class, 'sadrai'])->name('sadrai');
-        Route::get('/adminpost', [PostController::class, 'adminpost'])->name('tailor.posts');
+        Route::get('/tailorpost', [PostController::class, 'tailorpost'])->name('tailor.posts');
     });
 });

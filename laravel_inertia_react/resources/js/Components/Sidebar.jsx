@@ -53,7 +53,7 @@ const Sidebar = () => {
         },
         {
             title: "پوسټ",
-            href: "/adminpost",
+            href: "/tailorpost",
             roles: ["tailor"],
         },
     ];
