@@ -27,8 +27,6 @@ const Post = () => {
 
     // Form state
     const [formData, setFormData] = useState({
-        username: "",
-        userEmail: "",
         comment: "",
     });
 
@@ -151,26 +149,10 @@ const Post = () => {
     const validateForm = () => {
         const newErrors = {};
 
-        if (!formData.username.trim()) {
-            newErrors.username = "نوم اړین دی";
-        } else if (formData.username.trim().length < 3) {
-            newErrors.username = "نوم باید لږ تر لږه 3 توري ولري";
-        }
-
-        if (!formData.userEmail.trim()) {
-            newErrors.userEmail = "برېښنالیک اړین دی";
-        } else if (!/\S+@\S+\.\S+/.test(formData.userEmail)) {
-            newErrors.userEmail = "د برېښنالیک بڼه سمه نه ده";
-        }
-
         if (!formData.comment.trim()) {
             newErrors.comment = "نظر اړین دی";
         } else if (formData.comment.trim().length < 10) {
             newErrors.comment = "نظر باید لږ تر لږه 10 توري ولري";
-        }
-
-        if (!selectedFile) {
-            newErrors.userImage = "انځور اړین دی";
         }
 
         setErrors(newErrors);
@@ -189,12 +171,9 @@ const Post = () => {
         // Create a new rating object
         const newRating = {
             id: Date.now(), // Generate a unique ID
-            username: formData.username,
             author: selectedPost.author, // Save the post author as the author
-            userEmail: formData.userEmail,
             comment: formData.comment,
             rating: selectedRating,
-            userImage: previewUrl, // Use the preview URL for the image
             postId: selectedPost.id, // Reference to the original post
             date: new Date().toISOString().split("T")[0], // Current date
         };
@@ -221,8 +200,6 @@ const Post = () => {
 
         // Reset form and close modal
         setFormData({
-            username: "",
-            userEmail: "",
             comment: "",
         });
         setSelectedFile(null);
@@ -234,8 +211,6 @@ const Post = () => {
     const handleCloseModal = () => {
         setShowModal(false);
         setFormData({
-            username: "",
-            userEmail: "",
             comment: "",
         });
         setSelectedFile(null);
@@ -361,97 +336,27 @@ const Post = () => {
                                         transition={{ delay: 0.2 }}
                                     >
                                         <label className="block mb-2 font-medium">
-                                            ستاسو نوم{" "}
+                                            نظر{" "}
                                             <span className="text-red-500">
                                                 *
                                             </span>
                                         </label>
-                                        <input
-                                            type="text"
-                                            name="username"
+                                        <textarea
+                                            name="comment"
                                             className={`w-full p-2 border ${
-                                                errors.username
+                                                errors.comment
                                                     ? "border-red-500"
                                                     : "border-gray-300"
-                                            } rounded-md`}
-                                            value={formData.username}
+                                            } rounded-md min-h-[120px]`}
+                                            value={formData.comment}
                                             onChange={handleInputChange}
                                             required
-                                        />
-                                        {errors.username && (
+                                        ></textarea>
+                                        {errors.comment && (
                                             <p className="text-red-500 text-sm mt-1">
-                                                {errors.username}
+                                                {errors.comment}
                                             </p>
                                         )}
-                                    </motion.div>
-
-                                    <motion.div
-                                        initial={{ x: -20, opacity: 0 }}
-                                        animate={{ x: 0, opacity: 1 }}
-                                        transition={{ delay: 0.3 }}
-                                    >
-                                        <label className="block mb-2 font-medium">
-                                            ستاسو برېښنالیک{" "}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="email"
-                                            name="userEmail"
-                                            className={`w-full p-2 border ${
-                                                errors.userEmail
-                                                    ? "border-red-500"
-                                                    : "border-gray-300"
-                                            } rounded-md`}
-                                            value={formData.userEmail}
-                                            onChange={handleInputChange}
-                                            required
-                                        />
-                                        {errors.userEmail && (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                {errors.userEmail}
-                                            </p>
-                                        )}
-                                    </motion.div>
-
-                                    <motion.div
-                                        initial={{ x: -20, opacity: 0 }}
-                                        animate={{ x: 0, opacity: 1 }}
-                                        transition={{ delay: 0.4 }}
-                                    >
-                                        <label className="block mb-2 font-medium">
-                                            درجه{" "}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <div className="flex items-center gap-2">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                <motion.div
-                                                    key={star}
-                                                    whileHover={{ scale: 1.3 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                >
-                                                    <FaStar
-                                                        className={
-                                                            star <=
-                                                            selectedRating
-                                                                ? "text-yellow-500 text-2xl cursor-pointer"
-                                                                : "text-gray-300 text-2xl cursor-pointer"
-                                                        }
-                                                        onClick={() =>
-                                                            setSelectedRating(
-                                                                star
-                                                            )
-                                                        }
-                                                    />
-                                                </motion.div>
-                                            ))}
-                                            <span className="mr-2">
-                                                ({selectedRating}/5)
-                                            </span>
-                                        </div>
                                     </motion.div>
                                 </div>
 
@@ -531,35 +436,6 @@ const Post = () => {
                                                 </motion.div>
                                             )}
                                         </div>
-                                    </motion.div>
-
-                                    <motion.div
-                                        initial={{ x: 20, opacity: 0 }}
-                                        animate={{ x: 0, opacity: 1 }}
-                                        transition={{ delay: 0.2 }}
-                                    >
-                                        <label className="block mb-2 font-medium">
-                                            نظر{" "}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <textarea
-                                            name="comment"
-                                            className={`w-full p-2 border ${
-                                                errors.comment
-                                                    ? "border-red-500"
-                                                    : "border-gray-300"
-                                            } rounded-md min-h-[120px]`}
-                                            value={formData.comment}
-                                            onChange={handleInputChange}
-                                            required
-                                        ></textarea>
-                                        {errors.comment && (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                {errors.comment}
-                                            </p>
-                                        )}
                                     </motion.div>
                                 </div>
                             </div>
@@ -808,6 +684,9 @@ const Post = () => {
                                         initial={{ opacity: 0.8 }}
                                         whileHover={{ opacity: 1 }}
                                     >
+
+
+
                                         {post.description}
                                     </motion.p>
                                 </div>

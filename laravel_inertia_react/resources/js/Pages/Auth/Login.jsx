@@ -7,7 +7,6 @@ export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: "",
         password: "",
-        remember: false,
     });
 
     const validateForm = () => {
@@ -56,7 +55,7 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             )}
             <h1 className="text-center font-amiri text-2xl">داخلـــــــېدل</h1>
-            <form onSubmit={submit} className="px-6 py-10">
+            <form onSubmit={submit} className="px-6 py-10 h-[30rem]">
                 <div>
                     <label
                         htmlFor="email"
@@ -106,23 +105,6 @@ export default function Login({ status, canResetPassword }) {
                             {errors.password}
                         </p>
                     )}
-                </div>
-
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <input
-                            type="checkbox"
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData("remember", e.target.checked)
-                            }
-                            className="rounded border-gray-300 text-indigo-600  focus:ring-indigo-500"
-                        />
-                        <span className="mr-2 text-xl font-amiri text-gray-600">
-                            ما په یاد ولره
-                        </span>
-                    </label>
                 </div>
 
                 <div className="mt-4 flex items-center justify-between">

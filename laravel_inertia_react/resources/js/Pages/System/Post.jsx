@@ -18,35 +18,31 @@ const Post = () => {
     // Form validation states
     const [formErrors, setFormErrors] = useState({});
     const [formValues, setFormValues] = useState({
-        title: "",
         description: "",
         date: "",
         author: "",
         category: "",
-        email: "", // Added email field
+        email: "",
     });
 
     // Character counters
-    const [titleChars, setTitleChars] = useState(0);
     const [descriptionChars, setDescriptionChars] = useState(0);
     const [authorChars, setAuthorChars] = useState(0);
-    const [emailChars, setEmailChars] = useState(0); // Added email character counter
+    const [emailChars, setEmailChars] = useState(0);
 
     // Set form values when editing
     useEffect(() => {
         if (currentPost) {
             setFormValues({
-                title: currentPost.title || "",
                 description: currentPost.description || "",
                 date: currentPost.date || "",
                 author: currentPost.author || "",
                 category: currentPost.category || "",
-                email: currentPost.email || "", // Added email field
+                email: currentPost.email || "",
             });
-            setTitleChars(currentPost.title?.length || 0);
             setDescriptionChars(currentPost.description?.length || 0);
             setAuthorChars(currentPost.author?.length || 0);
-            setEmailChars(currentPost.email?.length || 0); // Added email character counter
+            setEmailChars(currentPost.email?.length || 0);
             setImagePreview(currentPost.image || null);
         } else {
             resetForm();
@@ -56,18 +52,16 @@ const Post = () => {
     // Update resetForm function
     const resetForm = () => {
         setFormValues({
-            title: "",
             description: "",
             date: "",
             author: "",
             category: "",
-            email: "", // Added email field
+            email: "",
         });
         setFormErrors({});
-        setTitleChars(0);
         setDescriptionChars(0);
         setAuthorChars(0);
-        setEmailChars(0); // Reset email character counter
+        setEmailChars(0);
         setImagePreview(null);
     };
 
@@ -98,9 +92,7 @@ const Post = () => {
         const { name, value } = e.target;
 
         // Update character counters
-        if (name === "title") {
-            setTitleChars(value.length);
-        } else if (name === "description") {
+        if (name === "description") {
             setDescriptionChars(value.length);
         } else if (name === "author") {
             setAuthorChars(value.length);
@@ -123,21 +115,6 @@ const Post = () => {
         const errors = { ...formErrors };
 
         switch (name) {
-            case "title":
-                if (!value.trim()) {
-                    errors.title = "عنوان اړین دی";
-                } else if (value.length < 3) {
-                    errors.title = "عنوان باید لږترلږه 3 توري ولري";
-                } else if (value.length > 100) {
-                    errors.title = "عنوان باید له 100 تورو څخه لږ وي";
-                } else if (/[^a-zA-Z\u0600-\u06FF\s]/.test(value)) {
-                    // Only allow letters and spaces (including Arabic/Persian characters)
-                    errors.title = "عنوان کې باید یوازې توري وي";
-                } else {
-                    delete errors.title;
-                }
-                break;
-
             case "description":
                 if (!value.trim()) {
                     errors.description = "تفصیل اړین دی";
@@ -146,7 +123,6 @@ const Post = () => {
                 } else if (value.length > 2000) {
                     errors.description = "تفصیل باید له 2000 تورو څخه لږ وي";
                 } else if (/[^a-zA-Z\u0600-\u06FF\s.,!?]/.test(value)) {
-                    // Only allow letters, spaces, and basic punctuation
                     errors.description = "تفصیل کې باید یوازې توري وي";
                 } else {
                     delete errors.description;
@@ -180,8 +156,8 @@ const Post = () => {
             case "category":
                 if (!value.trim()) {
                     errors.category = "کټګورۍ اړینه ده";
-                } else if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(value)) {
-                    errors.category = "کټګورۍ کې باید یوازې توري وي";
+                } else if (!["Cloths", "Uniform", "Kortai", "Sadrai"].includes(value)) {
+                    errors.category = "مهرباني وکړئ یوه معتبره کټګورۍ وټاکئ";
                 } else {
                     delete errors.category;
                 }
@@ -209,21 +185,6 @@ const Post = () => {
     const validateForm = () => {
         let isValid = true;
         const newErrors = {};
-
-        // Validate title
-        if (!formValues.title.trim()) {
-            newErrors.title = "عنوان اړین دی";
-            isValid = false;
-        } else if (formValues.title.length < 3) {
-            newErrors.title = "عنوان باید لږترلږه 3 توري ولري";
-            isValid = false;
-        } else if (formValues.title.length > 100) {
-            newErrors.title = "عنوان باید له 100 تورو څخه لږ وي";
-            isValid = false;
-        } else if (/[^a-zA-Z\u0600-\u06FF\s]/.test(formValues.title)) {
-            newErrors.title = "عنوان کې باید یوازې توري وي";
-            isValid = false;
-        }
 
         // Validate description
         if (!formValues.description.trim()) {
@@ -270,8 +231,8 @@ const Post = () => {
         if (!formValues.category.trim()) {
             newErrors.category = "کټګورۍ اړینه ده";
             isValid = false;
-        } else if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(formValues.category)) {
-            newErrors.category = "کټګورۍ کې باید یوازې توري وي";
+        } else if (!["Cloths", "Uniform", "Kortai", "Sadrai"].includes(formValues.category)) {
+            newErrors.category = "مهرباني وکړئ یوه معتبره کټګورۍ وټاکئ";
             isValid = false;
         }
 
@@ -333,7 +294,7 @@ const Post = () => {
 
         const newPost = {
             id: isEditing ? currentPost.id : posts.length + 1,
-            title: formValues.title,
+            title: currentPost?.title || "",
             description: formValues.description,
             image: imageFile
                 ? URL.createObjectURL(imageFile)
@@ -341,7 +302,7 @@ const Post = () => {
             date: formValues.date,
             author: formValues.author,
             category: formValues.category,
-            email: formValues.email, // Added email field
+            email: formValues.email,
             comments: isEditing ? currentPost.comments : 0,
             views: isEditing ? currentPost.views : 0,
         };
@@ -539,41 +500,109 @@ const Post = () => {
                                 onSubmit={handleSubmit}
                                 className="grid grid-cols-2 gap-5"
                             >
-                                <div className="relative">
-                                    <label
-                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                        htmlFor="title"
-                                    >
-                                        عنوان{" "}
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            id="title"
-                                            name="title"
-                                            value={formValues.title}
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            تفصیل *
+                                        </label>
+                                        <textarea
+                                            name="description"
+                                            value={formValues.description}
                                             onChange={handleInputChange}
-                                            className={getInputClass("title")}
-                                            maxLength={100}
+                                            className={getInputClass("description")}
+                                            rows="4"
+                                            maxLength="2000"
                                         />
-                                        {formValues.title && (
-                                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                                {formErrors.title ? (
-                                                    <AiOutlineCloseCircle className="text-red-500" />
-                                                ) : (
-                                                    <AiOutlineCheckCircle className="text-green-500" />
-                                                )}
-                                            </div>
+                                        <div className="text-sm text-gray-500">
+                                            {descriptionChars}/2000 توري
+                                        </div>
+                                        {formErrors.description && (
+                                            <p className="mt-1 text-sm text-red-600">
+                                                {formErrors.description}
+                                            </p>
                                         )}
                                     </div>
-                                    {formErrors.title && (
-                                        <p className="mt-1 text-sm text-red-600">
-                                            {formErrors.title}
-                                        </p>
-                                    )}
-                                    <p className="mt-1 text-xs text-gray-500 text-right">
-                                        {titleChars}/100
-                                    </p>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            تاریخ *
+                                        </label>
+                                        <input
+                                            type="date"
+                                            name="date"
+                                            value={formValues.date}
+                                            onChange={handleInputChange}
+                                            className={getInputClass("date")}
+                                        />
+                                        {formErrors.date && (
+                                            <p className="mt-1 text-sm text-red-600">
+                                                {formErrors.date}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            لیکوال *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="author"
+                                            value={formValues.author}
+                                            onChange={handleInputChange}
+                                            className={getInputClass("author")}
+                                            maxLength="50"
+                                        />
+                                        <div className="text-sm text-gray-500">
+                                            {authorChars}/50 توري
+                                        </div>
+                                        {formErrors.author && (
+                                            <p className="mt-1 text-sm text-red-600">
+                                                {formErrors.author}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            کټګورۍ *
+                                        </label>
+                                        <select
+                                            name="category"
+                                            value={formValues.category}
+                                            onChange={handleInputChange}
+                                            className={getInputClass("category")}
+                                        >
+                                            <option value="">کټګورۍ وټاکئ</option>
+                                            <option value="Cloths">Cloths</option>
+                                            <option value="Uniform">Uniform</option>
+                                            <option value="Kortai">Kortai</option>
+                                            <option value="Sadrai">Sadrai</option>
+                                        </select>
+                                        {formErrors.category && (
+                                            <p className="mt-1 text-sm text-red-600">
+                                                {formErrors.category}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            ایمیل *
+                                        </label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formValues.email}
+                                            onChange={handleInputChange}
+                                            className={getInputClass("email")}
+                                        />
+                                        {formErrors.email && (
+                                            <p className="mt-1 text-sm text-red-600">
+                                                {formErrors.email}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div>
@@ -597,176 +626,6 @@ const Post = () => {
                                             {formErrors.image}
                                         </p>
                                     )}
-                                </div>
-
-                                <div className="relative">
-                                    <label
-                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                        htmlFor="date"
-                                    >
-                                        تاریخ
-                                    </label>
-                                    <input
-                                        type="date"
-                                        id="date"
-                                        name="date"
-                                        value={formValues.date}
-                                        onChange={handleInputChange}
-                                        className={getInputClass("date")}
-                                    />
-                                    {formErrors.date && (
-                                        <p className="mt-1 text-sm text-red-600">
-                                            {formErrors.date}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="relative">
-                                    <label
-                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                        htmlFor="author"
-                                    >
-                                        لیکوال{" "}
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            id="author"
-                                            name="author"
-                                            value={formValues.author}
-                                            onChange={handleInputChange}
-                                            className={getInputClass("author")}
-                                            maxLength={50}
-                                        />
-                                        {formValues.author && (
-                                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                                {formErrors.author ? (
-                                                    <AiOutlineCloseCircle className="text-red-500" />
-                                                ) : (
-                                                    <AiOutlineCheckCircle className="text-green-500" />
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                    {formErrors.author && (
-                                        <p className="mt-1 text-sm text-red-600">
-                                            {formErrors.author}
-                                        </p>
-                                    )}
-                                    <p className="mt-1 text-xs text-gray-500 text-right">
-                                        {authorChars}/50
-                                    </p>
-                                </div>
-
-                                <div className="relative">
-                                    <label
-                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                        htmlFor="email"
-                                    >
-                                        ایمیل{" "}
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            value={formValues.email}
-                                            onChange={handleInputChange}
-                                            className={getInputClass("email")}
-                                            placeholder="example@domain.com"
-                                        />
-                                        {formValues.email && (
-                                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                                {formErrors.email ? (
-                                                    <AiOutlineCloseCircle className="text-red-500" />
-                                                ) : (
-                                                    <AiOutlineCheckCircle className="text-green-500" />
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                    {formErrors.email && (
-                                        <p className="mt-1 text-sm text-red-600">
-                                            {formErrors.email}
-                                        </p>
-                                    )}
-                                    <p className="mt-1 text-xs text-gray-500 text-right">
-                                        {emailChars}/100
-                                    </p>
-                                </div>
-
-                                <div className="relative">
-                                    <label
-                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                        htmlFor="category"
-                                    >
-                                        کټګورۍ{" "}
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            id="category"
-                                            name="category"
-                                            value={formValues.category}
-                                            onChange={handleInputChange}
-                                            className={getInputClass(
-                                                "category"
-                                            )}
-                                        />
-                                        {formValues.category && (
-                                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                                {formErrors.category ? (
-                                                    <AiOutlineCloseCircle className="text-red-500" />
-                                                ) : (
-                                                    <AiOutlineCheckCircle className="text-green-500" />
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                    {formErrors.category && (
-                                        <p className="mt-1 text-sm text-red-600">
-                                            {formErrors.category}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="relative col-span-2">
-                                    <label
-                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                        htmlFor="description"
-                                    >
-                                        تفصیل{" "}
-                                    </label>
-                                    <div className="relative">
-                                        <textarea
-                                            id="description"
-                                            name="description"
-                                            rows="3"
-                                            value={formValues.description}
-                                            onChange={handleInputChange}
-                                            className={getInputClass(
-                                                "description"
-                                            )}
-                                            maxLength={2000}
-                                        />
-                                        {formValues.description && (
-                                            <div className="absolute top-3 right-3 flex items-center pointer-events-none">
-                                                {formErrors.description ? (
-                                                    <AiOutlineCloseCircle className="text-red-500" />
-                                                ) : (
-                                                    <AiOutlineCheckCircle className="text-green-500" />
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                    {formErrors.description && (
-                                        <p className="mt-1 text-sm text-red-600">
-                                            {formErrors.description}
-                                        </p>
-                                    )}
-                                    <p className="mt-1 text-xs text-gray-500 text-right">
-                                        {descriptionChars}/2000
-                                    </p>
                                 </div>
                             </form>
                             <div className="flex justify-end gap-4 mt-6">
