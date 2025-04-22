@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "@inertiajs/react";
 import SiteLayout from "../../Layouts/SiteLayout";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     FaCalendarAlt,
     FaUser,
     FaStar,
     FaSearch,
-    FaArrowRight,
     FaUpload,
 } from "react-icons/fa";
 import { usePosts } from "@/Contexts/PostContext";
@@ -27,8 +27,6 @@ const Post = () => {
 
     // Form state
     const [formData, setFormData] = useState({
-        username: "",
-        userEmail: "",
         comment: "",
     });
 
@@ -151,26 +149,10 @@ const Post = () => {
     const validateForm = () => {
         const newErrors = {};
 
-        if (!formData.username.trim()) {
-            newErrors.username = "نوم اړین دی";
-        } else if (formData.username.trim().length < 3) {
-            newErrors.username = "نوم باید لږ تر لږه 3 توري ولري";
-        }
-
-        if (!formData.userEmail.trim()) {
-            newErrors.userEmail = "برېښنالیک اړین دی";
-        } else if (!/\S+@\S+\.\S+/.test(formData.userEmail)) {
-            newErrors.userEmail = "د برېښنالیک بڼه سمه نه ده";
-        }
-
         if (!formData.comment.trim()) {
             newErrors.comment = "نظر اړین دی";
         } else if (formData.comment.trim().length < 10) {
             newErrors.comment = "نظر باید لږ تر لږه 10 توري ولري";
-        }
-
-        if (!selectedFile) {
-            newErrors.userImage = "انځور اړین دی";
         }
 
         setErrors(newErrors);
@@ -189,12 +171,9 @@ const Post = () => {
         // Create a new rating object
         const newRating = {
             id: Date.now(), // Generate a unique ID
-            username: formData.username,
             author: selectedPost.author, // Save the post author as the author
-            userEmail: formData.userEmail,
             comment: formData.comment,
             rating: selectedRating,
-            userImage: previewUrl, // Use the preview URL for the image
             postId: selectedPost.id, // Reference to the original post
             date: new Date().toISOString().split("T")[0], // Current date
         };
@@ -221,8 +200,6 @@ const Post = () => {
 
         // Reset form and close modal
         setFormData({
-            username: "",
-            userEmail: "",
             comment: "",
         });
         setSelectedFile(null);
@@ -234,8 +211,6 @@ const Post = () => {
     const handleCloseModal = () => {
         setShowModal(false);
         setFormData({
-            username: "",
-            userEmail: "",
             comment: "",
         });
         setSelectedFile(null);
@@ -250,23 +225,66 @@ const Post = () => {
 
         for (let i = 1; i <= maxRating; i++) {
             stars.push(
-                <FaStar
+                <motion.div
                     key={i}
-                    className={`${
-                        i <= currentRating ? "text-yellow-500" : "text-gray-300"
-                    } ${
-                        isClickable
-                            ? "cursor-pointer hover:text-yellow-400"
-                            : ""
-                    }`}
-                    onClick={
-                        isClickable ? () => handleStarClick(post, i) : undefined
-                    }
-                />
+                    whileHover={isClickable ? { scale: 1.3 } : {}}
+                    whileTap={isClickable ? { scale: 0.9 } : {}}
+                >
+                    <FaStar
+                        className={`${
+                            i <= currentRating
+                                ? "text-yellow-500"
+                                : "text-gray-300"
+                        } ${
+                            isClickable
+                                ? "cursor-pointer hover:text-yellow-400"
+                                : ""
+                        }`}
+                        onClick={
+                            isClickable
+                                ? () => handleStarClick(post, i)
+                                : undefined
+                        }
+                    />
+                </motion.div>
             );
         }
 
         return <div className="flex">{stars}</div>;
+    };
+
+    // Animation variants
+    const fadeIn = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { duration: 0.5 },
+        },
+    };
+
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+            },
+        },
+    };
+
+    const cardVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.5 },
+        },
+        hover: {
+            y: -10,
+            boxShadow:
+                "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+            transition: { duration: 0.3 },
+        },
     };
 
     // Function to render modal form
@@ -274,240 +292,260 @@ const Post = () => {
         if (!showModal || !selectedPost) return null;
 
         return (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-lg p-6 max-w-3xl w-full">
-                    <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-xl font-bold">ارزونه ورکړئ</h3>
-                    </div>
+            <AnimatePresence>
+                <motion.div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                >
+                    <motion.div
+                        className="bg-white rounded-lg p-6 max-w-3xl w-full"
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.9, opacity: 0 }}
+                        transition={{ type: "spring", damping: 20 }}
+                    >
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold">ارزونه ورکړئ</h3>
+                        </div>
 
-                    <form onSubmit={handleSubmitRating}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Left Column */}
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block mb-2 font-medium">
-                                        د پوسټ لیکوال
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="w-full p-2 border border-gray-300 rounded-md"
-                                        value={selectedPost.author}
-                                        disabled
-                                    />
-                                </div>
+                        <form onSubmit={handleSubmitRating}>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Left Column */}
+                                <div className="space-y-4">
+                                    <motion.div
+                                        initial={{ x: -20, opacity: 0 }}
+                                        animate={{ x: 0, opacity: 1 }}
+                                        transition={{ delay: 0.1 }}
+                                    >
+                                        <label className="block mb-2 font-medium">
+                                            د پوسټ لیکوال
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="w-full p-2 border border-gray-300 rounded-md"
+                                            value={selectedPost.author}
+                                            disabled
+                                        />
+                                    </motion.div>
 
-                                <div>
-                                    <label className="block mb-2 font-medium">
-                                        ستاسو نوم{" "}
-                                        <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="username"
-                                        className={`w-full p-2 border ${
-                                            errors.username
-                                                ? "border-red-500"
-                                                : "border-gray-300"
-                                        } rounded-md`}
-                                        value={formData.username}
-                                        onChange={handleInputChange}
-                                        required
-                                    />
-                                    {errors.username && (
-                                        <p className="text-red-500 text-sm mt-1">
-                                            {errors.username}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label className="block mb-2 font-medium">
-                                        ستاسو برېښنالیک{" "}
-                                        <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="email"
-                                        name="userEmail"
-                                        className={`w-full p-2 border ${
-                                            errors.userEmail
-                                                ? "border-red-500"
-                                                : "border-gray-300"
-                                        } rounded-md`}
-                                        value={formData.userEmail}
-                                        onChange={handleInputChange}
-                                        required
-                                    />
-                                    {errors.userEmail && (
-                                        <p className="text-red-500 text-sm mt-1">
-                                            {errors.userEmail}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label className="block mb-2 font-medium">
-                                        درجه{" "}
-                                        <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="flex items-center gap-2">
-                                        {[1, 2, 3, 4, 5].map((star) => (
-                                            <FaStar
-                                                key={star}
-                                                className={
-                                                    star <= selectedRating
-                                                        ? "text-yellow-500 text-2xl cursor-pointer"
-                                                        : "text-gray-300 text-2xl cursor-pointer"
-                                                }
-                                                onClick={() =>
-                                                    setSelectedRating(star)
-                                                }
-                                            />
-                                        ))}
-                                        <span className="mr-2">
-                                            ({selectedRating}/5)
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Right Column */}
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block mb-2 font-medium">
-                                        ستاسو انځور{" "}
-                                        <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="flex flex-col">
-                                        <div className="flex items-center">
-                                            <input
-                                                type="file"
-                                                ref={fileInputRef}
-                                                className="hidden"
-                                                accept="image/*"
-                                                onChange={handleFileChange}
-                                            />
-                                            <button
-                                                type="button"
-                                                className={`flex items-center justify-center p-2 border ${
-                                                    errors.userImage
-                                                        ? "border-red-500"
-                                                        : "border-gray-300"
-                                                } rounded-md w-full`}
-                                                onClick={() =>
-                                                    fileInputRef.current.click()
-                                                }
-                                            >
-                                                <FaUpload className="mr-2" />
-                                                انځور پورته کړئ
-                                            </button>
-                                        </div>
-                                        {errors.userImage && (
+                                    <motion.div
+                                        initial={{ x: -20, opacity: 0 }}
+                                        animate={{ x: 0, opacity: 1 }}
+                                        transition={{ delay: 0.2 }}
+                                    >
+                                        <label className="block mb-2 font-medium">
+                                            نظر{" "}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </label>
+                                        <textarea
+                                            name="comment"
+                                            className={`w-full p-2 border ${
+                                                errors.comment
+                                                    ? "border-red-500"
+                                                    : "border-gray-300"
+                                            } rounded-md min-h-[120px]`}
+                                            value={formData.comment}
+                                            onChange={handleInputChange}
+                                            required
+                                        ></textarea>
+                                        {errors.comment && (
                                             <p className="text-red-500 text-sm mt-1">
-                                                {errors.userImage}
+                                                {errors.comment}
                                             </p>
                                         )}
-                                        {previewUrl && (
-                                            <div className="mt-2">
-                                                <img
-                                                    src={
-                                                        previewUrl ||
-                                                        "/placeholder.svg" ||
-                                                        "/placeholder.svg"
-                                                    }
-                                                    alt="Preview"
-                                                    className="h-24 w-24 object-cover rounded-md"
-                                                />
-                                            </div>
-                                        )}
-                                    </div>
+                                    </motion.div>
                                 </div>
 
-                                <div>
-                                    <label className="block mb-2 font-medium">
-                                        نظر{" "}
-                                        <span className="text-red-500">*</span>
-                                    </label>
-                                    <textarea
-                                        name="comment"
-                                        className={`w-full p-2 border ${
-                                            errors.comment
-                                                ? "border-red-500"
-                                                : "border-gray-300"
-                                        } rounded-md min-h-[120px]`}
-                                        value={formData.comment}
-                                        onChange={handleInputChange}
-                                        required
-                                    ></textarea>
-                                    {errors.comment && (
-                                        <p className="text-red-500 text-sm mt-1">
-                                            {errors.comment}
-                                        </p>
-                                    )}
+                                {/* Right Column */}
+                                <div className="space-y-4">
+                                    <motion.div
+                                        initial={{ x: 20, opacity: 0 }}
+                                        animate={{ x: 0, opacity: 1 }}
+                                        transition={{ delay: 0.1 }}
+                                    >
+                                        <label className="block mb-2 font-medium">
+                                            ستاسو انځور{" "}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </label>
+                                        <div className="flex flex-col">
+                                            <div className="flex items-center">
+                                                <input
+                                                    type="file"
+                                                    ref={fileInputRef}
+                                                    className="hidden"
+                                                    accept="image/*"
+                                                    onChange={handleFileChange}
+                                                />
+                                                <motion.button
+                                                    type="button"
+                                                    className={`flex items-center justify-center p-2 border ${
+                                                        errors.userImage
+                                                            ? "border-red-500"
+                                                            : "border-gray-300"
+                                                    } rounded-md w-full`}
+                                                    onClick={() =>
+                                                        fileInputRef.current.click()
+                                                    }
+                                                    whileHover={{
+                                                        backgroundColor:
+                                                            "#f3f4f6",
+                                                    }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                >
+                                                    <FaUpload className="mr-2" />
+                                                    انځور پورته کړئ
+                                                </motion.button>
+                                            </div>
+                                            {errors.userImage && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors.userImage}
+                                                </p>
+                                            )}
+                                            {previewUrl && (
+                                                <motion.div
+                                                    className="mt-2"
+                                                    initial={{
+                                                        opacity: 0,
+                                                        scale: 0.8,
+                                                    }}
+                                                    animate={{
+                                                        opacity: 1,
+                                                        scale: 1,
+                                                    }}
+                                                    transition={{
+                                                        type: "spring",
+                                                        damping: 15,
+                                                    }}
+                                                >
+                                                    <img
+                                                        src={
+                                                            previewUrl ||
+                                                            "/placeholder.svg" ||
+                                                            "/placeholder.svg" ||
+                                                            "/placeholder.svg"
+                                                        }
+                                                        alt="Preview"
+                                                        className="h-24 w-24 object-cover rounded-md"
+                                                    />
+                                                </motion.div>
+                                            )}
+                                        </div>
+                                    </motion.div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="flex justify-end gap-4 mt-6">
-                            <button
-                                type="button"
-                                className="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition"
-                                onClick={handleCloseModal}
+                            <motion.div
+                                className="flex justify-end gap-4 mt-6"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.5 }}
                             >
-                                لغو کول
-                            </button>
-                            <button
-                                type="submit"
-                                className="px-6 py-2 bg-secondary-600 text-white rounded-md hover:bg-secondary-700 transition"
-                            >
-                                ارزونه ثبت کړئ
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                                <motion.button
+                                    type="button"
+                                    className="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition"
+                                    onClick={handleCloseModal}
+                                    whileHover={{ backgroundColor: "#f3f4f6" }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    لغو کول
+                                </motion.button>
+                                <motion.button
+                                    type="submit"
+                                    className="px-6 py-2 bg-secondary-600 text-white rounded-md hover:bg-secondary-700 transition"
+                                    whileHover={{ backgroundColor: "#4338ca" }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    ارزونه ثبت کړئ
+                                </motion.button>
+                            </motion.div>
+                        </form>
+                    </motion.div>
+                </motion.div>
+            </AnimatePresence>
         );
     };
 
     return (
         <SiteLayout title="پوسټونه - خیاط ماسټر">
             {/* Hero Section */}
-            <section className="text-primary-900 py-10 lg:px-10 flex flex-col md:flex-row items-center">
-                <div className="container mx-auto px-4 text-center w-1/2">
-                    <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            <motion.section
+                className="text-primary-900 py-10 lg:px-10 flex flex-col md:flex-row items-center"
+                initial="hidden"
+                animate="visible"
+                variants={fadeIn}
+            >
+                <motion.div className=" mx-auto px-4  w-1/2" variants={fadeIn}>
+                    <motion.h1
+                        className="text-3xl md:text-4xl font-bold mb-4"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                    >
                         زموږ بلاګ
-                    </h1>
-                    <p className="text-lg md:text-xl max-w-3xl mx-auto">
-                        د خیاطۍ، فیشن او د جامو په اړه تازه مقالې او معلومات
-                        ترلاسه کړئ.
-                    </p>
-                </div>
-                <div className="w-1/2">
+                    </motion.h1>
+                    <motion.p
+                        className="text-lg md:text-xl max-w-3xl mx-auto"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        د خیاطۍ، فیشن او د جامو په اړه تازه معلومات ترلاسه کړئ.
+                    </motion.p>
+                </motion.div>
+                <motion.div
+                    className="w-1/2"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4, type: "spring", damping: 15 }}
+                >
                     <img src="./imgs/blog.jpg" alt="posts" />
-                </div>
-            </section>
+                </motion.div>
+            </motion.section>
 
             {/* Search and Filter Section */}
-            <section className="py-8 bg-gray-100">
+            <motion.section
+                className="py-8 bg-gray-100"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+            >
                 <div className="container mx-auto px-4">
-                    <div className="bg-white p-6 rounded-lg border">
+                    <motion.div
+                        className="bg-white p-6 rounded-lg border"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.6 }}
+                    >
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="relative">
+                            <motion.div
+                                className="relative"
+                                whileHover={{ scale: 1.02 }}
+                                transition={{ type: "spring", stiffness: 400 }}
+                            >
                                 <input
                                     type="text"
                                     placeholder="د عنوان یا لیکوال له مخې لټون"
-                                    className="w-full p-3 border border-gray-300 rounded-md pr-10"
+                                    className="w-full p-3 border border-gray-300 outline-none rounded-md pr-10 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                     value={searchTerm}
                                     onChange={(e) =>
                                         setSearchTerm(e.target.value)
                                     }
                                 />
                                 <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400" />
-                            </div>
+                            </motion.div>
 
-                            <select
-                                className="w-full p-3 border border-gray-300 rounded-md"
+                            <motion.select
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
+                                whileHover={{ scale: 1.02 }}
+                                transition={{ type: "spring", stiffness: 400 }}
                             >
                                 <option value="">ټولې کټګورۍ</option>
                                 {categories.map((cat, index) => (
@@ -515,61 +553,91 @@ const Post = () => {
                                         {cat}
                                     </option>
                                 ))}
-                            </select>
+                            </motion.select>
 
                             <div className="flex gap-2">
                                 <button
                                     onClick={handleFilter}
-                                    className="flex-1 bg-secondary-600 text-primary-50 p-3 rounded-md hover:bg-secondary-700 transition"
+                                    className="flex-1 bg-secondary-600 text-primary-50 px-3 py-4 rounded-md hover:bg-secondary-700 transition"
                                 >
                                     لټون
                                 </button>
                                 <button
                                     onClick={resetFilters}
-                                    className="flex-1 bg-tertiary-600 text-primary-50 p-3 rounded-md hover:bg-tertiary-700 transition"
+                                    className="flex-1 bg-tertiary-600 text-primary-50 px-3 py-4 rounded-md hover:bg-tertiary-700 transition"
                                 >
                                     بیا تنظیم
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Posts Listing */}
             <section className="py-12">
                 <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <motion.div
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        variants={staggerContainer}
+                        initial="hidden"
+                        animate="visible"
+                    >
                         {posts.map((post) => (
-                            <div
+                            <motion.div
                                 key={post.id}
                                 className="bg-primary-50 w-96 rounded-lg border overflow-hidden"
+                                variants={cardVariants}
+                                whileHover="hover"
                             >
-                                <img
+                                <motion.img
                                     src={post.image || "/placeholder.svg"}
                                     alt={post.title}
-                                    className="w-full h-44"
+                                    className="w-full h-44 object-cover"
+                                    whileHover={{ scale: 1.05 }}
+                                    transition={{ duration: 0.3 }}
                                 />
                                 <div className="p-6">
                                     <div className="grid grid-cols-2 gap-4 mb-4">
-                                        <div className="flex items-center">
+                                        <motion.div
+                                            className="flex items-center"
+                                            whileHover={{ x: 5 }}
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 400,
+                                            }}
+                                        >
                                             <FaUser className="ml-1 text-primary-500" />
 
                                             <span className="font-medium ml-2">
                                                 خیاط:
                                             </span>
                                             <span>{post.author}</span>
-                                        </div>
-                                        <div className="flex items-center">
+                                        </motion.div>
+                                        <motion.div
+                                            className="flex items-center"
+                                            whileHover={{ x: 5 }}
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 400,
+                                            }}
+                                        >
                                             <FaCalendarAlt className="ml-1 text-primary-500" />
                                             <span className="font-medium ml-2">
                                                 نېټه:
                                             </span>
 
                                             <span>{post.date}</span>
-                                        </div>
+                                        </motion.div>
 
-                                        <div className="flex items-center">
+                                        <motion.div
+                                            className="flex items-center"
+                                            whileHover={{ x: 5 }}
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 400,
+                                            }}
+                                        >
                                             <span className="font-medium ml-2">
                                                 درجه:
                                             </span>
@@ -581,32 +649,58 @@ const Post = () => {
                                             <span className="mr-2">
                                                 ({post.rating || 0}/5)
                                             </span>
-                                        </div>
+                                        </motion.div>
                                         {post.category && (
-                                            <div className="flex items-center">
+                                            <motion.div
+                                                className="flex items-center"
+                                                whileHover={{ x: 5 }}
+                                                transition={{
+                                                    type: "spring",
+                                                    stiffness: 400,
+                                                }}
+                                            >
                                                 <span className="font-medium ml-2">
                                                     کټګوري:
                                                 </span>
                                                 <span className=" text-tertiary-700 px-2 py-1 rounded-md">
                                                     {post.category}
                                                 </span>
-                                            </div>
+                                            </motion.div>
                                         )}
                                     </div>
 
-                                    <h3 className="font-bold text-tertiary-700 text-xl mb-2">
+                                    <motion.h3
+                                        className="font-bold text-tertiary-700 text-xl mb-2"
+                                        whileHover={{ x: 5 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 400,
+                                        }}
+                                    >
                                         {post.title}:
-                                    </h3>
-                                    <p className="text-primary-700 mb-4">
+                                    </motion.h3>
+                                    <motion.p
+                                        className="text-primary-700 mb-4"
+                                        initial={{ opacity: 0.8 }}
+                                        whileHover={{ opacity: 1 }}
+                                    >
+
+
+
                                         {post.description}
-                                    </p>
+                                    </motion.p>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
 
                     {posts.length === 0 && (
-                        <div className="text-center py-12">
+                        <motion.div
+                            className="text-center py-12"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
                             <p className="text-xl text-gray-600">
                                 ستاسو د معیارونو سره سم هیڅ پوسټ ونه موندل شو.
                             </p>
@@ -616,7 +710,7 @@ const Post = () => {
                             >
                                 فیلټرونه بیا تنظیم کړئ
                             </button>
-                        </div>
+                        </motion.div>
                     )}
                 </div>
             </section>

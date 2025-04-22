@@ -1,178 +1,395 @@
-import React, { useState } from "react";
-import { Link } from "@inertiajs/react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link, usePage } from "@inertiajs/react";
 import { FaUser, FaBars, FaTimes } from "react-icons/fa";
 import { FaScissors } from "react-icons/fa6";
+
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const { url, auth } = usePage().props;
+    const user = auth?.user;
+
+    // Function to check if a link is active
+    const isActive = (path) => {
+        if (!url || !path) return false;
+        const currentPath =
+            url.endsWith("/") && url !== "/" ? url.slice(0, -1) : url;
+        const linkPath =
+            path.endsWith("/") && path !== "/" ? path.slice(0, -1) : path;
+        return currentPath === linkPath;
+    };
+
+    // Animation variants
+    const navbarVariants = {
+        hidden: { opacity: 0, y: -20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.5,
+                staggerChildren: 0.1,
+                delayChildren: 0.2,
+            },
+        },
+    };
+
+    const linkVariants = {
+        hidden: { opacity: 0, y: -10 },
+        visible: { opacity: 1, y: 0 },
+        hover: {
+            scale: 1.05,
+
+            transition: { type: "spring", stiffness: 300, damping: 10 },
+        },
+        tap: { scale: 0.95 },
+    };
+
+    const buttonVariants = {
+        hover: {
+            scale: 1.05,
+            boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.2)",
+            transition: { type: "spring", stiffness: 400, damping: 10 },
+        },
+        tap: { scale: 0.95 },
+    };
+
+    const mobileMenuVariants = {
+        hidden: { opacity: 0, height: 0 },
+        visible: {
+            opacity: 1,
+            height: "auto",
+            transition: {
+                duration: 0.3,
+                staggerChildren: 0.05,
+                delayChildren: 0.1,
+            },
+        },
+        exit: {
+            opacity: 0,
+            height: 0,
+            transition: {
+                duration: 0.3,
+                when: "afterChildren",
+                staggerChildren: 0.05,
+                staggerDirection: -1,
+            },
+        },
+    };
+
+    const mobileItemVariants = {
+        hidden: { opacity: 0, x: -20 },
+        visible: { opacity: 1, x: 0 },
+        exit: { opacity: 0, x: -20 },
+    };
+
+    const scissorsVariants = {
+        initial: { rotate: 0 },
+        animate: {
+            rotate: [0, -10, 0, 10, 0],
+            scale: [1, 1.1, 1, 1.1, 1],
+            transition: {
+                duration: 1.5,
+                repeat: Number.POSITIVE_INFINITY,
+                repeatType: "loop",
+                ease: "easeInOut",
+            },
+        },
+        hover: {
+            rotate: [0, -15, 0, 15, 0],
+            scale: [1, 1.2, 1, 1.2, 1],
+            transition: {
+                duration: 0.8,
+                repeat: Number.POSITIVE_INFINITY,
+                repeatType: "loop",
+            },
+        },
+    };
 
     return (
-        <nav className="bg-primary-900 shadow-md py-4">
+        <motion.nav
+            className="bg-primary-900 shadow-md py-4"
+            variants={navbarVariants}
+            initial="hidden"
+            animate="visible"
+        >
             <div className="container mx-auto px-4">
                 <div className="flex justify-between items-center">
-                    {/* Logo */}
-                    <Link href="/" className="text-2xl font-bold">
-                        <div className="flex items-end space-x-2">
-                            <span>
-                                <FaScissors className="text-primary-50" />
-                            </span>
-                            <span className="text-primary-50">
-                                {" "}
-                                د خیاطۍ آنلاین پلیټ فارم
-                            </span>
-                        </div>
-                    </Link>
+                    {/* Logo with animated scissors */}
+                    <motion.div whileHover={{ scale: 1.05 }}>
+                        <Link href="/" className="text-2xl font-bold">
+                            <div className="flex items-end space-x-2 rtl:space-x-reverse">
+                                <motion.span
+                                    className="text-primary-50"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    ماسټر خیاط
+                                </motion.span>
+                                <motion.span
+                                    variants={scissorsVariants}
+                                    initial="initial"
+                                    animate="animate"
+                                    whileHover="hover"
+                                >
+                                    <FaScissors className="text-primary-50" />
+                                </motion.span>
+                            </div>
+                        </Link>
+                    </motion.div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-8">
-                        <Link
-                            href="/shop"
-                            className="text-primary-50 font-semibold hover:text-primary-400 transition"
-                        >
-                            دوکانونه
-                        </Link>
-                        <Link
-                            href="/post"
-                            className="text-primary-50 font-semibold hover:text-primary-400 transition"
-                        >
-                            پوسټونه
-                        </Link>
-                        <Link
-                            href="/order"
-                            className="text-primary-50 font-semibold hover:text-primary-400 transition"
-                        >
-                            فرمایش
-                        </Link>
-                        <Link
-                            href="/about"
-                            className="text-primary-50 font-semibold hover:text-primary-400 transition"
-                        >
-                            زموږ په اړه
-                        </Link>
-
-                        <Link
-                            href="/contact"
-                            className="text-primary-50 font-semibold hover:text-primary-400 transition"
-                        >
-                            اړیکه
-                        </Link>
-                        <Link
-                            href="/tailor"
-                            className="text-primary-50 font-semibold hover:text-primary-400 transition"
-                        >
-                            خیاطان
-                        </Link>
-                        <Link
-                            href="/"
-                            className="text-primary-50 font-semibold hover:text-primary-400 transition"
-                        >
-                            کور
-                        </Link>
-                    </div>
+                    <motion.div
+                        className="hidden md:flex items-center gap-8 rtl:gap-8"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                    >
+                        {[
+                            { href: "/", text: "کور" },
+                            { href: "/about", text: "زموږ په اړه" },
+                            { href: "/post", text: "پوسټونه" },
+                            { href: "/order", text: "فرمایش" },
+                            { href: "/shop", text: "دوکانونه" },
+                            { href: "/contact", text: "اړیکه" },
+                            { href: "/tailor", text: "خیاطان" },
+                        ].map((link, index) => (
+                            <motion.div
+                                key={index}
+                                variants={linkVariants}
+                                whileHover="hover"
+                                whileTap="tap"
+                                custom={index}
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.4 + index * 0.05 }}
+                            >
+                                <Link
+                                    href={link.href}
+                                    className={`font-semibold transition ${
+                                        isActive(link.href)
+                                            ? "text-secondary-400"
+                                            : "text-primary-50 hover:text-primary-400"
+                                    }`}
+                                >
+                                    {link.text}
+                                </Link>
+                            </motion.div>
+                        ))}
+                    </motion.div>
 
                     {/* Right side buttons */}
-                    <div className="hidden md:flex items-center space-x-4 gap-5">
-                        <Link
-                            href="./dashboard"
-                            className="bg-secondary-600 font-semibold text-primary-50 px-4 py-2 rounded-md hover:bg-secondary-700 transition text-center "
-                        >
-                            Dashboard
-                        </Link>
-                        <Link
-                            href="./registration"
-                            className="bg-primary-50 font-semibold text-primary-900 px-4 py-2 rounded-md hover:bg-white transition"
-                        >
-                            <FaUser className="inline mr-2" />
-                            ننوتل
-                        </Link>
-                    </div>
+                    <motion.div
+                        className="hidden md:flex items-center gap-8 rtl:gap-8"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                    >
+                        {user ? (
+                            <>
+                                {(user.role === "admin" ||
+                                    user.role === "tailor") && (
+                                    <motion.div
+                                        variants={buttonVariants}
+                                        whileHover="hover"
+                                        whileTap="tap"
+                                    >
+                                        <Link
+                                            href={route("dashboard")}
+                                            className={`font-semibold px-4 py-2 rounded-md transition text-center ${
+                                                isActive(route("dashboard"))
+                                                    ? "bg-secondary-700 text-primary-50"
+                                                    : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
+                                            }`}
+                                        >
+                                            Dashboard
+                                        </Link>
+                                    </motion.div>
+                                )}
+                                <motion.div
+                                    variants={buttonVariants}
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                >
+                                    <Link
+                                        href={route("logout")}
+                                        method="post"
+                                        as="button"
+                                        className="font-semibold px-4 py-2 rounded-md transition bg-primary-50 text-primary-900 hover:bg-white"
+                                    >
+                                        <FaUser className="inline ml-2" />
+                                        وتل
+                                    </Link>
+                                </motion.div>
+                            </>
+                        ) : (
+                            <>
+                                <motion.div
+                                    variants={buttonVariants}
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                >
+                                    <Link
+                                        href={route("login")}
+                                        className={`font-semibold px-4 py-2 rounded-md transition ${
+                                            isActive(route("login"))
+                                                ? "bg-white text-primary-900"
+                                                : "bg-primary-50 text-primary-900 hover:bg-white"
+                                        }`}
+                                    >
+                                        <FaUser className="inline ml-2" />
+                                        ننوتل
+                                    </Link>
+                                </motion.div>
+                                <motion.div
+                                    variants={buttonVariants}
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                >
+                                    <Link
+                                        href={route("register")}
+                                        className={`font-semibold px-4 py-2 rounded-md transition ${
+                                            isActive(route("register"))
+                                                ? "bg-secondary-700 text-primary-50"
+                                                : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
+                                        }`}
+                                    >
+                                        ثبت نام
+                                    </Link>
+                                </motion.div>
+                            </>
+                        )}
+                    </motion.div>
 
                     {/* Mobile menu button */}
-                    <div className="md:hidden flex items-center">
+                    <motion.div
+                        className="md:hidden flex items-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.6 }}
+                    >
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="p-2 rounded-md text-primary-50"
+                            className="text-primary-50 hover:text-primary-400 focus:outline-none"
                         >
                             {isOpen ? (
-                                <FaTimes size={24} />
+                                <FaTimes className="h-6 w-6" />
                             ) : (
-                                <FaBars size={24} />
+                                <FaBars className="h-6 w-6" />
                             )}
                         </button>
-                    </div>
+                    </motion.div>
                 </div>
 
-                {/* Mobile Menu */}
-                {isOpen && (
-                    <div className="md:hidden mt-4 pb-4">
-                        <div className="flex flex-col space-y-4" dir="rtl">
-                            <Link
-                                href="/"
-                                className="text-primary-50 font-semibold hover:text-primary-400 transition py-2"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                کور
-                            </Link>
-                            <Link
-                                href="/shop"
-                                className="text-primary-50 font-semibold hover:text-primary-400 transition py-2"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                دوکانونه
-                            </Link>
-                            <Link
-                                href="/post"
-                                className="text-primary-50 font-semibold hover:text-primary-400 transition py-2"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                پوسټونه
-                            </Link>
-                            <Link
-                                href="/order"
-                                className="text-primary-50 font-semibold hover:text-primary-400 transition py-2"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                فرمایش
-                            </Link>
-                            <Link
-                                href="/about"
-                                className="text-primary-50 font-semibold hover:text-primary-400 transition py-2"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                زموږ په اړه
-                            </Link>
-                            <Link
-                                href="/contact"
-                                className="text-primary-50 font-semibold hover:text-primary-400 transition py-2"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                اړیکه
-                            </Link>
-                            <Link
-                                href="/tailor"
-                                className="text-primary-50 font-semibold hover:text-primary-400 transition py-2"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                خیاطان
-                            </Link>{" "}
-                            <Link
-                                href="#"
-                                className="bg-blue-600 font-semibold text-primary-50 px-4 py-2 rounded-md hover:bg-blue-700 transition text-center "
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <FaUser className="inline ml-2" />
-                                ننوتل
-                            </Link>
-                            <Link
-                                href="#"
-                                className="bg-blue-600 font-semibold text-primary-50 px-4 py-2 rounded-md hover:bg-blue-700 transition text-center "
-                            >
-                                Dashboard
-                            </Link>
-                        </div>
-                    </div>
-                )}
+                {/* Mobile menu */}
+                <AnimatePresence>
+                    {isOpen && (
+                        <motion.div
+                            className="md:hidden mt-4"
+                            variants={mobileMenuVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                        >
+                            <div className="flex flex-col space-y-4 rtl:space-y-4">
+                                {[
+                                    { href: "/", text: "کور" },
+                                    { href: "/about", text: "زموږ په اړه" },
+                                    { href: "/post", text: "پوسټونه" },
+                                    { href: "/order", text: "فرمایش" },
+                                    { href: "/shop", text: "دوکانونه" },
+                                    { href: "/contact", text: "اړیکه" },
+                                    { href: "/tailor", text: "خیاطان" },
+                                ].map((link, index) => (
+                                    <motion.div
+                                        key={index}
+                                        variants={mobileItemVariants}
+                                        custom={index}
+                                    >
+                                        <Link
+                                            href={link.href}
+                                            className={`block px-4 py-2 font-semibold transition ${
+                                                isActive(link.href)
+                                                    ? "text-secondary-400"
+                                                    : "text-primary-50 hover:text-primary-400"
+                                            }`}
+                                        >
+                                            {link.text}
+                                        </Link>
+                                    </motion.div>
+                                ))}
+                                {user ? (
+                                    <>
+                                        {(user.role === "admin" ||
+                                            user.role === "tailor") && (
+                                            <motion.div
+                                                variants={mobileItemVariants}
+                                            >
+                                                <Link
+                                                    href={route("dashboard")}
+                                                    className={`block px-4 py-2 font-semibold transition ${
+                                                        isActive(
+                                                            route("dashboard")
+                                                        )
+                                                            ? "text-secondary-400"
+                                                            : "text-primary-50 hover:text-primary-400"
+                                                    }`}
+                                                >
+                                                    Dashboard
+                                                </Link>
+                                            </motion.div>
+                                        )}
+                                        <motion.div
+                                            variants={mobileItemVariants}
+                                        >
+                                            <Link
+                                                href={route("logout")}
+                                                method="post"
+                                                as="button"
+                                                className="block px-4 py-2 font-semibold text-primary-50 hover:text-primary-400"
+                                            >
+                                                وتل
+                                            </Link>
+                                        </motion.div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <motion.div
+                                            variants={mobileItemVariants}
+                                        >
+                                            <Link
+                                                href={route("login")}
+                                                className={`block px-4 py-2 font-semibold transition ${
+                                                    isActive(route("login"))
+                                                        ? "text-secondary-400"
+                                                        : "text-primary-50 hover:text-primary-400"
+                                                }`}
+                                            >
+                                                ننوتل
+                                            </Link>
+                                        </motion.div>
+                                        <motion.div
+                                            variants={mobileItemVariants}
+                                        >
+                                            <Link
+                                                href={route("register")}
+                                                className={`block px-4 py-2 font-semibold transition ${
+                                                    isActive(route("register"))
+                                                        ? "text-secondary-400"
+                                                        : "text-primary-50 hover:text-primary-400"
+                                                }`}
+                                            >
+                                                ثبت نام
+                                            </Link>
+                                        </motion.div>
+                                    </>
+                                )}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
-        </nav>
+        </motion.nav>
     );
 };
 

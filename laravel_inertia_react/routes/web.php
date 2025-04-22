@@ -1,88 +1,64 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ClothsController;
-use App\Http\Controllers\KortaiController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\SadraiController;
-use App\Http\Controllers\UniformController;
-
+use App\Http\Controllers\{
+    AdminController,
+    ClothsController,
+    KortaiController,
+    PostController,
+    SadraiController,
+    SiteController,
+    UniformController
+};
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
-
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-
-
-// Route::get('/', function () {
-//     return Inertia::render('System/Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
-
-
-
-Route::get('/dashboard', function () {
-    return Inertia::render('System/Dashboard');
-})->name('dashboard');
-
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
-
-
-
-Route::get('/admin',[AdminController::class,'admin'])->name('admin');
-Route::get('/cloths', [ClothsController::class, 'cloths'])->name('cloths');
-Route::get('/sadrai', [SadraiController::class, 'sadrai'])->name('sadrai');
-Route::get('/kortai', [KortaiController::class, 'kortai'])->name('kortai');
-Route::get('/uniform', [UniformController::class, 'uniform'])->name('uniform');
-Route::get('/adminpost', [PostController::class, 'adminpost'])->name('adminpost');
-
-
-// Route::get('/system', function () {
-//     return Inertia::render('System/Dashboard');
-// });
-
-
-
+// Public routes
 Route::get('/', function () {
     return Inertia::render('Site/Home');
-});
+})->name('home');
 
-
-Route::get('/registration', function () {
-    return Inertia::render('Site/Registration');
-});
-
-Route::get('/tailor', function () {
-    return Inertia::render('Site/Tailors');
-});
+Route::get('/tailor', [SiteController::class, 'tailors'])->name('tailors');
+Route::get('/shop', [SiteController::class, 'shops'])->name('shop');
 
 Route::get('/post', function () {
     return Inertia::render('Site/Posts');
-});
+})->name('posts');
 
 Route::get('/order', function () {
     return Inertia::render('Site/Order');
-});
-
-Route::get('/shop', function () {
-    return Inertia::render('Site/Shop');
-});
+})->name('order');
 
 Route::get('/contact', function () {
     return Inertia::render('Site/Contact');
-});
+})->name('contact');
 
 Route::get('/about', function () {
     return Inertia::render('Site/About');
-});
+})->name('about');
+
+// Auth routes
 require __DIR__.'/auth.php';
+
+// Protected System routes
+Route::middleware(['auth'])->group(function () {
+    // Common system routes (accessible by both admin and tailor)
+    Route::middleware([CheckRole::class . ':admin,tailor'])->group(function () {
+        Route::get('/dashboard', function () {
+            return Inertia::render('System/Dashboard');
+        })->name('dashboard');
+
+        // Admin routes
+        Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
+        Route::put('/user/{user}', [AdminController::class, 'update'])->name('user.update');
+        Route::delete('/user/{user}', [AdminController::class, 'destroy'])->name('user.delete');
+
+        // Tailor routes
+        Route::get('/cloths', [ClothsController::class, 'cloths'])->name('cloths');
+        Route::get('/uniform', [UniformController::class, 'uniform'])->name('uniform');
+        Route::get('/kortai', [KortaiController::class, 'kortai'])->name('kortai');
+        Route::get('/sadrai', [SadraiController::class, 'sadrai'])->name('sadrai');
+        Route::get('/tailorpost', [PostController::class, 'tailorpost'])->name('tailor.posts');
+    });
+});

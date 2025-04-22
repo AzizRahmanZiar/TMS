@@ -1,17 +1,13 @@
-import "../css/app.css";
 import "./bootstrap";
+import "../css/app.css";
+import "../css/rtl.css";
 
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createRoot } from "react-dom/client";
-import { PostProvider } from "./Contexts/PostContext";
-import { SadraiProvider } from "./Contexts/SadraiContext";
-import { ClothsProvider } from "./Contexts/ClothsContext";
-import { UniformProvider } from "./Contexts/UniformContext";
-import { KortaiProvider } from "./Contexts/KortaiContext";
-import { AdminProvider } from "./Contexts/AdminContext";
-import { RegProvider } from "./Contexts/RegContext";
-import { RatingProvider } from "./Contexts/RatingContext";
+import axios from "axios";
+
+import GlobalProviders from "./Contexts/GlobalProviders";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -25,24 +21,75 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
+        // Add CSRF token to all requests
+        const csrfToken = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content");
+        axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
+        axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+        axios.defaults.withCredentials = true;
+
+        // Optimize CSRF token refresh handling
+        let isRefreshing = false;
+        let failedQueue = [];
+
+        const processQueue = (error, token = null) => {
+            failedQueue.forEach((prom) => {
+                if (error) {
+                    prom.reject(error);
+                } else {
+                    prom.resolve(token);
+                }
+            });
+            failedQueue = [];
+        };
+
+        axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                const originalRequest = error.config;
+
+                if (
+                    error.response &&
+                    error.response.status === 419 &&
+                    !originalRequest._retry
+                ) {
+                    if (isRefreshing) {
+                        return new Promise((resolve, reject) => {
+                            failedQueue.push({ resolve, reject });
+                        })
+                            .then((token) => {
+                                originalRequest.headers["X-CSRF-TOKEN"] = token;
+                                return axios(originalRequest);
+                            })
+                            .catch((err) => Promise.reject(err));
+                    }
+
+                    originalRequest._retry = true;
+                    isRefreshing = true;
+
+                    return new Promise((resolve, reject) => {
+                        const newToken = document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content");
+
+                        axios.defaults.headers.common["X-CSRF-TOKEN"] =
+                            newToken;
+                        originalRequest.headers["X-CSRF-TOKEN"] = newToken;
+
+                        isRefreshing = false;
+                        processQueue(null, newToken);
+                        resolve(axios(originalRequest));
+                    });
+                }
+                return Promise.reject(error);
+            }
+        );
+
         root.render(
-            <RatingProvider>
-                <RegProvider>
-                    <AdminProvider>
-                        <ClothsProvider>
-                            <UniformProvider>
-                                <KortaiProvider>
-                                    <SadraiProvider>
-                                        <PostProvider>
-                                            <App {...props} />{" "}
-                                        </PostProvider>
-                                    </SadraiProvider>
-                                </KortaiProvider>
-                            </UniformProvider>
-                        </ClothsProvider>
-                    </AdminProvider>
-                </RegProvider>
-            </RatingProvider>
+            <GlobalProviders>
+                <App {...props} />
+            </GlobalProviders>
         );
     },
     progress: {

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SiteLayout from "../../Layouts/SiteLayout";
+import { motion } from "framer-motion";
 import {
     FaRuler,
     FaShoppingBag,
@@ -66,42 +67,109 @@ const Order = () => {
         // Reset form or redirect
     };
 
+    // Animation variants
+    const fadeIn = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.6 },
+        },
+    };
+
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+            },
+        },
+    };
+
+    const formAnimation = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { type: "spring", damping: 15 },
+        },
+    };
+
     return (
         <SiteLayout title="فرمایش - خیاط ماسټر">
             {/* Hero Section */}
-            <section className="bg-primary-50 text-primary-900  py-12">
-                <div className="container mx-auto px-4 text-center">
-                    <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            <motion.section
+                className="bg-primary-50 text-primary-900 py-12"
+                initial="hidden"
+                animate="visible"
+                variants={fadeIn}
+            >
+                <div className=" mx-auto px-4">
+                    <motion.h1
+                        className="text-3xl md:text-4xl max-w-3xl mx-auto  font-bold mb-4"
+                        variants={fadeIn}
+                    >
                         فرمایش ورکړئ
-                    </h1>
-                    <p className="text-lg md:text-xl max-w-3xl mx-auto">
+                    </motion.h1>
+                    <motion.p
+                        className="text-lg md:text-xl max-w-3xl mx-auto"
+                        variants={fadeIn}
+                    >
                         د خپلې خوښې جامې فرمایش ورکړئ. موږ به یې ستاسو د اندازو
                         سره سم جوړې کړو.
-                    </p>
+                    </motion.p>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Order Form */}
             <section className="py-12">
-                <div className=" mx-auto px-4">
-                    <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg border">
-                        <h2 className="text-2xl font-bold mb-6 text-center">
+                <div className="mx-auto px-4">
+                    <motion.div
+                        className="max-w-4xl mx-auto bg-white p-8 rounded-lg border shadow-lg"
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ type: "spring", damping: 15 }}
+                        viewport={{ once: true }}
+                    >
+                        <motion.h2
+                            className="text-2xl font-bold mb-6 text-center"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            viewport={{ once: true }}
+                        >
                             د فرمایش فورمه
-                        </h2>
+                        </motion.h2>
 
-                        <form onSubmit={handleSubmit}>
+                        <motion.form
+                            onSubmit={handleSubmit}
+                            variants={staggerContainer}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                        >
                             {/* Personal Information */}
-                            <div className="mb-8">
+                            <motion.div
+                                className="mb-8"
+                                variants={formAnimation}
+                            >
                                 <h3 className="text-xl font-semibold mb-4 pb-2 border-b">
                                     شخصي معلومات
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
+                                    <motion.div
+                                        whileHover={{ scale: 1.02 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 400,
+                                        }}
+                                    >
                                         <label
                                             className="block text-gray-700 mb-2"
                                             htmlFor="name"
                                         >
-                                            بشپړ نوم *
+                                            نوم
                                         </label>
                                         <input
                                             type="text"
@@ -109,17 +177,23 @@ const Order = () => {
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
-                                            className="w-full p-3 border border-gray-300 rounded-md"
+                                            className="w-full p-3 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                             required
                                         />
-                                    </div>
+                                    </motion.div>
 
-                                    <div>
+                                    <motion.div
+                                        whileHover={{ scale: 1.02 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 400,
+                                        }}
+                                    >
                                         <label
                                             className="block text-gray-700 mb-2"
                                             htmlFor="phone"
                                         >
-                                            د تلیفون شمیره *
+                                            د تلیفون شمیره
                                         </label>
                                         <input
                                             type="tel"
@@ -127,12 +201,18 @@ const Order = () => {
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            className="w-full p-3 border border-gray-300 rounded-md"
+                                            className="w-full p-3 outline-none border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                             required
                                         />
-                                    </div>
+                                    </motion.div>
 
-                                    <div>
+                                    <motion.div
+                                        whileHover={{ scale: 1.02 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 400,
+                                        }}
+                                    >
                                         <label
                                             className="block text-gray-700 mb-2"
                                             htmlFor="email"
@@ -145,16 +225,22 @@ const Order = () => {
                                             name="email"
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className="w-full p-3 border border-gray-300 rounded-md"
+                                            className="w-full p-3 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                         />
-                                    </div>
+                                    </motion.div>
 
-                                    <div>
+                                    <motion.div
+                                        whileHover={{ scale: 1.02 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 400,
+                                        }}
+                                    >
                                         <label
                                             className="block text-gray-700 mb-2"
                                             htmlFor="address"
                                         >
-                                            آدرس *
+                                            آدرس
                                         </label>
                                         <input
                                             type="text"
@@ -162,35 +248,61 @@ const Order = () => {
                                             name="address"
                                             value={formData.address}
                                             onChange={handleChange}
-                                            className="w-full p-3 border border-gray-300 rounded-md"
+                                            className="w-full p-3 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                             required
                                         />
-                                    </div>
+                                    </motion.div>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Submit Button */}
-                            <div className="text-center">
+                            <motion.div
+                                className="text-center"
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                transition={{ delay: 0.5 }}
+                                viewport={{ once: true }}
+                            >
                                 <button
                                     type="submit"
-                                    className="bg-secondary-600 text-white py-3 px-8 rounded-md font-medium hover:bg-secondary-700 transition"
+                                    className="bg-secondary-600 text-white py-3 px-8 rounded-md font-medium hover:bg-secondary-700 transition shadow-md"
                                 >
                                     فرمایش ثبت کړئ
                                 </button>
-                            </div>
-                        </form>
-                    </div>
+                            </motion.div>
+                        </motion.form>
+                    </motion.div>
                 </div>
             </section>
 
             {/* FAQ Section */}
             <section className="py-12 bg-gray-50">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-2xl font-bold text-center mb-8">
+                    <motion.h2
+                        className="text-2xl font-bold text-center mb-8"
+                        initial={{ opacity: 0, y: -20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        viewport={{ once: true }}
+                    >
                         عمومي پوښتنې
-                    </h2>
-                    <div className="max-w-3xl mx-auto">
-                        <div className="mb-6 bg-white p-6 rounded-lg shadow-md">
+                    </motion.h2>
+                    <motion.div
+                        className="max-w-3xl mx-auto"
+                        variants={staggerContainer}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                    >
+                        <motion.div
+                            className="mb-6 bg-white p-6 rounded-lg shadow-md"
+                            variants={fadeIn}
+                            whileHover={{
+                                y: -5,
+                                boxShadow:
+                                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                            }}
+                        >
                             <h3 className="text-lg font-semibold mb-2">
                                 د فرمایش ورکولو وروسته څومره وخت نیسي؟
                             </h3>
@@ -199,9 +311,17 @@ const Order = () => {
                                 ورځو پورې وخت نیسي. د واده جامې ممکن تر ۳۰ ورځو
                                 پورې وخت ونیسي.
                             </p>
-                        </div>
+                        </motion.div>
 
-                        <div className="mb-6 bg-white p-6 rounded-lg shadow-md">
+                        <motion.div
+                            className="mb-6 bg-white p-6 rounded-lg shadow-md"
+                            variants={fadeIn}
+                            whileHover={{
+                                y: -5,
+                                boxShadow:
+                                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                            }}
+                        >
                             <h3 className="text-lg font-semibold mb-2">
                                 آیا تاسو د رسولو خدمت لرئ؟
                             </h3>
@@ -209,9 +329,17 @@ const Order = () => {
                                 هو، موږ د ښار په دننه کې وړیا رسول لرو. د ښار
                                 څخه بهر رسول د واټن په اساس اضافي لګښت لري.
                             </p>
-                        </div>
+                        </motion.div>
 
-                        <div className="bg-white p-6 rounded-lg shadow-md">
+                        <motion.div
+                            className="bg-white p-6 rounded-lg shadow-md"
+                            variants={fadeIn}
+                            whileHover={{
+                                y: -5,
+                                boxShadow:
+                                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                            }}
+                        >
                             <h3 className="text-lg font-semibold mb-2">
                                 که چیرې جامې زما په اندازه برابرې نه وي څه به
                                 وشي؟
@@ -220,8 +348,8 @@ const Order = () => {
                                 موږ د کیفیت تضمین وړاندې کوو. که چیرې جامې ستاسو
                                 په اندازه برابرې نه وي، موږ به یې وړیا بدل کړو.
                             </p>
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
                 </div>
             </section>
         </SiteLayout>

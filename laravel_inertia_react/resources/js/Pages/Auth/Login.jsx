@@ -1,97 +1,126 @@
-import Checkbox from '@/Components/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import React from "react";
+import PrimaryButton from "@/Components/PrimaryButton";
+import GuestLayout from "@/Layouts/GuestLayout";
+import { Head, Link, useForm, router } from "@inertiajs/react";
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
-        password: '',
-        remember: false,
+        email: "",
+        password: "",
     });
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!data.email.trim()) {
+            newErrors.email = "بریښنالیک اړین دی";
+        } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(data.email)
+        ) {
+            newErrors.email = "بریښنالیک ناسم دی";
+        }
+
+        if (!data.password) {
+            newErrors.password = "پټنوم اړین دی";
+        }
+
+        return newErrors;
+    };
 
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('login'), {
-            onFinish: () => reset('password'),
+        const formErrors = validateForm();
+        if (Object.keys(formErrors).length > 0) {
+            return;
+        }
+
+        post(route("login"), {
+            preserveScroll: true,
+            preserveState: true,
+            onFinish: () => reset("password"),
+            onSuccess: () => {
+                // The redirection will be handled by the LoginController
+            },
         });
     };
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
+            <Head title="ننوتل" />
 
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div className="mb-4 font-medium text-sm text-green-600">
                     {status}
                 </div>
             )}
-
-            <form onSubmit={submit}>
+            <h1 className="text-center font-amiri text-2xl">داخلـــــــېدل</h1>
+            <form onSubmit={submit} className="px-6 py-10 h-[30rem]">
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <label
+                        htmlFor="email"
+                        className="block  font-amiri text-xl text-gray-700"
+                    >
+                        بریښنالیک
+                    </label>
 
-                    <TextInput
+                    <input
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full outline-none focus:border-primary-500 border-b"
                         autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
+                        autoFocus
+                        onChange={(e) => setData("email", e.target.value)}
                     />
 
-                    <InputError message={errors.email} className="mt-2" />
+                    {errors.email && (
+                        <p className="mt-2 text-sm text-red-600">
+                            {errors.email}
+                        </p>
+                    )}
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                    <label
+                        htmlFor="password"
+                        className="block font-amiri text-xl text-gray-700"
+                    >
+                        پټنوم
+                    </label>
 
-                    <TextInput
+                    <input
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full outline-none  focus:border-primary-500  border-b"
                         autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={(e) => setData("password", e.target.value)}
                     />
 
-                    <InputError message={errors.password} className="mt-2" />
+                    {errors.password && (
+                        <p className="mt-2 text-sm text-red-600">
+                            {errors.password}
+                        </p>
+                    )}
                 </div>
 
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked)
-                            }
-                        />
-                        <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
-                            Remember me
-                        </span>
-                    </label>
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
+                <div className="mt-4 flex items-center justify-between">
                     {canResetPassword && (
                         <Link
-                            href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                            href={route("password.request")}
+                            className="text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Forgot your password?
+                            پټنوم مو هیر شوی؟
                         </Link>
                     )}
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
+                    <PrimaryButton
+                        className="ml-4 font-amiri"
+                        disabled={processing}
+                    >
+                        {processing ? "د ننوتلو په حال کې..." : "داخل سئ"}
                     </PrimaryButton>
                 </div>
             </form>

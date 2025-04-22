@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PostController extends Controller
 {
-    public function adminpost()
+    public function tailorpost()
     {
         return Inertia::render('System/Post');
-}
+    }
 }

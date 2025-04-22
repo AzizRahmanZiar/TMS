@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Link } from "@inertiajs/react";
+import { motion } from "framer-motion";
 import SiteLayout from "../../Layouts/SiteLayout";
 import {
     FaSearch,
@@ -19,91 +19,69 @@ import {
     FaChevronLeft,
     FaChevronRight,
 } from "react-icons/fa";
-import { useReg } from "@/Contexts/RegContext";
+import { Head } from '@inertiajs/react';
 
-const Shop = () => {
-    const { reg } = useReg(); // Access the reg context
+const Shop = ({ shops }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [specialization, setSpecialization] = useState("");
     const [priceRange, setPriceRange] = useState("");
-    const [shops, setShops] = useState([]);
     const [processedShops, setProcessedShops] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 9;
 
-    // Extract shops from reg data on component mount
+    // Process shop data
     useEffect(() => {
-        if (reg && reg.length > 0) {
-            // Filter only users with role "Tailor" and addShop=true
-            const shopsList = reg.filter(
-                (user) => user.role === "Tailor" && user.addShop
-            );
-            setShops(shopsList);
-        } else {
-            setShops([]);
-        }
-        setLoading(false);
-    }, [reg]);
-
-    // Process shop images
-    useEffect(() => {
-        const processShopImages = async () => {
+        if (shops && shops.length > 0) {
             const processed = shops.map((shop) => {
                 // Create a new object with all the shop properties
                 const processedShop = { ...shop };
 
                 // Process shop images if they exist
-                if (shop.shopImages && shop.shopImages.length > 0) {
-                    processedShop.shopImageUrls = shop.shopImages
-                        .map((image) => {
-                            if (image instanceof File) {
-                                return URL.createObjectURL(image);
-                            }
-                            return null;
-                        })
-                        .filter(Boolean);
+                if (shop.shop_images) {
+                    try {
+                        const images = JSON.parse(shop.shop_images);
+                        processedShop.shopImageUrls = images.map(image => `/storage/${image}`);
+                    } catch (e) {
+                        processedShop.shopImageUrls = [];
+                    }
                 } else {
                     processedShop.shopImageUrls = [];
+                }
+
+                // Process social links if they exist
+                if (shop.social_links) {
+                    try {
+                        processedShop.socialLinks = JSON.parse(shop.social_links);
+                    } catch (e) {
+                        processedShop.socialLinks = {};
+                    }
+                } else {
+                    processedShop.socialLinks = {};
                 }
 
                 return processedShop;
             });
 
             setProcessedShops(processed);
-        };
-
-        processShopImages();
-
-        // Cleanup function to revoke object URLs
-        return () => {
-            processedShops.forEach((shop) => {
-                if (shop.shopImageUrls) {
-                    shop.shopImageUrls.forEach((url) => {
-                        if (url) URL.revokeObjectURL(url);
-                    });
-                }
-            });
-        };
+        }
     }, [shops]);
 
     // Function to handle filtering
     const handleFilter = () => {
-        if (!reg) return;
+        if (!shops) return;
 
-        let filtered = reg.filter(
-            (user) => user.role === "Tailor" && user.addShop
-        );
+        let filtered = shops;
 
         if (searchTerm) {
             filtered = filtered.filter(
                 (shop) =>
-                    (shop.tailoringName &&
-                        shop.tailoringName
+                    (shop.tailoring_name &&
+                        shop.tailoring_name
                             .toLowerCase()
                             .includes(searchTerm.toLowerCase())) ||
-                    (shop.tailoringAddress &&
-                        shop.tailoringAddress
+                    (shop.tailoring_address &&
+                        shop.tailoring_address
                             .toLowerCase()
                             .includes(searchTerm.toLowerCase()))
             );
@@ -125,7 +103,7 @@ const Shop = () => {
             filtered = filtered.filter(() => true);
         }
 
-        setShops(filtered);
+        setProcessedShops(filtered);
         setCurrentPage(1);
     };
 
@@ -135,11 +113,8 @@ const Shop = () => {
         setSpecialization("");
         setPriceRange("");
 
-        if (reg) {
-            const shopsList = reg.filter(
-                (user) => user.role === "Tailor" && user.addShop
-            );
-            setShops(shopsList);
+        if (shops) {
+            setProcessedShops(shops);
         }
         setCurrentPage(1);
     };
@@ -159,315 +134,381 @@ const Shop = () => {
         }
     };
 
+    // Animation variants
+    const fadeIn = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { duration: 0.6 },
+        },
+    };
+
+    const fadeInUp = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.6 },
+        },
+    };
+
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+            },
+        },
+    };
+
+    const cardVariants = {
+        hidden: { opacity: 0, y: 30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+            },
+        },
+        hover: {
+            y: -10,
+            boxShadow:
+                "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 10,
+            },
+        },
+    };
+
+    const buttonVariants = {
+        hover: {
+            scale: 1.05,
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 10,
+            },
+        },
+        tap: { scale: 0.95 },
+    };
+
     return (
         <SiteLayout title="د خیاطۍ دوکانونه - خیاط ماسټر">
+            <Head title="Shops" />
             {/* Hero Section */}
-            <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-20">
-                <div className="container mx-auto px-4 text-center">
-                    <h1 className="text-3xl md:text-5xl font-bold mb-6">
+            <motion.section
+                className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-20"
+                initial="hidden"
+                animate="visible"
+                variants={fadeIn}
+            >
+                <div className=" mx-auto px-4 ">
+                    <motion.h1
+                        className="text-3xl md:text-5xl max-w-3xl mx-auto font-bold mb-6"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.6 }}
+                    >
                         د خیاطۍ دوکانونه
-                    </h1>
-                    <p className="text-lg md:text-xl max-w-3xl mx-auto opacity-90">
+                    </motion.h1>
+                    <motion.p
+                        className="text-lg md:text-xl max-w-3xl mx-auto opacity-90"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4, duration: 0.6 }}
+                    >
                         د خپلو اړتیاوو لپاره غوره دوکان ومومئ. زموږ دوکانونه د
                         لوړ کیفیت خیاطۍ خدمتونه وړاندې کوي.
-                    </p>
+                    </motion.p>
                 </div>
-            </section>
+            </motion.section>
 
-            {/* Search and Filter Section */}
-            <section className="py-10 bg-primary-50 top-0 z-20 border">
+            {/* Filter section */}
+            <motion.section
+                className="py-8 bg-white shadow-md"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+            >
                 <div className="container mx-auto px-4">
-                    <div className="bg-white p-6 rounded-xl border">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="relative">
+                    <motion.div
+                        className="bg-white p-6 rounded-xl border"
+                        whileHover={{
+                            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+                        }}
+                    >
+                        <div className="flex flex-col md:flex-row gap-4">
+                            <div className="flex flex-1 items-center gap-2 border border-primary-200 p-3 rounded-lg bg-white">
+                                <FaSearch className="text-primary-400" />
                                 <input
                                     type="text"
-                                    placeholder="د نوم یا موقعیت له مخې لټون"
-                                    className="w-full p-3 border border-primary-200 rounded-lg pr-10 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
+                                    placeholder="د دوکان نوم یا آدرس ولټوئ..."
                                     value={searchTerm}
                                     onChange={(e) =>
                                         setSearchTerm(e.target.value)
                                     }
+                                    className="flex-1 outline-none"
                                 />
-                                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400" />
                             </div>
-
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={handleFilter}
-                                    className="flex-1 bg-secondary-600 text-white p-3 rounded-lg hover:bg-secondary-700 transition duration-300 shadow-md flex items-center justify-center"
+                            <div className="flex flex-1 items-center gap-2 border border-primary-200 p-3 rounded-lg bg-white">
+                                <FaFilter className="text-primary-400" />
+                                <select
+                                    value={specialization}
+                                    onChange={(e) =>
+                                        setSpecialization(e.target.value)
+                                    }
+                                    className="flex-1 outline-none bg-transparent"
                                 >
-                                    <FaFilter className="ml-2" /> فیلټر
-                                </button>
-                                <button
-                                    onClick={resetFilters}
-                                    className="flex-1 bg-tertiary-600 text-white p-3 rounded-lg hover:bg-tertiary-700 transition duration-300 shadow-md"
-                                >
-                                    بیا تنظیم
-                                </button>
+                                    <option value="">ټول تخصصونه</option>
+                                    <option value="Wedding">د واده جامې</option>
+                                    <option value="Traditional">
+                                        دودیز جامې
+                                    </option>
+                                    <option value="Modern">مدرن جامې</option>
+                                </select>
                             </div>
+                            <motion.button
+                                onClick={handleFilter}
+                                className="bg-secondary-600 hover:bg-secondary-700 text-white py-4 px-6 rounded-lg transition duration-200 shadow-md"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                لټون
+                            </motion.button>
+                            <motion.button
+                                onClick={resetFilters}
+                                className="bg-primary-500 hover:bg-primary-600 text-white py-4 px-6 rounded-lg transition duration-200 shadow-md"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                ریسیټ
+                            </motion.button>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
-            </section>
+            </motion.section>
 
-            {/* Shops Listing */}
-            <section className="py-12 bg-primary-50">
-                <div className=" mx-auto px-4">
+            {/* Shops list */}
+            <section className="py-12 bg-gray-50">
+                <div className="container mx-auto px-4">
                     {loading ? (
-                        <div className="flex justify-center items-center py-20">
-                            <div className=" rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary-500"></div>
-                        </div>
+                        <motion.div
+                            className="flex justify-center items-center py-20"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                        >
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary-500"></div>
+                        </motion.div>
                     ) : (
                         <>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <motion.div
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                                variants={staggerContainer}
+                                initial="hidden"
+                                animate="visible"
+                            >
                                 {paginatedShops.length > 0 ? (
                                     paginatedShops.map((shop, index) => (
-                                        <div
+                                        <motion.div
                                             key={index}
-                                            className="bg-white rounded-xl overflow-hidden shadow-lg border border-primary-100 hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
+                                            className="bg-white rounded-xl overflow-hidden shadow-lg border border-primary-100 hover:shadow-xl transition duration-300"
+                                            variants={cardVariants}
+                                            whileHover="hover"
+                                            custom={index}
                                         >
-                                            <div className="relative h-44 bg-gradient-to-r from-primary-100 to-secondary-100">
+                                            {/* Shop Images Carousel */}
+                                            <div className="relative h-48 bg-gray-100">
                                                 {shop.shopImageUrls &&
-                                                shop.shopImageUrls.length >
-                                                    0 ? (
+                                                shop.shopImageUrls.length > 0 ? (
                                                     <img
-                                                        src={
-                                                            shop
-                                                                .shopImageUrls[0] ||
-                                                            "/placeholder.svg"
-                                                        }
-                                                        alt={shop.tailoringName}
+                                                        src={shop.shopImageUrls[0]}
+                                                        alt={shop.tailoring_name}
                                                         className="w-full h-full object-cover"
                                                     />
                                                 ) : (
-                                                    <div className="w-full h-full flex items-center justify-center">
-                                                        <FaStore className="text-6xl text-primary-300" />
+                                                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                                                        <FaStore className="text-4xl text-gray-400" />
                                                     </div>
                                                 )}
-
-                                                <div className="absolute bottom-0 right-0 left-0 bg-gradient-to-t from-black to-transparent p-4">
-                                                    <h3 className="text-white text-xl font-bold">
-                                                        {shop.tailoringName ||
-                                                            "خیاطي دوکان"}
-                                                    </h3>
-                                                </div>
                                             </div>
 
                                             <div className="p-6">
-                                                <div className="space-y-3  mb-6">
-                                                    <div className="grid grid-cols-2 gap-2 mb-10">
-                                                        <div className="flex items-start">
-                                                            <FaMapMarkerAlt className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    پته:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {shop.tailoringAddress ||
-                                                                        "نامعلوم"}
-                                                                </p>
-                                                            </div>
-                                                        </div>
+                                                <motion.h2
+                                                    className="text-xl font-bold text-primary-800 mb-2"
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{
+                                                        delay: 0.3 + index * 0.05,
+                                                    }}
+                                                >
+                                                    {shop.tailoring_name}
+                                                </motion.h2>
 
-                                                        <div className="flex items-start">
-                                                            <FaUsers className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    د خیاطانو
-                                                                    شمیر:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {shop.tailorCount ||
-                                                                        "نامعلوم"}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="flex items-start">
-                                                            <FaCalendarAlt className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    تاسیس:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {shop.publishedYear ||
-                                                                        "نامعلوم"}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="flex items-start">
-                                                            <FaPhone className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    تماس نمبر:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {shop.contactNumber ||
-                                                                        "نامعلوم"}
-                                                                </p>
-                                                            </div>
-                                                        </div>
+                                                <motion.div
+                                                    className="space-y-3"
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{
+                                                        delay: 0.4 + index * 0.05,
+                                                    }}
+                                                >
+                                                    <div className="flex items-start">
+                                                        <FaMapMarkerAlt className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {shop.tailoring_address}
+                                                        </p>
                                                     </div>
 
-                                                    {shop.shopEmail && (
-                                                        <div className="flex items-start">
-                                                            <FaEnvelope className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    بریښنالیک:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {
-                                                                        shop.shopEmail
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    )}
+                                                    <div className="flex items-start">
+                                                        <FaPhone className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {shop.contact_number}
+                                                        </p>
+                                                    </div>
 
-                                                    {shop.workingHours && (
-                                                        <div className="flex items-start">
-                                                            <FaClock className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
-                                                            <div className="flex gap-2 items-center">
-                                                                <p className="text-sm text-primary-500">
-                                                                    کاري
-                                                                    ساعتونه:
-                                                                </p>
-                                                                <p className="font-medium">
-                                                                    {
-                                                                        shop.workingHours
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                    <div className="flex items-start">
+                                                        <FaEnvelope className="text-primary-500 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {shop.shop_email}
+                                                        </p>
+                                                    </div>
 
-                                                {shop.services && (
-                                                    <div className="mb-4 flex items-center gap-2 rounded-lg">
-                                                        <h4 className="font-semibold text-primary-700 flex items-center">
-                                                            <FaTools className="ml-1" />{" "}
-                                                            خدمتونه:
-                                                        </h4>
-                                                        <p className="text-primary-700">
+                                                    <div className="flex items-start">
+                                                        <FaClock className="text-secondary-600 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {shop.working_hours}
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="flex items-start">
+                                                        <FaTools className="text-tertiary-600 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
                                                             {shop.services}
                                                         </p>
                                                     </div>
-                                                )}
 
-                                                {shop.paymentMethods &&
-                                                    shop.paymentMethods.length >
-                                                        0 && (
-                                                        <div className="mb-4 flex gap-3">
-                                                            <h4 className="font-semibold  text-primary-700 mb-2 flex items-center">
-                                                                <FaCreditCard className="ml-1" />{" "}
-                                                                د تادیاتو طریقې:
-                                                            </h4>
-                                                            <div className="flex flex-wrap gap-2">
-                                                                {shop.paymentMethods.map(
-                                                                    (
-                                                                        method,
-                                                                        idx
-                                                                    ) => (
-                                                                        <span
-                                                                            key={
-                                                                                idx
-                                                                            }
-                                                                            className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm"
-                                                                        >
-                                                                            {
-                                                                                method
-                                                                            }
-                                                                        </span>
-                                                                    )
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    )}
-
-                                                {shop.socialLinks && (
-                                                    <div className="mb-6 flex gap-3">
-                                                        <h4 className="font-semibold text-primary-700 mb-2">
-                                                            ټولنیزې شبکې:
-                                                        </h4>
-                                                        <div className="flex gap-4">
-                                                            {shop.socialLinks
-                                                                .facebook && (
-                                                                <a
-                                                                    href={
-                                                                        shop
-                                                                            .socialLinks
-                                                                            .facebook
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-2xl text-primary-600 hover:text-primary-700 transition"
-                                                                >
-                                                                    <FaFacebook />
-                                                                </a>
-                                                            )}
-                                                            {shop.socialLinks
-                                                                .instagram && (
-                                                                <a
-                                                                    href={
-                                                                        shop
-                                                                            .socialLinks
-                                                                            .instagram
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-2xl text-secondary-600 hover:text-secondary-700 transition"
-                                                                >
-                                                                    <FaInstagram />
-                                                                </a>
-                                                            )}
-                                                            {shop.socialLinks
-                                                                .telegram && (
-                                                                <a
-                                                                    href={
-                                                                        shop
-                                                                            .socialLinks
-                                                                            .telegram
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-2xl text-tertiary-600 hover:text-tertiary-700 transition"
-                                                                >
-                                                                    <FaTelegram />
-                                                                </a>
-                                                            )}
-                                                        </div>
+                                                    <div className="flex items-start">
+                                                        <FaCreditCard className="text-primary-600 mt-1 ml-2 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">
+                                                            {shop.payment_methods}
+                                                        </p>
                                                     </div>
+                                                </motion.div>
+
+                                                {/* Social Links */}
+                                                {shop.socialLinks && (
+                                                    <motion.div
+                                                        className="mt-4 flex space-x-4"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        transition={{
+                                                            delay: 0.5 + index * 0.05,
+                                                        }}
+                                                    >
+                                                        {shop.socialLinks.facebook && (
+                                                            <a
+                                                                href={shop.socialLinks.facebook}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-primary-600 hover:text-primary-800"
+                                                            >
+                                                                <FaFacebook className="text-xl" />
+                                                            </a>
+                                                        )}
+                                                        {shop.socialLinks.instagram && (
+                                                            <a
+                                                                href={shop.socialLinks.instagram}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-primary-600 hover:text-primary-800"
+                                                            >
+                                                                <FaInstagram className="text-xl" />
+                                                            </a>
+                                                        )}
+                                                        {shop.socialLinks.telegram && (
+                                                            <a
+                                                                href={shop.socialLinks.telegram}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-primary-600 hover:text-primary-800"
+                                                            >
+                                                                <FaTelegram className="text-xl" />
+                                                            </a>
+                                                        )}
+                                                    </motion.div>
                                                 )}
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     ))
                                 ) : (
-                                    <div className="col-span-3 text-center py-16">
-                                        <div className="bg-white p-8 rounded-xl border max-w-lg mx-auto">
-                                            <div className="text-primary-400 text-6xl mb-4">
+                                    <motion.div
+                                        className="col-span-3 text-center py-16"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ duration: 0.5 }}
+                                    >
+                                        <motion.div
+                                            className="bg-white p-8 rounded-xl border max-w-lg mx-auto"
+                                            initial={{ scale: 0.9 }}
+                                            animate={{ scale: 1 }}
+                                            transition={{ duration: 0.5 }}
+                                        >
+                                            <motion.div
+                                                className="text-primary-400 text-6xl mb-4"
+                                                initial={{ y: -20 }}
+                                                animate={{ y: 0 }}
+                                                transition={{
+                                                    duration: 0.5,
+                                                    delay: 0.2,
+                                                }}
+                                            >
                                                 <FaStore className="mx-auto" />
-                                            </div>
-                                            <h3 className="text-xl font-bold text-primary-700 mb-2">
+                                            </motion.div>
+                                            <motion.h3
+                                                className="text-xl font-bold text-primary-700 mb-2"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{
+                                                    duration: 0.5,
+                                                    delay: 0.3,
+                                                }}
+                                            >
                                                 هیڅ دوکان ونه موندل شو
-                                            </h3>
-                                            <p className="text-primary-500 mb-6">
-                                                ستاسو د معیارونو سره سم هیڅ
-                                                دوکان ونه موندل شو یا په دې وخت
-                                                کې هیڅ دوکان نشته.
-                                            </p>
-                                        </div>
-                                    </div>
+                                            </motion.h3>
+                                            <motion.p
+                                                className="text-primary-500 mb-6"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{
+                                                    duration: 0.5,
+                                                    delay: 0.4,
+                                                }}
+                                            >
+                                                په دې وخت کې هیڅ دوکان نشته یا
+                                                ستاسو د لټون معیارونه هیڅ پایله
+                                                نلري.
+                                            </motion.p>
+                                        </motion.div>
+                                    </motion.div>
                                 )}
-                            </div>
+                            </motion.div>
 
                             {/* Pagination */}
                             {processedShops.length > itemsPerPage && (
-                                <div className="mt-12 flex justify-center">
+                                <motion.div
+                                    className="mt-12 flex justify-center"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: 0.7 }}
+                                >
                                     <nav className="flex items-center gap-1">
-                                        <button
+                                        <motion.button
                                             onClick={() =>
                                                 goToPage(currentPage - 1)
                                             }
@@ -477,9 +518,23 @@ const Shop = () => {
                                                     ? "text-primary-400 cursor-not-allowed"
                                                     : "text-primary-700 hover:bg-primary-100"
                                             }`}
+                                            whileHover={
+                                                currentPage !== 1
+                                                    ? {
+                                                          scale: 1.1,
+                                                          backgroundColor:
+                                                              "rgba(0,0,0,0.05)",
+                                                      }
+                                                    : {}
+                                            }
+                                            whileTap={
+                                                currentPage !== 1
+                                                    ? { scale: 0.95 }
+                                                    : {}
+                                            }
                                         >
                                             <FaChevronRight className="h-5 w-5" />
-                                        </button>
+                                        </motion.button>
 
                                         {[...Array(totalPages)].map((_, i) => {
                                             // Show limited page numbers with ellipsis
@@ -490,7 +545,7 @@ const Shop = () => {
                                                     i <= currentPage + 2)
                                             ) {
                                                 return (
-                                                    <button
+                                                    <motion.button
                                                         key={i}
                                                         onClick={() =>
                                                             goToPage(i + 1)
@@ -501,20 +556,50 @@ const Shop = () => {
                                                                 ? "bg-secondary-600 text-white"
                                                                 : "text-primary-700 hover:bg-primary-100"
                                                         }`}
+                                                        whileHover={{
+                                                            scale: 1.1,
+                                                        }}
+                                                        whileTap={{
+                                                            scale: 0.95,
+                                                        }}
+                                                        initial={{
+                                                            opacity: 0,
+                                                            y: 10,
+                                                        }}
+                                                        animate={{
+                                                            opacity: 1,
+                                                            y: 0,
+                                                        }}
+                                                        transition={{
+                                                            delay:
+                                                                0.8 + i * 0.05,
+                                                        }}
                                                     >
                                                         {i + 1}
-                                                    </button>
+                                                    </motion.button>
                                                 );
                                             } else if (
                                                 i === currentPage - 3 ||
                                                 i === currentPage + 3
                                             ) {
-                                                return <span key={i}>...</span>;
+                                                return (
+                                                    <motion.span
+                                                        key={i}
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        transition={{
+                                                            delay:
+                                                                0.8 + i * 0.05,
+                                                        }}
+                                                    >
+                                                        ...
+                                                    </motion.span>
+                                                );
                                             }
                                             return null;
                                         })}
 
-                                        <button
+                                        <motion.button
                                             onClick={() =>
                                                 goToPage(currentPage + 1)
                                             }
@@ -526,11 +611,25 @@ const Shop = () => {
                                                     ? "text-primary-400 cursor-not-allowed"
                                                     : "text-primary-700 hover:bg-primary-100"
                                             }`}
+                                            whileHover={
+                                                currentPage !== totalPages
+                                                    ? {
+                                                          scale: 1.1,
+                                                          backgroundColor:
+                                                              "rgba(0,0,0,0.05)",
+                                                      }
+                                                    : {}
+                                            }
+                                            whileTap={
+                                                currentPage !== totalPages
+                                                    ? { scale: 0.95 }
+                                                    : {}
+                                            }
                                         >
                                             <FaChevronLeft className="h-5 w-5" />
-                                        </button>
+                                        </motion.button>
                                     </nav>
-                                </div>
+                                </motion.div>
                             )}
                         </>
                     )}

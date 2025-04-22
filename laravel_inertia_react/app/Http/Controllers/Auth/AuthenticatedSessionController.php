@@ -31,8 +31,12 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        $request->session()->regenerate();
+        // Optimize session regeneration
+        if (!$request->session()->has('_token')) {
+            $request->session()->regenerate();
+        }
 
+        // Redirect to the system dashboard which will give access to all system pages
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
@@ -43,9 +47,11 @@ class AuthenticatedSessionController extends Controller
     {
         Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
+        // Optimize session invalidation
+        if ($request->session()->has('_token')) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
         return redirect('/');
     }

@@ -1,4 +1,4 @@
-import React from "react";
+import { motion } from "framer-motion";
 import { Link } from "@inertiajs/react";
 import {
     FaFacebook,
@@ -11,155 +11,294 @@ import {
 } from "react-icons/fa";
 
 const Footer = () => {
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.3,
+            },
+        },
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { type: "spring", stiffness: 100, damping: 10 },
+        },
+    };
+
+    const linkVariants = {
+        hover: {
+            scale: 1.05,
+            color: "#ffffff",
+            transition: { type: "spring", stiffness: 300, damping: 10 },
+        },
+        tap: { scale: 0.95 },
+    };
+
+    const socialIconVariants = {
+        hover: {
+            scale: 1.2,
+            rotate: 5,
+            color: "#ffffff",
+            transition: { type: "spring", stiffness: 500, damping: 10 },
+        },
+        tap: { scale: 0.9 },
+    };
+
     return (
-        <footer className="bg-tertiary-950 text-white pt-12 pb-8" dir="rtl">
+        <motion.footer
+            className="bg-tertiary-950 text-white pt-12 pb-8"
+            dir="rtl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
             <div className="md:px-20 mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.3 }}
+                >
                     {/* About Section */}
-                    <div>
-                        <h3 className="text-xl text-primary-50 font-bold mb-4">
+                    <motion.div variants={itemVariants}>
+                        <motion.h3
+                            className="text-xl text-primary-50 font-bold mb-4"
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.2 }}
+                            viewport={{ once: true }}
+                        >
                             خیاط ماسټر
-                        </h3>
-                        <p className="text-primary-50 mb-4">
+                        </motion.h3>
+                        <motion.p
+                            className="text-primary-50 mb-4"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ delay: 0.3 }}
+                            viewport={{ once: true }}
+                        >
                             موږ د تجربه لرونکو مسلکي کسانو سره د لوړ کیفیت خیاطۍ
                             خدمتونه وړاندې کوو ترڅو ستاسو د جامو ټولې اړتیاوې
                             پوره کړو.
-                        </p>
-                        <div className="flex gap-5 ">
-                            <a
+                        </motion.p>
+                        <motion.div
+                            className="flex gap-5"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ delay: 0.4 }}
+                            viewport={{ once: true }}
+                        >
+                            <motion.a
                                 href="#"
                                 className="text-primary-50 hover:text-white transition"
+                                variants={socialIconVariants}
+                                whileHover="hover"
+                                whileTap="tap"
                             >
                                 <FaFacebook size={20} />
-                            </a>
-                            <a
+                            </motion.a>
+                            <motion.a
                                 href="#"
                                 className="text-primary-50 hover:text-white transition"
+                                variants={socialIconVariants}
+                                whileHover="hover"
+                                whileTap="tap"
                             >
                                 <FaTwitter size={20} />
-                            </a>
-                            <a
+                            </motion.a>
+                            <motion.a
                                 href="#"
                                 className="text-primary-50 hover:text-white transition"
+                                variants={socialIconVariants}
+                                whileHover="hover"
+                                whileTap="tap"
                             >
                                 <FaInstagram size={20} />
-                            </a>
-                            <a
+                            </motion.a>
+                            <motion.a
                                 href="#"
                                 className="text-primary-50 hover:text-white transition"
+                                variants={socialIconVariants}
+                                whileHover="hover"
+                                whileTap="tap"
                             >
                                 <FaLinkedin size={20} />
-                            </a>
-                        </div>
-                    </div>
+                            </motion.a>
+                        </motion.div>
+                    </motion.div>
 
                     {/* Quick Links */}
-                    <div>
-                        <h3 className="text-xl font-bold mb-4">چټک لینکونه</h3>
-                        <ul className="space-y-2">
-                            <li>
-                                <Link
-                                    href="/"
-                                    className="text-primary-50 hover:text-white transition"
+                    <motion.div variants={itemVariants}>
+                        <motion.h3
+                            className="text-xl font-bold mb-4"
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                            viewport={{ once: true }}
+                        >
+                            چټک لینکونه
+                        </motion.h3>
+                        <motion.ul
+                            className="space-y-2"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ delay: 0.4, staggerChildren: 0.1 }}
+                            viewport={{ once: true }}
+                        >
+                            {[
+                                { href: "/", text: "کور" },
+                                { href: "/tailor", text: "خیاطان" },
+                                { href: "/tailoring-shop", text: "دوکانونه" },
+                                { href: "/post", text: "پوسټونه" },
+                                { href: "/about", text: "زموږ په اړه" },
+                                { href: "/contact", text: "اړیکه" },
+                            ].map((link, index) => (
+                                <motion.li
+                                    key={index}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.4 + index * 0.05 }}
+                                    viewport={{ once: true }}
                                 >
-                                    کور
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/tailors"
-                                    className="text-primary-50 hover:text-white transition"
-                                >
-                                    خیاطان
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/tailoring-shop"
-                                    className="text-primary-50 hover:text-white transition"
-                                >
-                                    دوکانونه
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/post"
-                                    className="text-primary-50 hover:text-white transition"
-                                >
-                                    پوسټونه
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/about"
-                                    className="text-primary-50 hover:text-white transition"
-                                >
-                                    زموږ په اړه
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/contact"
-                                    className="text-primary-50 hover:text-white transition"
-                                >
-                                    اړیکه
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
+                                    <motion.div
+                                        variants={linkVariants}
+                                        whileHover="hover"
+                                        whileTap="tap"
+                                    >
+                                        <Link
+                                            href={link.href}
+                                            className="text-primary-50 hover:text-white transition"
+                                        >
+                                            {link.text}
+                                        </Link>
+                                    </motion.div>
+                                </motion.li>
+                            ))}
+                        </motion.ul>
+                    </motion.div>
 
                     {/* Services */}
-                    <div>
-                        <h3 className="text-xl font-bold mb-4">خدمتونه</h3>
-                        <ul className="space-y-2">
-                            <li className="text-primary-50 hover:text-white transition">
-                                ځانګړي خیاطي
-                            </li>
-                            <li className="text-primary-50 hover:text-white transition">
-                                بدلونونه
-                            </li>
-                            <li className="text-primary-50 hover:text-white transition">
-                                د واده جامې
-                            </li>
-                            <li className="text-primary-50 hover:text-white transition">
-                                دودیزې جامې
-                            </li>
-                            <li className="text-primary-50 hover:text-white transition">
-                                عصري فیشن
-                            </li>
-                        </ul>
-                    </div>
+                    <motion.div variants={itemVariants}>
+                        <motion.h3
+                            className="text-xl font-bold mb-4"
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4 }}
+                            viewport={{ once: true }}
+                        >
+                            خدمتونه
+                        </motion.h3>
+                        <motion.ul
+                            className="space-y-2"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                            viewport={{ once: true }}
+                        >
+                            {[
+                                "ځانګړي خیاطي",
+                                "بدلونونه",
+                                "د واده جامې",
+                                "دودیزې جامې",
+                                "عصري فیشن",
+                            ].map((service, index) => (
+                                <motion.li
+                                    key={index}
+                                    className="text-primary-50 hover:text-white transition"
+                                    initial={{ opacity: 0, x: -10 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.5 + index * 0.05 }}
+                                    viewport={{ once: true }}
+                                    whileHover={{ x: 5 }}
+                                >
+                                    {service}
+                                </motion.li>
+                            ))}
+                        </motion.ul>
+                    </motion.div>
 
                     {/* Contact Info */}
-                    <div>
-                        <h3 className="text-xl font-bold mb-4">
+                    <motion.div variants={itemVariants}>
+                        <motion.h3
+                            className="text-xl font-bold mb-4"
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.5 }}
+                            viewport={{ once: true }}
+                        >
                             زموږ سره اړیکه
-                        </h3>
-                        <ul className="space-y-2">
-                            <li className="flex items-center text-primary-50">
+                        </motion.h3>
+                        <motion.ul
+                            className="space-y-2"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ delay: 0.6 }}
+                            viewport={{ once: true }}
+                        >
+                            <motion.li
+                                className="flex items-center text-primary-50"
+                                initial={{ opacity: 0, x: -10 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.6 }}
+                                viewport={{ once: true }}
+                                whileHover={{ x: 5 }}
+                            >
                                 <FaMapMarkerAlt className="ml-2" />
                                 ۱۲۳ د خیاط سړک، فیشن ښار
-                            </li>
-                            <li className="flex items-center text-primary-50">
+                            </motion.li>
+                            <motion.li
+                                className="flex items-center text-primary-50"
+                                initial={{ opacity: 0, x: -10 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.65 }}
+                                viewport={{ once: true }}
+                                whileHover={{ x: 5 }}
+                            >
                                 <FaPhone className="ml-2" />
                                 +123 456 7890
-                            </li>
-                            <li className="flex items-center text-primary-50">
+                            </motion.li>
+                            <motion.li
+                                className="flex items-center text-primary-50"
+                                initial={{ opacity: 0, x: -10 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.7 }}
+                                viewport={{ once: true }}
+                                whileHover={{ x: 5 }}
+                            >
                                 <FaEnvelope className="ml-2" />
                                 info@tailormaster.com
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                            </motion.li>
+                        </motion.ul>
+                    </motion.div>
+                </motion.div>
 
-                <div className="border-t border-gray-800 mt-8 pt-6 text-center text-primary-50">
-                    <p>
+                <motion.div
+                    className="border-t border-gray-800 mt-8 pt-6 text-center text-primary-50"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                    viewport={{ once: true }}
+                >
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ delay: 0.9 }}
+                        viewport={{ once: true }}
+                    >
                         د چاپ حق © {new Date().getFullYear()} خیاط ماسټر. ټول
                         حقوق خوندي دي.
-                    </p>
-                </div>
+                    </motion.p>
+                </motion.div>
             </div>
-        </footer>
+        </motion.footer>
     );
 };
 
