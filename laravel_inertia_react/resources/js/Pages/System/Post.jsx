@@ -156,7 +156,9 @@ const Post = () => {
             case "category":
                 if (!value.trim()) {
                     errors.category = "کټګورۍ اړینه ده";
-                } else if (!["Cloths", "Uniform", "Kortai", "Sadrai"].includes(value)) {
+                } else if (
+                    !["Cloths", "Uniform", "Kortai", "Sadrai"].includes(value)
+                ) {
                     errors.category = "مهرباني وکړئ یوه معتبره کټګورۍ وټاکئ";
                 } else {
                     delete errors.category;
@@ -231,7 +233,11 @@ const Post = () => {
         if (!formValues.category.trim()) {
             newErrors.category = "کټګورۍ اړینه ده";
             isValid = false;
-        } else if (!["Cloths", "Uniform", "Kortai", "Sadrai"].includes(formValues.category)) {
+        } else if (
+            !["Cloths", "Uniform", "Kortai", "Sadrai"].includes(
+                formValues.category
+            )
+        ) {
             newErrors.category = "مهرباني وکړئ یوه معتبره کټګورۍ وټاکئ";
             isValid = false;
         }
@@ -366,7 +372,7 @@ const Post = () => {
                                 <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                                     عکس
                                 </th>
-                               
+
                                 <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                                     تفصیل
                                 </th>
@@ -408,7 +414,7 @@ const Post = () => {
                                                 className="h-16 w-16 object-cover rounded-md shadow-sm"
                                             />
                                         </td>
-                                        
+
                                         <td className="py-4 px-4 text-right">
                                             <div className="text-sm text-gray-500 line-clamp-2">
                                                 {post.description}
@@ -494,117 +500,70 @@ const Post = () => {
                                 onSubmit={handleSubmit}
                                 className="grid grid-cols-2 gap-5"
                             >
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">
-                                            تفصیل *
-                                        </label>
-                                        <textarea
-                                            name="description"
-                                            value={formValues.description}
-                                            onChange={handleInputChange}
-                                            className={getInputClass("description")}
-                                            rows="4"
-                                            maxLength="2000"
-                                        />
-                                        <div className="text-sm text-gray-500">
-                                            {descriptionChars}/2000 توري
-                                        </div>
-                                        {formErrors.description && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {formErrors.description}
-                                            </p>
-                                        )}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        لیکوال
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="author"
+                                        value={formValues.author}
+                                        onChange={handleInputChange}
+                                        className={getInputClass("author")}
+                                        maxLength="50"
+                                    />
+                                    <div className="text-sm text-gray-500">
+                                        {authorChars}/50 توري
                                     </div>
+                                    {formErrors.author && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.author}
+                                        </p>
+                                    )}
+                                </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">
-                                            تاریخ *
-                                        </label>
-                                        <input
-                                            type="date"
-                                            name="date"
-                                            value={formValues.date}
-                                            onChange={handleInputChange}
-                                            className={getInputClass("date")}
-                                        />
-                                        {formErrors.date && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {formErrors.date}
-                                            </p>
-                                        )}
-                                    </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        تاریخ
+                                    </label>
+                                    <input
+                                        type="date"
+                                        name="date"
+                                        value={formValues.date}
+                                        onChange={handleInputChange}
+                                        className={getInputClass("date")}
+                                    />
+                                    {formErrors.date && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.date}
+                                        </p>
+                                    )}
+                                </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">
-                                            لیکوال *
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="author"
-                                            value={formValues.author}
-                                            onChange={handleInputChange}
-                                            className={getInputClass("author")}
-                                            maxLength="50"
-                                        />
-                                        <div className="text-sm text-gray-500">
-                                            {authorChars}/50 توري
-                                        </div>
-                                        {formErrors.author && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {formErrors.author}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">
-                                            کټګورۍ *
-                                        </label>
-                                        <select
-                                            name="category"
-                                            value={formValues.category}
-                                            onChange={handleInputChange}
-                                            className={getInputClass("category")}
-                                        >
-                                            <option value="">کټګورۍ وټاکئ</option>
-                                            <option value="Cloths">Cloths</option>
-                                            <option value="Uniform">Uniform</option>
-                                            <option value="Kortai">Kortai</option>
-                                            <option value="Sadrai">Sadrai</option>
-                                        </select>
-                                        {formErrors.category && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {formErrors.category}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">
-                                            ایمیل *
-                                        </label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={formValues.email}
-                                            onChange={handleInputChange}
-                                            className={getInputClass("email")}
-                                        />
-                                        {formErrors.email && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {formErrors.email}
-                                            </p>
-                                        )}
-                                    </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        ایمیل
+                                    </label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formValues.email}
+                                        onChange={handleInputChange}
+                                        className={getInputClass("email")}
+                                    />
+                                    {formErrors.email && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.email}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div>
                                     <label
-                                        className="block text-sm font-medium text-gray-700 mb-1"
+                                        className="block text-sm font-medium text-gray-700"
                                         htmlFor="image"
                                     >
-                                        عکس
+                                        ډیزان
                                     </label>
                                     <input
                                         type="file"
@@ -618,6 +577,50 @@ const Post = () => {
                                     {formErrors.image && (
                                         <p className="mt-1 text-sm text-red-600">
                                             {formErrors.image}
+                                        </p>
+                                    )}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        تفصیل
+                                    </label>
+                                    <textarea
+                                        name="description"
+                                        value={formValues.description}
+                                        onChange={handleInputChange}
+                                        className={getInputClass("description")}
+                                        rows="4"
+                                        maxLength="2000"
+                                    />
+                                    <div className="text-sm text-gray-500">
+                                        {descriptionChars}/2000 توري
+                                    </div>
+                                    {formErrors.description && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.description}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        کټګورۍ
+                                    </label>
+                                    <select
+                                        name="category"
+                                        value={formValues.category}
+                                        onChange={handleInputChange}
+                                        className={getInputClass("category")}
+                                    >
+                                        <option value="">کټګورۍ وټاکئ</option>
+                                        <option value="Cloths">Cloths</option>
+                                        <option value="Uniform">Uniform</option>
+                                        <option value="Kortai">Kortai</option>
+                                        <option value="Sadrai">Sadrai</option>
+                                    </select>
+                                    {formErrors.category && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {formErrors.category}
                                         </p>
                                     )}
                                 </div>
