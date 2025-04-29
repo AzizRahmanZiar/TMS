@@ -159,13 +159,13 @@ const Home = () => {
                     variants={fadeIn}
                 >
                     <motion.h1
-                        className="text-4xl md:text-6xl font-bold mb-4"
+                        className="text-4xl md:text-6xl font-bold font-zar mb-4"
                         variants={fadeInUp}
                     >
                         ماسټر خیاط
                     </motion.h1>
                     <motion.p
-                        className="text-xl md:text-2xl mb-8"
+                        className="text-xl md:text-2xl mb-8 font-zar"
                         variants={fadeInUp}
                     >
                         ستاسو د خوښې لباسونه دلته دي، د خیاطۍ خدمات په غوره بیه،
@@ -180,7 +180,7 @@ const Home = () => {
                     >
                         <Link
                             href="/tailor"
-                            className="bg-secondary-600 text-primary-50 px-6 py-3 rounded-md font-medium hover:bg-secondary-700 transition"
+                            className="bg-secondary-600 text-primary-50 font-bold px-6 py-3 rounded-md font-zar text-xl hover:bg-secondary-700 transition"
                         >
                             خیاط ومومئ
                         </Link>
@@ -212,7 +212,7 @@ const Home = () => {
                             variants={fadeInUp}
                         >
                             <motion.h2
-                                className="text-4xl font-bold text-primary-900 mb-4"
+                                className="text-4xl font-bold font-zar text-primary-900 mb-4"
                                 variants={fadeInUp}
                             >
                                 غوره ۱۰ ډیزاینونه
@@ -225,7 +225,7 @@ const Home = () => {
                                 transition={{ duration: 0.8 }}
                             ></motion.div>
                             <motion.p
-                                className="text-lg text-primary-700"
+                                className="text-2xl font-zar text-primary-700"
                                 variants={fadeInUp}
                             >
                                 زموږ تر ټولو مشهور او غوره ډیزاینونه وګورئ
@@ -348,11 +348,11 @@ const Home = () => {
                 <section className="py-20 bg-gradient-to-br from-tertiary-50 to-tertiary-100">
                     <div className="container mx-auto px-4">
                         <div className="max-w-3xl mx-auto text-center mb-16">
-                            <h2 className="text-4xl font-bold text-primary-900 mb-4">
+                            <h2 className="text-4xl font-zar font-bold text-primary-900 mb-4">
                                 زموږ د پیرودونکو نظرونه
                             </h2>
                             <div className="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
-                            <p className="text-lg text-primary-700">
+                            <p className="text-2xl font-zar text-primary-700">
                                 وګورئ چې زموږ پیرودونکي د زموږ خدماتو په اړه څه
                                 وايي
                             </p>
@@ -438,7 +438,7 @@ const Home = () => {
                                             </div>
 
                                             {/* Testimonial text */}
-                                            <p className="text-primary-700 text-lg md:text-xl leading-relaxed mb-8 italic">
+                                            <p className="text-primary-700 text-lg md:text-xl leading-relaxed mb-8 font-bold font-zar">
                                                 {
                                                     testimonialsWithComments[
                                                         currentTestimonial
@@ -566,9 +566,9 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
             >
-                <div className="container mx-auto px-4 text-center">
+                <div className=" mx-auto px-4 text-center">
                     <motion.h2
-                        className="text-3xl font-bold mb-6"
+                        className="text-3xl font-bold font-zar mb-6"
                         initial={{ y: 30, opacity: 0 }}
                         whileInView={{ y: 0, opacity: 1 }}
                         viewport={{ once: true }}
@@ -577,13 +577,13 @@ const Home = () => {
                         ځانګړي وړاندیزونه
                     </motion.h2>
                     <motion.p
-                        className="text-xl mb-8 max-w-3xl mx-auto"
+                        className="text-xl font-zar  mb-8 max-w-3xl mx-auto"
                         initial={{ y: 30, opacity: 0 }}
                         whileInView={{ y: 0, opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
-                        په خپل لومړي فرمایش کې ۲۰٪ تخفیف ترلاسه کړئ! د نویو
+                        په خپل لومړي فرمایش کې ۲۰٪ تخفیف ترلاسه کړئ او د نویو
                         پیرودونکو لپاره د محدود وخت وړاندیز.
                     </motion.p>
                     <motion.div
@@ -596,7 +596,7 @@ const Home = () => {
                     >
                         <Link
                             href="/order"
-                            className="bg-white text-primary-900 px-6 py-3 rounded-md font-medium hover:bg-primary-100 transition inline-block"
+                            className="bg-white text-primary-900 px-6 py-3 text-xl font-bold font-bold rounded-md font-zar hover:bg-primary-100 transition inline-block"
                         >
                             اوس فرمایش ورکړئ
                         </Link>
