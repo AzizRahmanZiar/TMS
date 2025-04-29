@@ -90,19 +90,19 @@ const Admin = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-6 py-3 text-right font-amiri text-xl  text-gray-500 uppercase tracking-wider">
+                                    <th className="px-6 py-3 text-right font-zar text-xl  text-gray-500 uppercase tracking-wider">
                                         نوم
                                     </th>
-                                    <th className="pl-20 py-3 text-left font-amiri text-xl text-gray-500 uppercase tracking-wider">
+                                    <th className="pl-20 py-3 text-left font-zar text-xl text-gray-500 uppercase tracking-wider">
                                         بریښنالیک
                                     </th>
-                                    <th className="px-6 py-3 text-right font-amiri text-xl text-gray-500 uppercase tracking-wider">
+                                    <th className="px-6 py-3 text-right font-zar text-xl text-gray-500 uppercase tracking-wider">
                                         رول
                                     </th>
-                                    <th className="px-6 py-3 text-right font-amiri text-xl text-gray-500 uppercase tracking-wider">
+                                    <th className="px-6 py-3 text-right font-zar text-xl text-gray-500 uppercase tracking-wider">
                                         د ثبت نیټه
                                     </th>
-                                    <th className="px-6 py-3 text-right font-amiri text-xl text-gray-500 uppercase tracking-wider">
+                                    <th className="px-6 py-3 text-right font-zar text-xl text-gray-500 uppercase tracking-wider">
                                         عملیات
                                     </th>
                                 </tr>
@@ -121,23 +121,23 @@ const Admin = () => {
                                                     </div>
                                                 </div>
                                                 <div className="mr-4">
-                                                    <div className=" font-amiri text-xl text-gray-900">
+                                                    <div className=" font-zar text-xl text-gray-900">
                                                         {user.name}
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="pl-20 py-4 text-left whitespace-nowrap">
-                                            <div className="font-amiri text-xl text-gray-900">
+                                            <div className="font-zar text-xl text-gray-900">
                                                 {user.email}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className="px-2 inline-flex  leading-5 font-amiri text-xl rounded-full text-blue-800">
+                                            <span className="px-2 inline-flex  leading-5 font-zar text-xl rounded-full text-blue-800">
                                                 {getRoleText(user.role)}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap font-amiri text-xl text-gray-500">
+                                        <td className="px-6 py-4 whitespace-nowrap font-zar text-xl text-gray-500">
                                             {new Date(
                                                 user.created_at
                                             ).toLocaleDateString()}

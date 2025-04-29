@@ -20,17 +20,8 @@ module.exports = {
                 0.5: "0.5px", // نازک بارډر 0.5px
             },
             fontFamily: {
-                "sans-arabic": ['"Noto Sans Arabic"', "sans-serif"],
-                amiri: ["Amiri", "serif"],
-                lateef: ["Lateef", "cursive"],
-                reem: ['"Reem Kufi"', "sans-serif"],
-                fallback: [
-                    '"Noto Nastaliq Urdu"',
-                    '"Noto Sans Arabic"',
-                    "Amiri",
-                    "Arial",
-                    "serif",
-                ],
+                titr: ['"Bahij Titr"', "sans-serif"],
+                zar: ['"Bahij Zar"', "serif"],
             },
             colors: {
                 primary: {

@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: "Bahij Titr";
+    src: url("/fonts/BahijTitr-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Bahij Zar";
+    src: url("/fonts/BahijZar-Regular.ttf") format("truetype");
+}
