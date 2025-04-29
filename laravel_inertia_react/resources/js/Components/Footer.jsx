@@ -70,7 +70,7 @@ const Footer = () => {
                     {/* About Section */}
                     <motion.div variants={itemVariants}>
                         <motion.h3
-                            className="text-xl text-primary-50 font-bold mb-4"
+                            className="text-2xl text-primary-50 font-bold font-zar mb-4"
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.2 }}
@@ -79,7 +79,7 @@ const Footer = () => {
                             خیاط ماسټر
                         </motion.h3>
                         <motion.p
-                            className="text-primary-50 mb-4"
+                            className="text-primary-50 font-zar text-xl mb-4"
                             initial={{ opacity: 0 }}
                             whileInView={{ opacity: 1 }}
                             transition={{ delay: 0.3 }}
@@ -138,7 +138,7 @@ const Footer = () => {
                     {/* Quick Links */}
                     <motion.div variants={itemVariants}>
                         <motion.h3
-                            className="text-xl font-bold mb-4"
+                            className="text-2xl font-zar font-bold mb-4"
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.3 }}
@@ -175,7 +175,7 @@ const Footer = () => {
                                     >
                                         <Link
                                             href={link.href}
-                                            className="text-primary-50 hover:text-white transition"
+                                            className="text-primary-50 text-xl font-zar hover:text-white transition"
                                         >
                                             {link.text}
                                         </Link>
@@ -188,7 +188,7 @@ const Footer = () => {
                     {/* Services */}
                     <motion.div variants={itemVariants}>
                         <motion.h3
-                            className="text-xl font-bold mb-4"
+                            className="text-2xl font-zar mb-4"
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.4 }}
@@ -212,7 +212,7 @@ const Footer = () => {
                             ].map((service, index) => (
                                 <motion.li
                                     key={index}
-                                    className="text-primary-50 hover:text-white transition"
+                                    className="text-primary-50 font-zar text-xl hover:text-white transition"
                                     initial={{ opacity: 0, x: -10 }}
                                     whileInView={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.5 + index * 0.05 }}
@@ -228,7 +228,7 @@ const Footer = () => {
                     {/* Contact Info */}
                     <motion.div variants={itemVariants}>
                         <motion.h3
-                            className="text-xl font-bold mb-4"
+                            className="text-2xl font-zar mb-4"
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.5 }}
@@ -244,7 +244,7 @@ const Footer = () => {
                             viewport={{ once: true }}
                         >
                             <motion.li
-                                className="flex items-center text-primary-50"
+                                className="flex items-center font-zar text-xl text-primary-50"
                                 initial={{ opacity: 0, x: -10 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.6 }}
@@ -255,7 +255,7 @@ const Footer = () => {
                                 ۱۲۳ د خیاط سړک، فیشن ښار
                             </motion.li>
                             <motion.li
-                                className="flex items-center text-primary-50"
+                                className="flex items-center font-zar text-xl text-primary-50"
                                 initial={{ opacity: 0, x: -10 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.65 }}
@@ -266,7 +266,7 @@ const Footer = () => {
                                 +123 456 7890
                             </motion.li>
                             <motion.li
-                                className="flex items-center text-primary-50"
+                                className="flex items-center font-zar text-xl text-primary-50"
                                 initial={{ opacity: 0, x: -10 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.7 }}

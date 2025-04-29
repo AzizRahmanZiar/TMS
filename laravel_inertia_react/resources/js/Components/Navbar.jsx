@@ -115,28 +115,38 @@ const Navbar = () => {
             <div className="container mx-auto px-4">
                 <div className="flex justify-between items-center">
                     {/* Logo with animated scissors */}
-                    <motion.div whileHover={{ scale: 1.05 }}>
+                    {/* <motion.div whileHover={{ scale: 1.05 }}>
                         <Link href="/" className="text-2xl font-bold">
-                            <div className="flex items-end space-x-2 rtl:space-x-reverse">
-                                <motion.span
-                                    className="text-primary-50"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.3 }}
-                                >
-                                    ماسټر خیاط
-                                </motion.span>
+                            <div className="flex rotate-180 items-end space-x-2">
                                 <motion.span
                                     variants={scissorsVariants}
                                     initial="initial"
                                     animate="animate"
                                     whileHover="hover"
                                 >
-                                    <FaScissors className="text-primary-50" />
+                                    <FaScissors className="text-primary-50 h-10 w-10" />
                                 </motion.span>
                             </div>
                         </Link>
-                    </motion.div>
+                    </motion.div> */}
+
+                    <div>
+                        <Link href="/" className="text-2xl font-bold">
+                            <div className="flex items-center rotate-180 space-x-2">
+                                {/* Moving Scissors */}
+                                <motion.span
+                                    whileHover={{ x: "2rem" }}
+                                    transition={{
+                                        duration: 0.4,
+                                        ease: "easeInOut",
+                                    }}
+                                    className="z-10"
+                                >
+                                    <FaScissors className="text-white h-10 w-10" />
+                                </motion.span>
+                            </div>
+                        </Link>
+                    </div>
 
                     {/* Desktop Navigation */}
                     <motion.div
@@ -166,7 +176,7 @@ const Navbar = () => {
                             >
                                 <Link
                                     href={link.href}
-                                    className={`font-semibold transition ${
+                                    className={`font-bold font-zar text-xl transition ${
                                         isActive(link.href)
                                             ? "text-secondary-400"
                                             : "text-primary-50 hover:text-primary-400"
@@ -196,13 +206,13 @@ const Navbar = () => {
                                     >
                                         <Link
                                             href={route("dashboard")}
-                                            className={`font-semibold px-4 py-2 rounded-md transition text-center ${
+                                            className={`font-bold font-zar text-xl px-4 py-2 rounded-md transition text-center ${
                                                 isActive(route("dashboard"))
                                                     ? "bg-secondary-700 text-primary-50"
                                                     : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
                                             }`}
                                         >
-                                            Dashboard
+                                            ډشبورډ
                                         </Link>
                                     </motion.div>
                                 )}
@@ -215,9 +225,8 @@ const Navbar = () => {
                                         href={route("logout")}
                                         method="post"
                                         as="button"
-                                        className="font-semibold px-4 py-2 rounded-md transition bg-primary-50 text-primary-900 hover:bg-white"
+                                        className="font-bold font-zar text-xl px-4 py-2 rounded-md transition bg-primary-50 text-primary-900 hover:bg-white"
                                     >
-                                        <FaUser className="inline ml-2" />
                                         وتل
                                     </Link>
                                 </motion.div>
@@ -231,14 +240,13 @@ const Navbar = () => {
                                 >
                                     <Link
                                         href={route("login")}
-                                        className={`font-semibold px-4 py-2 rounded-md transition ${
+                                        className={`font-bold font-zar text-xl px-4 py-2 rounded-md transition ${
                                             isActive(route("login"))
                                                 ? "bg-white text-primary-900"
                                                 : "bg-primary-50 text-primary-900 hover:bg-white"
                                         }`}
                                     >
-                                        <FaUser className="inline ml-2" />
-                                        ننوتل
+                                        داخلېدل
                                     </Link>
                                 </motion.div>
                                 <motion.div
@@ -248,7 +256,7 @@ const Navbar = () => {
                                 >
                                     <Link
                                         href={route("register")}
-                                        className={`font-semibold px-4 py-2 rounded-md transition ${
+                                        className={`font-blod font-zar text-xl px-4 py-2 rounded-md transition ${
                                             isActive(route("register"))
                                                 ? "bg-secondary-700 text-primary-50"
                                                 : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
