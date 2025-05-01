@@ -159,7 +159,7 @@ const Home = () => {
                     variants={fadeIn}
                 >
                     <motion.h1
-                        className="text-4xl md:text-6xl font-bold font-zar mb-4"
+                        className="text-3xl md:text-5xl font-bold font-zar mb-4"
                         variants={fadeInUp}
                     >
                         ماسټر خیاط
@@ -212,7 +212,7 @@ const Home = () => {
                             variants={fadeInUp}
                         >
                             <motion.h2
-                                className="text-4xl font-bold font-zar text-primary-900 mb-4"
+                                className="text-3xl font-bold font-zar text-primary-900 mb-4"
                                 variants={fadeInUp}
                             >
                                 غوره ۱۰ ډیزاینونه
@@ -225,7 +225,7 @@ const Home = () => {
                                 transition={{ duration: 0.8 }}
                             ></motion.div>
                             <motion.p
-                                className="text-2xl font-zar text-primary-700"
+                                className="text-xl md:text-2xl font-zar text-primary-700"
                                 variants={fadeInUp}
                             >
                                 زموږ تر ټولو مشهور او غوره ډیزاینونه وګورئ
@@ -296,7 +296,7 @@ const Home = () => {
 
                                     {/* Content */}
                                     <div className="p-4">
-                                        <h3 className="font-bold text-primary-900 text-lg mb-2 line-clamp-1">
+                                        <h3 className="font-bold text-primary-900 mb-2 line-clamp-1">
                                             {design.title}
                                         </h3>
 
@@ -348,11 +348,11 @@ const Home = () => {
                 <section className="py-20 bg-gradient-to-br from-tertiary-50 to-tertiary-100">
                     <div className="container mx-auto px-4">
                         <div className="max-w-3xl mx-auto text-center mb-16">
-                            <h2 className="text-4xl font-zar font-bold text-primary-900 mb-4">
+                            <h2 className="text-3xl font-bold font-zar  text-primary-900 mb-4">
                                 زموږ د پیرودونکو نظرونه
                             </h2>
                             <div className="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
-                            <p className="text-2xl font-zar text-primary-700">
+                            <p className="text-xl md:text-2xl font-zar text-primary-700">
                                 وګورئ چې زموږ پیرودونکي د زموږ خدماتو په اړه څه
                                 وايي
                             </p>
@@ -577,7 +577,7 @@ const Home = () => {
                         ځانګړي وړاندیزونه
                     </motion.h2>
                     <motion.p
-                        className="text-xl font-zar  mb-8 max-w-3xl mx-auto"
+                        className="text-xl md:text-2xl font-zar  mb-8 max-w-3xl mx-auto"
                         initial={{ y: 30, opacity: 0 }}
                         whileInView={{ y: 0, opacity: 1 }}
                         viewport={{ once: true }}
@@ -596,7 +596,7 @@ const Home = () => {
                     >
                         <Link
                             href="/order"
-                            className="bg-white text-primary-900 px-6 py-3 text-xl font-bold font-bold rounded-md font-zar hover:bg-primary-100 transition inline-block"
+                            className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-white text-primary-900  hover:bg-primary-100 transition inline-block"
                         >
                             اوس فرمایش ورکړئ
                         </Link>

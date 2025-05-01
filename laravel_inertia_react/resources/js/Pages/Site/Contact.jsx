@@ -250,13 +250,13 @@ const Contact = () => {
             >
                 <div className="mx-auto px-4 ">
                     <motion.h1
-                        className="text-3xl md:text-5xl max-w-3xl mx-auto font-bold mb-4"
+                        className="text-3xl md:text-5xl font-bold font-zar max-w-3xl mx-auto  mb-4"
                         variants={fadeIn}
                     >
                         زموږ سره اړیکه
                     </motion.h1>
                     <motion.p
-                        className="text-lg md:text-xl max-w-3xl mx-auto"
+                        className="text-xl font-zar md:text-2xl max-w-3xl mx-auto"
                         variants={fadeIn}
                     >
                         پوښتنې لرئ یا مرستې ته اړتیا لرئ؟ موږ دلته یو چې مرسته
@@ -288,7 +288,7 @@ const Contact = () => {
                                 <div className="w-14 h-14 rounded-full bg-primary-100 flex items-center justify-center mb-4 mx-auto">
                                     {info.icon}
                                 </div>
-                                <h3 className="text-xl text-tertiary-800 font-bold mb-3 text-center">
+                                <h3 className="text-2xl font-zar font-bold text-tertiary-800 mb-3 text-center">
                                     {info.title}
                                 </h3>
                                 <div className="text-primary-600 text-center">
@@ -316,7 +316,7 @@ const Contact = () => {
                             transition={{ duration: 0.6 }}
                             viewport={{ once: true }}
                         >
-                            <h2 className="text-2xl text-primary-800 font-bold mb-6">
+                            <h2 className="text-3xl font-bold font-zar text-primary-800  mb-6">
                                 موږ ته پیغام ولیږئ
                             </h2>
                             <form
@@ -464,7 +464,7 @@ const Contact = () => {
 
                                 <motion.button
                                     type="submit"
-                                    className="bg-secondary-700  text-white py-3 px-8 rounded-md font-medium hover:bg-secondary-800 transition-all duration-300 shadow-md hover:shadow-lg"
+                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-700  text-white  hover:bg-secondary-800 transition-all duration-300 shadow-md hover:shadow-lg"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
@@ -481,7 +481,7 @@ const Contact = () => {
                             transition={{ duration: 0.6 }}
                             viewport={{ once: true }}
                         >
-                            <h2 className="text-2xl text-primary-800 font-bold mb-6">
+                            <h2 className="text-3xl font-bold font-zar text-primary-800 mb-6">
                                 زموږ موقعیت
                             </h2>
                             <div className="rounded-lg overflow-hidden shadow-lg border border-primary-100">
@@ -496,7 +496,7 @@ const Contact = () => {
             <section className="py-16">
                 <div className="container mx-auto px-4 text-center">
                     <motion.h2
-                        className="text-2xl text-primary-800 font-bold mb-8"
+                        className="text-3xl font-bold font-zar text-primary-800  mb-8"
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
@@ -541,15 +541,15 @@ const Contact = () => {
                 viewport={{ once: true }}
             >
                 <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-2xl text-primary-800 font-bold mb-4">
+                    <h2 className="text-3xl font-bold font-zar text-primary-800 mb-4">
                         سمدستي مرستې ته اړتیا لرئ؟
                     </h2>
-                    <p className="text-primary-600 mb-8 max-w-2xl mx-auto">
+                    <p className="text-primary-600 mb-8 max-w-2xl text-xl font-zar md:text-2xl mx-auto">
                         زموږ د پیرودونکو د ملاتړ ټیم ستاسو د هر ډول پوښتنو یا
                         اندیښنو په اړه د مرستې لپاره شتون لري.
                     </p>
                     <motion.button
-                        className="bg-secondary-700 text-white py-3 px-8 rounded-md font-medium hover:bg-secondary-800 transition-all duration-300 shadow-lg"
+                        className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-700 text-white  hover:bg-secondary-800 transition-all duration-300 shadow-lg"
                         whileHover={{
                             scale: 1.05,
                             boxShadow:

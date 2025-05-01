@@ -14,7 +14,7 @@ import {
     FaChevronLeft,
     FaChevronRight,
 } from "react-icons/fa";
-import { Head } from '@inertiajs/react';
+import { Head } from "@inertiajs/react";
 
 const Tailors = ({ tailors }) => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -130,7 +130,7 @@ const Tailors = ({ tailors }) => {
             >
                 <div className="mx-auto px-4">
                     <motion.h1
-                        className="text-3xl md:text-5xl max-w-3xl mx-auto font-bold mb-6"
+                        className="text-3xl md:text-5xl font-bold font-zar max-w-3xl mx-auto  mb-6"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.6 }}
@@ -138,7 +138,7 @@ const Tailors = ({ tailors }) => {
                         د خیاطانو پروفایلونه
                     </motion.h1>
                     <motion.p
-                        className="text-lg md:text-xl max-w-3xl mx-auto opacity-90"
+                        className="text-xl font-zar md:text-2xl max-w-3xl mx-auto opacity-90"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4, duration: 0.6 }}
@@ -194,7 +194,7 @@ const Tailors = ({ tailors }) => {
                             </div>
                             <motion.button
                                 onClick={handleFilter}
-                                className="bg-secondary-600 hover:bg-secondary-700 text-white py-4 px-6 rounded-lg transition duration-200 shadow-md"
+                                className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-600 hover:bg-secondary-700 text-white  transition duration-200 shadow-md"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -202,7 +202,7 @@ const Tailors = ({ tailors }) => {
                             </motion.button>
                             <motion.button
                                 onClick={resetFilters}
-                                className="bg-primary-500 hover:bg-primary-600 text-white py-4 px-6 rounded-lg transition duration-200 shadow-md"
+                                className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-primary-500 hover:bg-primary-600 text-white  transition duration-200 shadow-md"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -255,8 +255,12 @@ const Tailors = ({ tailors }) => {
                                                     <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
                                                         {tailor.profile_photo_url ? (
                                                             <img
-                                                                src={tailor.profile_photo_url}
-                                                                alt={tailor.name}
+                                                                src={
+                                                                    tailor.profile_photo_url
+                                                                }
+                                                                alt={
+                                                                    tailor.name
+                                                                }
                                                                 className="w-full h-full object-cover"
                                                             />
                                                         ) : (
@@ -265,26 +269,43 @@ const Tailors = ({ tailors }) => {
                                                     </div>
                                                     <div>
                                                         <motion.h2
-                                                            className="text-xl font-bold text-primary-800"
-                                                            initial={{ opacity: 0 }}
-                                                            animate={{ opacity: 1 }}
+                                                            className="text-3xl font-bold font-zar text-primary-800"
+                                                            initial={{
+                                                                opacity: 0,
+                                                            }}
+                                                            animate={{
+                                                                opacity: 1,
+                                                            }}
                                                             transition={{
-                                                                delay: 0.3 + index * 0.05,
+                                                                delay:
+                                                                    0.3 +
+                                                                    index *
+                                                                        0.05,
                                                             }}
                                                         >
                                                             {tailor.name}
                                                         </motion.h2>
                                                         {tailor.has_shop && (
                                                             <motion.div
-                                                                className="flex items-center gap-1 text-sm text-secondary-600"
-                                                                initial={{ opacity: 0 }}
-                                                                animate={{ opacity: 1 }}
+                                                                className="flex items-center gap-1 text-3xl font-bold font-zar text-secondary-600"
+                                                                initial={{
+                                                                    opacity: 0,
+                                                                }}
+                                                                animate={{
+                                                                    opacity: 1,
+                                                                }}
                                                                 transition={{
-                                                                    delay: 0.4 + index * 0.05,
+                                                                    delay:
+                                                                        0.4 +
+                                                                        index *
+                                                                            0.05,
                                                                 }}
                                                             >
                                                                 <FaStore className="text-sm" />
-                                                                <span>د دوکان لرونکی</span>
+                                                                <span>
+                                                                    د دوکان
+                                                                    لرونکی
+                                                                </span>
                                                             </motion.div>
                                                         )}
                                                     </div>
@@ -292,10 +313,17 @@ const Tailors = ({ tailors }) => {
 
                                                 <motion.div
                                                     className="space-y-3"
-                                                    initial={{ opacity: 0, y: 20 }}
-                                                    animate={{ opacity: 1, y: 0 }}
+                                                    initial={{
+                                                        opacity: 0,
+                                                        y: 20,
+                                                    }}
+                                                    animate={{
+                                                        opacity: 1,
+                                                        y: 0,
+                                                    }}
                                                     transition={{
-                                                        delay: 0.4 + index * 0.05,
+                                                        delay:
+                                                            0.4 + index * 0.05,
                                                     }}
                                                 >
                                                     <div className="flex items-start">
@@ -315,7 +343,9 @@ const Tailors = ({ tailors }) => {
                                                     <div className="flex items-start">
                                                         <FaGraduationCap className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
                                                         <p className="text-sm text-gray-600">
-                                                            {tailor.certifications}
+                                                            {
+                                                                tailor.certifications
+                                                            }
                                                         </p>
                                                     </div>
 
@@ -329,7 +359,9 @@ const Tailors = ({ tailors }) => {
                                                     <div className="flex items-start">
                                                         <FaClock className="text-secondary-600 mt-1 ml-2 flex-shrink-0" />
                                                         <p className="text-sm text-gray-600">
-                                                            {tailor.work_availability}
+                                                            {
+                                                                tailor.work_availability
+                                                            }
                                                         </p>
                                                     </div>
                                                 </motion.div>
@@ -361,7 +393,7 @@ const Tailors = ({ tailors }) => {
                                                 <FaUser className="mx-auto" />
                                             </motion.div>
                                             <motion.h3
-                                                className="text-xl font-bold text-primary-700 mb-2"
+                                                className="text-2xl font-zar font-bold text-primary-700 mb-2"
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 transition={{
@@ -372,7 +404,7 @@ const Tailors = ({ tailors }) => {
                                                 هیڅ خیاط ونه موندل شو
                                             </motion.h3>
                                             <motion.p
-                                                className="text-primary-500 mb-6"
+                                                className="text-primary-500 mb-6 text-xl font-zar md:text-2xl"
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 transition={{
@@ -403,7 +435,7 @@ const Tailors = ({ tailors }) => {
                                                 goToPage(currentPage - 1)
                                             }
                                             disabled={currentPage === 1}
-                                            className={`p-2 rounded-md ${
+                                            className={`font-bold px-6 py-3 rounded-md font-zar text-xl ${
                                                 currentPage === 1
                                                     ? "text-primary-400 cursor-not-allowed"
                                                     : "text-primary-700 hover:bg-primary-100"
@@ -439,7 +471,7 @@ const Tailors = ({ tailors }) => {
                                                         onClick={() =>
                                                             goToPage(i + 1)
                                                         }
-                                                        className={`w-10 h-10 rounded-md ${
+                                                        className={`font-bold px-6 py-3 rounded-md font-zar text-xl ${
                                                             currentPage ===
                                                             i + 1
                                                                 ? "bg-secondary-600 text-white"
@@ -495,7 +527,7 @@ const Tailors = ({ tailors }) => {
                                             disabled={
                                                 currentPage === totalPages
                                             }
-                                            className={`p-2 rounded-md ${
+                                            className={`font-bold px-6 py-3 rounded-md font-zar text-xl ${
                                                 currentPage === totalPages
                                                     ? "text-primary-400 cursor-not-allowed"
                                                     : "text-primary-700 hover:bg-primary-100"

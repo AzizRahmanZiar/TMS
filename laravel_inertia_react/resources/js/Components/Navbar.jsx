@@ -240,7 +240,7 @@ const Navbar = () => {
                                 >
                                     <Link
                                         href={route("login")}
-                                        className={`font-bold font-zar text-xl px-4 py-2 rounded-md transition ${
+                                        className={`font-bold font-zar text-2xl px-4 py-2 rounded-md transition ${
                                             isActive(route("login"))
                                                 ? "bg-white text-primary-900"
                                                 : "bg-primary-50 text-primary-900 hover:bg-white"
@@ -256,7 +256,7 @@ const Navbar = () => {
                                 >
                                     <Link
                                         href={route("register")}
-                                        className={`font-blod font-zar text-xl px-4 py-2 rounded-md transition ${
+                                        className={`font-blod font-zar text-2xl px-4 py-2 rounded-md transition ${
                                             isActive(route("register"))
                                                 ? "bg-secondary-700 text-primary-50"
                                                 : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
@@ -316,7 +316,7 @@ const Navbar = () => {
                                     >
                                         <Link
                                             href={link.href}
-                                            className={`block px-4 py-2 font-semibold transition ${
+                                            className={`block px-4 py-2 font-bold font-zar text-xl transition ${
                                                 isActive(link.href)
                                                     ? "text-secondary-400"
                                                     : "text-primary-50 hover:text-primary-400"
@@ -335,15 +335,15 @@ const Navbar = () => {
                                             >
                                                 <Link
                                                     href={route("dashboard")}
-                                                    className={`block px-4 py-2 font-semibold transition ${
+                                                    className={`font-bold font-zar text-xl px-4 py-2 rounded-md transition text-center ${
                                                         isActive(
                                                             route("dashboard")
                                                         )
-                                                            ? "text-secondary-400"
-                                                            : "text-primary-50 hover:text-primary-400"
+                                                            ? "bg-secondary-700 text-primary-50"
+                                                            : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
                                                     }`}
                                                 >
-                                                    Dashboard
+                                                    ډشبورډ
                                                 </Link>
                                             </motion.div>
                                         )}
@@ -354,7 +354,7 @@ const Navbar = () => {
                                                 href={route("logout")}
                                                 method="post"
                                                 as="button"
-                                                className="block px-4 py-2 font-semibold text-primary-50 hover:text-primary-400"
+                                                className="font-bold font-zar text-xl px-7 py-2 rounded-md transition bg-primary-50 text-primary-900 hover:bg-white"
                                             >
                                                 وتل
                                             </Link>
@@ -367,10 +367,10 @@ const Navbar = () => {
                                         >
                                             <Link
                                                 href={route("login")}
-                                                className={`block px-4 py-2 font-semibold transition ${
+                                                className={`font-bold font-zar text-2xl px-6 py-2 rounded-md transition ${
                                                     isActive(route("login"))
-                                                        ? "text-secondary-400"
-                                                        : "text-primary-50 hover:text-primary-400"
+                                                        ? "bg-white text-primary-900"
+                                                        : "bg-primary-50 text-primary-900 hover:bg-white"
                                                 }`}
                                             >
                                                 ننوتل
@@ -381,10 +381,10 @@ const Navbar = () => {
                                         >
                                             <Link
                                                 href={route("register")}
-                                                className={`block px-4 py-2 font-semibold transition ${
+                                                className={`font-blod  font-zar text-2xl px-4 py-2 rounded-md transition ${
                                                     isActive(route("register"))
-                                                        ? "text-secondary-400"
-                                                        : "text-primary-50 hover:text-primary-400"
+                                                        ? "bg-secondary-700 text-primary-50"
+                                                        : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
                                                 }`}
                                             >
                                                 ثبت نام

@@ -2,6 +2,7 @@ import React from "react";
 import SiteLayout from "../../Layouts/SiteLayout";
 import { motion } from "framer-motion";
 import { FaCheck, FaUsers, FaHandshake, FaAward } from "react-icons/fa";
+import { Link } from "@inertiajs/react";
 
 const About = () => {
     // Sample team members data
@@ -106,10 +107,10 @@ const About = () => {
             >
                 <div className="container mx-auto px-4 text-center">
                     <motion.h1
-                        className="text-3xl  md:text-4xl  font-zar font-bold mb-4    "
+                        className="text-3xl md:text-5xl font-bold font-zar mb-4    "
                         variants={fadeIn}
                     >
-                        د خیاط ماسټر په اړه
+                        د خیاط ماسټر په اړوند
                     </motion.h1>
                     <motion.p
                         className="text-lg font-zar md:text-2xl max-w-3xl mx-auto"
@@ -132,16 +133,16 @@ const About = () => {
                             transition={{ duration: 0.6 }}
                             viewport={{ once: true }}
                         >
-                            <h2 className="text-3xl text-primary-800 font-zar font-bold mb-6">
+                            <h2 className="text-3xl font-bold font-zar text-primary-800  mb-6">
                                 زموږ کیسه
                             </h2>
-                            <p className="text-primary-700 mb-4 font-zar text-xl">
+                            <p className="text-primary-700 mb-4 font-zar text-xl md:text-2xl">
                                 خیاط ماسټر د یوې ساده لیدنې سره پیل شو:
                                 پیرودونکي د ماهرو خیاطانو سره ونښلوو چې وکولی شي
                                 لوړ کیفیت، ځانګړې جامې جوړې کړي چې د بدن او
                                 سټایل غوښتنو سره په بشپړ ډول برابرې وي.
                             </p>
-                            <p className="text-primary-700 mb-4 font-zar text-xl">
+                            <p className="text-primary-700 mb-4 font-zar text-xl md:text-2xl">
                                 په ۱۳۸۴ کال کې د احمد رحیمي لخوا تاسیس شو، چې د
                                 ۲۰ کلونو څخه زیاته تجربه لرونکی ماهر خیاط دی،
                                 زموږ شرکت د کابل په یوه کوچني خیاطۍ دوکان کې پیل
@@ -149,7 +150,7 @@ const About = () => {
                                 شوه، موږ څو ځایونو ته پراختیا ورکړه او په پای کې
                                 مو خپل آنلاین پلیټفارم جوړ کړ.
                             </p>
-                            <p className="text-primary-700 font-zar text-xl">
+                            <p className="text-primary-700 font-zar text-xl md:text-2xl">
                                 نن ورځ، خیاط ماسټر په هیواد کې د خیاطۍ خدماتو
                                 مخکښ پلیټفارم دی، چې پیرودونکي د ۱۰۰+ مسلکي
                                 خیاطانو سره نښلوي چې په بیلابیلو سټایلونو او
@@ -185,7 +186,7 @@ const About = () => {
             >
                 <div className="container mx-auto px-4 text-center">
                     <motion.h2
-                        className="text-3xl text-primary-800 font-zar font-bold mb-6"
+                        className="text-3xl font-bold font-zar text-primary-800  mb-6"
                         initial={{ opacity: 0, y: -20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
@@ -194,7 +195,7 @@ const About = () => {
                         زموږ ماموریت
                     </motion.h2>
                     <motion.p
-                        className="text-primary-700 mb-8 font-zar text-xl max-w-3xl mx-auto"
+                        className="text-primary-700 mb-8 font-zar text-xl md:text-2xl max-w-3xl mx-auto"
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
@@ -229,10 +230,10 @@ const About = () => {
                             >
                                 <FaUsers className="text-2xl" />
                             </motion.div>
-                            <h3 className="text-xl font-zar text-primary-700 font-bold mb-2">
+                            <h3 className="text-2xl font-zar font-bold text-primary-700  mb-2">
                                 پیرودونکي محوري
                             </h3>
-                            <p className="text-primary-600 font-zar text-xl">
+                            <p className="text-primary-600 font-zar text-xl md:text-2xl">
                                 موږ د پیرودونکو رضایت ته لومړیتوب ورکوو د شخصي
                                 خدمت او جزئیاتو ته پاملرنې له لارې.
                             </p>
@@ -254,10 +255,10 @@ const About = () => {
                             >
                                 <FaHandshake className="text-2xl" />
                             </motion.div>
-                            <h3 className="text-xl text-primary-700 font-zar font-bold mb-2">
+                            <h3 className="text-2xl font-zar font-bold text-primary-700  mb-2">
                                 د کیفیت کسب
                             </h3>
-                            <p className="text-primary-600 font-zar text-xl">
+                            <p className="text-primary-600 font-zar text-xl md:text-2xl">
                                 موږ په هر ګنډل، ټوکر او بشپړ شوي جامو کې د کیفیت
                                 لوړ معیارونه ساتو.
                             </p>
@@ -279,10 +280,10 @@ const About = () => {
                             >
                                 <FaAward className="text-2xl" />
                             </motion.div>
-                            <h3 className="text-xl text-primary-700 font-zar font-bold mb-2">
+                            <h3 className="text-2xl font-zar font-bold text-primary-700  mb-2">
                                 نوښت
                             </h3>
-                            <p className="text-primary-600 font-zar text-xl">
+                            <p className="text-primary-600 font-zar text-xl md:text-2xl">
                                 موږ خپل تخنیکونه او خدمتونه په دوامداره توګه ښه
                                 کوو ترڅو د پیرودونکو بدلیدونکو اړتیاوو ته ځواب
                                 ووایو.
@@ -296,7 +297,7 @@ const About = () => {
             <section className="py-16 bg-primary-50">
                 <div className="container mx-auto px-4">
                     <motion.h2
-                        className="text-3xl text-primary-900 font-zar font-bold mb-8 text-center"
+                        className="text-3xl font-bold font-zar text-primary-900  mb-8 text-center"
                         initial={{ opacity: 0, y: -20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
@@ -339,7 +340,7 @@ const About = () => {
                                     transition={{ delay: 0.2 }}
                                     viewport={{ once: true }}
                                 >
-                                    <h3 className="text-xl text-primary-900 font-bold font-zar mb-1">
+                                    <h3 className="text-2xl font-zar font-bold text-primary-900  mb-1">
                                         {member.name}
                                     </h3>
                                     <p className="text-secondary-600 font-zar text-xl mb-3">
@@ -359,7 +360,7 @@ const About = () => {
             <section className="py-16">
                 <div className="container mx-auto px-4">
                     <motion.h2
-                        className="text-4xl font-zar text-primary-900 font-bold mb-12 text-center"
+                        className="text-3xl font-bold font-zar text-primary-900  mb-12 text-center"
                         initial={{ opacity: 0, y: -20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
@@ -414,7 +415,7 @@ const About = () => {
                                                 "0 20px 25px -5px rgba(11, 6, 6, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
                                         }}
                                     >
-                                        <h3 className="text-2xl text-primary-800 font-bold mb-2">
+                                        <h3 className="text-2xl font-zar font-bold text-primary-800  mb-2">
                                             {item.title}
                                         </h3>
                                         <p className="text-primary-600">
@@ -440,7 +441,7 @@ const About = () => {
             >
                 <div className="mx-auto px-4 text-center bg-primary-50 py-20">
                     <motion.h2
-                        className="text-4xl text-primary-900 font-zar font-bold mb-6"
+                        className="text-3xl font-bold font-zar text-primary-900  mb-6"
                         initial={{ opacity: 0, y: -20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
@@ -449,7 +450,7 @@ const About = () => {
                         د لوړ کیفیت خیاطۍ تجربه کولو ته چمتو یاست؟
                     </motion.h2>
                     <motion.p
-                        className="text-2xl font-zar text-secondary-900 mb-8 max-w-3xl mx-auto"
+                        className="text-xl md:text-2xl font-zar text-secondary-900 mb-8 max-w-3xl mx-auto"
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
@@ -459,18 +460,18 @@ const About = () => {
                         یې بشپړ برابروالی موندلی دی.
                     </motion.p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a
+                        <Link
                             href="/tailors"
-                            className="bg-tertiary-700 text-primary-50 py-3 px-4 text-xl rounded-md font-zar font-bold hover:bg-tertiary-800 transition"
+                            className=" bg-tertiary-700 text-primary-50 py-3 px-4 text-xl rounded-md font-zar font-bold hover:bg-tertiary-800 transition"
                         >
                             خیاط ومومئ
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                             href="/order"
-                            className="bg-transparent border-2 font-zar text-xl border-secondary-600 text-primary-800 py-3 px-4 rounded-md font-bold hover:text-primary-50 hover:bg-secondary-700 transition"
+                            className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-transparent border-2  border-secondary-600 text-primary-800  hover:text-primary-50 hover:bg-secondary-700 transition"
                         >
                             فرمایش ورکړئ
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </motion.section>

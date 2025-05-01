@@ -107,13 +107,13 @@ const Order = () => {
             >
                 <div className=" mx-auto px-4">
                     <motion.h1
-                        className="text-3xl md:text-4xl max-w-3xl mx-auto  font-bold mb-4"
+                        className="text-3xl md:text-5xl font-bold font-zar max-w-3xl mx-auto   mb-4"
                         variants={fadeIn}
                     >
                         فرمایش ورکړئ
                     </motion.h1>
                     <motion.p
-                        className="text-lg md:text-xl max-w-3xl mx-auto"
+                        className="text-xl font-zar md:text-2xl max-w-3xl mx-auto"
                         variants={fadeIn}
                     >
                         د خپلې خوښې جامې فرمایش ورکړئ. موږ به یې ستاسو د اندازو
@@ -133,7 +133,7 @@ const Order = () => {
                         viewport={{ once: true }}
                     >
                         <motion.h2
-                            className="text-2xl font-bold mb-6 text-center"
+                            className="text-3xl font-bold font-zar mb-6 text-center"
                             initial={{ opacity: 0 }}
                             whileInView={{ opacity: 1 }}
                             transition={{ delay: 0.2 }}
@@ -154,7 +154,7 @@ const Order = () => {
                                 className="mb-8"
                                 variants={formAnimation}
                             >
-                                <h3 className="text-xl font-semibold mb-4 pb-2 border-b">
+                                <h3 className="text-2xl font-zar font-bold mb-4 pb-2 border-b">
                                     شخصي معلومات
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -265,7 +265,7 @@ const Order = () => {
                             >
                                 <button
                                     type="submit"
-                                    className="bg-secondary-600 text-white py-3 px-8 rounded-md font-medium hover:bg-secondary-700 transition shadow-md"
+                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-600 text-white  hover:bg-secondary-700 transition shadow-md"
                                 >
                                     فرمایش ثبت کړئ
                                 </button>
@@ -279,7 +279,7 @@ const Order = () => {
             <section className="py-12 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <motion.h2
-                        className="text-2xl font-bold text-center mb-8"
+                        className="text-3xl font-bold font-zar text-center mb-8"
                         initial={{ opacity: 0, y: -20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
@@ -303,10 +303,10 @@ const Order = () => {
                                     "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
                             }}
                         >
-                            <h3 className="text-lg font-semibold mb-2">
+                            <h3 className="text-2xl font-zar font-bold mb-2">
                                 د فرمایش ورکولو وروسته څومره وخت نیسي؟
                             </h3>
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 font-zar text-xl md:text-2xl">
                                 د جامو د ډول او پیچلتیا په اساس، معمولاً د ۷-۱۴
                                 ورځو پورې وخت نیسي. د واده جامې ممکن تر ۳۰ ورځو
                                 پورې وخت ونیسي.
@@ -322,10 +322,10 @@ const Order = () => {
                                     "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
                             }}
                         >
-                            <h3 className="text-lg font-semibold mb-2">
+                            <h3 className="text-2xl font-zar font-bold mb-2">
                                 آیا تاسو د رسولو خدمت لرئ؟
                             </h3>
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 font-zar text-xl md:text-2xl">
                                 هو، موږ د ښار په دننه کې وړیا رسول لرو. د ښار
                                 څخه بهر رسول د واټن په اساس اضافي لګښت لري.
                             </p>
@@ -340,11 +340,11 @@ const Order = () => {
                                     "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
                             }}
                         >
-                            <h3 className="text-lg font-semibold mb-2">
+                            <h3 className="text-2xl font-zar font-bold mb-2">
                                 که چیرې جامې زما په اندازه برابرې نه وي څه به
                                 وشي؟
                             </h3>
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 font-zar text-xl md:text-2xl">
                                 موږ د کیفیت تضمین وړاندې کوو. که چیرې جامې ستاسو
                                 په اندازه برابرې نه وي، موږ به یې وړیا بدل کړو.
                             </p>

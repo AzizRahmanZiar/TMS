@@ -19,7 +19,7 @@ import {
     FaChevronLeft,
     FaChevronRight,
 } from "react-icons/fa";
-import { Head } from '@inertiajs/react';
+import { Head } from "@inertiajs/react";
 
 const Shop = ({ shops }) => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -41,7 +41,9 @@ const Shop = ({ shops }) => {
                 if (shop.shop_images) {
                     try {
                         const images = JSON.parse(shop.shop_images);
-                        processedShop.shopImageUrls = images.map(image => `/storage/${image}`);
+                        processedShop.shopImageUrls = images.map(
+                            (image) => `/storage/${image}`
+                        );
                     } catch (e) {
                         processedShop.shopImageUrls = [];
                     }
@@ -52,7 +54,9 @@ const Shop = ({ shops }) => {
                 // Process social links if they exist
                 if (shop.social_links) {
                     try {
-                        processedShop.socialLinks = JSON.parse(shop.social_links);
+                        processedShop.socialLinks = JSON.parse(
+                            shop.social_links
+                        );
                     } catch (e) {
                         processedShop.socialLinks = {};
                     }
@@ -209,7 +213,7 @@ const Shop = ({ shops }) => {
             >
                 <div className=" mx-auto px-4 ">
                     <motion.h1
-                        className="text-3xl md:text-5xl max-w-3xl mx-auto font-bold mb-6"
+                        className="text-3xl md:text-5xl font-bold font-zar max-w-3xl mx-auto  mb-6"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.6 }}
@@ -217,7 +221,7 @@ const Shop = ({ shops }) => {
                         د خیاطۍ دوکانونه
                     </motion.h1>
                     <motion.p
-                        className="text-lg md:text-xl max-w-3xl mx-auto opacity-90"
+                        className="text-xl font-zar md:text-2xl max-w-3xl mx-auto opacity-90"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4, duration: 0.6 }}
@@ -274,7 +278,7 @@ const Shop = ({ shops }) => {
                             </div>
                             <motion.button
                                 onClick={handleFilter}
-                                className="bg-secondary-600 hover:bg-secondary-700 text-white py-4 px-6 rounded-lg transition duration-200 shadow-md"
+                                className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-600 hover:bg-secondary-700 text-white  transition duration-200 shadow-md"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -282,7 +286,7 @@ const Shop = ({ shops }) => {
                             </motion.button>
                             <motion.button
                                 onClick={resetFilters}
-                                className="bg-primary-500 hover:bg-primary-600 text-white py-4 px-6 rounded-lg transition duration-200 shadow-md"
+                                className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-primary-500 hover:bg-primary-600 text-white  transition duration-200 shadow-md"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -325,10 +329,16 @@ const Shop = ({ shops }) => {
                                             {/* Shop Images Carousel */}
                                             <div className="relative h-48 bg-gray-100">
                                                 {shop.shopImageUrls &&
-                                                shop.shopImageUrls.length > 0 ? (
+                                                shop.shopImageUrls.length >
+                                                    0 ? (
                                                     <img
-                                                        src={shop.shopImageUrls[0]}
-                                                        alt={shop.tailoring_name}
+                                                        src={
+                                                            shop
+                                                                .shopImageUrls[0]
+                                                        }
+                                                        alt={
+                                                            shop.tailoring_name
+                                                        }
                                                         className="w-full h-full object-cover"
                                                     />
                                                 ) : (
@@ -340,11 +350,12 @@ const Shop = ({ shops }) => {
 
                                             <div className="p-6">
                                                 <motion.h2
-                                                    className="text-xl font-bold text-primary-800 mb-2"
+                                                    className="text-3xl font-bold font-zar text-primary-800 mb-2"
                                                     initial={{ opacity: 0 }}
                                                     animate={{ opacity: 1 }}
                                                     transition={{
-                                                        delay: 0.3 + index * 0.05,
+                                                        delay:
+                                                            0.3 + index * 0.05,
                                                     }}
                                                 >
                                                     {shop.tailoring_name}
@@ -352,23 +363,34 @@ const Shop = ({ shops }) => {
 
                                                 <motion.div
                                                     className="space-y-3"
-                                                    initial={{ opacity: 0, y: 20 }}
-                                                    animate={{ opacity: 1, y: 0 }}
+                                                    initial={{
+                                                        opacity: 0,
+                                                        y: 20,
+                                                    }}
+                                                    animate={{
+                                                        opacity: 1,
+                                                        y: 0,
+                                                    }}
                                                     transition={{
-                                                        delay: 0.4 + index * 0.05,
+                                                        delay:
+                                                            0.4 + index * 0.05,
                                                     }}
                                                 >
                                                     <div className="flex items-start">
                                                         <FaMapMarkerAlt className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
                                                         <p className="text-sm text-gray-600">
-                                                            {shop.tailoring_address}
+                                                            {
+                                                                shop.tailoring_address
+                                                            }
                                                         </p>
                                                     </div>
 
                                                     <div className="flex items-start">
                                                         <FaPhone className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
                                                         <p className="text-sm text-gray-600">
-                                                            {shop.contact_number}
+                                                            {
+                                                                shop.contact_number
+                                                            }
                                                         </p>
                                                     </div>
 
@@ -396,7 +418,9 @@ const Shop = ({ shops }) => {
                                                     <div className="flex items-start">
                                                         <FaCreditCard className="text-primary-600 mt-1 ml-2 flex-shrink-0" />
                                                         <p className="text-sm text-gray-600">
-                                                            {shop.payment_methods}
+                                                            {
+                                                                shop.payment_methods
+                                                            }
                                                         </p>
                                                     </div>
                                                 </motion.div>
@@ -408,12 +432,19 @@ const Shop = ({ shops }) => {
                                                         initial={{ opacity: 0 }}
                                                         animate={{ opacity: 1 }}
                                                         transition={{
-                                                            delay: 0.5 + index * 0.05,
+                                                            delay:
+                                                                0.5 +
+                                                                index * 0.05,
                                                         }}
                                                     >
-                                                        {shop.socialLinks.facebook && (
+                                                        {shop.socialLinks
+                                                            .facebook && (
                                                             <a
-                                                                href={shop.socialLinks.facebook}
+                                                                href={
+                                                                    shop
+                                                                        .socialLinks
+                                                                        .facebook
+                                                                }
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 className="text-primary-600 hover:text-primary-800"
@@ -421,9 +452,14 @@ const Shop = ({ shops }) => {
                                                                 <FaFacebook className="text-xl" />
                                                             </a>
                                                         )}
-                                                        {shop.socialLinks.instagram && (
+                                                        {shop.socialLinks
+                                                            .instagram && (
                                                             <a
-                                                                href={shop.socialLinks.instagram}
+                                                                href={
+                                                                    shop
+                                                                        .socialLinks
+                                                                        .instagram
+                                                                }
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 className="text-primary-600 hover:text-primary-800"
@@ -431,9 +467,14 @@ const Shop = ({ shops }) => {
                                                                 <FaInstagram className="text-xl" />
                                                             </a>
                                                         )}
-                                                        {shop.socialLinks.telegram && (
+                                                        {shop.socialLinks
+                                                            .telegram && (
                                                             <a
-                                                                href={shop.socialLinks.telegram}
+                                                                href={
+                                                                    shop
+                                                                        .socialLinks
+                                                                        .telegram
+                                                                }
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 className="text-primary-600 hover:text-primary-800"
@@ -471,7 +512,7 @@ const Shop = ({ shops }) => {
                                                 <FaStore className="mx-auto" />
                                             </motion.div>
                                             <motion.h3
-                                                className="text-xl font-bold text-primary-700 mb-2"
+                                                className="text-2xl font-zar font-bold text-primary-700 mb-2"
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 transition={{
@@ -482,7 +523,7 @@ const Shop = ({ shops }) => {
                                                 هیڅ دوکان ونه موندل شو
                                             </motion.h3>
                                             <motion.p
-                                                className="text-primary-500 mb-6"
+                                                className="text-primary-500 mb-6 text-xl font-zar md:text-2xl"
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 transition={{
@@ -513,7 +554,7 @@ const Shop = ({ shops }) => {
                                                 goToPage(currentPage - 1)
                                             }
                                             disabled={currentPage === 1}
-                                            className={`p-2 rounded-md ${
+                                            className={`font-bold px-6 py-3 rounded-md font-zar text-xl ${
                                                 currentPage === 1
                                                     ? "text-primary-400 cursor-not-allowed"
                                                     : "text-primary-700 hover:bg-primary-100"
@@ -550,7 +591,7 @@ const Shop = ({ shops }) => {
                                                         onClick={() =>
                                                             goToPage(i + 1)
                                                         }
-                                                        className={`w-10 h-10 rounded-md ${
+                                                        className={`font-bold px-6 py-3 rounded-md font-zar text-xl ${
                                                             currentPage ===
                                                             i + 1
                                                                 ? "bg-secondary-600 text-white"
@@ -606,7 +647,7 @@ const Shop = ({ shops }) => {
                                             disabled={
                                                 currentPage === totalPages
                                             }
-                                            className={`p-2 rounded-md ${
+                                            className={`font-bold px-6 py-3 rounded-md font-zar text-xl ${
                                                 currentPage === totalPages
                                                     ? "text-primary-400 cursor-not-allowed"
                                                     : "text-primary-700 hover:bg-primary-100"

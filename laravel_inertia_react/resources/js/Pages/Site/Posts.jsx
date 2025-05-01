@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "@inertiajs/react";
 import SiteLayout from "../../Layouts/SiteLayout";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -307,7 +306,9 @@ const Post = () => {
                         transition={{ type: "spring", damping: 20 }}
                     >
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold">ارزونه ورکړئ</h3>
+                            <h3 className="text-2xl font-zar font-bold">
+                                ارزونه ورکړئ
+                            </h3>
                         </div>
 
                         <form onSubmit={handleSubmitRating}>
@@ -384,7 +385,7 @@ const Post = () => {
                                                 />
                                                 <motion.button
                                                     type="button"
-                                                    className={`flex items-center justify-center p-2 border ${
+                                                    className={`font-bold px-6 py-3 rounded-md font-zar text-xl flex items-center justify-center p-2 border ${
                                                         errors.userImage
                                                             ? "border-red-500"
                                                             : "border-gray-300"
@@ -448,7 +449,7 @@ const Post = () => {
                             >
                                 <motion.button
                                     type="button"
-                                    className="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition"
+                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl border border-gray-300  hover:bg-gray-100 transition"
                                     onClick={handleCloseModal}
                                     whileHover={{ backgroundColor: "#f3f4f6" }}
                                     whileTap={{ scale: 0.95 }}
@@ -457,7 +458,7 @@ const Post = () => {
                                 </motion.button>
                                 <motion.button
                                     type="submit"
-                                    className="px-6 py-2 bg-secondary-600 text-white rounded-md hover:bg-secondary-700 transition"
+                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl  bg-secondary-600 text-white  hover:bg-secondary-700 transition"
                                     whileHover={{ backgroundColor: "#4338ca" }}
                                     whileTap={{ scale: 0.95 }}
                                 >
@@ -482,7 +483,7 @@ const Post = () => {
             >
                 <motion.div className=" mx-auto px-4  w-1/2" variants={fadeIn}>
                     <motion.h1
-                        className="text-3xl md:text-4xl font-bold mb-4"
+                        className="text-3xl md:text-5xl font-bold font-zar mb-4"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
@@ -490,7 +491,7 @@ const Post = () => {
                         زموږ بلاګ
                     </motion.h1>
                     <motion.p
-                        className="text-lg md:text-xl max-w-3xl mx-auto"
+                        className="text-xl font-zar md:text-2xl  max-w-3xl mx-auto"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
@@ -558,13 +559,13 @@ const Post = () => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={handleFilter}
-                                    className="flex-1 bg-secondary-600 text-primary-50 px-3 py-4 rounded-md hover:bg-secondary-700 transition"
+                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl flex-1 bg-secondary-600 text-primary-50  hover:bg-secondary-700 transition"
                                 >
                                     لټون
                                 </button>
                                 <button
                                     onClick={resetFilters}
-                                    className="flex-1 bg-tertiary-600 text-primary-50 px-3 py-4 rounded-md hover:bg-tertiary-700 transition"
+                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl flex-1 bg-tertiary-600 text-primary-50  hover:bg-tertiary-700 transition"
                                 >
                                     بیا تنظیم
                                 </button>
@@ -670,7 +671,7 @@ const Post = () => {
                                     </div>
 
                                     <motion.h3
-                                        className="font-bold text-tertiary-700 text-xl mb-2"
+                                        className="text-2xl font-zar font-bold text-tertiary-700 mb-2"
                                         whileHover={{ x: 5 }}
                                         transition={{
                                             type: "spring",
@@ -684,9 +685,6 @@ const Post = () => {
                                         initial={{ opacity: 0.8 }}
                                         whileHover={{ opacity: 1 }}
                                     >
-
-
-
                                         {post.description}
                                     </motion.p>
                                 </div>
@@ -701,12 +699,12 @@ const Post = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
                         >
-                            <p className="text-xl text-gray-600">
+                            <p className="text-xl md:text-2xl text-gray-600">
                                 ستاسو د معیارونو سره سم هیڅ پوسټ ونه موندل شو.
                             </p>
                             <button
                                 onClick={resetFilters}
-                                className="mt-4 bg-secondary-600 text-primary-50 py-2 px-6 rounded hover:bg-secondary-700 transition"
+                                className="font-bold px-6 py-3 rounded-md font-zar text-xl mt-4 bg-secondary-600 text-primary-50  hover:bg-secondary-700 transition"
                             >
                                 فیلټرونه بیا تنظیم کړئ
                             </button>
