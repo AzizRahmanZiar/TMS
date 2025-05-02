@@ -207,14 +207,14 @@ const Dashboard = () => {
                         return (
                             <div
                                 key={index}
-                                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] border border-gray-100 overflow-hidden group"
+                                className="bg-white rounded-2xl  hover:shadow-xl transition-all duration-300 hover:translate-y-[-4px] border border-primary-200 overflow-hidden group"
                             >
                                 <div
                                     className={`${category.bgColor} p-4 flex justify-between items-center relative overflow-hidden`}
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent"></div>
                                     <div className="text-white relative z-10">
-                                        <h2 className="text-lg font-semibold">
+                                        <h2 className="text-3xl font-bold font-zar">
                                             {category.name}
                                         </h2>
                                     </div>
@@ -224,19 +224,11 @@ const Dashboard = () => {
                                 </div>
                                 <div className="p-5">
                                     <div className="flex justify-between items-center mb-3">
-                                        <span className="text-gray-600 text-sm">
+                                        <span className="text-gray-600 font-zar font-bold text-xl">
                                             جمله عاید:
                                         </span>
-                                        <span className="font-bold text-gray-800 text-lg">
+                                        <span className=" text-gray-800 font-zar font-bold text-xl">
                                             {formatNumber(category.money)}
-                                        </span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-600 text-sm">
-                                            تعداد:
-                                        </span>
-                                        <span className="font-bold text-gray-800 text-lg">
-                                            {formatNumber(category.value)}
                                         </span>
                                     </div>
                                 </div>
@@ -247,13 +239,13 @@ const Dashboard = () => {
 
                 {/* Total Revenue Card */}
                 <div className="mb-8">
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                    <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl transition-all duration-300 overflow-hidden">
                         <div className="p-6 flex justify-between items-center">
                             <div className="text-white">
-                                <h2 className="text-xl font-semibold mb-1">
+                                <h2 className="text-3xl font-bold font-zar mb-1">
                                     مجموعي ټول عاید
                                 </h2>
-                                <p className="text-green-100 text-sm">
+                                <p className="text-green-100 text-xl font-zar md:text-2xl">
                                     د ټولو کټګوریو څخه
                                 </p>
                             </div>
@@ -262,10 +254,12 @@ const Dashboard = () => {
                             </div>
                         </div>
                         <div className="p-6 bg-white/10 backdrop-blur-sm">
-                            <span className="text-4xl font-bold text-white">
+                            <span className="font-zar font-bold text-xl text-white">
                                 {formatNumber(totalRevenue)}
                             </span>
-                            <span className="text-green-100 ml-2">افغانۍ</span>
+                            <span className="text-green-100 ml-2 font-zar font-bold text-xl">
+                                افغانۍ
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -273,57 +267,57 @@ const Dashboard = () => {
                 {/* Time-based Revenue Section */}
                 <div className="mb-8">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
+                        <div className="bg-white rounded-2xl border border-primary-200 hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
                             <div className="bg-blue-100 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
                                 <FaCalendarDay className="h-7 w-7 text-blue-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500 mb-1">
+                                <p className="text-xl font-zar md:text-2xl text-gray-500 mb-1">
                                     ورځنی عاید
                                 </p>
-                                <p className="text-2xl font-bold text-gray-800">
+                                <p className="text-xl font-zar md:text-2xl text-gray-800">
                                     {formatNumber(dailyRevenue)}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
+                        <div className="bg-white rounded-2xl border border-primary-200 hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
                             <div className="bg-indigo-100 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
                                 <FaCalendarWeek className="h-7 w-7 text-indigo-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500 mb-1">
+                                <p className="text-xl font-zar md:text-2xl text-gray-500 mb-1">
                                     هفتنی عاید
                                 </p>
-                                <p className="text-2xl font-bold text-gray-800">
+                                <p className="text-xl font-zar md:text-2xl text-gray-800">
                                     {formatNumber(weeklyRevenue)}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
+                        <div className="bg-white rounded-2xl border border-primary-200 hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
                             <div className="bg-purple-100 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
                                 <FaCalendarAlt className="h-7 w-7 text-purple-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500 mb-1">
+                                <p className="text-xl font-zar md:text-2xl text-gray-500 mb-1">
                                     میاشتنۍ عاید
                                 </p>
-                                <p className="text-2xl font-bold text-gray-800">
+                                <p className="text-xl font-zar md:text-2xl text-gray-800">
                                     {formatNumber(monthlyRevenue)}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
+                        <div className="bg-white rounded-2xl border border-primary-200 hover:shadow-xl transition-all duration-300 p-6 flex items-center space-x-4 rtl:space-x-reverse group">
                             <div className="bg-green-100 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
                                 <FaCalendarAlt className="h-7 w-7 text-green-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500 mb-1">
+                                <p className="text-xl font-zar md:text-2xl text-gray-500 mb-1">
                                     کلنۍ عاید
                                 </p>
-                                <p className="text-2xl font-bold text-gray-800">
+                                <p className="text-xl font-zar md:text-2xl text-gray-800">
                                     {formatNumber(yearlyRevenue)}
                                 </p>
                             </div>
@@ -334,10 +328,10 @@ const Dashboard = () => {
                 {/* Charts Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     {/* Pie Chart - Revenue Distribution */}
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                    <div className="bg-white rounded-2xl border border-primary-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
                         <div className="p-4 bg-gradient-to-r from-purple-600 to-indigo-600 flex justify-between items-center">
                             <div className="text-white">
-                                <h2 className="text-lg font-semibold">
+                                <h2 className="text-3xl font-bold font-zar">
                                     د عاید وېش د خیاطي ډول پر اساس
                                 </h2>
                             </div>
@@ -368,10 +362,10 @@ const Dashboard = () => {
                     </div>
 
                     {/* Bar Chart - Quantity Comparison */}
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                    <div className="bg-white rounded-2xl border border-primary-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
                         <div className="p-4 bg-gradient-to-r from-indigo-600 to-blue-600 flex justify-between items-center">
                             <div className="text-white">
-                                <h2 className="text-lg font-semibold">
+                                <h2 className="text-3xl font-bold font-zar">
                                     د توکو تعداد مقایسه
                                 </h2>
                             </div>
@@ -411,11 +405,11 @@ const Dashboard = () => {
 
                 {/* Most Profitable Categories */}
                 <div className="mb-8">
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                    <div className="bg-white rounded-2xl border border-primary-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
                         <div className="p-4 bg-gradient-to-r from-green-600 to-emerald-600 flex justify-between items-center">
                             <div className="text-white">
-                                <h2 className="text-lg font-semibold">
-                                    ترټوډېره ګټه لرونکي کټګورۍ
+                                <h2 className="text-3xl font-bold font-zar">
+                                    ترټولو ډېره ګټه لرونکي کټګورۍ
                                 </h2>
                             </div>
                             <div className="text-white bg-white/20 p-3 rounded-xl backdrop-blur-sm">
@@ -430,7 +424,7 @@ const Dashboard = () => {
                                 return (
                                     <div
                                         key={index}
-                                        className="bg-gray-50 rounded-xl p-5 mb-4 hover:shadow-md transition-all duration-300 last:mb-0"
+                                        className="bg-gray-50 rounded-xl border border-primary-200 p-5 mb-4 hover:shadow-md transition-all duration-300 last:mb-0"
                                     >
                                         <div className="flex flex-col md:flex-row md:items-center">
                                             <div className="flex items-center mb-4 md:mb-0">
@@ -446,7 +440,7 @@ const Dashboard = () => {
                                                     }`}
                                                 >
                                                     <span
-                                                        className={`text-xl font-bold ${
+                                                        className={`font-zar font-bold text-xl ${
                                                             index === 0
                                                                 ? "text-yellow-600"
                                                                 : index === 1
@@ -475,7 +469,7 @@ const Dashboard = () => {
                                                             }}
                                                         />
                                                     </div>
-                                                    <h3 className="font-semibold text-gray-800 text-lg">
+                                                    <h3 className="text-2xl font-zar font-bold text-gray-800 ">
                                                         {category.name}
                                                     </h3>
                                                 </div>
@@ -483,20 +477,20 @@ const Dashboard = () => {
 
                                             <div className="flex flex-wrap gap-6 md:ml-auto">
                                                 <div className="text-center">
-                                                    <div className="text-sm text-gray-500 mb-1">
+                                                    <div className="font-zar font-bold text-gray-500 mb-1">
                                                         تعداد
                                                     </div>
-                                                    <div className="font-semibold text-gray-800">
+                                                    <div className="font-zar font-bold text-gray-800">
                                                         {formatNumber(
                                                             category.value
                                                         )}
                                                     </div>
                                                 </div>
                                                 <div className="text-center">
-                                                    <div className="text-sm text-gray-500 mb-1">
+                                                    <div className="font-zar font-bold text-gray-500 mb-1">
                                                         ټوله ګټه
                                                     </div>
-                                                    <div className="font-bold text-gray-800">
+                                                    <div className="font-zar font-bold text-gray-800">
                                                         {formatNumber(
                                                             category.money
                                                         )}
@@ -517,7 +511,7 @@ const Dashboard = () => {
                                                 ></div>
                                             </div>
                                             <div className="flex justify-between mt-2">
-                                                <span className="text-sm text-gray-500">
+                                                <span className="font-zar font-bold text-xl text-gray-500">
                                                     اوسط ګټه:
                                                     {formatNumber(
                                                         (
@@ -529,7 +523,7 @@ const Dashboard = () => {
                                                     افغانۍ
                                                 </span>
                                                 <span
-                                                    className="text-sm font-medium"
+                                                    className="font-zar font-bold text-xl"
                                                     style={{
                                                         color: category.color,
                                                     }}

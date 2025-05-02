@@ -376,14 +376,14 @@ const Kortai = () => {
             <div className="p-6">
                 {/* Header Section */}
                 <div className="bg-white rounded-lg border p-6 mb-6">
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-10">
+                        {" "}
+                        <SystemButtons type="add" onClick={handleAddClick} />
                         <div className="flex items-center gap-4 mb-4 md:mb-0">
-                            <GiMonclerJacket className="h-20 w-20   text-secondary-900" />
-                            <h1 className=" font-amiri text-3xl text-gray-800">
+                            <h1 className=" md:text-4xl font-bold font-zar text-gray-800">
                                 د کورتۍ د مشتریانو لیست
                             </h1>
                         </div>
-                        <SystemButtons type="add" onClick={handleAddClick} />
                     </div>
 
                     {/* Search and Filter Section */}
@@ -422,31 +422,31 @@ const Kortai = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         نوم
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         مبایل
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider">
                                         اندازې
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         د غاړي ډول
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         د راوړلو تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         د تسلیمولو تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         تعداد
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         پیسې
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider">
                                         عملیې
                                     </th>
                                 </tr>
@@ -468,10 +468,10 @@ const Kortai = () => {
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="text-sm text-gray-900">
-                                                    <span className="inline-flex items-center py-0.5 rounded-full text-xs font-medium  text-gray-800 ml-1">
+                                                    <span className="inline-flex items-center py-0.5 rounded-full font-zar  text-gray-800 ml-1">
                                                         شانه: {row.shana}
                                                     </span>
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium  text-gray-800 ml-1">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-zar  text-gray-800 ml-1">
                                                         تنه: {row.tenna}
                                                     </span>
                                                     <button
@@ -480,14 +480,14 @@ const Kortai = () => {
                                                                 row
                                                             )
                                                         }
-                                                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium  text-green-800 ml-1 cursor-pointer "
+                                                        className="inline-flex items-center px-2.5 py-0.5 rounded-full font-zar  text-green-800 ml-1 cursor-pointer "
                                                     >
                                                         نور...
                                                     </button>
                                                 </div>
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
-                                                <span className="inline-flex items-center  py-0.5 rounded-full text-xs font-medium  text-yellow-800">
+                                                <span className="inline-flex items-center  py-0.5 rounded-full font-zar  text-yellow-800">
                                                     {row.ghara_dol}
                                                 </span>
                                             </td>
@@ -500,7 +500,7 @@ const Kortai = () => {
                                                         {row.tasleem_tareekh}
                                                     </div>
                                                 ) : (
-                                                    <span className="inline-flex items-center  py-0.5 rounded-full text-xs font-medium  text-yellow-800">
+                                                    <span className="inline-flex items-center  py-0.5 rounded-full font-zar  text-yellow-800">
                                                         نه دی تسلیم شوی
                                                     </span>
                                                 )}
@@ -544,7 +544,7 @@ const Kortai = () => {
                                     <tr>
                                         <td
                                             colSpan="9"
-                                            className="px-4 py-8 text-center text-gray-500"
+                                            className="px-4 py-8 text-center text-gray-500 font-zar font-bold"
                                         >
                                             هیڅ ریکارډ ونه موندل شو
                                         </td>
@@ -557,11 +557,11 @@ const Kortai = () => {
                     {/* Pagination - can be implemented if needed */}
                     <div className="px-4 py-3 bg-gray-50 border-t border-gray-200 sm:px-6">
                         <div className="flex items-center justify-between">
-                            <div className="text-sm text-gray-700">
-                                ټول{" "}
-                                <span className="font-medium">
+                            <div className="font-zar text-gray-700">
+                                ټول
+                                <span className="font-zar mx-2">
                                     {filteredData.length}
-                                </span>{" "}
+                                </span>
                                 ریکارډونه
                             </div>
                         </div>

@@ -57,14 +57,14 @@ const SystemLayout = ({ children }) => {
                                 href={route("logout")}
                                 method="post"
                                 as="button"
-                                className="bg-secondary-500 hover:bg-secondary-400 text-white px-4 py-2 rounded-md transition-colors shadow-md font-amiri text-xl"
+                                className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-500 hover:bg-secondary-400 text-white transition-colors shadow-md "
                             >
                                 وتـــــــل
                             </Link>
 
                             <Link
                                 href="/"
-                                className="bg-tertiary-500 hover:bg-tertiary-400 text-white px-4 py-2 rounded-md transition-colors shadow-md font-amiri text-xl"
+                                className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-tertiary-500 hover:bg-tertiary-400 text-white transition-colors shadow-md"
                             >
                                 کـــــــور
                             </Link>

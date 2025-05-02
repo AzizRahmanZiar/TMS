@@ -13,7 +13,7 @@ const SystemButtons = ({
     const getButtonContent = () => {
         switch (type) {
             case "add":
-                return "نوی ریکارډ اضافه کول";
+                return "نوی ریکارډ";
             case "all":
                 return "ټول";
             case "active":
@@ -39,24 +39,24 @@ const SystemButtons = ({
 
         switch (type) {
             case "add":
-                return `${baseStyles} bg-tertiary-700 hover:bg-tertiary-800 text-white px-6 py-2 rounded-lg flex items-center transition-colors duration-300 shadow-md`;
+                return `${baseStyles} font-bold px-6 py-3 rounded-md font-zar text-xl bg-tertiary-700 hover:bg-tertiary-800 text-white flex items-center transition-colors duration-300 shadow-md`;
             case "all":
                 return `${baseStyles} ${
                     isActive
-                        ? "bg-secondary-800 text-white"
-                        : "bg-gray-200 text-gray-00"
+                        ? "font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-800 text-white"
+                        : "font-bold px-6 py-3 rounded-md font-zar text-xl bg-gray-200 text-gray-00"
                 }`;
             case "active":
                 return `${baseStyles} ${
                     isActive
-                        ? "bg-secondary-800 text-white"
-                        : "bg-gray-200 text-gray-00"
+                        ? "font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-800 text-white"
+                        : "font-bold px-6 py-3 rounded-md font-zar text-xl bg-gray-200 text-gray-00"
                 }`;
             case "completed":
                 return `${baseStyles} ${
                     isActive
-                        ? "bg-secondary-900 text-white"
-                        : "bg-gray-200 text-gray-700"
+                        ? "font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-900 text-white"
+                        : "font-bold px-6 py-3 rounded-md font-zar text-xl bg-gray-200 text-gray-700"
                 }`;
             case "edit":
                 return `${baseStyles} ${
@@ -67,13 +67,13 @@ const SystemButtons = ({
             case "delete":
                 return `${baseStyles} ${
                     icon
-                        ? "text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-100"
+                        ? " text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-100"
                         : "bg-red-600 hover:bg-red-700 text-white"
                 }`;
             case "submit":
-                return `${baseStyles} bg-tertiary-700 hover:bg-tertiary-800 text-white`;
+                return `${baseStyles} font-bold px-6 py-3 rounded-md font-zar text-xl bg-tertiary-700 hover:bg-tertiary-800 text-white`;
             case "cancel":
-                return `${baseStyles} bg-secondary-600 hover:bg-secondary-700 text-white`;
+                return `${baseStyles} font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-600 hover:bg-secondary-700 text-white`;
             default:
                 return baseStyles;
         }

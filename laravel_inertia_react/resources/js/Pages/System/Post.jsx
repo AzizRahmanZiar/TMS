@@ -369,26 +369,26 @@ const Post = () => {
                     <table className="w-full">
                         <thead>
                             <tr className="bg-gray-50">
-                                <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
                                     عکس
                                 </th>
 
-                                <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
                                     تفصیل
                                 </th>
-                                <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
                                     تاریخ
                                 </th>
-                                <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
                                     لیکوال
                                 </th>
-                                <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
                                     ایمیل
                                 </th>
-                                <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
                                     کټګورۍ
                                 </th>
-                                <th className="py-3 px-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
                                     عملیات
                                 </th>
                             </tr>
@@ -486,7 +486,7 @@ const Post = () => {
                                 d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
                             />
                         </svg>
-                        <h3 className="mt-2 text-sm font-medium text-gray-900">
+                        <h3 className="mt-2 text-sm font-bold font-zar text-gray-900">
                             هیڅ پوست ونه موندل شو
                         </h3>
                     </div>

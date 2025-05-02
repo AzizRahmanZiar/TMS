@@ -25,7 +25,7 @@ const SearchBar = ({
     };
 
     return (
-        <div className={`relative ${className}`}>
+        <div className={`relative font-zar text-xl ${className}`}>
             <input
                 type="text"
                 value={searchTerm}

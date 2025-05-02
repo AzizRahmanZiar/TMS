@@ -22,37 +22,37 @@ const Sidebar = () => {
     // Define menu items with their required roles
     const menuItems = [
         {
-            title: "اډمین",
+            title: "اډمیــــــــــــــن",
             href: "/admin",
             roles: ["admin"],
         },
         {
-            title: "ډشبورډ",
+            title: "ډشبــــــــــــــورډ",
             href: "/dashboard",
             roles: ["tailor"],
         },
         {
-            title: "جامې",
+            title: "جامــــــــــــــې",
             href: "/cloths",
             roles: ["tailor"],
         },
         {
-            title: "درشی",
+            title: "درشــــــــــــــي",
             href: "/uniform",
             roles: ["tailor"],
         },
         {
-            title: "کورتۍ",
+            title: "کــــــــــــــورتۍ",
             href: "/kortai",
             roles: ["tailor"],
         },
         {
-            title: "صدرۍ",
+            title: "صــــــــــــــدرۍ",
             href: "/sadrai",
             roles: ["tailor"],
         },
         {
-            title: "پوسټ",
+            title: "پوســــــــــــــټ",
             href: "/tailorpost",
             roles: ["tailor"],
         },
@@ -89,10 +89,10 @@ const Sidebar = () => {
                         <Link
                             href={item.href}
                             onClick={() => setActivePath(item.href)}
-                            className={`flex flex-row items-center justify-between font-semibold text-xl p-4 text-right transition-all duration-300 ${
+                            className={`font-bold font-zar text-2xl flex flex-row items-center justify-between p-4 text-right transition-all duration-300 ${
                                 activePath === item.href
-                                    ? "text-secondary-400 bg-primary-600 border-r-4 border-secondary-400"
-                                    : "text-primary-50 hover:text-primary-400 hover:bg-primary-600/30"
+                                    ? "text-secondary-400  border-r-4 border-secondary-400"
+                                    : "text-primary-50  hover:text-secondary-400"
                             }`}
                         >
                             <span className="flex items-center w-full justify-between gap-2">

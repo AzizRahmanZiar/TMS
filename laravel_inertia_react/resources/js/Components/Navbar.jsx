@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, usePage } from "@inertiajs/react";
-import { FaUser, FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 import { FaScissors } from "react-icons/fa6";
 
 const Navbar = () => {
@@ -9,14 +9,19 @@ const Navbar = () => {
     const { url, auth } = usePage().props;
     const user = auth?.user;
 
+    // Load active path from localStorage
+    const [activePath, setActivePath] = useState(
+        localStorage.getItem("activeNavbarPath") || "/"
+    );
+
+    useEffect(() => {
+        // Save to localStorage whenever activePath changes
+        localStorage.setItem("activeNavbarPath", activePath);
+    }, [activePath]);
+
     // Function to check if a link is active
     const isActive = (path) => {
-        if (!url || !path) return false;
-        const currentPath =
-            url.endsWith("/") && url !== "/" ? url.slice(0, -1) : url;
-        const linkPath =
-            path.endsWith("/") && path !== "/" ? path.slice(0, -1) : path;
-        return currentPath === linkPath;
+        return activePath === path;
     };
 
     // Animation variants
@@ -114,21 +119,7 @@ const Navbar = () => {
         >
             <div className="container mx-auto px-4">
                 <div className="flex justify-between items-center">
-                    {/* Logo with animated scissors */}
-                    {/* <motion.div whileHover={{ scale: 1.05 }}>
-                        <Link href="/" className="text-2xl font-bold">
-                            <div className="flex rotate-180 items-end space-x-2">
-                                <motion.span
-                                    variants={scissorsVariants}
-                                    initial="initial"
-                                    animate="animate"
-                                    whileHover="hover"
-                                >
-                                    <FaScissors className="text-primary-50 h-10 w-10" />
-                                </motion.span>
-                            </div>
-                        </Link>
-                    </motion.div> */}
+            
 
                     <div>
                         <Link href="/" className="text-2xl font-bold">
@@ -176,10 +167,11 @@ const Navbar = () => {
                             >
                                 <Link
                                     href={link.href}
-                                    className={`font-bold font-zar text-xl transition ${
+                                    onClick={() => setActivePath(link.href)}
+                                    className={`font-bold font-zar text-xl transition-all duration-300 ${
                                         isActive(link.href)
                                             ? "text-secondary-400"
-                                            : "text-primary-50 hover:text-primary-400"
+                                            : "text-primary-50 hover:text-primary-400 hover:bg-primary-600/30"
                                     }`}
                                 >
                                     {link.text}
@@ -316,10 +308,11 @@ const Navbar = () => {
                                     >
                                         <Link
                                             href={link.href}
-                                            className={`block px-4 py-2 font-bold font-zar text-xl transition ${
+                                            onClick={() => setActivePath(link.href)}
+                                            className={`block px-4 py-2 font-bold font-zar text-xl transition-all duration-300 ${
                                                 isActive(link.href)
                                                     ? "text-secondary-400"
-                                                    : "text-primary-50 hover:text-primary-400"
+                                                    : "text-primary-50 hover:text-primary-400 hover:bg-primary-600/30"
                                             }`}
                                         >
                                             {link.text}
