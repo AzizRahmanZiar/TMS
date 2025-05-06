@@ -351,141 +351,138 @@ const Post = () => {
     return (
         <SystemLayout>
             <div className="p-6">
-                {/* Search bar and Add Post button */}
-                <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                    <div className="w-full sm:w-1/2">
-                        <SearchBar
-                            placeholder="د پوست نوم ولټوه..."
-                            onSearch={handleSearch}
-                            initialValue={searchTerm}
-                            className="w-full"
-                        />
+                <div className="bg-white rounded-lg border p-6 mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-10">
+                        <SystemButtons type="add" onClick={handleAddPost} />
+                        <div className="flex items-center gap-5 mb-4 md:mb-0">
+                            <h1 className=" md:text-4xl font-bold font-zar text-gray-800">
+                                د پوسټونو لیست
+                            </h1>
+                        </div>
                     </div>
-                    <SystemButtons type="add" onClick={handleAddPost} />
+                    {/* Search bar and Add Post button */}
+                    <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                        <div className="w-full">
+                            <SearchBar
+                                placeholder="د پوست نوم ولټوه..."
+                                onSearch={handleSearch}
+                                initialValue={searchTerm}
+                                className="w-full"
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {/* Table section */}
-                <div className="overflow-x-auto border rounded-lg shadow-sm">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="bg-gray-50">
-                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
-                                    عکس
-                                </th>
+                <div className="bg-white rounded-lg border overflow-hidden">
+                    <div>
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                        عکس
+                                    </th>
 
-                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
-                                    تفصیل
-                                </th>
-                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
-                                    تاریخ
-                                </th>
-                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
-                                    لیکوال
-                                </th>
-                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
-                                    ایمیل
-                                </th>
-                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
-                                    کټګورۍ
-                                </th>
-                                <th className="py-3 px-4 text-right font-zar text-gray-500 uppercase tracking-wider border-b">
-                                    عملیات
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-gray-200">
-                            {posts
-                                .filter((post) =>
-                                    post.title.includes(searchTerm)
-                                )
-                                .map((post) => (
-                                    <tr
-                                        key={post.id}
-                                        className="hover:bg-gray-50 transition-colors"
-                                    >
-                                        <td className="py-4 px-4 text-right whitespace-nowrap">
-                                            <img
-                                                src={
-                                                    post.image ||
-                                                    "/placeholder.svg" ||
-                                                    "/placeholder.svg"
-                                                }
-                                                alt={post.title}
-                                                className="h-16 w-16 object-cover rounded-md shadow-sm"
-                                            />
-                                        </td>
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                        تفصیل
+                                    </th>
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                        تاریخ
+                                    </th>
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                        لیکوال
+                                    </th>
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                        ایمیل
+                                    </th>
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                        کټګورۍ
+                                    </th>
+                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                        عملیات
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-gray-200">
+                                {posts
+                                    .filter((post) =>
+                                        post.title.includes(searchTerm)
+                                    )
+                                    .map((post) => (
+                                        <tr
+                                            key={post.id}
+                                            className="hover:bg-gray-50 transition-colors"
+                                        >
+                                            <td className="py-4 px-4 text-right whitespace-nowrap">
+                                                <img
+                                                    src={
+                                                        post.image ||
+                                                        "/placeholder.svg" ||
+                                                        "/placeholder.svg"
+                                                    }
+                                                    alt={post.title}
+                                                    className="h-16 w-16 object-cover rounded-md shadow-sm"
+                                                />
+                                            </td>
 
-                                        <td className="py-4 px-4 text-right">
-                                            <div className="text-sm text-gray-500 line-clamp-2">
-                                                {post.description}
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-4 text-right whitespace-nowrap">
-                                            <div className="text-sm text-gray-500">
-                                                {post.date}
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-4 text-right whitespace-nowrap">
-                                            <div className="text-sm text-gray-500">
-                                                {post.author}
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-4 text-right whitespace-nowrap">
-                                            <div className="text-sm text-gray-500">
-                                                {post.email}
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-4 text-right whitespace-nowrap">
-                                            <span className="inline-flex text-xs leading-5 font-semibold rounded-full text-blue-800">
-                                                {post.category}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <div className="flex gap-2">
-                                                <SystemButtons
-                                                    type="edit"
-                                                    onClick={() =>
-                                                        handleEditPost(post)
-                                                    }
-                                                    icon={true}
-                                                    title="سمول"
-                                                />
-                                                <SystemButtons
-                                                    type="delete"
-                                                    onClick={() =>
-                                                        handleDeletePost(
-                                                            post.id
-                                                        )
-                                                    }
-                                                    icon={true}
-                                                    title="حذف کول"
-                                                />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </table>
+                                            <td className="py-4 px-4 text-right">
+                                                <div className="text-sm text-gray-500 line-clamp-2">
+                                                    {post.description}
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4 text-right whitespace-nowrap">
+                                                <div className="text-sm text-gray-500">
+                                                    {post.date}
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4 text-right whitespace-nowrap">
+                                                <div className="text-sm text-gray-500">
+                                                    {post.author}
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4 text-right whitespace-nowrap">
+                                                <div className="text-sm text-gray-500">
+                                                    {post.email}
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4 text-right whitespace-nowrap">
+                                                <span className="inline-flex text-xs leading-5 font-semibold rounded-full text-blue-800">
+                                                    {post.category}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <div className="flex gap-2">
+                                                    <SystemButtons
+                                                        type="edit"
+                                                        onClick={() =>
+                                                            handleEditPost(post)
+                                                        }
+                                                        icon={true}
+                                                        title="سمول"
+                                                    />
+                                                    <SystemButtons
+                                                        type="delete"
+                                                        onClick={() =>
+                                                            handleDeletePost(
+                                                                post.id
+                                                            )
+                                                        }
+                                                        icon={true}
+                                                        title="حذف کول"
+                                                    />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 {/* Empty state */}
                 {posts.filter((post) => post.title.includes(searchTerm))
                     .length === 0 && (
                     <div className="text-center py-10">
-                        <svg
-                            className="mx-auto h-12 w-12 text-gray-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            aria-hidden="true"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                            />
-                        </svg>
                         <h3 className="mt-2 text-sm font-bold font-zar text-gray-900">
                             هیڅ پوست ونه موندل شو
                         </h3>

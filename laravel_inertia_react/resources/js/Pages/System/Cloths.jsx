@@ -439,14 +439,13 @@ const Cloths = () => {
             <div className="p-6">
                 {/* Header Section */}
                 <div className="bg-white rounded-lg border p-6 mb-6">
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-10">
+                        <SystemButtons type="add" onClick={handleAddClick} />
                         <div className="flex items-center gap-5 mb-4 md:mb-0">
-                            <GiClothes className="h-20 w-20   text-secondary-900" />
-                            <h1 className=" font-amiri text-3xl text-gray-800">
+                            <h1 className=" md:text-4xl font-bold font-zar text-gray-800">
                                 د جامو د مشتریانو لیست
                             </h1>
                         </div>
-                        <SystemButtons type="add" onClick={handleAddClick} />
                     </div>
 
                     {/* Search and Filter Section */}
@@ -485,31 +484,31 @@ const Cloths = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         نوم
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         مبایل
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider">
                                         اندازې
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider">
                                         خصوصیات
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         د راوړلو تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         د تسلیمولو تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         تعداد
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
                                         پیسې
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider">
                                         عملیې
                                     </th>
                                 </tr>
@@ -531,13 +530,13 @@ const Cloths = () => {
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="text-sm text-gray-900">
-                                                    <span className="inline-flex items-center  py-0.5 rounded-full text-xs font-medium  text-gray-800 ml-1">
+                                                    <span className="inline-flex items-center  py-0.5 rounded-full text-xs font-zar  text-gray-800 ml-1">
                                                         قد: {row.qadd}
                                                     </span>
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium  text-gray-800 ml-1">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-zar  text-gray-800 ml-1">
                                                         شانه: {row.shana}
                                                     </span>
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium  text-gray-800 ml-1">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-zar  text-gray-800 ml-1">
                                                         غاړه: {row.ghara}
                                                     </span>
                                                     <button
@@ -546,7 +545,7 @@ const Cloths = () => {
                                                                 row
                                                             )
                                                         }
-                                                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium  text-indigo-800 ml-1 cursor-pointer "
+                                                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-zar  text-indigo-800 ml-1 cursor-pointer "
                                                     >
                                                         نور...
                                                     </button>
@@ -555,17 +554,17 @@ const Cloths = () => {
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="flex flex-wrap gap-1">
                                                     {row.lastoni && (
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-zar bg-indigo-100 text-indigo-800">
                                                             لستوڼي
                                                         </span>
                                                     )}
                                                     {row.bin && (
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-zar bg-green-100 text-green-800">
                                                             بین
                                                         </span>
                                                     )}
                                                     {row.kalari && (
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-zar bg-yellow-100 text-yellow-800">
                                                             کالري
                                                         </span>
                                                     )}
@@ -584,7 +583,7 @@ const Cloths = () => {
                                                                     row
                                                                 )
                                                             }
-                                                            className="inline-flex items-center rounded text-xs font-medium  text-blue-800 cursor-pointer "
+                                                            className="inline-flex items-center rounded text-xs font-zar  text-blue-800 cursor-pointer "
                                                         >
                                                             {[
                                                                 row.lastoni_goti,
@@ -610,7 +609,7 @@ const Cloths = () => {
                                                         {row.tasleem_tareekh}
                                                     </div>
                                                 ) : (
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium  text-yellow-800">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-zar  text-yellow-800">
                                                         نه دی تسلیم سوی
                                                     </span>
                                                 )}
@@ -621,7 +620,7 @@ const Cloths = () => {
                                             <td className="px-4 py-4 whitespace-nowrap text-sm">
                                                 {row.money} افغانۍ
                                             </td>
-                                            <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-zar">
                                                 <div className="flex  space-x-2">
                                                     <SystemButtons
                                                         type="edit"
@@ -654,7 +653,7 @@ const Cloths = () => {
                                     <tr>
                                         <td
                                             colSpan="9"
-                                            className="px-4 py-8 text-center text-gray-500"
+                                            className="px-4 py-8 text-center font-zar font-bold text-gray-500"
                                         >
                                             هیڅ ریکارډ ونه موندل شو
                                         </td>
@@ -667,11 +666,11 @@ const Cloths = () => {
                     {/* Pagination - can be implemented if needed */}
                     <div className="px-4 py-3 bg-gray-50 border-t border-gray-200 sm:px-6">
                         <div className="flex items-center justify-between">
-                            <div className="text-sm text-gray-700">
+                            <div className=" text-gray-700 font-zar">
                                 ټول
-                                <span className="font-medium">
+                                <span className="font-zar mx-2 ">
                                     {filteredData.length}
-                                </span>{" "}
+                                </span>
                                 ریکارډونه
                             </div>
                         </div>
@@ -690,7 +689,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="nom"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             نوم
                                         </label>
@@ -721,7 +720,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="mobile"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             مبایل نمبر
                                         </label>
@@ -752,7 +751,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="money"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             پیسې
                                         </label>
@@ -783,7 +782,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="qadd"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             قد
                                         </label>
@@ -814,7 +813,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="shana"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             شانه
                                         </label>
@@ -845,7 +844,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="ghara"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             غاړه
                                         </label>
@@ -876,7 +875,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="zegar"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             ځګر
                                         </label>
@@ -907,7 +906,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="lstoony"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             لستوڼي اندازه
                                         </label>
@@ -938,7 +937,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="partog"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             پرتوګ
                                         </label>
@@ -969,7 +968,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="pai_tsa"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             پایڅه
                                         </label>
@@ -1000,7 +999,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="tidad"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             تعداد
                                         </label>
@@ -1032,7 +1031,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="rawrul_tareekh"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             د راوړلو تاریخ
                                         </label>
@@ -1063,7 +1062,7 @@ const Cloths = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="tasleem_tareekh"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-sm font-zar text-gray-700"
                                         >
                                             د تسلیمولو تاریخ
                                         </label>
@@ -1096,7 +1095,7 @@ const Cloths = () => {
                                             key={groupIndex}
                                             className="space-y-3 bg-gray-50 p-4 rounded-lg"
                                         >
-                                            <h4 className="font-medium text-gray-700">
+                                            <h4 className="font-zar text-gray-700">
                                                 {group.title}
                                             </h4>
                                             <div className="grid grid-cols-2 gap-2">
@@ -1177,14 +1176,14 @@ const Cloths = () => {
                                     <button
                                         type="button"
                                         onClick={closeModal}
-                                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-zar text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                     >
                                         لغو کول
                                     </button>
                                     <button
                                         type="button"
                                         onClick={handleDeleteConfirm}
-                                        className="inline-flex justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                        className="inline-flex justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-zar text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                                     >
                                         حذف کول
                                     </button>
@@ -1227,7 +1226,7 @@ const Cloths = () => {
 
                             <div className="p-6">
                                 <div className="mb-4">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                    <h3 className="text-lg font-zar text-gray-900 mb-2">
                                         خصوصیات
                                     </h3>
                                     <div className="grid grid-cols-2 gap-2">
@@ -1314,7 +1313,7 @@ const Cloths = () => {
 
                             <div className="p-6">
                                 <div className="mb-4">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                    <h3 className="text-lg font-zar text-gray-900 mb-2">
                                         اندازې
                                     </h3>
                                     <div className="grid grid-cols-2 gap-4">
@@ -1337,7 +1336,7 @@ const Cloths = () => {
                                                 <p className="text-gray-500 text-xs">
                                                     {measurement.label}
                                                 </p>
-                                                <p className="text-gray-900 font-medium">
+                                                <p className="text-gray-900 font-zar">
                                                     {
                                                         selectedRow[
                                                             measurement.name
