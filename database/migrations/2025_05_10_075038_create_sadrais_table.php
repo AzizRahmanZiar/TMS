@@ -13,7 +13,21 @@ return new class extends Migration
     {
         Schema::create('sadrais', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+
+            $table->string('nom');               // نوم
+            $table->string('mobile');            // مبایل نمبر
+            $table->decimal('money', 10, 2);     // پیسې
+
+            $table->string('shana');             // شانه
+            $table->string('tenna');             // تنه
+            $table->string('ghara_dol');         // د غاړي ډول
+            $table->string('zegar');             // ځګر
+            $table->integer('tidad');            // تعداد
+
+            $table->date('rawrul_tareekh');      // د راوړلو تاریخ
+            $table->date('tasleem_tareekh');     // د تسلیمولو تاریخ
+
+            $table->timestamps();  
         });
     }
 
