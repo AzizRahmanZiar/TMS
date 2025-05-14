@@ -20,9 +20,9 @@ module.exports = {
                 0.5: "0.5px", // نازک بارډر 0.5px
             },
             fontFamily: {
-                titr: ['"Bahij Titr"', "sans-serif"],
-                zar: ['"Bahij Zar"', "serif"],
+                bahij: ["BahijZarBold", "sans-serif"],
             },
+
             colors: {
                 primary: {
                     50: "#f7f7f8",

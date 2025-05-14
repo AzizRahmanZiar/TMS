@@ -136,7 +136,7 @@ const SystemLayout = ({ children }) => {
                             <FaBars className="text-xl" />
                         </button>
 
-                        <div className="flex items-center space-x-2 md:space-x-4 rtl:space-x-reverse">
+                        <div className="flex items-center space-x-4 md:space-x-4 rtl:space-x-reverse">
                             {/* Notifications */}
                             <div className="relative">
                                 <button
