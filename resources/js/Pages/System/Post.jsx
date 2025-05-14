@@ -270,7 +270,7 @@ const Post = () => {
                     <div className="flex flex-col md:flex-row justify-between items-center mb-10">
                         <SystemButtons type="add" onClick={handleAddPost} />
                         <div className="flex items-center gap-5 mb-4 md:mb-0">
-                            <h1 className="text-2xl md:text-4xl font-bold font-zar text-gray-800">
+                            <h1 className="text-xl md:text-3xl font-bold text-gray-800">
                                 د پوسټونو لیست
                             </h1>
                         </div>
@@ -294,19 +294,19 @@ const Post = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
-                                        عکس
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
+                                        ډیزاین
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         تفصیل
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         کټګورۍ
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         عملیات
                                     </th>
                                 </tr>

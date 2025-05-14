@@ -72,9 +72,6 @@ const Admin = () => {
             <div className="p-3 md:p-6" dir="rtl">
                 <div className="bg-white rounded-2xl border-0.5 border-tertiary-200 p-3 md:p-6">
                     <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                        <h1 className="text-xl md:text-2xl font-bold text-gray-800">
-                            د کاروونکو مدیریت
-                        </h1>
                         <div className="relative w-full md:w-auto">
                             <input
                                 type="text"
@@ -85,6 +82,9 @@ const Admin = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
+                        <h1 className="text-xl md:text-3xl font-bold text-gray-800">
+                            د کار کوونکو مدیریت
+                        </h1>
                     </div>
 
                     <div className="overflow-x-auto border-0.5 border-tertiary-200 rounded-md">

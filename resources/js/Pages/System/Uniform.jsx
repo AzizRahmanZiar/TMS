@@ -371,8 +371,8 @@ const Uniform = () => {
                     <div className="flex flex-col md:flex-row justify-between items-center mb-10">
                         <SystemButtons type="add" onClick={handleAddClick} />
                         <div className="flex gap-5 items-center mb-4 md:mb-0">
-                            <h1 className="text-2xl md:text-4xl font-bold font-zar text-gray-800">
-                                د درشی د مشتریانو لیست
+                            <h1 className="text-xl md:text-3xl font-bold text-gray-800">
+                                د درشي د مشتریانو لیست
                             </h1>
                         </div>
                     </div>
@@ -413,28 +413,28 @@ const Uniform = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         نوم
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         مبایل
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         اندازې
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         د راوړلو تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         د تسلیمولو تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         تعداد
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         پیسې
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         عملیې
                                     </th>
                                 </tr>

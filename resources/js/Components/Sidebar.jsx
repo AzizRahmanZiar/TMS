@@ -13,6 +13,7 @@ import {
     FaBlog,
     FaTimes,
 } from "react-icons/fa";
+import { FiSend } from "react-icons/fi";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
     const { auth } = usePage().props;
@@ -83,6 +84,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             href: "/tailorpost",
             roles: ["tailor"],
             icon: <FaBlog className="text-xl md:text-2xl" />,
+        },
+
+        {
+            title: "پرمـــــــــــایش",
+            href: "/customerorder",
+            roles: ["tailor"],
+            icon: <FiSend className="text-xl md:text-2xl" />,
         },
     ];
 

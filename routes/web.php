@@ -3,6 +3,7 @@
 use App\Http\Controllers\{
     AdminController,
     ClothsController,
+    CustomerOrderController,
     KortaiController,
     PostController,
     SadraiController,
@@ -60,5 +61,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/kortai', [KortaiController::class, 'kortai'])->name('kortai');
         Route::get('/sadrai', [SadraiController::class, 'sadrai'])->name('sadrai');
         Route::get('/tailorpost', [PostController::class, 'tailorpost'])->name('tailor.posts');
+        Route::get('/customerorder', [CustomerOrderController::class, 'customerorder'])->name('customerorder');
+
     });
 });

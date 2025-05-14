@@ -119,8 +119,6 @@ const Navbar = () => {
         >
             <div className="container mx-auto px-4">
                 <div className="flex justify-between items-center">
-            
-
                     <div>
                         <Link href="/" className="text-2xl font-bold">
                             <div className="flex items-center rotate-180 space-x-2">
@@ -171,7 +169,7 @@ const Navbar = () => {
                                     className={`font-bold font-zar text-xl transition-all duration-300 ${
                                         isActive(link.href)
                                             ? "text-secondary-400"
-                                            : "text-primary-50 hover:text-primary-400 hover:bg-primary-600/30"
+                                            : "text-primary-50 hover:text-secondary-400"
                                     }`}
                                 >
                                     {link.text}
@@ -308,11 +306,13 @@ const Navbar = () => {
                                     >
                                         <Link
                                             href={link.href}
-                                            onClick={() => setActivePath(link.href)}
+                                            onClick={() =>
+                                                setActivePath(link.href)
+                                            }
                                             className={`block px-4 py-2 font-bold font-zar text-xl transition-all duration-300 ${
                                                 isActive(link.href)
                                                     ? "text-secondary-400"
-                                                    : "text-primary-50 hover:text-primary-400 hover:bg-primary-600/30"
+                                                    : "text-primary-50 hover:text-secondary-400 "
                                             }`}
                                         >
                                             {link.text}

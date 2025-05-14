@@ -441,7 +441,7 @@ const Cloths = () => {
                     <div className="flex flex-col md:flex-row justify-between items-center mb-10">
                         <SystemButtons type="add" onClick={handleAddClick} />
                         <div className="flex items-center gap-5 mb-4 md:mb-0">
-                            <h1 className="text-2xl md:text-4xl font-bold font-zar text-gray-800">
+                            <h1 className="text-xl md:text-3xl font-bold text-gray-800">
                                 د جامو د مشتریانو لیست
                             </h1>
                         </div>
@@ -483,31 +483,31 @@ const Cloths = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         نوم
                                     </th>
-                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         مبایل
                                     </th>
-                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         اندازې
                                     </th>
-                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         خصوصیات
                                     </th>
-                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         د راوړلو تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         د تسلیمولو تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         تعداد
                                     </th>
-                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         پیسې
                                     </th>
-                                    <th className="px-4 py-3 text-right  font-zar text-gray-500 uppercase tracking-wider">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         عملیې
                                     </th>
                                 </tr>
@@ -521,21 +521,21 @@ const Cloths = () => {
                                                 row.disabled ? "bg-blue-50" : ""
                                             }`}
                                         >
-                                            <td className="px-4 text-sm py-4 whitespace-nowrap">
+                                            <td className="px-4 py-4 text-right text-sm md:text-xl text-gray-500 whitespace-nowrap">
                                                 {row.nom}
                                             </td>
-                                            <td className="px-4 py-4  text-xs whitespace-nowrap">
+                                            <td className="px-4 py-4 text-sm md:text-xl text-gray-500 whitespace-nowrap">
                                                 {row.mobile}
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
-                                                <div className="text-sm text-gray-900">
-                                                    <span className="inline-flex items-center  py-0.5 rounded-full text-xs font-zar  text-gray-800 ml-1">
+                                                <div className=" text-gray-900">
+                                                    <span className="inline-flex text-sm md:text-xl text-gray-500 items-center  py-0.5 rounded-full font-zar   ml-1">
                                                         قد: {row.qadd}
                                                     </span>
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-zar  text-gray-800 ml-1">
+                                                    <span className="inline-flex text-sm md:text-xl text-gray-500 items-center px-2.5 py-0.5 rounded-full  font-zar  ml-1">
                                                         شانه: {row.shana}
                                                     </span>
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-zar  text-gray-800 ml-1">
+                                                    <span className="inline-flex text-sm md:text-xl text-gray-500 items-center px-2.5 py-0.5 rounded-full  font-zar  ml-1">
                                                         غاړه: {row.ghara}
                                                     </span>
                                                     <button
@@ -544,7 +544,7 @@ const Cloths = () => {
                                                                 row
                                                             )
                                                         }
-                                                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-zar  text-indigo-800 ml-1 cursor-pointer "
+                                                        className="inline-flex items-center px-2.5 py-0.5 rounded-full  text-sm md:text-xl  text-indigo-800 ml-1 cursor-pointer "
                                                     >
                                                         نور...
                                                     </button>
@@ -553,17 +553,17 @@ const Cloths = () => {
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="flex flex-wrap gap-1">
                                                     {row.lastoni && (
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-zar bg-indigo-100 text-indigo-800">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded  text-sm md:text-xl  text-indigo-800">
                                                             لستوڼي
                                                         </span>
                                                     )}
                                                     {row.bin && (
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-zar bg-green-100 text-green-800">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-sm md:text-xl text-green-800">
                                                             بین
                                                         </span>
                                                     )}
                                                     {row.kalari && (
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-zar bg-yellow-100 text-yellow-800">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded  text-sm md:text-xl  bg-yellow-100 text-yellow-800">
                                                             کالري
                                                         </span>
                                                     )}
@@ -582,7 +582,7 @@ const Cloths = () => {
                                                                     row
                                                                 )
                                                             }
-                                                            className="inline-flex items-center rounded text-xs font-zar  text-blue-800 cursor-pointer "
+                                                            className="inline-flex items-center rounded  text-sm md:text-xl   text-blue-800 cursor-pointer "
                                                         >
                                                             {[
                                                                 row.lastoni_goti,
@@ -599,27 +599,27 @@ const Cloths = () => {
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4 text-sm whitespace-nowrap">
+                                            <td className="px-4 py-4 text-sm md:text-xl text-gray-500 whitespace-nowrap">
                                                 {row.rawrul_tareekh}
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 {row.tasleem_tareekh ? (
-                                                    <div className="flex text-sm">
+                                                    <div className="flex text-sm md:text-xl text-gray-500">
                                                         {row.tasleem_tareekh}
                                                     </div>
                                                 ) : (
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-zar  text-yellow-800">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full  text-sm md:text-xl   text-yellow-800">
                                                         نه دی تسلیم سوی
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="px-4 text-sm py-4 whitespace-nowrap">
+                                            <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                                                 {row.tidad}
                                             </td>
-                                            <td className="px-4 py-4 whitespace-nowrap text-sm">
+                                            <td className="px-4 py-4 whitespace-nowrap text-sm md:text-xl text-gray-500">
                                                 {row.money} افغانۍ
                                             </td>
-                                            <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-zar">
+                                            <td className="px-4 py-4 whitespace-nowrap text-right text-sm md:text-xl text-gray-500 font-zar">
                                                 <div className="flex  space-x-2">
                                                     <SystemButtons
                                                         type="edit"
@@ -1346,7 +1346,7 @@ const Cloths = () => {
                                                 key={measurement.name}
                                                 className="bg-gray-50 p-3 rounded-lg"
                                             >
-                                                <p className="text-gray-500 text-xs">
+                                                <p className="text-gray-500 ">
                                                     {measurement.label}
                                                 </p>
                                                 <p className="text-gray-900 font-zar">

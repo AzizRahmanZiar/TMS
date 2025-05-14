@@ -3,11 +3,15 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "Bahij Titr";
-    src: url("/fonts/BahijTitr-Regular.ttf") format("truetype");
+    font-family: "BahijZarBold";
+    src: url("/fonts/Bahij-Zar-Bold.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
 }
 
-@font-face {
-    font-family: "Bahij Zar";
-    src: url("/fonts/BahijZar-Regular.ttf") format("truetype");
+/* Apply globally */
+html,
+body,
+#app {
+    font-family: "BahijZarBold", sans-serif;
 }

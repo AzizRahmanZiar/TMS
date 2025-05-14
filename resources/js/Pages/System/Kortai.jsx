@@ -379,7 +379,7 @@ const Kortai = () => {
                         {" "}
                         <SystemButtons type="add" onClick={handleAddClick} />
                         <div className="flex items-center gap-4 mb-4 md:mb-0">
-                            <h1 className="text-2xl md:text-4xl font-bold font-zar text-gray-800">
+                            <h1 className="text-xl md:text-3xl font-bold text-gray-800">
                                 د کورتۍ د مشتریانو لیست
                             </h1>
                         </div>
@@ -421,31 +421,31 @@ const Kortai = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         نوم
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         مبایل
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         اندازې
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         د غاړي ډول
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         د راوړلو تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         د تسلیمولو تاریخ
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         تعداد
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         پیسې
                                     </th>
-                                    <th className="px-4 py-3 text-right font-zar text-gray-500 uppercase tracking-wider">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         عملیې
                                     </th>
                                 </tr>
