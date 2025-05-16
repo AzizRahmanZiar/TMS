@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import SystemLayout from "@/Layouts/SystemLayout";
 import { usePage, router } from "@inertiajs/react";
 import { FaTrash, FaUser, FaUserTie, FaUserShield } from "react-icons/fa";
+import SearchBar from "@/Components/SearchBar";
 
 const Admin = () => {
     const pageProps = usePage().props;
@@ -67,12 +68,16 @@ const Admin = () => {
         }
     };
 
+    const handleSearch = (value) => {
+        setSearchTerm(value);
+    };
+
     return (
         <SystemLayout>
             <div className="p-3 md:p-6" dir="rtl">
                 <div className="bg-white rounded-2xl border-0.5 border-tertiary-200 p-3 md:p-6">
                     <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                        <div className="relative w-full md:w-auto">
+                        {/* <div className="relative w-full md:w-auto">
                             <input
                                 type="text"
                                 name="search"
@@ -81,7 +86,17 @@ const Admin = () => {
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
+                        </div> */}
+
+                        <div className="relative flex-1">
+                            <SearchBar
+                                placeholder="د نوم، بریښنالیک یا موضوع په اساس لټون..."
+                                onSearch={handleSearch}
+                                initialValue={searchTerm}
+                                className="w-full"
+                            />
                         </div>
+
                         <h1 className="text-xl md:text-3xl font-bold text-gray-800">
                             د کار کوونکو مدیریت
                         </h1>

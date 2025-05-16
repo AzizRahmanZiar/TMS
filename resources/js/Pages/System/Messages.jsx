@@ -1,39 +1,41 @@
 import { useState, useEffect } from "react";
 import SystemLayout from "@/Layouts/SystemLayout";
-import { usePage, router } from "@inertiajs/react";
+import { useMessages } from "@/Contexts/MessagesContext";
 import { FaTrash } from "react-icons/fa";
 import SearchBar from "@/Components/SearchBar";
-import { useOrder } from "@/Contexts/OrderContext";
 
-const CustomerOrder = () => {
-    const { order } = useOrder();
+const Messages = () => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredOrders, setFilteredOrders] = useState(order || []);
+    const { messages, setMessages } = useMessages();
+    const [filteredMessages, setFilteredMessages] = useState(messages);
 
     useEffect(() => {
         if (searchTerm) {
-            const filtered = order.filter(
-                (ord) =>
-                    ord.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    ord.email.toLowerCase().includes(searchTerm.toLowerCase())
+            const filtered = messages.filter(
+                (message) =>
+                    message.name
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                    message.email
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                    message.subject
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
             );
-            setFilteredOrders(filtered);
+            setFilteredMessages(filtered);
         } else {
-            setFilteredOrders(order);
+            setFilteredMessages(messages);
         }
-    }, [searchTerm, order]);
+    }, [searchTerm, messages]);
 
     const handleSearch = (value) => {
         setSearchTerm(value);
     };
 
     const handleDelete = (id) => {
-        if (window.confirm("آیا تاسو غواړئ دا فرمایش حذف کړئ؟")) {
-            router.delete(route("order.destroy", id), {
-                onSuccess: () => {
-                    alert("فرمایش په بریالیتوب سره حذف شو");
-                },
-            });
+        if (window.confirm("آیا تاسو غواړئ دا پیغام حذف کړئ؟")) {
+            setMessages(messages.filter((message) => message.id !== id));
         }
     };
 
@@ -44,14 +46,14 @@ const CustomerOrder = () => {
                     <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                         <div className="relative flex-1">
                             <SearchBar
-                                placeholder="د نوم یا بریښنالیک په اساس لټون..."
+                                placeholder="د نوم، بریښنالیک یا موضوع په اساس لټون..."
                                 onSearch={handleSearch}
                                 initialValue={searchTerm}
                                 className="w-full"
                             />
                         </div>
                         <h1 className="text-xl md:text-3xl font-bold text-gray-800">
-                            دآرډرونو لیست
+                            د پیغامونو لیست
                         </h1>
                     </div>
 
@@ -62,16 +64,14 @@ const CustomerOrder = () => {
                                     <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         نوم
                                     </th>
-                                    <th className="px-3 md:pl-20 py-3 text-left font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
+                                    <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
                                         بریښنالیک
                                     </th>
-
                                     <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
-                                        مبایل
+                                        موضوع
                                     </th>
-
                                     <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider">
-                                        ادرس
+                                        پیغام
                                     </th>
                                     <th className="px-3 md:px-6 py-3 text-right font-zar text-sm md:text-xl text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         د ثبت نیټه
@@ -82,41 +82,41 @@ const CustomerOrder = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {filteredOrders.length > 0 ? (
-                                    filteredOrders.map((order) => (
+                                {filteredMessages.length > 0 ? (
+                                    filteredMessages.map((message) => (
                                         <tr
-                                            key={order.id}
+                                            key={message.id}
                                             className="hover:bg-gray-50"
                                         >
-                                            <td className="px-3 md:pl-20 py-4 text-right whitespace-nowrap">
-                                                <div className="font-zar text-sm md:text-xl text-gray-900 truncate max-w-[100px] md:max-w-none">
-                                                    {order.name}
-                                                </div>
-                                            </td>
-                                            <td className="px-3 md:pl-20 py-4 text-left whitespace-nowrap">
-                                                <div className="font-zar text-sm md:text-xl text-gray-900 truncate max-w-[100px] md:max-w-none">
-                                                    {order.email}
+                                            <td className="px-3 md:px-6 py-4 text-right whitespace-nowrap">
+                                                <div className="font-zar text-sm md:text-xl text-gray-900">
+                                                    {message.name}
                                                 </div>
                                             </td>
                                             <td className="px-3 md:px-6 py-4 text-right whitespace-nowrap">
                                                 <div className="font-zar text-sm md:text-xl text-gray-900">
-                                                    {order.phone}
+                                                    {message.email}
                                                 </div>
                                             </td>
                                             <td className="px-3 md:px-6 py-4 text-right whitespace-nowrap">
                                                 <div className="font-zar text-sm md:text-xl text-gray-900">
-                                                    {order.address}
+                                                    {message.subject}
                                                 </div>
                                             </td>
-                                            {/* <td className="px-3 md:px-6 py-4 whitespace-nowrap font-zar text-sm md:text-xl text-gray-500 hidden md:table-cell">
+                                            <td className="px-3 md:px-6 py-4 text-right">
+                                                <div className="font-zar text-sm md:text-xl text-gray-900 max-w-xs truncate">
+                                                    {message.message}
+                                                </div>
+                                            </td>
+                                            <td className="px-3 md:px-6 py-4 whitespace-nowrap font-zar text-sm md:text-xl text-gray-500 hidden md:table-cell">
                                                 {new Date(
-                                                    order.created_at
+                                                    message.created_at
                                                 ).toLocaleDateString("fa-IR")}
-                                            </td> */}
+                                            </td>
                                             <td className="px-3 md:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <button
                                                     onClick={() =>
-                                                        handleDelete(order.id)
+                                                        handleDelete(message.id)
                                                     }
                                                     className="text-red-600 hover:text-red-900"
                                                 >
@@ -131,7 +131,7 @@ const CustomerOrder = () => {
                                             colSpan="6"
                                             className="px-6 py-4 text-center text-gray-500 font-zar"
                                         >
-                                            هیڅ فرمایش ونه موندل شو
+                                            هیڅ پیغام ونه موندل شو
                                         </td>
                                     </tr>
                                 )}
@@ -144,4 +144,4 @@ const CustomerOrder = () => {
     );
 };
 
-export default CustomerOrder;
+export default Messages;

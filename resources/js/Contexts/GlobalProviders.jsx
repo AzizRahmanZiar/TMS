@@ -6,24 +6,32 @@ import { KortaiProvider } from "./KortaiContext";
 import { AdminProvider } from "./AdminContext";
 import { RegProvider } from "./RegContext";
 import { RatingProvider } from "./RatingContext";
+import { MessagesProvider } from "./MessagesContext";
+import { OrderProvider } from "./OrderContext";
 
 const GlobalProviders = ({ children }) => {
     return (
-        <RatingProvider>
-            <RegProvider>
-                <AdminProvider>
-                    <ClothsProvider>
+        <PostProvider>
+            <SadraiProvider>
+                <ClothsProvider>
+                    <OrderProvider>
                         <UniformProvider>
                             <KortaiProvider>
-                                <SadraiProvider>
-                                    <PostProvider>{children}</PostProvider>
-                                </SadraiProvider>
+                                <AdminProvider>
+                                    <RegProvider>
+                                        <RatingProvider>
+                                            <MessagesProvider>
+                                                {children}
+                                            </MessagesProvider>
+                                        </RatingProvider>
+                                    </RegProvider>
+                                </AdminProvider>
                             </KortaiProvider>
                         </UniformProvider>
-                    </ClothsProvider>
-                </AdminProvider>
-            </RegProvider>
-        </RatingProvider>
+                    </OrderProvider>
+                </ClothsProvider>
+            </SadraiProvider>
+        </PostProvider>
     );
 };
 

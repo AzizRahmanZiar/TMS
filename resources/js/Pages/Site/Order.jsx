@@ -15,21 +15,6 @@ const Order = () => {
         phone: "",
         email: "",
         address: "",
-        clothingType: "",
-        fabric: "",
-        color: "",
-        size: "",
-        height: "",
-        chest: "",
-        waist: "",
-        hips: "",
-        shoulders: "",
-        sleeves: "",
-        inseam: "",
-        deliveryDate: "",
-        specialInstructions: "",
-        tailor: "",
-        shop: "",
     });
 
     // Sample data for tailors and shops
@@ -61,10 +46,12 @@ const Order = () => {
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Here you would typically send the data to your backend
-        console.log("Form submitted:", formData);
-        alert("ستاسو فرمایش په بریالیتوب سره ثبت شو!");
-        // Reset form or redirect
+        setFormData({
+            name: "",
+            email: "",
+            phone: "",
+            address: "",
+        });
     };
 
     // Animation variants
