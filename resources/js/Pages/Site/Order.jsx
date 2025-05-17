@@ -7,14 +7,15 @@ import {
     FaTshirt,
     FaClipboardCheck,
 } from "react-icons/fa";
+import { useOrder } from "@/Contexts/OrderContext";
 
 const Order = () => {
-    // State for form
+    const { order, setOrder } = useOrder();
     const [formData, setFormData] = useState({
-        name: "",
-        phone: "",
-        email: "",
-        address: "",
+        name: order?.name || "",
+        phone: order?.phone || "",
+        email: order?.email || "",
+        address: order?.address || "",
     });
 
     // Sample data for tailors and shops
@@ -46,6 +47,11 @@ const Order = () => {
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Save to order context by appending to existing orders
+        setOrder((prevOrders) => [...prevOrders, formData]);
+
+        // Clear form
         setFormData({
             name: "",
             email: "",

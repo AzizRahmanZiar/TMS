@@ -108,11 +108,12 @@ const CustomerOrder = () => {
                                                     {order.address}
                                                 </div>
                                             </td>
-                                            {/* <td className="px-3 md:px-6 py-4 whitespace-nowrap font-zar text-sm md:text-xl text-gray-500 hidden md:table-cell">
+                                            <td className="px-3 md:px-6 py-4 whitespace-nowrap font-zar text-sm md:text-xl text-gray-500 hidden md:table-cell">
                                                 {new Date(
                                                     order.created_at
                                                 ).toLocaleDateString("fa-IR")}
-                                            </td> */}
+                                            </td>
+
                                             <td className="px-3 md:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <button
                                                     onClick={() =>
