@@ -12,8 +12,12 @@ import {
     FaInstagram,
     FaLinkedin,
 } from "react-icons/fa";
+import { router, usePage } from "@inertiajs/react";
+import { useMessages } from "../../Contexts/MessagesContext";
 
 const Contact = () => {
+    const { flash } = usePage().props;
+    const { messages, setMessages } = useMessages();
     // State for form
     const [formData, setFormData] = useState({
         name: "",
@@ -142,9 +146,14 @@ const Contact = () => {
 
         // If no errors, submit the form
         if (!hasError) {
-            // Here you would typically send the data to your backend
-            console.log("Form submitted:", formData);
-            alert("پیغام په بریالیتوب سره ولیږل شو!");
+            // Add message to context
+            const newMessage = {
+                ...formData,
+                id: Date.now(),
+                created_at: new Date().toISOString()
+            };
+            setMessages([...messages, newMessage]);
+            
             // Reset form
             setFormData({
                 name: "",

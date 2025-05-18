@@ -7,29 +7,15 @@ import {
     FaTshirt,
     FaClipboardCheck,
 } from "react-icons/fa";
+import { useOrder } from "@/Contexts/OrderContext";
 
 const Order = () => {
-    // State for form
+    const { order, setOrder } = useOrder();
     const [formData, setFormData] = useState({
-        name: "",
-        phone: "",
-        email: "",
-        address: "",
-        clothingType: "",
-        fabric: "",
-        color: "",
-        size: "",
-        height: "",
-        chest: "",
-        waist: "",
-        hips: "",
-        shoulders: "",
-        sleeves: "",
-        inseam: "",
-        deliveryDate: "",
-        specialInstructions: "",
-        tailor: "",
-        shop: "",
+        name: order?.name || "",
+        phone: order?.phone || "",
+        email: order?.email || "",
+        address: order?.address || "",
     });
 
     // Sample data for tailors and shops
@@ -61,10 +47,17 @@ const Order = () => {
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Here you would typically send the data to your backend
-        console.log("Form submitted:", formData);
-        alert("ستاسو فرمایش په بریالیتوب سره ثبت شو!");
-        // Reset form or redirect
+
+        // Save to order context by appending to existing orders
+        setOrder((prevOrders) => [...prevOrders, formData]);
+
+        // Clear form
+        setFormData({
+            name: "",
+            email: "",
+            phone: "",
+            address: "",
+        });
     };
 
     // Animation variants

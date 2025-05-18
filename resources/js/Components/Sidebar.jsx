@@ -12,6 +12,7 @@ import {
     FaUserTag,
     FaBlog,
     FaTimes,
+    FaEnvelope,
 } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
 
@@ -48,6 +49,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             href: "/admin",
             roles: ["admin"],
             icon: <FaUserShield className="text-xl md:text-2xl" />,
+        },
+        {
+            title: "پیغامــــــــــــــونه",
+            href: "/messages",
+            roles: ["admin"],
+            icon: <FaEnvelope className="text-xl md:text-2xl" />,
         },
         {
             title: "ډشبــــــــــــــورډ",

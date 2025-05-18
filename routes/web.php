@@ -3,13 +3,14 @@
 use App\Http\Controllers\{
     AdminController,
     ClothsController,
+    ContactController,
     CustomerOrderController,
     KortaiController,
     PostController,
     SadraiController,
     SiteController,
-    UniforController,
-    UniformController
+
+
 };
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Middleware\CheckRole;
@@ -36,13 +37,14 @@ Route::get('/contact', function () {
     return Inertia::render('Site/Contact');
 })->name('contact');
 
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
 Route::get('/about', function () {
     return Inertia::render('Site/About');
 })->name('about');
 
 
-Route::resource('kortais', KortaiController::class);
-Route::resource('uniform', UniformController::class);
+
 
 // Auth routes
 require __DIR__.'/auth.php';
@@ -57,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Admin routes
         Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
+        Route::get('/messages', [UserMessageController::class, 'messages'])->name('messages');
         Route::put('/user/{user}', [AdminController::class, 'update'])->name('user.update');
         Route::delete('/user/{user}', [AdminController::class, 'destroy'])->name('user.delete');
 
