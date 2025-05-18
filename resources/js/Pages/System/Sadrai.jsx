@@ -570,7 +570,7 @@ const Sadrai = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="nom"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-xl font-medium text-gray-700"
                                         >
                                             نوم
                                         </label>
@@ -602,7 +602,7 @@ const Sadrai = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="mobile"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-xl font-medium text-gray-700"
                                         >
                                             مبایل نمبر
                                         </label>
@@ -618,7 +618,7 @@ const Sadrai = () => {
                                                     mobile: true,
                                                 })
                                             }
-                                            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                                            className={`w-full  px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                                                 errors.mobile
                                                     ? "border-red-500 focus:ring-red-500"
                                                     : "border-gray-300 focus:ring-purple-500"
@@ -634,12 +634,9 @@ const Sadrai = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="money"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-xl font-medium text-gray-700"
                                         >
-                                            پیسې{" "}
-                                            {/* <span className="text-red-500">
-                                                *
-                                            </span> */}
+                                            پیسې
                                         </label>
                                         <input
                                             id="money"
@@ -653,7 +650,7 @@ const Sadrai = () => {
                                                     money: true,
                                                 })
                                             }
-                                            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                                            className={`w-full  px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                                                 errors.money
                                                     ? "border-red-500 focus:ring-red-500"
                                                     : "border-gray-300 focus:ring-purple-500"
@@ -669,7 +666,7 @@ const Sadrai = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="shana"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-xl font-medium text-gray-700"
                                         >
                                             شانه
                                         </label>
@@ -685,7 +682,7 @@ const Sadrai = () => {
                                                     shana: true,
                                                 })
                                             }
-                                            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                                            className={`w-full  px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                                                 errors.shana
                                                     ? "border-red-500 focus:ring-red-500"
                                                     : "border-gray-300 focus:ring-purple-500"
@@ -701,7 +698,7 @@ const Sadrai = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="tenna"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-xl font-medium text-gray-700"
                                         >
                                             تنه
                                         </label>
@@ -717,7 +714,7 @@ const Sadrai = () => {
                                                     tenna: true,
                                                 })
                                             }
-                                            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                                            className={`w-full  px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                                                 errors.tenna
                                                     ? "border-red-500 focus:ring-red-500"
                                                     : "border-gray-300 focus:ring-purple-500"
@@ -733,7 +730,7 @@ const Sadrai = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="ghara_dol"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-xl font-medium text-gray-700"
                                         >
                                             د غاړي ډول
                                         </label>
@@ -765,7 +762,7 @@ const Sadrai = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="zegar"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-xl font-medium text-gray-700"
                                         >
                                             ځګر
                                         </label>
@@ -781,7 +778,7 @@ const Sadrai = () => {
                                                     zegar: true,
                                                 })
                                             }
-                                            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                                            className={`w-full  px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                                                 errors.zegar
                                                     ? "border-red-500 focus:ring-red-500"
                                                     : "border-gray-300 focus:ring-purple-500"
@@ -797,7 +794,7 @@ const Sadrai = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="tidad"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-xl font-medium text-gray-700"
                                         >
                                             تعداد
                                         </label>
@@ -813,7 +810,7 @@ const Sadrai = () => {
                                                     tidad: true,
                                                 })
                                             }
-                                            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                                            className={`w-full  px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                                                 errors.tidad
                                                     ? "border-red-500 focus:ring-red-500"
                                                     : "border-gray-300 focus:ring-purple-500"
@@ -830,7 +827,7 @@ const Sadrai = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="rawrul_tareekh"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-xl font-medium text-gray-700"
                                         >
                                             د راوړلو تاریخ
                                         </label>
@@ -846,7 +843,7 @@ const Sadrai = () => {
                                                     rawrul_tareekh: true,
                                                 })
                                             }
-                                            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                                            className={`w-full  px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                                                 errors.rawrul_tareekh
                                                     ? "border-red-500 focus:ring-red-500"
                                                     : "border-gray-300 focus:ring-purple-500"
@@ -862,7 +859,7 @@ const Sadrai = () => {
                                     <div className="space-y-2">
                                         <label
                                             htmlFor="tasleem_tareekh"
-                                            className="block text-sm font-medium text-gray-700"
+                                            className="block text-xl font-medium text-gray-700"
                                         >
                                             د تسلیمولو تاریخ
                                         </label>
@@ -878,7 +875,7 @@ const Sadrai = () => {
                                                     tasleem_tareekh: true,
                                                 })
                                             }
-                                            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                                            className={`w-full  px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                                                 errors.tasleem_tareekh
                                                     ? "border-red-500 focus:ring-red-500"
                                                     : "border-gray-300 focus:ring-purple-500"

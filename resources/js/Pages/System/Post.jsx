@@ -395,7 +395,7 @@ const Post = () => {
                             >
                                 <div>
                                     <label
-                                        className="block text-sm font-medium text-gray-700"
+                                        className="block text-xl font-medium text-gray-700"
                                         htmlFor="image"
                                     >
                                         ډیزان
@@ -416,7 +416,7 @@ const Post = () => {
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700">
+                                    <label className="block text-xl font-medium text-gray-700">
                                         تفصیل
                                     </label>
                                     <textarea
@@ -438,7 +438,7 @@ const Post = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700">
+                                    <label className="block text-xl font-medium text-gray-700">
                                         کټګورۍ
                                     </label>
                                     <select
