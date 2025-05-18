@@ -9,6 +9,10 @@ use App\Http\Controllers\{
     PostController,
     SadraiController,
     SiteController,
+    UniformController,
+    UserMessageController,    
+
+
 
 
 };
@@ -43,6 +47,9 @@ Route::get('/about', function () {
     return Inertia::render('Site/About');
 })->name('about');
 
+
+Route::resource('kortai', KortaiController::class);
+Route::resource('uniform', UniformController::class);
 
 
 

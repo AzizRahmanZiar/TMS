@@ -12,7 +12,7 @@ class KortaiController extends Controller
     public function index()
     {
         $kortais = Kortai::orderBy('created_at', 'desc')->get();
-        return Inertia::render('Kortais/Index', [
+        return Inertia::render('Kortais', [
             'kortais' => $kortais
         ]);
     }
