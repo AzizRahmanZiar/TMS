@@ -63,13 +63,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         },
         {
             title: "درشــــــــــــــي",
-            href: "/uniform",
+            href: "{{route('uniform.index')}}",
             roles: ["tailor"],
             icon: <FaUserTie className="text-xl md:text-2xl" />,
         },
         {
             title: "کــــــــــــــورتۍ",
-            href: "/kortai",
+            href: "{{route('kortai.index')}}",
             roles: ["tailor"],
             icon: <FaUserGraduate className="text-xl md:text-2xl" />,
         },

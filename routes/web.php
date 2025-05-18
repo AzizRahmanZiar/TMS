@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     PostController,
     SadraiController,
     SiteController,
+    UniforController,
     UniformController
 };
 use App\Http\Controllers\Auth\RegisterController;
@@ -39,6 +40,10 @@ Route::get('/about', function () {
     return Inertia::render('Site/About');
 })->name('about');
 
+
+Route::resource('kortais', KortaiController::class);
+Route::resource('uniform', UniformController::class);
+
 // Auth routes
 require __DIR__.'/auth.php';
 
@@ -56,8 +61,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/user/{user}', [AdminController::class, 'destroy'])->name('user.delete');
 
         // Tailor routes
-        Route::get('/cloths', [ClothsController::class, 'cloths'])->name('cloths');
-        Route::get('/uniform', [UniformController::class, 'uniform'])->name('uniform');
+       
         Route::get('/kortai', [KortaiController::class, 'kortai'])->name('kortai');
         Route::get('/sadrai', [SadraiController::class, 'sadrai'])->name('sadrai');
         Route::get('/tailorpost', [PostController::class, 'tailorpost'])->name('tailor.posts');

@@ -27,7 +27,6 @@ return new class extends Migration
             $table->date('rawrul_tareekh');      // د راوړلو تاریخ
             $table->date('tasleem_tareekh');     // د تسلیمولو تاریخ
 
-            $table->timestamps();  
             $table->timestamps();
         });
     }
