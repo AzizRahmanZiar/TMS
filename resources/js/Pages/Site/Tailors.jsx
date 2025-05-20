@@ -19,6 +19,7 @@ import { Head } from "@inertiajs/react";
 const Tailors = ({ tailors }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [experience, setExperience] = useState("");
+    const [career, setCareer] = useState("");
     const [processedTailors, setProcessedTailors] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -59,6 +60,14 @@ const Tailors = ({ tailors }) => {
             );
         }
 
+        if (career) {
+            filtered = filtered.filter(
+                (tailor) =>
+                    tailor.career &&
+                    tailor.career.toLowerCase() === career.toLowerCase()
+            );
+        }
+
         setProcessedTailors(filtered);
         setCurrentPage(1);
     };
@@ -67,6 +76,7 @@ const Tailors = ({ tailors }) => {
     const resetFilters = () => {
         setSearchTerm("");
         setExperience("");
+        setCareer("");
         setProcessedTailors(tailors);
         setCurrentPage(1);
     };
@@ -179,10 +189,22 @@ const Tailors = ({ tailors }) => {
                             <div className="flex flex-1 items-center gap-2 border border-primary-200 p-3 rounded-lg bg-white">
                                 <FaFilter className="text-primary-400" />
                                 <select
+                                    value={career}
+                                    onChange={(e) => setCareer(e.target.value)}
+                                    className="flex-1 outline-none bg-transparent"
+                                >
+                                    <option value="">ټول تخصصونه</option>
+                                    <option value="Cloths">جامې</option>
+                                    <option value="Uniform">یونیفورم</option>
+                                    <option value="Sadra">سدري</option>
+                                    <option value="Kortai">کورتی</option>
+                                </select>
+                            </div>
+                            <div className="flex flex-1 items-center gap-2 border border-primary-200 p-3 rounded-lg bg-white">
+                                <FaClock className="text-primary-400" />
+                                <select
                                     value={experience}
-                                    onChange={(e) =>
-                                        setExperience(e.target.value)
-                                    }
+                                    onChange={(e) => setExperience(e.target.value)}
                                     className="flex-1 outline-none bg-transparent"
                                 >
                                     <option value="">ټول تجربې</option>
@@ -245,125 +267,123 @@ const Tailors = ({ tailors }) => {
                                     paginatedTailors.map((tailor, index) => (
                                         <motion.div
                                             key={index}
-                                            className="bg-white rounded-xl overflow-hidden shadow-lg border border-primary-100 hover:shadow-xl transition duration-300"
+                                            className="bg-white rounded-xl overflow-hidden shadow-lg border border-primary-100 hover:shadow-xl transition duration-300 group"
                                             variants={cardVariants}
                                             whileHover="hover"
                                             custom={index}
                                         >
-                                            <div className="p-6">
-                                                <div className="flex items-center gap-4 mb-4">
-                                                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                            {/* Profile Image Section */}
+                                            <div className="relative h-48 bg-gradient-to-br from-primary-500 to-secondary-500">
+                                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300" />
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden shadow-lg transform group-hover:scale-110 transition-transform duration-300">
                                                         {tailor.profile_photo_url ? (
                                                             <img
-                                                                src={
-                                                                    tailor.profile_photo_url
-                                                                }
-                                                                alt={
-                                                                    tailor.name
-                                                                }
+                                                                src={tailor.profile_photo_url}
+                                                                alt={tailor.name}
                                                                 className="w-full h-full object-cover"
                                                             />
                                                         ) : (
-                                                            <FaUser className="text-3xl text-gray-400" />
-                                                        )}
-                                                    </div>
-                                                    <div>
-                                                        <motion.h2
-                                                            className="text-3xl font-bold font-zar text-primary-800"
-                                                            initial={{
-                                                                opacity: 0,
-                                                            }}
-                                                            animate={{
-                                                                opacity: 1,
-                                                            }}
-                                                            transition={{
-                                                                delay:
-                                                                    0.3 +
-                                                                    index *
-                                                                        0.05,
-                                                            }}
-                                                        >
-                                                            {tailor.name}
-                                                        </motion.h2>
-                                                        {tailor.has_shop && (
-                                                            <motion.div
-                                                                className="flex items-center gap-1 text-3xl font-bold font-zar text-secondary-600"
-                                                                initial={{
-                                                                    opacity: 0,
-                                                                }}
-                                                                animate={{
-                                                                    opacity: 1,
-                                                                }}
-                                                                transition={{
-                                                                    delay:
-                                                                        0.4 +
-                                                                        index *
-                                                                            0.05,
-                                                                }}
-                                                            >
-                                                                <FaStore className="text-sm" />
-                                                                <span>
-                                                                    د دوکان
-                                                                    لرونکی
-                                                                </span>
-                                                            </motion.div>
+                                                            <div className="w-full h-full bg-white/90 flex items-center justify-center">
+                                                                <FaUser className="text-5xl text-primary-500" />
+                                                            </div>
                                                         )}
                                                     </div>
                                                 </div>
+                                            </div>
 
+                                            {/* Content Section */}
+                                            <div className="p-6">
+                                                {/* Name and Shop Badge */}
+                                                <div className="text-center mb-6">
+                                                    <motion.h2
+                                                        className="text-3xl font-bold font-zar text-primary-800 mb-2"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        transition={{ delay: 0.3 + index * 0.05 }}
+                                                    >
+                                                        {tailor.name}
+                                                    </motion.h2>
+                                                    {tailor.has_shop && (
+                                                        <motion.div
+                                                            className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-secondary-100 text-secondary-700 text-sm font-medium"
+                                                            initial={{ opacity: 0 }}
+                                                            animate={{ opacity: 1 }}
+                                                            transition={{ delay: 0.4 + index * 0.05 }}
+                                                        >
+                                                            <FaStore className="text-sm" />
+                                                            <span>د دوکان لرونکی</span>
+                                                        </motion.div>
+                                                    )}
+                                                </div>
+
+                                                {/* Experience Badge */}
+                                                {tailor.experience && (
+                                                    <div className="flex justify-center mb-6">
+                                                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 text-primary-700">
+                                                            <FaClock className="text-sm" />
+                                                            <span className="font-medium">{tailor.experience} کاله تجربه</span>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Skills Tags */}
+                                                {tailor.skills && (
+                                                    <div className="mb-6">
+                                                        <h3 className="text-sm font-medium text-gray-500 mb-2">مهارتونه</h3>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {tailor.skills.split(',').map((skill, i) => (
+                                                                <span
+                                                                    key={i}
+                                                                    className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm"
+                                                                >
+                                                                    {skill.trim()}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Contact Info */}
                                                 <motion.div
                                                     className="space-y-3"
-                                                    initial={{
-                                                        opacity: 0,
-                                                        y: 20,
-                                                    }}
-                                                    animate={{
-                                                        opacity: 1,
-                                                        y: 0,
-                                                    }}
-                                                    transition={{
-                                                        delay:
-                                                            0.4 + index * 0.05,
-                                                    }}
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: 0.4 + index * 0.05 }}
                                                 >
-                                                    <div className="flex items-start">
-                                                        <FaEnvelope className="text-primary-500 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {tailor.email}
-                                                        </p>
+                                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                                        <FaEnvelope className="text-primary-500 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">{tailor.email}</p>
                                                     </div>
 
-                                                    <div className="flex items-start">
-                                                        <FaBriefcase className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {tailor.career}
-                                                        </p>
+                                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                                        <FaBriefcase className="text-secondary-500 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">{tailor.career}</p>
                                                     </div>
 
-                                                    <div className="flex items-start">
-                                                        <FaGraduationCap className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {
-                                                                tailor.certifications
-                                                            }
-                                                        </p>
-                                                    </div>
+                                                    {tailor.certifications && (
+                                                        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                                            <FaGraduationCap className="text-tertiary-500 flex-shrink-0" />
+                                                            <p className="text-sm text-gray-600">{tailor.certifications}</p>
+                                                        </div>
+                                                    )}
 
-                                                    <div className="flex items-start">
-                                                        <FaTools className="text-primary-600 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {tailor.skills}
-                                                        </p>
+                                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                                        <FaClock className="text-secondary-600 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">{tailor.work_availability}</p>
                                                     </div>
+                                                </motion.div>
 
-                                                    <div className="flex items-start">
-                                                        <FaClock className="text-secondary-600 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {
-                                                                tailor.work_availability
-                                                            }
-                                                        </p>
-                                                    </div>
+                                                {/* View Profile Button */}
+                                                <motion.div
+                                                    className="mt-6"
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{ delay: 0.5 + index * 0.05 }}
+                                                >
+                                                    <button className="w-full py-3 px-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg font-medium hover:from-primary-600 hover:to-secondary-600 transition-all duration-300 transform hover:scale-[1.02]">
+                                                        پروفایل وګورئ
+                                                    </button>
                                                 </motion.div>
                                             </div>
                                         </motion.div>

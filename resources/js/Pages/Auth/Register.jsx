@@ -224,7 +224,7 @@ const Registration = () => {
                 <form onSubmit={handleSubmit} className="space-y-8">
                     {/* Section 1: User Information */}
                     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                        <h3 className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 flex items-center">
+                        <h3 className="text-xl md:text-xl font-semibold mb-6 text-gray-800 flex items-center">
                             <span className="bg-gradient-to-r from-primary-100 to-primary-200 text-primary-600 rounded-full w-8 h-8 inline-flex items-center justify-center ml-2">
                                 1
                             </span>
@@ -232,7 +232,7 @@ const Registration = () => {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                <label className="block text-xl mb-2 font-medium text-gray-700">
                                     <FaUser className="inline ml-2 text-primary-600" />
                                     نوم
                                 </label>
@@ -256,7 +256,7 @@ const Registration = () => {
                             </div>
 
                             <div>
-                                <label className="block mb-2 text-2xl font-medium text-gray-700">
+                                <label className="block mb-2 text-xl font-medium text-gray-700">
                                     <FaEnvelope className="inline ml-2 text-primary-600" />
                                     بریښنالیک
                                 </label>
@@ -280,7 +280,7 @@ const Registration = () => {
                             </div>
 
                             <div>
-                                <label className="block mb-2 text-2xl font-medium text-gray-700">
+                                <label className="block mb-2 text-xl font-medium text-gray-700">
                                     <FaUserTie className="inline ml-2 text-primary-600" />
                                     رول
                                 </label>
@@ -307,7 +307,7 @@ const Registration = () => {
                             </div>
 
                             <div>
-                                <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                <label className="block text-xl mb-2 font-medium text-gray-700">
                                     <FaUser className="inline ml-2 text-primary-600" />
                                     پروفایل
                                 </label>
@@ -346,7 +346,7 @@ const Registration = () => {
                             </div>
 
                             <div>
-                                <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                <label className="block text-xl mb-2 font-medium text-gray-700">
                                     <FaLock className="inline ml-2 text-primary-600" />
                                     پټنوم
                                 </label>
@@ -374,7 +374,7 @@ const Registration = () => {
                     {/* Section 2: Tailor Information (conditional) */}
                     {formData.role === "tailor" && (
                         <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                            <h3 className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 flex items-center">
+                            <h3 className="text-xl md:text-xl font-semibold mb-6 text-gray-800 flex items-center">
                                 <span className="bg-gradient-to-r from-secondary-100 to-secondary-200 text-secondary-600 rounded-full w-8 h-8 inline-flex items-center justify-center ml-2">
                                     2
                                 </span>
@@ -382,7 +382,7 @@ const Registration = () => {
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaBriefcase className="inline ml-2 text-accent-600" />
                                         تجربه (کلونه)
                                     </label>
@@ -407,7 +407,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaUserTie className="inline ml-2 text-accent-600" />
                                         مسلک/تخصص
                                     </label>
@@ -431,7 +431,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaUserTie className="inline ml-2 text-accent-600" />
                                         مخکیني کارونه
                                     </label>
@@ -455,7 +455,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaCertificate className="inline ml-2 text-accent-600" />
                                         تصدیقنامې
                                     </label>
@@ -479,7 +479,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaTools className="inline ml-2 text-accent-600" />
                                         مهارتونه
                                     </label>
@@ -503,7 +503,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <MdWorkOutline className="inline ml-2 text-accent-600" />
                                         د کار وخت
                                     </label>
@@ -541,7 +541,7 @@ const Registration = () => {
                                             onChange={handleChange}
                                             className="rounded text-accent-500 focus:ring-2 focus:ring-accent-300 ml-2"
                                         />
-                                        <span className="text-gray-700 text-2xl font-medium">
+                                        <span className="text-gray-700 text-xl font-medium">
                                             زه غواړم چې خیاطي اضافه کړم
                                         </span>
                                     </label>
@@ -553,7 +553,7 @@ const Registration = () => {
                     {/* Section 3: Tailor Shop Information (conditional) */}
                     {formData.role === "tailor" && formData.addShop && (
                         <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                            <h3 className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 flex items-center">
+                            <h3 className="text-xl md:text-xl font-semibold mb-6 text-gray-800 flex items-center">
                                 <span className="bg-gradient-to-r from-accent-100 to-accent-200 text-accent-600 rounded-full w-8 h-8 inline-flex items-center justify-center ml-2">
                                     3
                                 </span>
@@ -561,7 +561,7 @@ const Registration = () => {
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaStore className="inline ml-2 text-secondary-600" />
                                         د خیاطۍ نوم
                                     </label>
@@ -585,7 +585,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaMapMarkerAlt className="inline ml-2 text-secondary-600" />
                                         آدرس
                                     </label>
@@ -609,7 +609,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaUsers className="inline ml-2 text-secondary-600" />
                                         د خیاطانو شمیر
                                     </label>
@@ -634,7 +634,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaCalendarAlt className="inline ml-2 text-secondary-600" />
                                         د تاسیس کال
                                     </label>
@@ -660,7 +660,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaPhone className="inline ml-2 text-secondary-600" />
                                         د اړیکو شمیره
                                     </label>
@@ -684,7 +684,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaEnvelope className="inline ml-2 text-secondary-600" />
                                         د خیاطۍ ایمیل
                                     </label>
@@ -708,7 +708,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaClock className="inline ml-2 text-secondary-600" />
                                         د کار ساعتونه
                                     </label>
@@ -732,7 +732,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaTools className="inline ml-2 text-secondary-600" />
                                         وړاندې شوي خدمتونه
                                     </label>
@@ -756,12 +756,12 @@ const Registration = () => {
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaCreditCard className="inline ml-2 text-secondary-600" />
                                         د تادیې میتودونه
                                     </label>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                        <label className="flex text-2xl items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-secondary-50 transition-colors">
+                                        <label className="flex text-xl items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-secondary-50 transition-colors">
                                             <input
                                                 type="checkbox"
                                                 name="payment_methods"
@@ -777,7 +777,7 @@ const Registration = () => {
                                             </span>
                                         </label>
 
-                                        <label className="flex text-2xl items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-secondary-50 transition-colors">
+                                        <label className="flex text-xl items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-secondary-50 transition-colors">
                                             <input
                                                 type="checkbox"
                                                 name="payment_methods"
@@ -801,7 +801,7 @@ const Registration = () => {
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaImage className="inline ml-2 text-secondary-600" />
                                         د خیاطۍ تصویر
                                     </label>
@@ -857,7 +857,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaFacebook className="inline ml-2 text-[#1877F2]" />
                                         د فیسبوک لینک
                                     </label>
@@ -877,7 +877,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaInstagram className="inline ml-2 text-[#E1306C]" />
                                         د انستګرام لینک
                                     </label>
@@ -897,7 +897,7 @@ const Registration = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-2xl mb-2 font-medium text-gray-700">
+                                    <label className="block text-xl mb-2 font-medium text-gray-700">
                                         <FaTelegram className="inline ml-2 text-[#0088cc]" />
                                         د ټلګرام لینک
                                     </label>

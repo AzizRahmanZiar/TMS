@@ -87,30 +87,22 @@ class SiteController extends Controller
                 $profileImagePath = $shop->profile_image;
                 $profileImageExists = $profileImagePath ? Storage::disk('public')->exists($profileImagePath) : false;
                 
-                // Debug shop images
-                $shopImages = $shop->shop_images ? json_decode($shop->shop_images, true) : [];
-                $shopImagesDebug = [];
-                
-                if (is_array($shopImages)) {
-                    foreach ($shopImages as $image) {
-                        $shopImagesDebug[] = [
-                            'path' => $image,
-                            'exists' => Storage::disk('public')->exists($image),
-                            'full_path' => storage_path('app/public/' . $image)
-                        ];
+                // Ensure shop_images is properly formatted
+                $shopImages = $shop->shop_images;
+                if (is_string($shopImages)) {
+                    try {
+                        $shopImages = json_decode($shopImages, true);
+                    } catch (\Exception $e) {
+                        // If JSON decode fails, treat as a single image path
+                        $shopImages = [$shopImages];
                     }
                 }
-
+                
                 return [
                     'id' => $shop->id,
                     'name' => $shop->name,
                     'email' => $shop->email,
-                    'profile_photo_url' => $profileImagePath ? asset('storage/' . $profileImagePath) : null,
-                    'profile_image_debug' => [
-                        'path' => $profileImagePath,
-                        'exists' => $profileImageExists,
-                        'full_path' => $profileImagePath ? storage_path('app/public/' . $profileImagePath) : null
-                    ],
+                    'profile_image' => $profileImageExists ? $profileImagePath : null,
                     'tailoring_name' => $shop->tailoring_name,
                     'tailoring_address' => $shop->tailoring_address,
                     'contact_number' => $shop->contact_number,
@@ -120,9 +112,8 @@ class SiteController extends Controller
                     'payment_methods' => $shop->payment_methods,
                     'social_links' => $shop->social_links,
                     'shop_images' => $shopImages,
-                    'shop_images_debug' => $shopImagesDebug,
                     'published_year' => $shop->published_year,
-                    'created_at' => $shop->created_at->format('Y-m-d')
+                    'created_at' => $shop->created_at
                 ];
             });
 

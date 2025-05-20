@@ -33,6 +33,7 @@ const Shop = ({ shops }) => {
     // Process shop data
     useEffect(() => {
         if (shops && shops.length > 0) {
+            console.log('Raw shop data:', shops[0]); // Debug: Log first shop's data
             const processed = shops.map((shop) => {
                 // Create a new object with all the shop properties
                 const processedShop = { ...shop };
@@ -40,14 +41,31 @@ const Shop = ({ shops }) => {
                 // Process shop images if they exist
                 if (shop.shop_images) {
                     try {
-                        const images = JSON.parse(shop.shop_images);
+                        console.log('Raw shop_images:', shop.shop_images); // Debug: Log raw shop_images
+                        let images;
+                        // Check if shop_images is already an array (from JSON column)
+                        if (Array.isArray(shop.shop_images)) {
+                            images = shop.shop_images;
+                        } else {
+                            // Try to parse as JSON
+                            try {
+                                images = JSON.parse(shop.shop_images);
+                            } catch (e) {
+                                // If parsing fails, treat as a single image path
+                                images = [shop.shop_images];
+                            }
+                        }
+                        console.log('Processed images:', images); // Debug: Log processed images
                         processedShop.shopImageUrls = images.map(
                             (image) => `/storage/${image}`
                         );
+                        console.log('Final image URLs:', processedShop.shopImageUrls); // Debug: Log final URLs
                     } catch (e) {
+                        console.error('Error processing shop images:', e); // Debug: Log processing errors
                         processedShop.shopImageUrls = [];
                     }
                 } else {
+                    console.log('No shop_images found for shop:', shop.tailoring_name); // Debug: Log missing images
                     processedShop.shopImageUrls = [];
                 }
 
@@ -321,169 +339,158 @@ const Shop = ({ shops }) => {
                                     paginatedShops.map((shop, index) => (
                                         <motion.div
                                             key={index}
-                                            className="bg-white rounded-xl overflow-hidden shadow-lg border border-primary-100 hover:shadow-xl transition duration-300"
+                                            className="bg-white rounded-xl overflow-hidden shadow-lg border border-primary-100 hover:shadow-xl transition duration-300 group"
                                             variants={cardVariants}
                                             whileHover="hover"
                                             custom={index}
                                         >
-                                            {/* Shop Images Carousel */}
-                                            <div className="relative h-48 bg-gray-100">
-                                                {shop.shopImageUrls &&
-                                                shop.shopImageUrls.length >
-                                                    0 ? (
-                                                    <img
-                                                        src={
-                                                            shop
-                                                                .shopImageUrls[0]
-                                                        }
-                                                        alt={
-                                                            shop.tailoring_name
-                                                        }
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                                                        <FaStore className="text-4xl text-gray-400" />
-                                                    </div>
-                                                )}
+                                            {/* Shop Images Section */}
+                                            <div className="relative h-48 bg-gradient-to-br from-primary-500 to-secondary-500">
+                                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300" />
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    {shop.shopImageUrls && shop.shopImageUrls.length > 0 ? (
+                                                        <div className="w-full h-full transform group-hover:scale-110 transition-transform duration-300">
+                                                            <img
+                                                                src={shop.shopImageUrls[0]}
+                                                                alt={shop.tailoring_name}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden shadow-lg bg-white/90 flex items-center justify-center">
+                                                            <FaStore className="text-5xl text-primary-500" />
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
 
+                                            {/* Content Section */}
                                             <div className="p-6">
-                                                <motion.h2
-                                                    className="text-3xl font-bold font-zar text-primary-800 mb-2"
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ opacity: 1 }}
-                                                    transition={{
-                                                        delay:
-                                                            0.3 + index * 0.05,
-                                                    }}
-                                                >
-                                                    {shop.tailoring_name}
-                                                </motion.h2>
+                                                {/* Shop Name and Badge */}
+                                                <div className="text-center mb-6">
+                                                    <motion.h2
+                                                        className="text-3xl font-bold font-zar text-primary-800 mb-2"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        transition={{ delay: 0.3 + index * 0.05 }}
+                                                    >
+                                                        {shop.tailoring_name}
+                                                    </motion.h2>
+                                                    <motion.div
+                                                        className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-secondary-100 text-secondary-700 text-sm font-medium"
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        transition={{ delay: 0.4 + index * 0.05 }}
+                                                    >
+                                                        <FaStore className="text-sm" />
+                                                        <span>د خیاطۍ دوکان</span>
+                                                    </motion.div>
+                                                </div>
 
+                                                {/* Services Tags */}
+                                                {shop.services && (
+                                                    <div className="mb-6">
+                                                        <h3 className="text-sm font-medium text-gray-500 mb-2">خدمتونه</h3>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {shop.services.split(',').map((service, i) => (
+                                                                <span
+                                                                    key={i}
+                                                                    className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm"
+                                                                >
+                                                                    {service.trim()}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Contact Info */}
                                                 <motion.div
                                                     className="space-y-3"
-                                                    initial={{
-                                                        opacity: 0,
-                                                        y: 20,
-                                                    }}
-                                                    animate={{
-                                                        opacity: 1,
-                                                        y: 0,
-                                                    }}
-                                                    transition={{
-                                                        delay:
-                                                            0.4 + index * 0.05,
-                                                    }}
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: 0.4 + index * 0.05 }}
                                                 >
-                                                    <div className="flex items-start">
-                                                        <FaMapMarkerAlt className="text-secondary-500 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {
-                                                                shop.tailoring_address
-                                                            }
-                                                        </p>
+                                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                                        <FaMapMarkerAlt className="text-primary-500 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">{shop.tailoring_address}</p>
                                                     </div>
 
-                                                    <div className="flex items-start">
-                                                        <FaPhone className="text-tertiary-500 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {
-                                                                shop.contact_number
-                                                            }
-                                                        </p>
+                                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                                        <FaPhone className="text-secondary-500 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">{shop.contact_number}</p>
                                                     </div>
 
-                                                    <div className="flex items-start">
-                                                        <FaEnvelope className="text-primary-500 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {shop.shop_email}
-                                                        </p>
+                                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                                        <FaEnvelope className="text-tertiary-500 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">{shop.shop_email}</p>
                                                     </div>
 
-                                                    <div className="flex items-start">
-                                                        <FaClock className="text-secondary-600 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {shop.working_hours}
-                                                        </p>
+                                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                                        <FaClock className="text-secondary-600 flex-shrink-0" />
+                                                        <p className="text-sm text-gray-600">{shop.working_hours}</p>
                                                     </div>
 
-                                                    <div className="flex items-start">
-                                                        <FaTools className="text-tertiary-600 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {shop.services}
-                                                        </p>
-                                                    </div>
-
-                                                    <div className="flex items-start">
-                                                        <FaCreditCard className="text-primary-600 mt-1 ml-2 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">
-                                                            {
-                                                                shop.payment_methods
-                                                            }
-                                                        </p>
-                                                    </div>
+                                                    {shop.payment_methods && (
+                                                        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                                            <FaCreditCard className="text-primary-600 flex-shrink-0" />
+                                                            <p className="text-sm text-gray-600">{shop.payment_methods}</p>
+                                                        </div>
+                                                    )}
                                                 </motion.div>
 
                                                 {/* Social Links */}
                                                 {shop.socialLinks && (
                                                     <motion.div
-                                                        className="mt-4 flex space-x-4"
+                                                        className="mt-6 flex justify-center gap-4"
                                                         initial={{ opacity: 0 }}
                                                         animate={{ opacity: 1 }}
-                                                        transition={{
-                                                            delay:
-                                                                0.5 +
-                                                                index * 0.05,
-                                                        }}
+                                                        transition={{ delay: 0.5 + index * 0.05 }}
                                                     >
-                                                        {shop.socialLinks
-                                                            .facebook && (
+                                                        {shop.socialLinks.facebook && (
                                                             <a
-                                                                href={
-                                                                    shop
-                                                                        .socialLinks
-                                                                        .facebook
-                                                                }
+                                                                href={shop.socialLinks.facebook}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="text-primary-600 hover:text-primary-800"
+                                                                className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-200 transition-colors duration-200"
                                                             >
                                                                 <FaFacebook className="text-xl" />
                                                             </a>
                                                         )}
-                                                        {shop.socialLinks
-                                                            .instagram && (
+                                                        {shop.socialLinks.instagram && (
                                                             <a
-                                                                href={
-                                                                    shop
-                                                                        .socialLinks
-                                                                        .instagram
-                                                                }
+                                                                href={shop.socialLinks.instagram}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="text-primary-600 hover:text-primary-800"
+                                                                className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 hover:bg-pink-200 transition-colors duration-200"
                                                             >
                                                                 <FaInstagram className="text-xl" />
                                                             </a>
                                                         )}
-                                                        {shop.socialLinks
-                                                            .telegram && (
+                                                        {shop.socialLinks.telegram && (
                                                             <a
-                                                                href={
-                                                                    shop
-                                                                        .socialLinks
-                                                                        .telegram
-                                                                }
+                                                                href={shop.socialLinks.telegram}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="text-primary-600 hover:text-primary-800"
+                                                                className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-200 transition-colors duration-200"
                                                             >
                                                                 <FaTelegram className="text-xl" />
                                                             </a>
                                                         )}
                                                     </motion.div>
                                                 )}
+
+                                                {/* View Shop Button */}
+                                                <motion.div
+                                                    className="mt-6"
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{ delay: 0.5 + index * 0.05 }}
+                                                >
+                                                    <button className="w-full py-3 px-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg font-medium hover:from-primary-600 hover:to-secondary-600 transition-all duration-300 transform hover:scale-[1.02]">
+                                                        دوکان وګورئ
+                                                    </button>
+                                                </motion.div>
                                             </div>
                                         </motion.div>
                                     ))
