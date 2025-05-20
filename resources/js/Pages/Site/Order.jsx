@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SiteLayout from "../../Layouts/SiteLayout";
 import { motion } from "framer-motion";
 import {
@@ -8,14 +8,28 @@ import {
     FaClipboardCheck,
 } from "react-icons/fa";
 import { useOrder } from "@/Contexts/OrderContext";
+import { usePage } from "@inertiajs/react";
 
 const Order = () => {
     const { order, setOrder } = useOrder();
+    const { props } = usePage();
+    const [selectedTailor, setSelectedTailor] = useState(null);
+
+    useEffect(() => {
+        if (props.tailorId && props.tailorName) {
+            setSelectedTailor({
+                id: props.tailorId,
+                name: props.tailorName
+            });
+        }
+    }, [props.tailorId, props.tailorName]);
+
     const [formData, setFormData] = useState({
         name: order?.name || "",
         phone: order?.phone || "",
         email: order?.email || "",
         address: order?.address || "",
+        tailor_id: selectedTailor?.id || "",
     });
 
     // Sample data for tailors and shops
@@ -57,6 +71,7 @@ const Order = () => {
             email: "",
             phone: "",
             address: "",
+            tailor_id: selectedTailor?.id || "",
         });
     };
 
@@ -98,9 +113,9 @@ const Order = () => {
                 animate="visible"
                 variants={fadeIn}
             >
-                <div className=" mx-auto px-4">
+                <div className="mx-auto px-4">
                     <motion.h1
-                        className="text-3xl md:text-5xl font-bold font-zar max-w-3xl mx-auto   mb-4"
+                        className="text-3xl md:text-5xl font-bold font-zar max-w-3xl mx-auto mb-4"
                         variants={fadeIn}
                     >
                         فرمایش ورکړئ
@@ -109,8 +124,9 @@ const Order = () => {
                         className="text-xl font-zar md:text-2xl max-w-3xl mx-auto"
                         variants={fadeIn}
                     >
-                        د خپلې خوښې جامې فرمایش ورکړئ. موږ به یې ستاسو د اندازو
-                        سره سم جوړې کړو.
+                        {selectedTailor 
+                            ? `د ${selectedTailor.name} لپاره فرمایش ورکړئ`
+                            : "د خپلې خوښې جامې فرمایش ورکړئ. موږ به یې ستاسو د اندازو سره سم جوړې کړو."}
                     </motion.p>
                 </div>
             </motion.section>

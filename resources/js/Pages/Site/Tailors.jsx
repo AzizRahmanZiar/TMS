@@ -13,8 +13,9 @@ import {
     FaStore,
     FaChevronLeft,
     FaChevronRight,
+    FaShoppingBag,
 } from "react-icons/fa";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 
 const Tailors = ({ tailors }) => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -381,9 +382,18 @@ const Tailors = ({ tailors }) => {
                                                     animate={{ opacity: 1 }}
                                                     transition={{ delay: 0.5 + index * 0.05 }}
                                                 >
-                                                    <button className="w-full py-3 px-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg font-medium hover:from-primary-600 hover:to-secondary-600 transition-all duration-300 transform hover:scale-[1.02]">
-                                                        پروفایل وګورئ
-                                                    </button>
+                                                    <div className="flex gap-3">
+                                                       
+                                                        <button
+                                                            onClick={() => router.visit('/order', {
+                                                                data: { tailorId: tailor.id, tailorName: tailor.name }
+                                                            })}
+                                                            className="flex-1 bg-secondary-600 text-white px-4 py-2 rounded-lg hover:bg-secondary-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                                                        >
+                                                            <FaShoppingBag className="text-sm" />
+                                                            <span>فرمایش</span>
+                                                        </button>
+                                                    </div>
                                                 </motion.div>
                                             </div>
                                         </motion.div>
