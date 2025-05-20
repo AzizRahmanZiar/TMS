@@ -420,7 +420,7 @@ const Dashboard = () => {
                             {categoriesByProfit.map((category, index) => {
                                 const Icon = category.icon;
                                 const percentage =
-                                    (category.money / maxProfitValue) * 100;
+                                    maxProfitValue === 0 ? 0 : (category.money / maxProfitValue) * 100;
                                 return (
                                     <div
                                         key={index}
@@ -514,11 +514,7 @@ const Dashboard = () => {
                                                 <span className="font-zar font-bold text-xl text-gray-500">
                                                     اوسط ګټه:
                                                     {formatNumber(
-                                                        (
-                                                            category.money /
-                                                            (category.value ||
-                                                                1)
-                                                        ).toFixed(0)
+                                                        category.value === 0 ? 0 : (category.money / category.value).toFixed(0)
                                                     )}{" "}
                                                     افغانۍ
                                                 </span>
