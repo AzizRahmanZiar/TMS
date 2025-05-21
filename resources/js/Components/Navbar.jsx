@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, usePage } from "@inertiajs/react";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser, FaSignOutAlt, FaBell } from "react-icons/fa";
 import { FaScissors } from "react-icons/fa6";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { url, auth } = usePage().props;
     const user = auth?.user;
+    const [showProfileModal, setShowProfileModal] = useState(false);
+    const profileRef = useRef(null);
 
     // Load active path from localStorage
     const [activePath, setActivePath] = useState(
@@ -18,6 +20,23 @@ const Navbar = () => {
         // Save to localStorage whenever activePath changes
         localStorage.setItem("activeNavbarPath", activePath);
     }, [activePath]);
+
+    // Add click outside handler for profile modal
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                profileRef.current &&
+                !profileRef.current.contains(event.target)
+            ) {
+                setShowProfileModal(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     // Function to check if a link is active
     const isActive = (path) => {
@@ -180,7 +199,7 @@ const Navbar = () => {
 
                     {/* Right side buttons */}
                     <motion.div
-                        className="hidden md:flex items-center gap-8 rtl:gap-8"
+                        className="hidden md:flex items-center gap-4 rtl:gap-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5 }}
@@ -206,20 +225,88 @@ const Navbar = () => {
                                         </Link>
                                     </motion.div>
                                 )}
-                                <motion.div
-                                    variants={buttonVariants}
-                                    whileHover="hover"
-                                    whileTap="tap"
-                                >
-                                    <Link
-                                        href={route("logout")}
-                                        method="post"
-                                        as="button"
-                                        className="font-bold font-zar text-xl px-4 py-2 rounded-md transition bg-primary-50 text-primary-900 hover:bg-white"
-                                    >
-                                        وتل
-                                    </Link>
-                                </motion.div>
+                                {/* Profile Section */}
+                                {user && (
+                                    <div className="relative" ref={profileRef}>
+                                        <button
+                                            onClick={() =>
+                                                setShowProfileModal(!showProfileModal)
+                                            }
+                                            className="p-2 rounded-full bg-primary-600 hover:bg-primary-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300"
+                                        >
+                                            <div className="w-8 h-8 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
+                                                {user?.profile_image ? (
+                                                    <img
+                                                        src={`/storage/${user.profile_image}`}
+                                                        alt={user.name || "User"}
+                                                        className="w-full h-full object-cover"
+                                                        onError={(e) => {
+                                                            console.error(
+                                                                "Profile image failed to load:",
+                                                                user.profile_image
+                                                            );
+                                                            e.target.onerror = null;
+                                                            e.target.src =
+                                                                "/placeholder.svg";
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <FaUser className="text-white text-lg" />
+                                                )}
+                                            </div>
+                                        </button>
+
+                                        {/* Profile Dropdown */}
+                                        {showProfileModal && (
+                                            <div className="absolute left-2 w-72 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                                                <div className="p-4 border-b">
+                                                    <div className="flex flex-col justify-center items-center">
+                                                        <div className="w-12 h-12 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
+                                                            {user?.profile_image ? (
+                                                                <img
+                                                                    src={`/storage/${user.profile_image}`}
+                                                                    alt={
+                                                                        user.name || "User"
+                                                                    }
+                                                                    className="w-full h-full object-cover"
+                                                                    onError={(e) => {
+                                                                        e.target.onerror =
+                                                                            null;
+                                                                        e.target.src =
+                                                                            "/placeholder.svg";
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                <FaUser className="text-white text-2xl" />
+                                                            )}
+                                                        </div>
+
+                                                        <h3 className="text-xl font-medium text-gray-900 mt-2">
+                                                            {user?.name}
+                                                        </h3>
+                                                        <p className="text-xl text-gray-500">
+                                                            {user?.email}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="p-2">
+                                                    <Link
+                                                        href={route("logout")}
+                                                        method="get"
+                                                        as="button"
+                                                        onClick={() =>
+                                                            setShowProfileModal(false)
+                                                        }
+                                                        className="w-full text-xl flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                                    >
+                                                        <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
+                                                        وتـــــــل
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </>
                         ) : (
                             <>
@@ -306,35 +393,33 @@ const Navbar = () => {
                                     >
                                         <Link
                                             href={link.href}
-                                            onClick={() =>
-                                                setActivePath(link.href)
-                                            }
+                                            onClick={() => {
+                                                setActivePath(link.href);
+                                                setIsOpen(false);
+                                            }}
                                             className={`block px-4 py-2 font-bold font-zar text-xl transition-all duration-300 ${
                                                 isActive(link.href)
                                                     ? "text-secondary-400"
-                                                    : "text-primary-50 hover:text-secondary-400 "
+                                                    : "text-primary-50 hover:text-secondary-400"
                                             }`}
                                         >
                                             {link.text}
                                         </Link>
                                     </motion.div>
                                 ))}
+
                                 {user ? (
                                     <>
                                         {(user.role === "admin" ||
                                             user.role === "tailor") && (
                                             <motion.div
                                                 variants={mobileItemVariants}
+                                                className="mt-2"
                                             >
                                                 <Link
                                                     href={route("dashboard")}
-                                                    className={`font-bold font-zar text-xl px-4 py-2 rounded-md transition text-center ${
-                                                        isActive(
-                                                            route("dashboard")
-                                                        )
-                                                            ? "bg-secondary-700 text-primary-50"
-                                                            : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
-                                                    }`}
+                                                    onClick={() => setIsOpen(false)}
+                                                    className="block w-full text-center font-bold font-zar text-xl px-4 py-2 rounded-md transition bg-secondary-600 text-primary-50 hover:bg-secondary-700"
                                                 >
                                                     ډشبورډ
                                                 </Link>
@@ -342,31 +427,55 @@ const Navbar = () => {
                                         )}
                                         <motion.div
                                             variants={mobileItemVariants}
+                                            className="mt-2"
                                         >
-                                            <Link
-                                                href={route("logout")}
-                                                method="post"
-                                                as="button"
-                                                className="font-bold font-zar text-xl px-7 py-2 rounded-md transition bg-primary-50 text-primary-900 hover:bg-white"
-                                            >
-                                                وتل
-                                            </Link>
+                                            <div className="flex items-center justify-between px-4 py-2">
+                                                <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                                                    <div className="w-10 h-10 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
+                                                        {user?.profile_image ? (
+                                                            <img
+                                                                src={`/storage/${user.profile_image}`}
+                                                                alt={user.name || "User"}
+                                                                className="w-full h-full object-cover"
+                                                                onError={(e) => {
+                                                                    e.target.onerror = null;
+                                                                    e.target.src = "/placeholder.svg";
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <FaUser className="text-white text-xl" />
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-primary-50">{user.name}</p>
+                                                        <p className="text-sm text-primary-200">{user.email}</p>
+                                                    </div>
+                                                </div>
+                                                <Link
+                                                    href={route("logout")}
+                                                    method="get"
+                                                    as="button"
+                                                    onClick={() => setIsOpen(false)}
+                                                    className="flex items-center space-x-2 rtl:space-x-reverse text-primary-50 hover:text-secondary-400"
+                                                >
+                                                    <FaSignOutAlt className="text-xl" />
+                                                    <span className="font-bold font-zar text-xl">وتل</span>
+                                                </Link>
+                                            </div>
                                         </motion.div>
                                     </>
                                 ) : (
                                     <>
                                         <motion.div
                                             variants={mobileItemVariants}
+                                            className="mt-2"
                                         >
                                             <Link
                                                 href={route("login")}
-                                                className={`font-bold font-zar text-2xl px-6 py-2 rounded-md transition ${
-                                                    isActive(route("login"))
-                                                        ? "bg-white text-primary-900"
-                                                        : "bg-primary-50 text-primary-900 hover:bg-white"
-                                                }`}
+                                                onClick={() => setIsOpen(false)}
+                                                className="block w-full text-center font-bold font-zar text-xl px-4 py-2 rounded-md transition bg-primary-50 text-primary-900 hover:bg-white"
                                             >
-                                                ننوتل
+                                                داخلېدل
                                             </Link>
                                         </motion.div>
                                         <motion.div
@@ -374,11 +483,8 @@ const Navbar = () => {
                                         >
                                             <Link
                                                 href={route("register")}
-                                                className={`font-blod  font-zar text-2xl px-4 py-2 rounded-md transition ${
-                                                    isActive(route("register"))
-                                                        ? "bg-secondary-700 text-primary-50"
-                                                        : "bg-secondary-600 text-primary-50 hover:bg-secondary-700"
-                                                }`}
+                                                onClick={() => setIsOpen(false)}
+                                                className="block w-full text-center font-bold font-zar text-xl px-4 py-2 rounded-md transition bg-secondary-600 text-primary-50 hover:bg-secondary-700"
                                             >
                                                 ثبت نام
                                             </Link>

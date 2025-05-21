@@ -1,46 +1,73 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import ProtectedRoute from "../Components/ProtectedRoute";
 import Sidebar from "../Components/Sidebar";
-import { FaBell, FaBars, FaUser, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
+import {
+    FaBell,
+    FaBars,
+    FaUser,
+    FaSignOutAlt,
+    FaUserPlus,
+    FaEnvelope,
+    FaTimes,
+} from "react-icons/fa";
 
 const SystemLayout = ({ children }) => {
     const { auth } = usePage().props;
     const [notifications, setNotifications] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-    const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
+    const [showProfileModal, setShowProfileModal] = useState(false);
+    const [notificationDropdownOpen, setNotificationDropdownOpen] =
+        useState(false);
+    const profileRef = useRef(null);
 
     useEffect(() => {
+        // Debug auth user data
+        console.log("Auth user data:", auth.user);
+
         // Fetch notifications when component mounts
         fetchNotifications();
-        
+
         // Set up polling for new notifications every 30 seconds
         const interval = setInterval(fetchNotifications, 30000);
-        
+
         return () => clearInterval(interval);
+    }, [auth.user]);
+
+    // Add click outside handler
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (profileRef.current && !profileRef.current.contains(event.target)) {
+                setShowProfileModal(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, []);
 
     const fetchNotifications = async () => {
         try {
-            const response = await fetch('/api/notifications');
+            const response = await fetch("/api/notifications");
             const data = await response.json();
             setNotifications(data);
         } catch (error) {
-            console.error('Error fetching notifications:', error);
+            console.error("Error fetching notifications:", error);
         }
     };
 
     const markAllNotificationsAsRead = async () => {
         try {
-            await fetch('/api/notifications/mark-all-as-read', {
-                method: 'POST',
+            await fetch("/api/notifications/mark-all-as-read", {
+                method: "POST",
             });
             fetchNotifications(); // Refresh notifications
         } catch (error) {
-            console.error('Error marking notifications as read:', error);
+            console.error("Error marking notifications as read:", error);
         }
     };
 
@@ -71,21 +98,17 @@ const SystemLayout = ({ children }) => {
         setSidebarOpen(!sidebarOpen);
     };
 
-    const toggleProfileDropdown = () => {
-        setProfileDropdownOpen(!profileDropdownOpen);
-    };
-
     const toggleNotificationDropdown = async () => {
         const newState = !notificationDropdownOpen;
         setNotificationDropdownOpen(newState);
-        
+
         // If opening the dropdown, mark all notifications as read
         if (newState) {
             await markAllNotificationsAsRead();
         }
     };
 
-    const unreadNotifications = notifications.filter(n => !n.read_at);
+    const unreadNotifications = notifications.filter((n) => !n.read_at);
 
     return (
         <ProtectedRoute roles={allowedRoles}>
@@ -119,69 +142,128 @@ const SystemLayout = ({ children }) => {
 
                                 {notificationDropdownOpen && (
                                     <div className="absolute left-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-                                        <div className="py-1 max-h-96 overflow-y-auto" role="menu">
+                                        <div
+                                            className="py-1 max-h-96 overflow-y-auto"
+                                            role="menu"
+                                        >
                                             {notifications.length === 0 ? (
                                                 <div className="px-4 py-2 text-sm text-gray-500">
                                                     No notifications
                                                 </div>
                                             ) : (
-                                                notifications.map((notification) => (
-                                                    <div
-                                                        key={notification.id}
-                                                        className={`px-4 py-2 hover:bg-gray-100 ${
-                                                            !notification.read_at ? 'bg-blue-50' : ''
-                                                        }`}
-                                                    >
-                                                        <div className="flex items-start">
-                                                            <FaUserPlus className="mt-1 mr-2 text-primary-600" />
-                                                            <div>
-                                                                <p className="text-sm text-gray-900">
-                                                                    {notification.data.message}
-                                                                </p>
-                                                                <p className="text-xs text-gray-500">
-                                                                    {new Date(notification.created_at).toLocaleString()}
-                                                                </p>
+                                                notifications.map(
+                                                    (notification) => (
+                                                        <div
+                                                            key={
+                                                                notification.id
+                                                            }
+                                                            className={`px-4 py-2 hover:bg-gray-100 ${
+                                                                !notification.read_at
+                                                                    ? "bg-blue-50"
+                                                                    : ""
+                                                            }`}
+                                                        >
+                                                            <div className="flex items-start">
+                                                                <FaUserPlus className="mt-1 mr-2 text-primary-600" />
+                                                                <div>
+                                                                    <p className="text-sm text-gray-900">
+                                                                        {
+                                                                            notification
+                                                                                .data
+                                                                                .message
+                                                                        }
+                                                                    </p>
+                                                                    <p className="text-xs text-gray-500">
+                                                                        {new Date(
+                                                                            notification.created_at
+                                                                        ).toLocaleString()}
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                ))
+                                                    )
+                                                )
                                             )}
                                         </div>
                                     </div>
                                 )}
                             </div>
 
-                            {/* User Profile Dropdown */}
-                            <div className="relative">
+                            {/* User Profile Image */}
+                            <div className="relative" ref={profileRef}>
                                 <button
-                                    onClick={toggleProfileDropdown}
-                                    className="flex items-center space-x-2 rtl:space-x-reverse bg-primary-600 hover:bg-primary-500 px-3 py-2 rounded-md transition-colors"
+                                    onClick={() =>
+                                        setShowProfileModal(!showProfileModal)
+                                    }
+                                    className="p-2 rounded-full bg-primary-600 hover:bg-primary-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300"
                                 >
                                     <div className="w-8 h-8 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
-                                        {auth.user.profile_image ? (
+                                        {auth.user &&
+                                        auth.user.profile_image ? (
                                             <img
                                                 src={`/storage/${auth.user.profile_image}`}
-                                                alt={auth.user.name}
+                                                alt={auth.user.name || "User"}
                                                 className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    console.error(
+                                                        "Profile image failed to load:",
+                                                        auth.user.profile_image
+                                                    );
+                                                    e.target.onerror = null;
+                                                    e.target.src =
+                                                        "/placeholder.svg";
+                                                }}
                                             />
                                         ) : (
-                                            <FaUser className="text-white" />
+                                            <FaUser className="text-white text-lg" />
                                         )}
                                     </div>
-                                    <span className="text-white font-medium hidden md:block">{auth.user.name}</span>
                                 </button>
 
-                                {profileDropdownOpen && (
-                                    <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-                                        <div className="py-1" role="menu" aria-orientation="vertical">
+                                {/* Profile Dropdown */}
+                                {showProfileModal && (
+                                    <div className="absolute left-2 w-72 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                                        <div className="p-4 border-b">
+                                            <div className="flex flex-col justify-center items-center">
+                                                <div className="w-12 h-12 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
+                                                    {auth.user &&
+                                                    auth.user.profile_image ? (
+                                                        <img
+                                                            src={`/storage/${auth.user.profile_image}`}
+                                                            alt={
+                                                                auth.user
+                                                                    .name ||
+                                                                "User"
+                                                            }
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                e.target.onerror =
+                                                                    null;
+                                                                e.target.src =
+                                                                    "/placeholder.svg";
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <FaUser className="text-white text-2xl" />
+                                                    )}
+                                                </div>
+
+                                                <h3 className="text-xl font-medium text-gray-900">
+                                                    {auth.user?.name}
+                                                </h3>
+                                                <p className="text-xl text-gray-500">
+                                                    {auth.user?.email}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="p-2">
                                             <Link
                                                 href={route("logout")}
-                                                method="post"
+                                                method="get"
                                                 as="button"
-                                                className="flex items-center text-xl w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                role="menuitem"
+                                                className="w-full text-xl flex items-center px-4 py-2  text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                                             >
-                                                <FaSignOutAlt className="ml-5 rtl:ml-0 rtl:mr-2" />
+                                                <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
                                                 وتـــــــل
                                             </Link>
                                         </div>

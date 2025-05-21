@@ -12,6 +12,9 @@ class LoginController extends Controller
 {
     public function create()
     {
+        // Regenerate CSRF token when showing login page
+        request()->session()->regenerateToken();
+        
         return Inertia::render('Auth/Login', [
             'canResetPassword' => true,
             'status' => session('status'),
@@ -51,6 +54,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/')->with('status', 'You have been successfully logged out.');
     }
 }

@@ -19,11 +19,19 @@ class RegisterController extends Controller
 {
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        $hasAdmin = User::where('role', 'admin')->exists();
+        return Inertia::render('Auth/Register', [
+            'hasAdmin' => $hasAdmin
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
+        // Check if trying to register as admin when one already exists
+        if ($request->role === 'admin' && User::where('role', 'admin')->exists()) {
+            return back()->withErrors(['role' => 'Only one admin is allowed in the system.']);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -67,6 +75,7 @@ class RegisterController extends Controller
         if ($request->hasFile('profile_image')) {
             $path = $request->file('profile_image')->store('profile_images', 'public');
             $user->profile_image = $path;
+            $user->save(); // Save immediately after setting the profile image
         }
 
         // Handle shop information if provided
