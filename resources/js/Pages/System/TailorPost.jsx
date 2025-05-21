@@ -4,7 +4,7 @@ import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
 
-const Post = () => {
+const TailorPost = () => {
     const { posts, setPosts } = usePosts(); // Use the context
     const [showForm, setShowForm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -480,4 +480,4 @@ const Post = () => {
     );
 };
 
-export default Post;
+export default TailorPost;

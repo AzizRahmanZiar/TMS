@@ -6,11 +6,11 @@ use App\Http\Controllers\{
     ContactController,
     CustomerOrderController,
     KortaiController,
-    PostController,
+    TailorPostController,
     SadraiController,
     SiteController,
     UniformController,
-    UserMessageController,    
+    UserMessageController,
 
 
 
@@ -71,10 +71,10 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/user/{user}', [AdminController::class, 'destroy'])->name('user.delete');
 
         // Tailor routes
-       
+
         Route::get('/kortai', [KortaiController::class, 'kortai'])->name('kortai');
         Route::get('/sadrai', [SadraiController::class, 'sadrai'])->name('sadrai');
-        Route::get('/tailorpost', [PostController::class, 'tailorpost'])->name('tailor.posts');
+        Route::get('/tailorpost', [TailorPostController::class, 'tailorpost'])->name('tailor.tailorpost');
         Route::get('/customerorder', [CustomerOrderController::class, 'customerorder'])->name('customerorder');
 
     });
