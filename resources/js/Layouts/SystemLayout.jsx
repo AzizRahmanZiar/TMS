@@ -1,40 +1,24 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, usePage, router } from "@inertiajs/react";
 import ProtectedRoute from "../Components/ProtectedRoute";
 import Sidebar from "../Components/Sidebar";
 import {
-    FaBell,
     FaBars,
     FaUser,
     FaSignOutAlt,
     FaUserPlus,
     FaEnvelope,
     FaTimes,
+    FaChevronDown,
 } from "react-icons/fa";
 
 const SystemLayout = ({ children }) => {
     const { auth } = usePage().props;
-    const [notifications, setNotifications] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [showProfileModal, setShowProfileModal] = useState(false);
-    const [notificationDropdownOpen, setNotificationDropdownOpen] =
-        useState(false);
     const profileRef = useRef(null);
-
-    useEffect(() => {
-        // Debug auth user data
-        console.log("Auth user data:", auth.user);
-
-        // Fetch notifications when component mounts
-        fetchNotifications();
-
-        // Set up polling for new notifications every 30 seconds
-        const interval = setInterval(fetchNotifications, 30000);
-
-        return () => clearInterval(interval);
-    }, [auth.user]);
 
     // Add click outside handler
     useEffect(() => {
@@ -49,27 +33,6 @@ const SystemLayout = ({ children }) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
-
-    const fetchNotifications = async () => {
-        try {
-            const response = await fetch("/api/notifications");
-            const data = await response.json();
-            setNotifications(data);
-        } catch (error) {
-            console.error("Error fetching notifications:", error);
-        }
-    };
-
-    const markAllNotificationsAsRead = async () => {
-        try {
-            await fetch("/api/notifications/mark-all-as-read", {
-                method: "POST",
-            });
-            fetchNotifications(); // Refresh notifications
-        } catch (error) {
-            console.error("Error marking notifications as read:", error);
-        }
-    };
 
     if (!auth.user) {
         return null; // ProtectedRoute will handle the redirect
@@ -98,18 +61,6 @@ const SystemLayout = ({ children }) => {
         setSidebarOpen(!sidebarOpen);
     };
 
-    const toggleNotificationDropdown = async () => {
-        const newState = !notificationDropdownOpen;
-        setNotificationDropdownOpen(newState);
-
-        // If opening the dropdown, mark all notifications as read
-        if (newState) {
-            await markAllNotificationsAsRead();
-        }
-    };
-
-    const unreadNotifications = notifications.filter((n) => !n.read_at);
-
     return (
         <ProtectedRoute roles={allowedRoles}>
             <div className="flex h-screen rtl">
@@ -125,70 +76,6 @@ const SystemLayout = ({ children }) => {
                         </button>
 
                         <div className="flex items-center space-x-4 md:space-x-4 rtl:space-x-reverse">
-                            {/* Notifications */}
-                            <div className="relative">
-                                <button
-                                    onClick={toggleNotificationDropdown}
-                                    className="p-2 rounded-full bg-primary-600 hover:bg-primary-500 transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary-300"
-                                    aria-label="Notifications"
-                                >
-                                    <FaBell className="text-primary-50 text-lg md:text-xl" />
-                                    {unreadNotifications.length > 0 && (
-                                        <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full h-4 w-4 md:h-5 md:w-5 flex items-center justify-center">
-                                            {unreadNotifications.length}
-                                        </span>
-                                    )}
-                                </button>
-
-                                {notificationDropdownOpen && (
-                                    <div className="absolute left-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-                                        <div
-                                            className="py-1 max-h-96 overflow-y-auto"
-                                            role="menu"
-                                        >
-                                            {notifications.length === 0 ? (
-                                                <div className="px-4 py-2 text-sm text-gray-500">
-                                                    No notifications
-                                                </div>
-                                            ) : (
-                                                notifications.map(
-                                                    (notification) => (
-                                                        <div
-                                                            key={
-                                                                notification.id
-                                                            }
-                                                            className={`px-4 py-2 hover:bg-gray-100 ${
-                                                                !notification.read_at
-                                                                    ? "bg-blue-50"
-                                                                    : ""
-                                                            }`}
-                                                        >
-                                                            <div className="flex items-start">
-                                                                <FaUserPlus className="mt-1 mr-2 text-primary-600" />
-                                                                <div>
-                                                                    <p className="text-sm text-gray-900">
-                                                                        {
-                                                                            notification
-                                                                                .data
-                                                                                .message
-                                                                        }
-                                                                    </p>
-                                                                    <p className="text-xs text-gray-500">
-                                                                        {new Date(
-                                                                            notification.created_at
-                                                                        ).toLocaleString()}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    )
-                                                )
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
                             {/* User Profile Image */}
                             <div className="relative" ref={profileRef}>
                                 <button

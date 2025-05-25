@@ -5,9 +5,11 @@ import { useUniform } from "@/Contexts/UniformContext";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
+import { router, usePage } from "@inertiajs/react";
 
-const Uniform = () => {
+const Uniform = ({ uniforms: initialUniforms }) => {
     const { uniform, setUniform } = useUniform();
+    const { flash } = usePage().props;
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -37,6 +39,7 @@ const Uniform = () => {
         tidad: "",
         money: "",
         index: null,
+        id: null
     });
 
     const [errors, setErrors] = useState({});
@@ -59,6 +62,27 @@ const Uniform = () => {
         };
     }, [isModalOpen]);
 
+    // Initialize uniforms from props
+    useEffect(() => {
+        if (initialUniforms) {
+            setUniform(
+                initialUniforms.map((uniform) => ({
+                    ...uniform,
+                    disabled:
+                        uniform.tasleem_tareekh !== null &&
+                        uniform.tasleem_tareekh !== "",
+                }))
+            );
+        }
+    }, [initialUniforms]);
+
+    // Handle flash messages
+    useEffect(() => {
+        if (flash.success) {
+            showToast(flash.success, "success");
+        }
+    }, [flash]);
+
     const handleAddClick = () => {
         setIsEditing(false);
         setModalOpen(true);
@@ -79,6 +103,7 @@ const Uniform = () => {
             tidad: "",
             money: "",
             index: null,
+            id: null
         });
         setErrors({});
         setTouchedFields({});
@@ -124,13 +149,16 @@ const Uniform = () => {
         const englishPhoneRegex = /^07[0-9]{8}$/;
         const pashtoPhoneRegex = /^٠٧[۰-۹]{8}$/;
 
+        // Convert value to string and handle null/undefined
+        const stringValue = value?.toString() || "";
+
         switch (fieldName) {
             case "nom":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors.nom = "نوم اړین دی";
                 } else if (
-                    !englishNameRegex.test(value) &&
-                    !pashtoNameRegex.test(value)
+                    !englishNameRegex.test(stringValue) &&
+                    !pashtoNameRegex.test(stringValue)
                 ) {
                     fieldErrors.nom =
                         "نوم باید یوازې انګلیسي یا پښتو توري ولري";
@@ -138,11 +166,11 @@ const Uniform = () => {
                 break;
 
             case "mobile":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors.mobile = "مبایل نمبر اړین دی";
                 } else if (
-                    !englishPhoneRegex.test(value) &&
-                    !pashtoPhoneRegex.test(value)
+                    !englishPhoneRegex.test(stringValue) &&
+                    !pashtoPhoneRegex.test(stringValue)
                 ) {
                     fieldErrors.mobile =
                         "د مبایل نمبر باید 10 رقمه وي او په 07 پیل شي";
@@ -154,11 +182,11 @@ const Uniform = () => {
             case "ghara":
             case "zegar":
             case "lstoony":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors[fieldName] = "دا ساحه اړینه ده";
                 } else if (
-                    !englishNumberRegex.test(value) &&
-                    !pashtoNumberRegex.test(value)
+                    !englishNumberRegex.test(stringValue) &&
+                    !pashtoNumberRegex.test(stringValue)
                 ) {
                     fieldErrors[fieldName] =
                         "یوازې انګلیسي یا پښتو عددونه وکاروئ";
@@ -166,22 +194,22 @@ const Uniform = () => {
                 break;
 
             case "tidad":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors.tidad = "تعداد اړین دی";
                 } else if (
-                    !englishNumberRegex.test(value) &&
-                    !pashtoNumberRegex.test(value)
+                    !englishNumberRegex.test(stringValue) &&
+                    !pashtoNumberRegex.test(stringValue)
                 ) {
                     fieldErrors.tidad = "یوازې انګلیسي یا پښتو عددونه وکاروئ";
                 }
                 break;
 
             case "money":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors.money = "پیسې اړینې دي";
                 } else if (
-                    !englishNumberRegex.test(value) &&
-                    !pashtoNumberRegex.test(value)
+                    !englishNumberRegex.test(stringValue) &&
+                    !pashtoNumberRegex.test(stringValue)
                 ) {
                     fieldErrors.money = "یوازې انګلیسي یا پښتو عددونه وکاروئ";
                 }
@@ -225,6 +253,17 @@ const Uniform = () => {
         return errors;
     };
 
+    const handleUpdate = (index) => {
+        setIsEditing(true);
+        setModalOpen(true);
+        const uniformData = uniform[index];
+        setFormData({
+            ...uniformData,
+            index,
+            id: uniformData.id
+        });
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -242,36 +281,26 @@ const Uniform = () => {
         }
 
         if (isEditing) {
-            setUniform((prevData) =>
-                prevData.map((data, index) =>
-                    index === formData.index
-                        ? {
-                              ...formData,
-                              disabled: formData.tasleem_tareekh !== "",
-                          }
-                        : data
-                )
-            );
-
-            // Show success toast
-            showToast("ریکارډ په بریالیتوب سره تازه شو", "success");
+            router.put(`/uniforms/${formData.id}`, formData, {
+                onSuccess: () => {
+                    closeModal();
+                },
+                onError: (errors) => {
+                    setErrors(errors);
+                    showToast("د ریکارډ تازه کولو کې ستونزه رامنځته شوه", "error");
+                },
+            });
         } else {
-            setUniform((prevData) => [
-                ...prevData,
-                { ...formData, disabled: formData.tasleem_tareekh !== "" },
-            ]);
-
-            // Show success toast
-            showToast("ریکارډ په بریالیتوب سره اضافه شو", "success");
+            router.post('/uniforms', formData, {
+                onSuccess: () => {
+                    closeModal();
+                },
+                onError: (errors) => {
+                    setErrors(errors);
+                    showToast("د ریکارډ اضافه کولو کې ستونزه رامنځته شوه", "error");
+                },
+            });
         }
-
-        closeModal();
-    };
-
-    const handleUpdate = (index) => {
-        setIsEditing(true);
-        setModalOpen(true);
-        setFormData({ ...uniform[index], index });
     };
 
     const handleDeleteClick = (index) => {
@@ -280,11 +309,14 @@ const Uniform = () => {
     };
 
     const handleDeleteConfirm = () => {
-        setUniform((prevData) =>
-            prevData.filter((_, i) => i !== selectedIndex)
-        );
-        closeModal();
-        showToast("ریکارډ په بریالیتوب سره حذف شو", "success");
+        router.delete(`/uniforms/${uniform[selectedIndex].id}`, {
+            onSuccess: () => {
+                closeModal();
+            },
+            onError: () => {
+                showToast("د ریکارډ حذف کولو کې ستونزه رامنځته شوه", "error");
+            },
+        });
     };
 
     const handleShowDetails = (row) => {
@@ -576,7 +608,7 @@ const Uniform = () => {
                                             id="nom"
                                             type="text"
                                             name="nom"
-                                            value={formData.nom}
+                                            value={formData.nom || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({
@@ -608,7 +640,7 @@ const Uniform = () => {
                                             id="mobile"
                                             type="text"
                                             name="mobile"
-                                            value={formData.mobile}
+                                            value={formData.mobile || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({
@@ -640,7 +672,7 @@ const Uniform = () => {
                                             id="money"
                                             type="text"
                                             name="money"
-                                            value={formData.money}
+                                            value={formData.money || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({
@@ -672,7 +704,7 @@ const Uniform = () => {
                                             id="yakhun_qak"
                                             type="text"
                                             name="yakhun_qak"
-                                            value={formData.yakhun_qak}
+                                            value={formData.yakhun_qak || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({
@@ -704,7 +736,7 @@ const Uniform = () => {
                                             id="patlun"
                                             type="text"
                                             name="patlun"
-                                            value={formData.patlun}
+                                            value={formData.patlun || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({
@@ -736,7 +768,7 @@ const Uniform = () => {
                                             id="ghara"
                                             type="text"
                                             name="ghara"
-                                            value={formData.ghara}
+                                            value={formData.ghara || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({
@@ -768,7 +800,7 @@ const Uniform = () => {
                                             id="zegar"
                                             type="text"
                                             name="zegar"
-                                            value={formData.zegar}
+                                            value={formData.zegar || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({
@@ -800,7 +832,7 @@ const Uniform = () => {
                                             id="lstoony"
                                             type="text"
                                             name="lstoony"
-                                            value={formData.lstoony}
+                                            value={formData.lstoony || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({
@@ -832,7 +864,7 @@ const Uniform = () => {
                                             id="tidad"
                                             type="text"
                                             name="tidad"
-                                            value={formData.tidad}
+                                            value={formData.tidad || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({
@@ -865,7 +897,7 @@ const Uniform = () => {
                                             id="rawrul_tareekh"
                                             type="date"
                                             name="rawrul_tareekh"
-                                            value={formData.rawrul_tareekh}
+                                            value={formData.rawrul_tareekh || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({
@@ -897,7 +929,7 @@ const Uniform = () => {
                                             id="tasleem_tareekh"
                                             type="date"
                                             name="tasleem_tareekh"
-                                            value={formData.tasleem_tareekh}
+                                            value={formData.tasleem_tareekh || ""}
                                             onChange={handleChange}
                                             onBlur={() =>
                                                 setTouchedFields({

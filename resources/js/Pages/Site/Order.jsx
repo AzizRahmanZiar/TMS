@@ -6,73 +6,140 @@ import {
     FaShoppingBag,
     FaTshirt,
     FaClipboardCheck,
+    FaArrowRight,
 } from "react-icons/fa";
 import { useOrder } from "@/Contexts/OrderContext";
-import { usePage } from "@inertiajs/react";
+import { usePage, router, useForm } from "@inertiajs/react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+
+// Add CSRF token to Axios defaults
+axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
 const Order = () => {
-    const { order, setOrder } = useOrder();
+    const { order = [], setOrder } = useOrder() || { order: [], setOrder: () => {} };
     const { props } = usePage();
     const [selectedTailor, setSelectedTailor] = useState(null);
+    const { data, setData, post, processing, errors } = useForm({
+        phone: "",
+        address: "",
+        tailor_id: props.tailorId || "",
+        status: "pending"
+    });
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (props.tailorId && props.tailorName) {
-            setSelectedTailor({
-                id: props.tailorId,
-                name: props.tailorName
-            });
+        // Check if user is authenticated
+        if (!props.auth?.user) {
+            // Store tailor data in session storage before redirecting
+            if (props.tailorId && props.tailorName) {
+                sessionStorage.setItem('selectedTailor', JSON.stringify({
+                    id: props.tailorId,
+                    name: props.tailorName
+                }));
+            }
+            router.visit(route('register'));
+            return;
         }
-    }, [props.tailorId, props.tailorName]);
 
-    const [formData, setFormData] = useState({
-        name: order?.name || "",
-        phone: order?.phone || "",
-        email: order?.email || "",
-        address: order?.address || "",
-        tailor_id: selectedTailor?.id || "",
-    });
+        // Get tailor data from props
+        const tailorId = props.tailorId;
+        const tailorName = props.tailorName;
 
-    // Sample data for tailors and shops
-    const tailors = [
-        { id: 1, name: "احمد رحیمي" },
-        { id: 2, name: "محمد کریمي" },
-        { id: 3, name: "فاطمه احمدي" },
-        { id: 4, name: "یوسف حکیمي" },
-        { id: 5, name: "زینب نوري" },
-    ];
+        console.log('Order Page Props:', { tailorId, tailorName, props }); // Debug log
 
-    const shops = [
-        { id: 1, name: "د احمد خیاطي" },
-        { id: 2, name: "د کریمي خیاطي" },
-        { id: 3, name: "د واده جامو مرکز" },
-        { id: 4, name: "عصري فیشن" },
-        { id: 5, name: "د ماشومانو جامې" },
-    ];
+        if (tailorId && tailorName) {
+            setSelectedTailor({
+                id: tailorId,
+                name: tailorName
+            });
+            // Set the tailor_id in form data
+            setData(prev => ({
+                ...prev,
+                tailor_id: tailorId
+            }));
+        } else {
+            // If no tailor is selected, redirect to tailors page
+            router.visit(route('tailors'));
+        }
+    }, [props.auth?.user, props.tailorId, props.tailorName]);
 
-    // Handle input change
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
-
-    // Handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
+        setError(null);
 
-        // Save to order context by appending to existing orders
-        setOrder((prevOrders) => [...prevOrders, formData]);
+        try {
+            if (!selectedTailor) {
+                setError('لطفاً خیاط وټاکئ');
+                router.visit(route('tailors'));
+                return;
+            }
 
-        // Clear form
-        setFormData({
-            name: "",
-            email: "",
-            phone: "",
-            address: "",
-            tailor_id: selectedTailor?.id || "",
-        });
+            if (!props.auth?.user) {
+                setError('د فرمایش لپاره لومړی لاګ ان شئ');
+                router.visit(route('login'));
+                return;
+            }
+
+            // Validate form data
+            if (!data.phone || !data.address) {
+                setError('لطفاً ټول معلومات ډک کړئ');
+                setSubmitting(false);
+                return;
+            }
+
+            // Ensure we have the correct tailor_id
+            if (!selectedTailor.id) {
+                setError('د خیاط معلومات ناسم دي');
+                setSubmitting(false);
+                return;
+            }
+
+            const orderData = {
+                phone: data.phone,
+                address: data.address,
+                tailor_id: selectedTailor.id,
+                user_id: props.auth.user.id,
+                status: 'pending'
+            };
+
+            console.log('Submitting order with data:', {
+                ...orderData,
+                selectedTailor,
+                currentUser: props.auth.user
+            });
+
+            // Use Inertia's post method instead of axios
+            post(route('customer.orders.store'), {
+                onSuccess: () => {
+                    toast.success('ستاسو فرمایش په بریالیتوب سره ثبت شو');
+                    // Reset form but keep the tailor_id
+                    setData({
+                        phone: '',
+                        address: '',
+                        tailor_id: selectedTailor.id
+                    });
+                    // Redirect to home page after successful order
+                    router.visit(route('home'));
+                },
+                onError: (errors) => {
+                    if (errors) {
+                        // Handle validation errors
+                        const errorMessages = Object.values(errors).flat();
+                        setError(errorMessages[0] || 'د فرمایش ثبت کولو کې ستونزه راغله');
+                    } else {
+                        setError('د فرمایش ثبت کولو کې ستونزه راغله');
+                    }
+                }
+            });
+        } catch (err) {
+            console.error('Order submission error:', err);
+            setError('د فرمایش ثبت کولو کې ستونزه راغله');
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     // Animation variants
@@ -104,6 +171,27 @@ const Order = () => {
         },
     };
 
+    // If no tailor is selected, show message and redirect button
+    if (!selectedTailor) {
+        return (
+            <SiteLayout title="فرمایش - خیاط ماسټر">
+                <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                    <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
+                        <h2 className="text-2xl font-bold font-zar mb-4">لطفاً لومړی یو خیاط وټاکئ</h2>
+                        <p className="text-gray-600 mb-6">د فرمایش ورکولو لپاره تاسو باید لومړی یو خیاط وټاکئ</p>
+                        <button
+                            onClick={() => router.visit(route('tailors'))}
+                            className="inline-flex items-center px-6 py-3 bg-secondary-600 text-white rounded-md hover:bg-secondary-700 transition"
+                        >
+                            د خیاطانو لیدنه
+                            <FaArrowRight className="mr-2" />
+                        </button>
+                    </div>
+                </div>
+            </SiteLayout>
+        );
+    }
+
     return (
         <SiteLayout title="فرمایش - خیاط ماسټر">
             {/* Hero Section */}
@@ -124,9 +212,7 @@ const Order = () => {
                         className="text-xl font-zar md:text-2xl max-w-3xl mx-auto"
                         variants={fadeIn}
                     >
-                        {selectedTailor 
-                            ? `د ${selectedTailor.name} لپاره فرمایش ورکړئ`
-                            : "د خپلې خوښې جامې فرمایش ورکړئ. موږ به یې ستاسو د اندازو سره سم جوړې کړو."}
+                        د {selectedTailor.name} لپاره فرمایش ورکړئ
                     </motion.p>
                 </div>
             </motion.section>
@@ -151,135 +237,65 @@ const Order = () => {
                             د فرمایش فورمه
                         </motion.h2>
 
-                        <motion.form
-                            onSubmit={handleSubmit}
-                            variants={staggerContainer}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                        >
-                            {/* Personal Information */}
-                            <motion.div
-                                className="mb-8"
-                                variants={formAnimation}
-                            >
-                                <h3 className="text-2xl font-zar font-bold mb-4 pb-2 border-b">
-                                    شخصي معلومات
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <motion.div
-                                        whileHover={{ scale: 1.02 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 400,
-                                        }}
-                                    >
-                                        <label
-                                            className="block text-gray-700 mb-2"
-                                            htmlFor="name"
-                                        >
-                                            نوم
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="name"
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            className="w-full p-3 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
-                                            required
-                                        />
-                                    </motion.div>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <label
+                                    htmlFor="phone"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    تلیفون
+                                </label>
+                                <input
+                                    type="text"
+                                    id="phone"
+                                    value={data.phone}
+                                    onChange={(e) =>
+                                        setData("phone", e.target.value)
+                                    }
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    required
+                                />
+                                {errors.phone && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.phone}
+                                    </p>
+                                )}
+                            </div>
 
-                                    <motion.div
-                                        whileHover={{ scale: 1.02 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 400,
-                                        }}
-                                    >
-                                        <label
-                                            className="block text-gray-700 mb-2"
-                                            htmlFor="phone"
-                                        >
-                                            د تلیفون شمیره
-                                        </label>
-                                        <input
-                                            type="tel"
-                                            id="phone"
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={handleChange}
-                                            className="w-full p-3 outline-none border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
-                                            required
-                                        />
-                                    </motion.div>
+                            <div>
+                                <label
+                                    htmlFor="address"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    آدرس
+                                </label>
+                                <textarea
+                                    id="address"
+                                    value={data.address}
+                                    onChange={(e) =>
+                                        setData("address", e.target.value)
+                                    }
+                                    rows="3"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    required
+                                />
+                                {errors.address && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.address}
+                                    </p>
+                                )}
+                            </div>
 
-                                    <motion.div
-                                        whileHover={{ scale: 1.02 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 400,
-                                        }}
-                                    >
-                                        <label
-                                            className="block text-gray-700 mb-2"
-                                            htmlFor="email"
-                                        >
-                                            بریښنالیک
-                                        </label>
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            className="w-full p-3 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
-                                        />
-                                    </motion.div>
-
-                                    <motion.div
-                                        whileHover={{ scale: 1.02 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 400,
-                                        }}
-                                    >
-                                        <label
-                                            className="block text-gray-700 mb-2"
-                                            htmlFor="address"
-                                        >
-                                            آدرس
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="address"
-                                            name="address"
-                                            value={formData.address}
-                                            onChange={handleChange}
-                                            className="w-full p-3 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
-                                            required
-                                        />
-                                    </motion.div>
-                                </div>
-                            </motion.div>
-
-                            {/* Submit Button */}
-                            <motion.div
-                                className="text-center"
-                                initial={{ opacity: 0 }}
-                                whileInView={{ opacity: 1 }}
-                                transition={{ delay: 0.5 }}
-                                viewport={{ once: true }}
-                            >
+                            <div className="flex justify-end">
                                 <button
                                     type="submit"
-                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-600 text-white  hover:bg-secondary-700 transition shadow-md"
+                                    disabled={processing}
+                                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                                 >
-                                    فرمایش ثبت کړئ
+                                    {processing ? "لږ صبر..." : "فرمایش کول"}
                                 </button>
-                            </motion.div>
-                        </motion.form>
+                            </div>
+                        </form>
                     </motion.div>
                 </div>
             </section>

@@ -10,6 +10,7 @@ class Uniform extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'nom',                 // نوم
         'mobile',              // مبایل نمبر
         'money',               // پیسې
@@ -24,4 +25,16 @@ class Uniform extends Model
         'rawrul_tareekh',      // د راوړلو تاریخ
         'tasleem_tareekh',     // د تسلیمولو تاریخ
     ];
+
+    // Relationship with User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Scope to get uniforms for a specific user
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
 }

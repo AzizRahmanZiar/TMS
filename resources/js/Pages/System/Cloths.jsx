@@ -11,8 +11,9 @@ import { useCloths } from "@/Contexts/ClothsContext";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
+import { router } from "@inertiajs/react";
 
-const Cloths = () => {
+const Cloths = ({ cloths: initialCloths }) => {
     const { cloths, setCloths } = useCloths();
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setModalOpen] = useState(false);
@@ -61,6 +62,20 @@ const Cloths = () => {
     const [showFeaturesModal, setShowFeaturesModal] = useState(false);
     const [showMeasurementsModal, setShowMeasurementsModal] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
+
+    // Initialize cloths from props
+    useEffect(() => {
+        if (initialCloths) {
+            setCloths(
+                initialCloths.map((cloth) => ({
+                    ...cloth,
+                    disabled:
+                        cloth.tasleem_tareekh !== null &&
+                        cloth.tasleem_tareekh !== "",
+                }))
+            );
+        }
+    }, [initialCloths]);
 
     // Close modal when clicking outside
     useEffect(() => {
@@ -151,6 +166,11 @@ const Cloths = () => {
     const validateField = (fieldName, value) => {
         const fieldErrors = {};
 
+        // Handle null/undefined values
+        if (value === null || value === undefined) {
+            value = "";
+        }
+
         // Regex patterns for validation
         const englishNameRegex = /^[a-zA-Z\s]+$/;
         const pashtoNameRegex = /^[\u0600-\u06FF\s]+$/;
@@ -161,7 +181,7 @@ const Cloths = () => {
 
         switch (fieldName) {
             case "nom":
-                if (!value.trim()) {
+                if (!value.toString().trim()) {
                     fieldErrors.nom = "نوم اړین دی";
                 } else if (
                     !englishNameRegex.test(value) &&
@@ -173,7 +193,7 @@ const Cloths = () => {
                 break;
 
             case "mobile":
-                if (!value.trim()) {
+                if (!value.toString().trim()) {
                     fieldErrors.mobile = "مبایل نمبر اړین دی";
                 } else if (
                     !englishPhoneRegex.test(value) &&
@@ -191,7 +211,7 @@ const Cloths = () => {
             case "lstoony":
             case "partog":
             case "pai_tsa":
-                if (!value.trim()) {
+                if (!value.toString().trim()) {
                     fieldErrors[fieldName] = "دا ساحه اړینه ده";
                 } else if (
                     !englishNumberRegex.test(value) &&
@@ -203,7 +223,7 @@ const Cloths = () => {
                 break;
 
             case "tidad":
-                if (!value.trim()) {
+                if (!value.toString().trim()) {
                     fieldErrors.tidad = "تعداد اړین دی";
                 } else if (
                     !englishNumberRegex.test(value) &&
@@ -214,7 +234,7 @@ const Cloths = () => {
                 break;
 
             case "money":
-                if (!value.trim()) {
+                if (!value.toString().trim()) {
                     fieldErrors.money = "پیسې اړینې دي";
                 } else if (
                     !englishNumberRegex.test(value) &&
@@ -275,7 +295,7 @@ const Cloths = () => {
         return errors;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Mark all fields as touched
@@ -291,37 +311,64 @@ const Cloths = () => {
             return;
         }
 
-        if (isEditing) {
-            setCloths((prevData) =>
-                prevData.map((data, index) =>
-                    index === formData.index
-                        ? {
-                              ...formData,
-                              disabled: formData.tasleem_tareekh !== "",
-                          }
-                        : data
-                )
-            );
-
-            // Show success toast
-            showToast("ریکارډ په بریالیتوب سره تازه شو", "success");
-        } else {
-            setCloths((prevData) => [
-                ...prevData,
-                { ...formData, disabled: formData.tasleem_tareekh !== "" },
-            ]);
-
-            // Show success toast
-            showToast("ریکارډ په بریالیتوب سره اضافه شو", "success");
-        }
-
-        closeModal();
+        router.post("/cloths", formData, {
+            onSuccess: () => {
+                showToast("ریکارډ په بریالیتوب سره اضافه شو", "success");
+                closeModal();
+            },
+            onError: (errors) => {
+                setErrors(errors);
+                showToast("د ریکارډ اضافه کولو کې ستونزه رامنځته شوه", "error");
+            },
+        });
     };
 
-    const handleUpdate = (index) => {
+    const handleEditClick = (index) => {
         setIsEditing(true);
         setModalOpen(true);
-        setFormData({ ...cloths[index], index });
+        const cloth = cloths[index];
+
+        // Format dates to YYYY-MM-DD
+        const formattedCloth = {
+            ...cloth,
+            rawrul_tareekh: cloth.rawrul_tareekh
+                ? new Date(cloth.rawrul_tareekh).toISOString().split("T")[0]
+                : "",
+            tasleem_tareekh: cloth.tasleem_tareekh
+                ? new Date(cloth.tasleem_tareekh).toISOString().split("T")[0]
+                : "",
+            index: index,
+        };
+
+        setFormData(formattedCloth);
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+
+        // Mark all fields as touched
+        const allTouched = {};
+        Object.keys(formData).forEach((key) => {
+            allTouched[key] = true;
+        });
+        setTouchedFields(allTouched);
+
+        const validationErrors = validateInput(formData);
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        router.put(`/cloths/${cloths[formData.index].id}`, formData, {
+            onSuccess: () => {
+                showToast("ریکارډ په بریالیتوب سره تازه شو", "success");
+                closeModal();
+            },
+            onError: (errors) => {
+                setErrors(errors);
+                showToast("د ریکارډ تازه کولو کې ستونزه رامنځته شوه", "error");
+            },
+        });
     };
 
     const handleDeleteClick = (index) => {
@@ -329,10 +376,16 @@ const Cloths = () => {
         setDeleteModalOpen(true);
     };
 
-    const handleDeleteConfirm = () => {
-        setCloths((prevData) => prevData.filter((_, i) => i !== selectedIndex));
-        closeModal();
-        showToast("ریکارډ په بریالیتوب سره حذف شو", "success");
+    const handleDeleteConfirm = async () => {
+        router.delete(`/cloths/${cloths[selectedIndex].id}`, {
+            onSuccess: () => {
+                showToast("ریکارډ په بریالیتوب سره حذف شو", "success");
+                closeModal();
+            },
+            onError: () => {
+                showToast("د ریکارډ حذف کولو کې ستونزه رامنځته شوه", "error");
+            },
+        });
     };
 
     // Toast notification
@@ -431,6 +484,17 @@ const Cloths = () => {
 
     const handleSearch = (value) => {
         setSearchTerm(value);
+    };
+
+    // Add formatDate helper function
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        });
     };
 
     return (
@@ -600,12 +664,14 @@ const Cloths = () => {
                                                 </div>
                                             </td>
                                             <td className="px-4 py-4 text-sm md:text-xl text-gray-500 whitespace-nowrap">
-                                                {row.rawrul_tareekh}
+                                                {formatDate(row.rawrul_tareekh)}
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 {row.tasleem_tareekh ? (
                                                     <div className="flex text-sm md:text-xl text-gray-500">
-                                                        {row.tasleem_tareekh}
+                                                        {formatDate(
+                                                            row.tasleem_tareekh
+                                                        )}
                                                     </div>
                                                 ) : (
                                                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full  text-sm md:text-xl   text-yellow-800">
@@ -624,7 +690,9 @@ const Cloths = () => {
                                                     <SystemButtons
                                                         type="edit"
                                                         onClick={() =>
-                                                            handleUpdate(index)
+                                                            handleEditClick(
+                                                                index
+                                                            )
                                                         }
                                                         disabled={row.disabled}
                                                         icon={true}
@@ -683,7 +751,12 @@ const Cloths = () => {
                             ref={modalRef}
                             className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[95vh] overflow-y-auto"
                         >
-                            <form onSubmit={handleSubmit} className="p-6">
+                            <form
+                                onSubmit={
+                                    isEditing ? handleUpdate : handleSubmit
+                                }
+                                className="p-6"
+                            >
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
                                     <div className="space-y-2">
                                         <label
@@ -1150,7 +1223,11 @@ const Cloths = () => {
                                     />
                                     <SystemButtons
                                         type="submit"
-                                        onClick={handleSubmit}
+                                        onClick={
+                                            isEditing
+                                                ? handleUpdate
+                                                : handleSubmit
+                                        }
                                     />
                                 </div>
                             </form>

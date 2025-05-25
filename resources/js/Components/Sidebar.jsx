@@ -70,13 +70,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         },
         {
             title: "درشــــــــــــــي",
-            href: "{{route('uniform.index')}}",
+            href: "/uniforms",
             roles: ["tailor"],
             icon: <FaUserTie className="text-xl md:text-2xl" />,
         },
         {
             title: "کــــــــــــــورتۍ",
-            href: "{{route('kortai.index')}}",
+            href: "/kortai",
             roles: ["tailor"],
             icon: <FaUserGraduate className="text-xl md:text-2xl" />,
         },
@@ -88,7 +88,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         },
         {
             title: "پوســــــــــــــټ",
-            href: "/tailorpost",
+            href: "/tailor-posts",
             roles: ["tailor"],
             icon: <FaBlog className="text-xl md:text-2xl" />,
         },

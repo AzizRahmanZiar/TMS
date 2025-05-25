@@ -1,24 +1,24 @@
 import { useState, useEffect, useRef } from "react";
 import { MdDelete, MdClose, MdCheck } from "react-icons/md";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import { router } from '@inertiajs/react';
 
-import { useKortai } from "@/Contexts/KortaiContext";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
 
-const Kortai = () => {
-    const { kortai, setKortai } = useKortai();
+const Kortai = ({ kortais: initialKortais }) => {
+    const [kortais, setKortais] = useState(initialKortais || []);
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedKortai, setSelectedKortai] = useState(null);
     const [sortConfig, setSortConfig] = useState({
         key: null,
         direction: "asc",
     });
-    const [activeTab, setActiveTab] = useState("all"); // 'all', 'active', 'completed'
+    const [activeTab, setActiveTab] = useState("all");
     const modalRef = useRef(null);
 
     // New state variables
@@ -38,11 +38,18 @@ const Kortai = () => {
         tasleem_tareekh: "",
         tidad: "",
         money: "",
-        index: null,
     });
 
     const [errors, setErrors] = useState({});
     const [touchedFields, setTouchedFields] = useState({});
+
+    // Update kortais when props change
+    useEffect(() => {
+        setKortais(initialKortais.map(kortai => ({
+            ...kortai,
+            disabled: kortai.tasleem_tareekh !== null && kortai.tasleem_tareekh !== ""
+        })) || []);
+    }, [initialKortais]);
 
     // Close modal when clicking outside
     useEffect(() => {
@@ -81,7 +88,6 @@ const Kortai = () => {
             tasleem_tareekh: "",
             tidad: "",
             money: "",
-            index: null,
         });
         setErrors({});
         setTouchedFields({});
@@ -130,13 +136,16 @@ const Kortai = () => {
         const englishPhoneRegex = /^07[0-9]{8}$/;
         const pashtoPhoneRegex = /^٠٧[۰-۹]{8}$/;
 
+        // Convert value to string for validation if it's not null/undefined
+        const stringValue = value != null ? String(value) : '';
+
         switch (fieldName) {
             case "nom":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors.nom = "نوم اړین دی";
                 } else if (
-                    !englishNameRegex.test(value) &&
-                    !pashtoNameRegex.test(value)
+                    !englishNameRegex.test(stringValue) &&
+                    !pashtoNameRegex.test(stringValue)
                 ) {
                     fieldErrors.nom =
                         "نوم باید یوازې انګلیسي یا پښتو توري ولري";
@@ -144,11 +153,11 @@ const Kortai = () => {
                 break;
 
             case "mobile":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors.mobile = "مبایل نمبر اړین دی";
                 } else if (
-                    !englishPhoneRegex.test(value) &&
-                    !pashtoPhoneRegex.test(value)
+                    !englishPhoneRegex.test(stringValue) &&
+                    !pashtoPhoneRegex.test(stringValue)
                 ) {
                     fieldErrors.mobile =
                         "د مبایل نمبر باید 10 رقمه وي او په 07 پیل شي";
@@ -156,11 +165,11 @@ const Kortai = () => {
                 break;
 
             case "ghara_dol":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors.ghara_dol = "د غاړي ډول اړین دی";
                 } else if (
-                    !englishNameRegex.test(value) &&
-                    !pashtoNameRegex.test(value)
+                    !englishNameRegex.test(stringValue) &&
+                    !pashtoNameRegex.test(stringValue)
                 ) {
                     fieldErrors.ghara_dol =
                         "د غاړي ډول باید یوازې انګلیسي یا پښتو توري ولري";
@@ -172,11 +181,11 @@ const Kortai = () => {
             case "lstoony_ojd":
             case "lstoony_browali":
             case "zegar":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors[fieldName] = "دا ساحه اړینه ده";
                 } else if (
-                    !englishNumberRegex.test(value) &&
-                    !pashtoNumberRegex.test(value)
+                    !englishNumberRegex.test(stringValue) &&
+                    !pashtoNumberRegex.test(stringValue)
                 ) {
                     fieldErrors[fieldName] =
                         "یوازې انګلیسي یا پښتو عددونه وکاروئ";
@@ -184,22 +193,22 @@ const Kortai = () => {
                 break;
 
             case "tidad":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors.tidad = "تعداد اړین دی";
                 } else if (
-                    !englishNumberRegex.test(value) &&
-                    !pashtoNumberRegex.test(value)
+                    !englishNumberRegex.test(stringValue) &&
+                    !pashtoNumberRegex.test(stringValue)
                 ) {
                     fieldErrors.tidad = "یوازې انګلیسي یا پښتو عددونه وکاروئ";
                 }
                 break;
 
             case "money":
-                if (!value.trim()) {
+                if (!stringValue) {
                     fieldErrors.money = "پیسې اړینې دي";
                 } else if (
-                    !englishNumberRegex.test(value) &&
-                    !pashtoNumberRegex.test(value)
+                    !englishNumberRegex.test(stringValue) &&
+                    !pashtoNumberRegex.test(stringValue)
                 ) {
                     fieldErrors.money = "یوازې انګلیسي یا پښتو عددونه وکاروئ";
                 }
@@ -260,47 +269,66 @@ const Kortai = () => {
         }
 
         if (isEditing) {
-            setKortai((prevData) =>
-                prevData.map((data, index) =>
-                    index === formData.index
-                        ? {
-                              ...formData,
-                              disabled: formData.tasleem_tareekh !== "",
-                          }
-                        : data
-                )
-            );
-
-            // Show success toast
-            showToast("ریکارډ په بریالیتوب سره تازه شو", "success");
+            router.put(route('kortai.update', selectedKortai.id), formData, {
+                onSuccess: () => {
+                    showToast("ریکارډ په بریالیتوب سره تازه شو", "success");
+                    closeModal();
+                },
+                onError: (errors) => {
+                    setErrors(errors);
+                    showToast("د تازه کولو په وخت کې ستونزه رامنځته شوه", "error");
+                }
+            });
         } else {
-            setKortai((prevData) => [
-                ...prevData,
-                { ...formData, disabled: formData.tasleem_tareekh !== "" },
-            ]);
-
-            // Show success toast
-            showToast("ریکارډ په بریالیتوب سره اضافه شو", "success");
+            router.post(route('kortai.store'), formData, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    showToast("ریکارډ په بریالیتوب سره اضافه شو", "success");
+                    closeModal();
+                },
+                onError: (errors) => {
+                    setErrors(errors);
+                    showToast("د اضافه کولو په وخت کې ستونزه رامنځته شوه", "error");
+                }
+            });
         }
-
-        closeModal();
     };
 
-    const handleUpdate = (index) => {
+    const handleUpdate = (kortai) => {
         setIsEditing(true);
+        setSelectedKortai(kortai);
+        setFormData({
+            nom: kortai.nom,
+            mobile: kortai.mobile,
+            shana: kortai.shana,
+            tenna: kortai.tenna,
+            lstoony_ojd: kortai.lstoony_ojd,
+            lstoony_browali: kortai.lstoony_browali,
+            ghara_dol: kortai.ghara_dol,
+            zegar: kortai.zegar,
+            rawrul_tareekh: kortai.rawrul_tareekh,
+            tasleem_tareekh: kortai.tasleem_tareekh,
+            tidad: kortai.tidad,
+            money: kortai.money,
+        });
         setModalOpen(true);
-        setFormData({ ...kortai[index], index });
     };
 
-    const handleDeleteClick = (index) => {
-        setSelectedIndex(index);
+    const handleDeleteClick = (kortai) => {
+        setSelectedKortai(kortai);
         setDeleteModalOpen(true);
     };
 
     const handleDeleteConfirm = () => {
-        setKortai((prevData) => prevData.filter((_, i) => i !== selectedIndex));
-        closeModal();
-        showToast("ریکارډ په بریالیتوب سره حذف شو", "success");
+        router.delete(route('kortai.destroy', selectedKortai.id), {
+            onSuccess: () => {
+                showToast("ریکارډ په بریالیتوب سره حذف شو", "success");
+                closeModal();
+            },
+            onError: () => {
+                showToast("د حذف کولو په وخت کې ستونزه رامنځته شوه", "error");
+            }
+        });
     };
 
     const handleShowMeasurements = (row) => {
@@ -342,7 +370,7 @@ const Kortai = () => {
     };
 
     // Filter data based on search term and active tab
-    const filteredData = kortai
+    const filteredData = kortais
         .filter((row) => {
             const matchesSearch =
                 row.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -515,7 +543,7 @@ const Kortai = () => {
                                                     <SystemButtons
                                                         type="edit"
                                                         onClick={() =>
-                                                            handleUpdate(index)
+                                                            handleUpdate(row)
                                                         }
                                                         disabled={row.disabled}
                                                         icon={true}
@@ -529,7 +557,7 @@ const Kortai = () => {
                                                         type="delete"
                                                         onClick={() =>
                                                             handleDeleteClick(
-                                                                index
+                                                                row
                                                             )
                                                         }
                                                         icon={true}

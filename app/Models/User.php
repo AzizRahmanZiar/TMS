@@ -95,4 +95,9 @@ class User extends Authenticatable
     {
         return $this->hasRole(Roles::CUSTOMER);
     }
+
+    public function posts()
+    {
+        return $this->hasMany(TailorPost::class, 'user_id');
+    }
 }

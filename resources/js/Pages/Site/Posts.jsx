@@ -1,17 +1,64 @@
 import { useState, useEffect, useRef } from "react";
 import SiteLayout from "../../Layouts/SiteLayout";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaCalendarAlt, FaUser, FaStar, FaSearch } from "react-icons/fa";
-import { usePosts } from "@/Contexts/PostContext";
+import { FaCalendarAlt, FaUser, FaStar, FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useRate } from "@/Contexts/RatingContext";
+import { usePage, router } from "@inertiajs/react";
+import Toast from "@/Components/Toast";
 
 const Post = () => {
     const { rate, setRating } = useRate();
-    const { posts, setPosts } = usePosts();
-
+    const { props } = usePage();
+    const [posts, setPosts] = useState(props.tailorPosts || []);
     const [searchTerm, setSearchTerm] = useState("");
     const [category, setCategory] = useState("");
-    const [originalPosts, setOriginalPosts] = useState([]);
+    const [originalPosts, setOriginalPosts] = useState(props.tailorPosts || []);
+    const [ratedPosts, setRatedPosts] = useState(new Set());
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastType, setToastType] = useState("info");
+    // Add pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 6;
+
+    // Check for pending rating after registration
+    useEffect(() => {
+        if (props.auth?.user) {
+            const pendingRating = sessionStorage.getItem('pendingRating');
+            if (pendingRating) {
+                const { postId, rating } = JSON.parse(pendingRating);
+                const post = posts.find(p => p.id === postId);
+                if (post) {
+                    setSelectedPost(post);
+                    setSelectedRating(rating);
+                    setShowModal(true);
+                }
+                // Clear the pending rating
+                sessionStorage.removeItem('pendingRating');
+            }
+        }
+    }, [props.auth?.user]);
+
+    // Update posts when tailorPosts prop changes
+    useEffect(() => {
+        if (props.tailorPosts) {
+            setPosts(props.tailorPosts);
+            setOriginalPosts(props.tailorPosts);
+        }
+    }, [props.tailorPosts]);
+
+    // Update error and success messages when flash messages change
+    useEffect(() => {
+        if (props.flash) {
+            setError(props.flash.error || "");
+            setSuccess(props.flash.success || "");
+        }
+    }, [props.flash]);
+
+    // Add console log before rendering posts
+    console.log('Current posts state:', posts);
 
     // Modal state
     const [showModal, setShowModal] = useState(false);
@@ -31,12 +78,15 @@ const Post = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
 
-    useEffect(() => {
-        setOriginalPosts(posts);
-    }, [posts]);
-
     // Get unique categories
     const categories = [...new Set(originalPosts.map((post) => post.category))];
+
+    // Function to show toast
+    const displayToast = (message, type = "info") => {
+        setToastMessage(message);
+        setToastType(type);
+        setShowToast(true);
+    };
 
     // Function to handle filtering
     const handleFilter = () => {
@@ -45,12 +95,6 @@ const Post = () => {
         if (searchTerm) {
             filtered = filtered.filter(
                 (post) =>
-                    post.title
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
-                    post.description
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
                     post.author.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
@@ -60,6 +104,7 @@ const Post = () => {
         }
 
         setPosts(filtered);
+        setCurrentPage(1); // Reset to first page when filtering
     };
 
     // Function to reset filters
@@ -67,10 +112,40 @@ const Post = () => {
         setSearchTerm("");
         setCategory("");
         setPosts(originalPosts);
+        setCurrentPage(1); // Reset to first page when resetting filters
     };
+
+    // Calculate pagination
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+    const totalPages = Math.ceil(posts.length / postsPerPage);
+
+    // Pagination controls
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
+    const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
 
     // Function to handle star click
     const handleStarClick = (post, rating) => {
+        // Check if user is authenticated
+        if (!props.auth?.user) {
+            // Store the post and rating in session storage for after registration
+            sessionStorage.setItem('pendingRating', JSON.stringify({
+                postId: post.id,
+                rating: rating
+            }));
+            // Redirect to register page
+            router.visit(route('register'));
+            return;
+        }
+
+        if (ratedPosts.has(post.id)) {
+            displayToast("You have already rated this post", "warning");
+            return;
+        }
+        setError("");
+        setSuccess("");
         setSelectedPost(post);
         setSelectedRating(rating);
         setShowModal(true);
@@ -152,52 +227,64 @@ const Post = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    // Function to handle form submission
-    const handleSubmitRating = (e) => {
-        e.preventDefault();
-
-        // Validate form
-        if (!validateForm()) {
+    const handleRatingSubmit = (postId, rating, comment) => {
+        if (ratedPosts.has(postId)) {
+            displayToast("You have already rated this post", "warning");
             return;
         }
 
-        // Create a new rating object
-        const newRating = {
-            id: Date.now(), // Generate a unique ID
-            author: selectedPost.author, // Save the post author as the author
-            comment: formData.comment,
-            rating: selectedRating,
-            postId: selectedPost.id, // Reference to the original post
-            date: new Date().toISOString().split("T")[0], // Current date
-        };
+        if (!comment || comment.length < 10) {
+            setError("Please provide a comment with at least 10 characters");
+            return;
+        }
 
-        // Update the rating in the context
-        setRating([...rate, newRating]);
+        router.post(route('post.rate', postId), {
+            rating,
+            comment
+        }, {
+            onSuccess: () => {
+                // Add post to rated posts
+                setRatedPosts(prev => new Set([...prev, postId]));
 
-        // Update only the rating on the post
-        const updatedPosts = posts.map((post) => {
-            if (post.id === selectedPost.id) {
-                return {
-                    ...post,
-                    rating: selectedRating,
-                };
+                // Update the current post's rating in the posts array
+                setPosts(currentPosts => 
+                    currentPosts.map(post => 
+                        post.id === postId 
+                            ? {
+                                ...post,
+                                rating: rating,
+                                comments: (post.comments || 0) + 1
+                            }
+                            : post
+                    )
+                );
+
+                // Update originalPosts as well to maintain consistency
+                setOriginalPosts(currentOriginalPosts => 
+                    currentOriginalPosts.map(post => 
+                        post.id === postId 
+                            ? {
+                                ...post,
+                                rating: rating,
+                                comments: (post.comments || 0) + 1
+                            }
+                            : post
+                    )
+                );
+
+                // Close modal and reset form
+                setShowModal(false);
+                setFormData({ comment: "" });
+                setSelectedRating(0);
+                setError("");
+                displayToast("Thank you for your rating!", "success");
+            },
+            onError: (errors) => {
+                const errorMessage = errors.rating || errors.comment || "Failed to submit rating. Please try again.";
+                setError(errorMessage);
+                displayToast(errorMessage, "error");
             }
-            return post;
         });
-
-        // Update posts state
-        setPosts(updatedPosts);
-
-        // Also update original posts to maintain consistency
-        setOriginalPosts(updatedPosts);
-
-        // Reset form and close modal
-        setFormData({
-            comment: "",
-        });
-        setSelectedFile(null);
-        setPreviewUrl(null);
-        setShowModal(false);
     };
 
     // Function to close modal and reset form
@@ -215,26 +302,28 @@ const Post = () => {
     const renderStarRating = (post, currentRating, isClickable = false) => {
         const stars = [];
         const maxRating = 5;
+        const hasRated = ratedPosts.has(post.id);
+        const rating = post.rating || 0;
 
         for (let i = 1; i <= maxRating; i++) {
             stars.push(
                 <motion.div
                     key={i}
-                    whileHover={isClickable ? { scale: 1.3 } : {}}
-                    whileTap={isClickable ? { scale: 0.9 } : {}}
+                    whileHover={isClickable && !hasRated ? { scale: 1.3 } : {}}
+                    whileTap={isClickable && !hasRated ? { scale: 0.9 } : {}}
                 >
                     <FaStar
                         className={`${
-                            i <= currentRating
+                            i <= rating
                                 ? "text-yellow-500"
                                 : "text-gray-300"
                         } ${
-                            isClickable
+                            isClickable && !hasRated
                                 ? "cursor-pointer hover:text-yellow-400"
                                 : ""
                         }`}
                         onClick={
-                            isClickable
+                            isClickable && !hasRated
                                 ? () => handleStarClick(post, i)
                                 : undefined
                         }
@@ -243,7 +332,11 @@ const Post = () => {
             );
         }
 
-        return <div className="flex">{stars}</div>;
+        return (
+            <div className="flex items-center">
+                <div className="flex">{stars}</div>
+            </div>
+        );
     };
 
     // Animation variants
@@ -305,9 +398,23 @@ const Post = () => {
                             </h3>
                         </div>
 
-                        <form onSubmit={handleSubmitRating}>
+                        {error && (
+                            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                                {error}
+                            </div>
+                        )}
+
+                        {success && (
+                            <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md">
+                                {success}
+                            </div>
+                        )}
+
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            handleRatingSubmit(selectedPost.id, selectedRating, formData.comment);
+                        }}>
                             <div className="grid grid-cols-1 gap-6">
-                                {/* Left Column */}
                                 <div className="space-y-4">
                                     <motion.div
                                         initial={{ x: -20, opacity: 0 }}
@@ -320,19 +427,15 @@ const Post = () => {
                                         <textarea
                                             name="comment"
                                             className={`w-full p-2 border ${
-                                                errors.comment
-                                                    ? "border-red-500"
-                                                    : "border-gray-300"
+                                                error ? "border-red-500" : "border-gray-300"
                                             } rounded-md min-h-[120px]`}
                                             value={formData.comment}
-                                            onChange={handleInputChange}
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, comment: e.target.value });
+                                                setError("");
+                                            }}
                                             required
                                         ></textarea>
-                                        {errors.comment && (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                {errors.comment}
-                                            </p>
-                                        )}
                                     </motion.div>
                                 </div>
                             </div>
@@ -345,8 +448,13 @@ const Post = () => {
                             >
                                 <motion.button
                                     type="button"
-                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl border border-gray-300  hover:bg-gray-100 transition"
-                                    onClick={handleCloseModal}
+                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl border border-gray-300 hover:bg-gray-100 transition"
+                                    onClick={() => {
+                                        setShowModal(false);
+                                        setError("");
+                                        setFormData({ comment: "" });
+                                        setSelectedRating(0);
+                                    }}
                                     whileHover={{ backgroundColor: "#f3f4f6" }}
                                     whileTap={{ scale: 0.95 }}
                                 >
@@ -354,7 +462,7 @@ const Post = () => {
                                 </motion.button>
                                 <motion.button
                                     type="submit"
-                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl  bg-secondary-600 text-white  hover:bg-secondary-700 transition"
+                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-600 text-white hover:bg-secondary-700 transition"
                                     whileHover={{ backgroundColor: "#4338ca" }}
                                     whileTap={{ scale: 0.95 }}
                                 >
@@ -427,7 +535,7 @@ const Post = () => {
                             >
                                 <input
                                     type="text"
-                                    placeholder="د عنوان یا لیکوال له مخې لټون"
+                                    placeholder="د خیاط نوم له مخې لټون"
                                     className="w-full p-3 border border-gray-300 outline-none rounded-md pr-10 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
                                     value={searchTerm}
                                     onChange={(e) =>
@@ -471,146 +579,171 @@ const Post = () => {
                 </div>
             </motion.section>
 
-            {/* Posts Listing */}
-            <section className="py-12">
-                <div className="container mx-auto px-4">
-                    <motion.div
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                        variants={staggerContainer}
-                        initial="hidden"
-                        animate="visible"
-                    >
-                        {posts.map((post) => (
-                            <motion.div
-                                key={post.id}
-                                className="bg-primary-50 w-96 rounded-lg border overflow-hidden"
-                                variants={cardVariants}
-                                whileHover="hover"
-                            >
-                                <motion.img
-                                    src={post.image || "/placeholder.svg"}
-                                    alt={post.title}
-                                    className="w-full h-44 object-cover"
-                                    whileHover={{ scale: 1.05 }}
-                                    transition={{ duration: 0.3 }}
-                                />
-                                <div className="p-6">
-                                    <div className="grid grid-cols-2 gap-4 mb-4">
-                                        <motion.div
-                                            className="flex items-center"
-                                            whileHover={{ x: 5 }}
-                                            transition={{
-                                                type: "spring",
-                                                stiffness: 400,
-                                            }}
-                                        >
-                                            <FaUser className="ml-1 text-primary-500" />
-
-                                            <span className="font-medium ml-2">
-                                                خیاط:
-                                            </span>
-                                            <span>{post.author}</span>
-                                        </motion.div>
-                                        <motion.div
-                                            className="flex items-center"
-                                            whileHover={{ x: 5 }}
-                                            transition={{
-                                                type: "spring",
-                                                stiffness: 400,
-                                            }}
-                                        >
-                                            <FaCalendarAlt className="ml-1 text-primary-500" />
-                                            <span className="font-medium ml-2">
-                                                نېټه:
-                                            </span>
-
-                                            <span>{post.date}</span>
-                                        </motion.div>
-
-                                        <motion.div
-                                            className="flex items-center"
-                                            whileHover={{ x: 5 }}
-                                            transition={{
-                                                type: "spring",
-                                                stiffness: 400,
-                                            }}
-                                        >
-                                            <span className="font-medium ml-2">
-                                                درجه:
-                                            </span>
-                                            {renderStarRating(
-                                                post,
-                                                post.rating || 0,
-                                                true
-                                            )}
-                                            <span className="mr-2">
-                                                ({post.rating || 0}/5)
-                                            </span>
-                                        </motion.div>
-                                        {post.category && (
-                                            <motion.div
-                                                className="flex items-center"
-                                                whileHover={{ x: 5 }}
-                                                transition={{
-                                                    type: "spring",
-                                                    stiffness: 400,
-                                                }}
-                                            >
-                                                <span className="font-medium ml-2">
-                                                    کټګوري:
-                                                </span>
-                                                <span className=" text-tertiary-700 px-2 py-1 rounded-md">
-                                                    {post.category}
-                                                </span>
-                                            </motion.div>
-                                        )}
-                                    </div>
-
-                                    <motion.h3
-                                        className="text-2xl font-zar font-bold text-tertiary-700 mb-2"
+            {/* Posts Grid */}
+            <div className="container mx-auto px-4 py-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {currentPosts.map((post) => (
+                        <motion.div
+                            key={post.id}
+                            className="bg-primary-50 w-96 rounded-lg border overflow-hidden"
+                            variants={cardVariants}
+                            whileHover="hover"
+                        >
+                            <motion.img
+                                src={post.image || "/placeholder.svg"}
+                                alt={post.description}
+                                className="w-full h-44 object-cover"
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 0.3 }}
+                            />
+                            <div className="p-6">
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <motion.div
+                                        className="flex items-center gap-2 text-gray-600"
                                         whileHover={{ x: 5 }}
                                         transition={{
                                             type: "spring",
                                             stiffness: 400,
                                         }}
                                     >
-                                        {post.title}:
-                                    </motion.h3>
-                                    <motion.p
-                                        className="text-primary-700 mb-4"
-                                        initial={{ opacity: 0.8 }}
-                                        whileHover={{ opacity: 1 }}
+                                        <FaUser className="text-primary-600" />
+                                        <span>{post.author}</span>
+                                    </motion.div>
+                                    <motion.div
+                                        className="flex items-center"
+                                        whileHover={{ x: 5 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 400,
+                                        }}
                                     >
-                                        {post.description}
-                                    </motion.p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </motion.div>
+                                        <FaCalendarAlt className="ml-1 text-primary-500" />
+                                        <span className="font-medium ml-2">
+                                            نېټه:
+                                        </span>
+                                        <span>{new Date(post.date).toLocaleDateString()}</span>
+                                    </motion.div>
 
-                    {posts.length === 0 && (
-                        <motion.div
-                            className="text-center py-12"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                        >
-                            <p className="text-xl md:text-2xl text-gray-600">
-                                ستاسو د معیارونو سره سم هیڅ پوسټ ونه موندل شو.
-                            </p>
-                            <button
-                                onClick={resetFilters}
-                                className="font-bold px-6 py-3 rounded-md font-zar text-xl mt-4 bg-secondary-600 text-primary-50  hover:bg-secondary-700 transition"
-                            >
-                                فیلټرونه بیا تنظیم کړئ
-                            </button>
+                                    <motion.div
+                                        className="flex items-center"
+                                        whileHover={{ x: 5 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 400,
+                                        }}
+                                    >
+                                        <span className="font-medium ml-2">
+                                            درجه:
+                                        </span>
+                                        {renderStarRating(
+                                            post,
+                                            post.rating || 0,
+                                            true
+                                        )}
+                                        <span className="mr-2">
+                                            ({post.rating ? post.rating.toFixed(1) : 0}/5)
+                                        </span>
+                                    </motion.div>
+                                    {post.category && (
+                                        <motion.div
+                                            className="flex items-center"
+                                            whileHover={{ x: 5 }}
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 400,
+                                            }}
+                                        >
+                                            <span className="font-medium ml-2">
+                                                کټګوري:
+                                            </span>
+                                            <span className="text-tertiary-700 px-2 py-1 rounded-md">
+                                                {post.category}
+                                            </span>
+                                        </motion.div>
+                                    )}
+                                </div>
+
+                                <motion.h3
+                                    className="text-2xl font-zar font-bold text-tertiary-700 mb-2"
+                                    whileHover={{ x: 5 }}
+                                    transition={{
+                                        type: "spring",
+                                        stiffness: 400,
+                                    }}
+                                >
+                                    {post.category}:
+                                </motion.h3>
+                                <motion.p
+                                    className="text-primary-700 mb-4"
+                                    initial={{ opacity: 0.8 }}
+                                    whileHover={{ opacity: 1 }}
+                                >
+                                    {post.description}
+                                </motion.p>
+                                <div className="flex justify-between text-sm text-gray-500">
+                                    <span>Comments: {post.comments}</span>
+                                    <span>Views: {post.views}</span>
+                                </div>
+                            </div>
                         </motion.div>
-                    )}
+                    ))}
                 </div>
-            </section>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center mt-8 gap-2">
+                        <button
+                            onClick={prevPage}
+                            disabled={currentPage === 1}
+                            className={`p-2 rounded-md ${
+                                currentPage === 1
+                                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                    : 'bg-secondary-600 text-white hover:bg-secondary-700'
+                            }`}
+                        >
+                            <FaChevronLeft />
+                        </button>
+                        
+                        {[...Array(totalPages)].map((_, index) => (
+                            <button
+                                key={index + 1}
+                                onClick={() => paginate(index + 1)}
+                                className={`px-4 py-2 rounded-md ${
+                                    currentPage === index + 1
+                                        ? 'bg-secondary-600 text-white'
+                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                }`}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={nextPage}
+                            disabled={currentPage === totalPages}
+                            className={`p-2 rounded-md ${
+                                currentPage === totalPages
+                                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                    : 'bg-secondary-600 text-white hover:bg-secondary-700'
+                            }`}
+                        >
+                            <FaChevronRight />
+                        </button>
+                    </div>
+                )}
+            </div>
 
             {/* Rating Modal */}
             {renderRatingModal()}
+
+            {/* Toast Notification */}
+            {showToast && (
+                <Toast
+                    message={toastMessage}
+                    type={toastType}
+                    onClose={() => setShowToast(false)}
+                />
+            )}
         </SiteLayout>
     );
 };

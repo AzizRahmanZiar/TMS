@@ -16,12 +16,11 @@ import { router, usePage } from "@inertiajs/react";
 import { useMessages } from "../../Contexts/MessagesContext";
 
 const Contact = () => {
+    const { auth } = usePage().props;
     const { flash } = usePage().props;
     const { messages, setMessages } = useMessages();
     // State for form
     const [formData, setFormData] = useState({
-        name: "",
-        email: "",
         phone: "",
         subject: "",
         message: "",
@@ -29,8 +28,6 @@ const Contact = () => {
 
     // State for form errors
     const [errors, setErrors] = useState({
-        name: "",
-        email: "",
         phone: "",
         subject: "",
         message: "",
@@ -38,16 +35,13 @@ const Contact = () => {
 
     // Update the patterns object to have more precise patterns for English and Pashto
     const patterns = {
-        // Patterns for text fields (name, subject, message)
+        // Patterns for text fields (subject, message)
         englishText: /^[a-zA-Z\s]+$/, // Only English letters and spaces
         pashtoText: /^[\u0600-\u06FF\s]+$/, // Only Pashto/Arabic characters and spaces
 
         // Patterns for phone numbers
         englishPhone: /^[\d\s+-]+$/, // Only English digits and some symbols
         pashtoPhone: /^[\u06F0-\u06F9\s+-]+$/, // Only Pashto digits and some symbols
-
-        // Email pattern remains the same
-        email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
     };
 
     // Update error messages to be more specific
@@ -55,7 +49,6 @@ const Contact = () => {
         required: "دا ساحه اړینه ده",
         invalidText:
             "یوازې انګلیسي یا پښتو متن اجازه لري، مخلوط متن اجازه نلري",
-        invalidEmail: "د بریښنالیک بڼه سمه نه ده",
         invalidPhone:
             "یوازې انګلیسي یا پښتو شمیرې اجازه لري، مخلوط شمیرې اجازه نلري",
         minLength: "لږترلږه ۳ توري اړین دي",
@@ -70,7 +63,6 @@ const Contact = () => {
             error = errorMessages.required;
         } else {
             switch (name) {
-                case "name":
                 case "subject":
                 case "message":
                     // Check if it contains ONLY English text OR ONLY Pashto text
@@ -83,12 +75,6 @@ const Contact = () => {
                         error = errorMessages.minLength;
                     } else if (name === "message" && value.trim().length < 10) {
                         error = "لږترلږه ۱۰ توري اړین دي";
-                    }
-                    break;
-
-                case "email":
-                    if (!patterns.email.test(value)) {
-                        error = errorMessages.invalidEmail;
                     }
                     break;
 
@@ -132,6 +118,12 @@ const Contact = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        // Check if user is authenticated
+        if (!auth.user) {
+            router.visit('/login');
+            return;
+        }
+
         // Validate all fields
         const newErrors = {};
         let hasError = false;
@@ -146,28 +138,23 @@ const Contact = () => {
 
         // If no errors, submit the form
         if (!hasError) {
-            // Add message to context
-            const newMessage = {
-                ...formData,
-                id: Date.now(),
-                created_at: new Date().toISOString()
-            };
-            setMessages([...messages, newMessage]);
-            
-            // Reset form
-            setFormData({
-                name: "",
-                email: "",
-                phone: "",
-                subject: "",
-                message: "",
-            });
-            setErrors({
-                name: "",
-                email: "",
-                phone: "",
-                subject: "",
-                message: "",
+            router.post(route('messages.store'), formData, {
+                onSuccess: () => {
+                    // Reset form
+                    setFormData({
+                        phone: "",
+                        subject: "",
+                        message: "",
+                    });
+                    setErrors({
+                        phone: "",
+                        subject: "",
+                        message: "",
+                    });
+                },
+                onError: (errors) => {
+                    setErrors(errors);
+                }
             });
         }
     };
@@ -325,161 +312,119 @@ const Contact = () => {
                             transition={{ duration: 0.6 }}
                             viewport={{ once: true }}
                         >
-                            <h2 className="text-3xl font-bold font-zar text-primary-800  mb-6">
+                            <h2 className="text-3xl font-bold font-zar text-primary-800 mb-6">
                                 موږ ته پیغام ولیږئ
                             </h2>
-                            <form
-                                onSubmit={handleSubmit}
-                                className="bg-white p-6 rounded-lg shadow-lg border border-primary-100"
-                            >
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                    <div>
-                                        <label
-                                            className="block text-primary-700 mb-2"
-                                            htmlFor="name"
-                                        >
-                                            بشپړ نوم
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="name"
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
-                                                errors.name
-                                                    ? "border-red-500"
-                                                    : "border-primary-300"
-                                            }`}
-                                            placeholder="ستاسو بشپړ نوم"
-                                        />
-                                        {errors.name && (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                {errors.name}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <div>
-                                        <label
-                                            className="block text-primary-700 mb-2"
-                                            htmlFor="email"
-                                        >
-                                            بریښنالیک
-                                        </label>
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
-                                                errors.email
-                                                    ? "border-red-500"
-                                                    : "border-primary-300"
-                                            }`}
-                                            placeholder="ستاسو بریښنالیک"
-                                        />
-                                        {errors.email && (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                {errors.email}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                    <div>
-                                        <label
-                                            className="block text-primary-700 mb-2"
-                                            htmlFor="phone"
-                                        >
-                                            د تلیفون شمیره
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="phone"
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={handleChange}
-                                            className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
-                                                errors.phone
-                                                    ? "border-red-500"
-                                                    : "border-primary-300"
-                                            }`}
-                                            placeholder="ستاسو د تلیفون شمیره"
-                                        />
-                                        {errors.phone && (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                {errors.phone}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <div>
-                                        <label
-                                            className="block text-primary-700 mb-2"
-                                            htmlFor="subject"
-                                        >
-                                            موضوع
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="subject"
-                                            name="subject"
-                                            value={formData.subject}
-                                            onChange={handleChange}
-                                            className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
-                                                errors.subject
-                                                    ? "border-red-500"
-                                                    : "border-primary-300"
-                                            }`}
-                                            placeholder="د پیغام موضوع"
-                                        />
-                                        {errors.subject && (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                {errors.subject}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="mb-6">
-                                    <label
-                                        className="block text-primary-700 mb-2"
-                                        htmlFor="message"
+                            {!auth.user ? (
+                                <div className="bg-white p-6 rounded-lg shadow-lg border border-primary-100 text-center">
+                                    <p className="text-primary-700 mb-4">د پیغام د لېږلو لپاره لومړی باید ننوتل شئ</p>
+                                    <motion.button
+                                        onClick={() => router.visit('/login')}
+                                        className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-700 text-white hover:bg-secondary-800 transition-all duration-300 shadow-md hover:shadow-lg"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
                                     >
-                                        پیغام
-                                    </label>
-                                    <textarea
-                                        id="message"
-                                        name="message"
-                                        value={formData.message}
-                                        onChange={handleChange}
-                                        className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
-                                            errors.message
-                                                ? "border-red-500"
-                                                : "border-primary-300"
-                                        }`}
-                                        placeholder="ستاسو پیغام"
-                                        rows="5"
-                                    ></textarea>
-                                    {errors.message && (
-                                        <p className="text-red-500 text-sm mt-1">
-                                            {errors.message}
-                                        </p>
-                                    )}
+                                        ننوتل
+                                    </motion.button>
                                 </div>
-
-                                <motion.button
-                                    type="submit"
-                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-700  text-white  hover:bg-secondary-800 transition-all duration-300 shadow-md hover:shadow-lg"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                            ) : (
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="bg-white p-6 rounded-lg shadow-lg border border-primary-100"
                                 >
-                                    پیغام ولیږئ
-                                </motion.button>
-                            </form>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                        <div>
+                                            <label
+                                                className="block text-primary-700 mb-2"
+                                                htmlFor="phone"
+                                            >
+                                                د تلیفون شمیره
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="phone"
+                                                name="phone"
+                                                value={formData.phone}
+                                                onChange={handleChange}
+                                                className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
+                                                    errors.phone
+                                                        ? "border-red-500"
+                                                        : "border-primary-300"
+                                                }`}
+                                                placeholder="ستاسو د تلیفون شمیره"
+                                            />
+                                            {errors.phone && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors.phone}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <label
+                                                className="block text-primary-700 mb-2"
+                                                htmlFor="subject"
+                                            >
+                                                موضوع
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="subject"
+                                                name="subject"
+                                                value={formData.subject}
+                                                onChange={handleChange}
+                                                className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
+                                                    errors.subject
+                                                        ? "border-red-500"
+                                                        : "border-primary-300"
+                                                }`}
+                                                placeholder="د پیغام موضوع"
+                                            />
+                                            {errors.subject && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors.subject}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-6">
+                                        <label
+                                            className="block text-primary-700 mb-2"
+                                            htmlFor="message"
+                                        >
+                                            پیغام
+                                        </label>
+                                        <textarea
+                                            id="message"
+                                            name="message"
+                                            value={formData.message}
+                                            onChange={handleChange}
+                                            className={`w-full p-3 border outline-none rounded-md focus:ring-2 focus:ring-primary-300 transition-all ${
+                                                errors.message
+                                                    ? "border-red-500"
+                                                    : "border-primary-300"
+                                            }`}
+                                            placeholder="ستاسو پیغام"
+                                            rows="5"
+                                        ></textarea>
+                                        {errors.message && (
+                                            <p className="text-red-500 text-sm mt-1">
+                                                {errors.message}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <motion.button
+                                        type="submit"
+                                        className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-700  text-white  hover:bg-secondary-800 transition-all duration-300 shadow-md hover:shadow-lg"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        پیغام ولیږئ
+                                    </motion.button>
+                                </form>
+                            )}
                         </motion.div>
 
                         {/* Map */}

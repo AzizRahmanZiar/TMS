@@ -385,9 +385,12 @@ const Tailors = ({ tailors }) => {
                                                     <div className="flex gap-3">
                                                        
                                                         <button
-                                                            onClick={() => router.visit('/order', {
-                                                                data: { tailorId: tailor.id, tailorName: tailor.name }
-                                                            })}
+                                                            onClick={() => {
+                                                                router.visit(route('order', {
+                                                                    tailorId: tailor.id,
+                                                                    tailorName: tailor.name
+                                                                }));
+                                                            }}
                                                             className="flex-1 bg-secondary-600 text-white px-4 py-2 rounded-lg hover:bg-secondary-700 transition-colors duration-200 flex items-center justify-center gap-2"
                                                         >
                                                             <FaShoppingBag className="text-sm" />
@@ -395,6 +398,16 @@ const Tailors = ({ tailors }) => {
                                                         </button>
                                                     </div>
                                                 </motion.div>
+
+                                                {/* Rating Percentage */}
+                                                <div className="text-center mt-4">
+                                                    {tailor.rating_percentage > 0 && (
+                                                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 text-primary-700">
+                                                            <span className="font-semibold text-primary-600">{tailor.rating_percentage}%</span>
+                                                            <span>Customer Rating</span>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </motion.div>
                                     ))

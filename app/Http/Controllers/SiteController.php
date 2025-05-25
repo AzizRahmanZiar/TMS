@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use App\Models\TailorPost;
+use App\Models\PostRating;
 
 class SiteController extends Controller
 {
@@ -27,30 +29,39 @@ class SiteController extends Controller
                 'tailoring_name',
                 'created_at'
             ])
+            ->with(['posts' => function($query) {
+                $query->withAvg('ratings', 'rating');
+            }])
             ->get()
             ->map(function ($tailor) {
-                // Debug profile image path
-                $profileImagePath = $tailor->profile_image;
-                $profileImageExists = $profileImagePath ? Storage::disk('public')->exists($profileImagePath) : false;
+                // Calculate average rating from all posts
+                $totalRating = 0;
+                $totalPosts = 0;
+                
+                foreach ($tailor->posts as $post) {
+                    if ($post->ratings_avg_rating) {
+                        $totalRating += $post->ratings_avg_rating;
+                        $totalPosts++;
+                    }
+                }
+                
+                $averageRating = $totalPosts > 0 ? ($totalRating / $totalPosts) : 0;
+                $ratingPercentage = ($averageRating / 5) * 100;
                 
                 return [
                     'id' => $tailor->id,
                     'name' => $tailor->name,
                     'email' => $tailor->email,
-                    'profile_photo_url' => $profileImagePath ? asset('storage/' . $profileImagePath) : null,
-                    'profile_image_debug' => [
-                        'path' => $profileImagePath,
-                        'exists' => $profileImageExists,
-                        'full_path' => $profileImagePath ? storage_path('app/public/' . $profileImagePath) : null
-                    ],
+                    'profile_photo_url' => $tailor->profile_image ? Storage::url($tailor->profile_image) : null,
                     'experience' => $tailor->experience,
                     'career' => $tailor->career,
                     'previous_work' => $tailor->previous_work,
                     'certifications' => $tailor->certifications,
                     'skills' => $tailor->skills,
                     'work_availability' => $tailor->work_availability,
-                    'has_shop' => !empty($tailor->tailoring_name),
-                    'created_at' => $tailor->created_at->format('Y-m-d')
+                    'tailoring_name' => $tailor->tailoring_name,
+                    'created_at' => $tailor->created_at,
+                    'rating_percentage' => round($ratingPercentage, 1)
                 ];
             });
 
@@ -119,6 +130,96 @@ class SiteController extends Controller
 
         return Inertia::render('Site/Shop', [
             'shops' => $shops
+        ]);
+    }
+
+    public function posts()
+    {
+        $posts = TailorPost::with(['user', 'ratings'])
+            ->latest()
+            ->get()
+            ->map(function ($post) {
+                $averageRating = $post->ratings->avg('rating') ?? 0;
+                $commentsCount = $post->ratings->whereNotNull('comment')->count();
+                
+                return [
+                    'id' => $post->id,
+                    'description' => $post->description,
+                    'image' => $post->image ? asset('storage/' . $post->image) : null,
+                    'date' => $post->date,
+                    'author' => $post->user->name ?? $post->author,
+                    'email' => $post->email,
+                    'category' => $post->category,
+                    'comments' => $commentsCount,
+                    'views' => $post->views,
+                    'rating' => $averageRating,
+                    'created_at' => $post->created_at
+                ];
+            });
+        
+        \Log::info('Fetched TailorPosts:', ['count' => $posts->count(), 'posts' => $posts->toArray()]);
+        
+        return Inertia::render('Site/Posts', [
+            'tailorPosts' => $posts
+        ]);
+    }
+
+    public function home()
+    {
+        // Get top 10 rated posts
+        $topDesigns = TailorPost::with(['ratings'])
+            ->get()
+            ->map(function ($post) {
+                $averageRating = $post->ratings->avg('rating') ?? 0;
+                
+                return [
+                    'id' => $post->id,
+                    'title' => $post->description, // Using description as title
+                    'image' => $post->image ? asset('storage/' . $post->image) : null,
+                    'category' => $post->category,
+                    'averageRating' => (float)$averageRating, // Ensure it's a number
+                    'ratings' => $post->ratings->map(function($rating) {
+                        return [
+                            'id' => $rating->id,
+                            'rating' => (float)$rating->rating // Ensure it's a number
+                        ];
+                    })
+                ];
+            })
+            ->filter(function ($post) {
+                return $post['averageRating'] > 0 && $post['image']; // Only show posts with ratings and images
+            })
+            ->sortByDesc('averageRating')
+            ->take(10)
+            ->values();
+
+        // Debug logging
+        \Log::info('Top Designs Data:', [
+            'count' => $topDesigns->count(),
+            'designs' => $topDesigns->toArray()
+        ]);
+
+        // Get testimonials (ratings with comments)
+        $testimonialsWithComments = PostRating::with(['user', 'post'])
+            ->whereNotNull('comment')
+            ->orderByDesc('created_at')
+            ->take(15)
+            ->get()
+            ->map(function ($rating) {
+                return [
+                    'id' => $rating->id,
+                    'username' => $rating->user->name ?? 'Anonymous',
+                    'userImage' => $rating->user->profile_photo_url ?? null,
+                    'rating' => $rating->rating,
+                    'comment' => $rating->comment,
+                    'postId' => $rating->post_id,
+                    'created_at' => $rating->created_at->format('Y-m-d')
+                ];
+            });
+
+        return Inertia::render('Site/Home', [
+            'topDesigns' => $topDesigns,
+            'testimonialsWithComments' => $testimonialsWithComments,
         ]);
     }
 } 

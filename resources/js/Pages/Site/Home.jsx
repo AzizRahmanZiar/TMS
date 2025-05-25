@@ -1,15 +1,31 @@
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import SiteLayout from "../../Layouts/SiteLayout";
 import { useRate } from "@/Contexts/RatingContext";
 import { usePosts } from "@/Contexts/PostContext";
 import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
+import { FaStar, FaUser, FaCalendarAlt } from "react-icons/fa";
 
 const Home = () => {
-    const { rate } = useRate();
-    const { posts } = usePosts();
+    const { props } = usePage();
+    const { rate, setRating } = useRate();
+    const { posts, setPosts } = usePosts();
     const [currentTestimonial, setCurrentTestimonial] = useState(0);
     const testimonialRef = useRef(null);
+
+    // Initialize data from props
+    useEffect(() => {
+        if (props.posts) {
+            setPosts(props.posts);
+        }
+        if (props.ratings) {
+            setRating(props.ratings);
+        }
+    }, [props.posts, props.ratings]);
+
+    // Debug logs
+    console.log('Rate data:', rate);
+    console.log('Posts data:', posts);
 
     // Function to get all ratings for a post
     const getPostRatings = (postId) => {
@@ -66,13 +82,22 @@ const Home = () => {
         };
     });
 
+    // Debug logs
+    console.log('Posts with ratings:', postsWithRatings);
+
     // Filter posts that have at least one rating
     const ratedPosts = postsWithRatings.filter((post) => post.hasRatings);
+
+    // Debug logs
+    console.log('Rated posts:', ratedPosts);
 
     // Sort by rating (highest first) and take top 10
     const topDesigns = ratedPosts
         .sort((a, b) => b.averageRating - a.averageRating)
         .slice(0, 10);
+
+    // Debug logs
+    console.log('Top designs:', topDesigns);
 
     // Modify the testimonials data preparation to:
     // 1. Limit to 15 testimonials
@@ -81,6 +106,9 @@ const Home = () => {
         .filter((rating) => rating.comment && rating.comment.trim() !== "")
         .sort((a, b) => b.id - a.id) // Sort by newest first (assuming higher ID = newer)
         .slice(0, 15); // Limit to 15 testimonials
+
+    // Debug logs
+    console.log('Testimonials with comments:', testimonialsWithComments);
 
     // Handle testimonial navigation
     const nextTestimonial = () => {
@@ -232,9 +260,8 @@ const Home = () => {
                             </motion.p>
                         </motion.div>
 
-                        {/* Center the cards on smaller screens */}
                         <motion.div
-                            className="flex flex-wrap justify-center gap-8"
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
                             variants={staggerContainer}
                             initial="hidden"
                             whileInView="visible"
@@ -243,97 +270,33 @@ const Home = () => {
                             {topDesigns.map((design, index) => (
                                 <motion.div
                                     key={design.id}
-                                    className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 w-full sm:w-64 md:w-72 lg:w-56"
+                                    className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
                                     variants={cardVariants}
                                     whileHover="hover"
-                                    custom={index}
                                 >
-                                    {/* Image container with overlay effect */}
-                                    <div className="relative overflow-hidden">
-                                        <motion.img
-                                            src={
-                                                design.image ||
-                                                `https://via.placeholder.com/300x400?text=${
-                                                    design.title || "Design"
-                                                }`
-                                            }
+                                    <div className="relative">
+                                        <img
+                                            src={design.image}
                                             alt={design.title}
-                                            className="w-full h-56 object-cover"
-                                            whileHover={{ scale: 1.1 }}
-                                            transition={{ duration: 0.5 }}
+                                            className="w-full h-48 object-cover"
                                         />
-
-                                        {/* Gradient overlay */}
-                                        <motion.div
-                                            className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100"
-                                            initial={{ opacity: 0 }}
-                                            whileHover={{ opacity: 1 }}
-                                            transition={{ duration: 0.3 }}
-                                        ></motion.div>
-
-                                        {/* Category badge */}
-                                        {design.category && (
-                                            <motion.div
-                                                className="absolute top-3 right-3"
-                                                initial={{
-                                                    scale: 0.8,
-                                                    opacity: 0,
-                                                }}
-                                                animate={{
-                                                    scale: 1,
-                                                    opacity: 1,
-                                                }}
-                                                transition={{
-                                                    delay: index * 0.05,
-                                                }}
-                                            >
-                                                <span className="bg-secondary-500 text-white text-xs font-medium px-2.5 py-1 rounded-full shadow-lg">
-                                                    {design.category}
-                                                </span>
-                                            </motion.div>
-                                        )}
+                                        <div className="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded-full flex items-center">
+                                            <FaStar className="text-yellow-500 mr-1" />
+                                            <span className="font-bold">{design.averageRating.toFixed(1)}</span>
+                                        </div>
                                     </div>
-
-                                    {/* Content */}
                                     <div className="p-4">
-                                        <h3 className="font-bold text-primary-900 mb-2 line-clamp-1">
-                                            {design.title}
-                                        </h3>
-
+                                        <h3 className="text-lg font-bold font-zar mb-2">{design.title}</h3>
+                                        <p className="text-gray-600 font-zar mb-3">{design.description}</p>
                                         <div className="flex justify-between items-center">
-                                            {/* Rating Badge */}
-                                            <motion.div
-                                                className="flex items-center"
-                                                initial={{
-                                                    scale: 0.9,
-                                                    opacity: 0,
-                                                }}
-                                                animate={{
-                                                    scale: 1,
-                                                    opacity: 1,
-                                                }}
-                                                transition={{
-                                                    delay: 0.2 + index * 0.05,
-                                                }}
-                                            >
-                                                <span className="bg-primary-100 text-primary-900 text-xs font-medium px-2.5 py-1 rounded-full shadow-lg flex items-center">
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        className="h-3.5 w-3.5 text-yellow-400 mr-1"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                    </svg>
-                                                    {design.averageRating.toFixed(
-                                                        1
-                                                    )}
-                                                    <span className="ml-1 text-xs text-primary-600">
-                                                        ({design.ratings.length}
-                                                        )
-                                                    </span>
-                                                </span>
-                                            </motion.div>
+                                            <span className="text-sm text-gray-500 font-zar">
+                                                <FaUser className="inline mr-1" />
+                                                {design.author}
+                                            </span>
+                                            <span className="text-sm text-gray-500 font-zar">
+                                                <FaCalendarAlt className="inline mr-1" />
+                                                {new Date(design.created_at).toLocaleDateString()}
+                                            </span>
                                         </div>
                                     </div>
                                 </motion.div>
@@ -361,39 +324,20 @@ const Home = () => {
                         {/* Simple Testimonial Display */}
                         <div className="max-w-4xl mx-auto">
                             {/* Current Testimonial */}
-                            {testimonialsWithComments.length > 0 && (
+                            {testimonialsWithComments.length > 0 && testimonialsWithComments[currentTestimonial] && (
                                 <div className="bg-white rounded-xl shadow-xl overflow-hidden">
                                     <div className="flex flex-col md:flex-row">
                                         {/* Left side - User info */}
                                         <div className="md:w-1/3 bg-gradient-to-br from-tertiary-600 to-tertiary-800 p-8 text-white flex flex-col justify-center items-center">
                                             <div className="w-24 h-24 rounded-full border-4 border-white overflow-hidden shadow-lg mb-4">
-                                                <img
-                                                    src={
-                                                        testimonialsWithComments[
-                                                            currentTestimonial
-                                                        ].userImage ||
-                                                        "./imgs/avatar-placeholder.jpg" ||
-                                                        "/placeholder.svg" ||
-                                                        "/placeholder.svg" ||
-                                                        "/placeholder.svg" ||
-                                                        "/placeholder.svg" ||
-                                                        "/placeholder.svg" ||
-                                                        "/placeholder.svg"
-                                                    }
-                                                    alt={
-                                                        testimonialsWithComments[
-                                                            currentTestimonial
-                                                        ].username
-                                                    }
+                                                <img 
+                                                    src={testimonialsWithComments[currentTestimonial]?.user_image || "./imgs/avatar-placeholder.jpg"}
+                                                    alt={testimonialsWithComments[currentTestimonial]?.user_name || "User"}
                                                     className="w-full h-full object-cover"
                                                 />
                                             </div>
                                             <h3 className="font-bold text-xl mb-2 text-center">
-                                                {
-                                                    testimonialsWithComments[
-                                                        currentTestimonial
-                                                    ].username
-                                                }
+                                                {testimonialsWithComments[currentTestimonial]?.user_name || "Anonymous"}
                                             </h3>
 
                                             {/* Rating stars */}
@@ -403,10 +347,7 @@ const Home = () => {
                                                         key={star}
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         className={`h-5 w-5 ${
-                                                            star <=
-                                                            testimonialsWithComments[
-                                                                currentTestimonial
-                                                            ].rating
+                                                            star <= (testimonialsWithComments[currentTestimonial]?.rating || 0)
                                                                 ? "text-yellow-300"
                                                                 : "text-gray-400"
                                                         }`}
@@ -439,11 +380,7 @@ const Home = () => {
 
                                             {/* Testimonial text */}
                                             <p className="text-primary-700 text-lg md:text-xl leading-relaxed mb-8 font-bold font-zar">
-                                                {
-                                                    testimonialsWithComments[
-                                                        currentTestimonial
-                                                    ].comment
-                                                }
+                                                {testimonialsWithComments[currentTestimonial]?.comment || "No comment available"}
                                             </p>
 
                                             {/* Decorative line */}
@@ -476,60 +413,20 @@ const Home = () => {
                                     </svg>
                                 </button>
 
-                                {/* Dots Indicator - Limited to 5 with only one active */}
+                                {/* Dots Indicator */}
                                 <div className="flex items-center gap-3">
-                                    {[
-                                        ...Array(
-                                            Math.min(
-                                                5,
-                                                testimonialsWithComments.length
-                                            )
-                                        ),
-                                    ].map((_, index) => {
-                                        // Calculate which testimonial this dot represents
-                                        const dotsCount = Math.min(
-                                            5,
-                                            testimonialsWithComments.length
-                                        );
-                                        const totalTestimonials =
-                                            testimonialsWithComments.length;
-
-                                        // Calculate the range of testimonials this dot represents
-                                        const startIndex = Math.floor(
-                                            index *
-                                                (totalTestimonials / dotsCount)
-                                        );
-                                        const endIndex =
-                                            Math.floor(
-                                                (index + 1) *
-                                                    (totalTestimonials /
-                                                        dotsCount)
-                                            ) - 1;
-
-                                        // This dot is active if currentTestimonial is within its range
-                                        const isActive =
-                                            currentTestimonial >= startIndex &&
-                                            currentTestimonial <= endIndex;
-
-                                        return (
-                                            <button
-                                                key={index}
-                                                onClick={() =>
-                                                    setCurrentTestimonial(
-                                                        startIndex
-                                                    )
-                                                }
-                                                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                                                    isActive
-                                                        ? "bg-tertiary-500 w-6"
-                                                        : "bg-tertiary-300 hover:bg-tertiary-400"
-                                                }`}
-                                                aria-label={`Go to testimonial group ${
-                                                    index + 1
-                                                }`}
-                                            />
-                                        );
-                                    })}
+                                    {testimonialsWithComments.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => setCurrentTestimonial(index)}
+                                            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                                                index === currentTestimonial
+                                                    ? "bg-tertiary-500 w-6"
+                                                    : "bg-tertiary-300 hover:bg-tertiary-400"
+                                            }`}
+                                            aria-label={`Go to testimonial ${index + 1}`}
+                                        />
+                                    ))}
                                 </div>
 
                                 <button

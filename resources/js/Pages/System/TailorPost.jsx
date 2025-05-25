@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { usePosts } from "../../Contexts/postContext"; // Import the context
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
+import { router } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
+import { toast } from 'react-hot-toast';
 
-const TailorPost = () => {
-    const { posts, setPosts } = usePosts(); // Use the context
+const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
     const [showForm, setShowForm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [currentPost, setCurrentPost] = useState(null);
@@ -13,12 +14,14 @@ const TailorPost = () => {
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
 
-    // Form validation states
-    const [formErrors, setFormErrors] = useState({});
-    const [formValues, setFormValues] = useState({
+    const { data, setData, post, put, processing, errors, reset } = useForm({
         description: "",
         category: "",
+        image: null
     });
+
+    // Form validation states
+    const [formErrors, setFormErrors] = useState({});
 
     // Character counters
     const [descriptionChars, setDescriptionChars] = useState(0);
@@ -26,12 +29,13 @@ const TailorPost = () => {
     // Set form values when editing
     useEffect(() => {
         if (currentPost) {
-            setFormValues({
+            setData({
                 description: currentPost.description || "",
                 category: currentPost.category || "",
+                image: null
             });
             setDescriptionChars(currentPost.description?.length || 0);
-            setImagePreview(currentPost.image || null);
+            setImagePreview(currentPost.image ? `/storage/${currentPost.image}` : null);
         } else {
             resetForm();
         }
@@ -39,9 +43,10 @@ const TailorPost = () => {
 
     // Update resetForm function
     const resetForm = () => {
-        setFormValues({
+        setData({
             description: "",
             category: "",
+            image: null
         });
         setFormErrors({});
         setDescriptionChars(0);
@@ -62,7 +67,7 @@ const TailorPost = () => {
         setIsEditing(true);
         setShowForm(true);
         setImageFile(null);
-        setImagePreview(post.image || null);
+        setImagePreview(post.image ? `/storage/${post.image}` : null);
     };
 
     const handleCloseForm = () => {
@@ -80,10 +85,7 @@ const TailorPost = () => {
         }
 
         // Update form values
-        setFormValues({
-            ...formValues,
-            [name]: value,
-        });
+        setData(name, value);
 
         // Validate on change
         validateField(name, value);
@@ -128,45 +130,6 @@ const TailorPost = () => {
         return Object.keys(errors).length === 0;
     };
 
-    // Validate all fields
-    const validateForm = () => {
-        let isValid = true;
-        const newErrors = {};
-
-        // Validate description
-        if (!formValues.description.trim()) {
-            newErrors.description = "تفصیل اړین دی";
-            isValid = false;
-        } else if (formValues.description.length < 10) {
-            newErrors.description = "تفصیل باید لږترلږه 10 توري ولري";
-            isValid = false;
-        } else if (formValues.description.length > 2000) {
-            newErrors.description = "تفصیل باید له 2000 تورو څخه لږ وي";
-            isValid = false;
-        } else if (
-            /[^a-zA-Z\u0600-\u06FF\s.,!?]/.test(formValues.description)
-        ) {
-            newErrors.description = "تفصیل کې باید یوازې توري وي";
-            isValid = false;
-        }
-
-        // Validate category
-        if (!formValues.category.trim()) {
-            newErrors.category = "کټګورۍ اړینه ده";
-            isValid = false;
-        } else if (
-            !["Cloths", "Uniform", "Kortai", "Sadrai"].includes(
-                formValues.category
-            )
-        ) {
-            newErrors.category = "مهرباني وکړئ یوه معتبره کټګورۍ وټاکئ";
-            isValid = false;
-        }
-
-        setFormErrors(newErrors);
-        return isValid;
-    };
-
     // Handle image change
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -177,13 +140,13 @@ const TailorPost = () => {
                     image: "یوازې عکسونه منل کیږي",
                 }));
                 setImageFile(null);
-                setImagePreview(currentPost?.image || null);
-                // Clear the file input
+                setImagePreview(currentPost?.image ? `/storage/${currentPost.image}` : null);
                 e.target.value = "";
                 return;
             }
 
             setImageFile(file);
+            setData('image', file);
             setFormErrors((prev) => {
                 const newErrors = { ...prev };
                 delete newErrors.image;
@@ -198,51 +161,58 @@ const TailorPost = () => {
             reader.readAsDataURL(file);
         } else {
             setImageFile(null);
-            setImagePreview(currentPost?.image || null);
+            setData('image', null);
+            setImagePreview(currentPost?.image ? `/storage/${currentPost.image}` : null);
         }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Validate all fields
-        if (!validateForm()) {
-            return; // Stop submission if validation fails
-        }
-
-        // Get current date in YYYY-MM-DD format
-        const currentDate = new Date().toISOString().split("T")[0];
-
-        const newPost = {
-            id: isEditing ? currentPost.id : posts.length + 1,
-            title: currentPost?.title || "",
-            description: formValues.description,
-            image: imageFile
-                ? URL.createObjectURL(imageFile)
-                : currentPost?.image,
-            date: currentDate, // Set the current date automatically
-            author: currentPost?.author || "System",
-            email: currentPost?.email || "",
-            category: formValues.category,
-            comments: isEditing ? currentPost.comments : 0,
-            views: isEditing ? currentPost.views : 0,
-        };
-
         if (isEditing) {
-            setPosts((prevPosts) =>
-                prevPosts.map((post) =>
-                    post.id === currentPost.id ? newPost : post
-                )
-            );
+            put(route('tailor-posts.update', currentPost.id), {
+                onSuccess: () => {
+                    setShowForm(false);
+                    resetForm();
+                    toast.success('You needed posts not allowed other');
+                },
+                onError: (errors) => {
+                    if (errors.error) {
+                        toast.error(errors.error);
+                    } else {
+                        toast.error('Failed to update post');
+                    }
+                }
+            });
         } else {
-            setPosts((prevPosts) => [...prevPosts, newPost]);
+            post(route('tailor-posts.store'), {
+                onSuccess: () => {
+                    setShowForm(false);
+                    resetForm();
+                    toast.success('You needed posts not allowed other');
+                },
+                onError: (errors) => {
+                    if (errors.error) {
+                        toast.error(errors.error);
+                    } else {
+                        toast.error('Failed to create post');
+                    }
+                }
+            });
         }
-        setShowForm(false);
-        resetForm();
     };
 
     const handleDeletePost = (postId) => {
-        setPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
+        if (confirm('آیا تاسو غواړئ دا پوست حذف کړئ؟')) {
+            router.delete(route('tailor-posts.destroy', postId), {
+                onSuccess: () => {
+                    toast.success('Post deleted successfully');
+                },
+                onError: () => {
+                    toast.error('Failed to delete post');
+                }
+            });
+        }
     };
 
     // Get input class based on validation state
@@ -250,9 +220,9 @@ const TailorPost = () => {
         const baseClass =
             "border rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent";
 
-        if (formErrors[fieldName]) {
+        if (formErrors[fieldName] || errors[fieldName]) {
             return `${baseClass} border-red-500 bg-red-50`;
-        } else if (formValues[fieldName] && formValues[fieldName].length > 0) {
+        } else if (data[fieldName] && data[fieldName].length > 0) {
             return `${baseClass} border-green-500 bg-green-50`;
         }
 
@@ -312,9 +282,9 @@ const TailorPost = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-gray-200">
-                                {posts
+                                {initialPosts
                                     .filter((post) =>
-                                        post.title.includes(searchTerm)
+                                        post.description.toLowerCase().includes(searchTerm.toLowerCase())
                                     )
                                     .map((post) => (
                                         <tr
@@ -323,11 +293,8 @@ const TailorPost = () => {
                                         >
                                             <td className="py-4 px-4 text-right whitespace-nowrap">
                                                 <img
-                                                    src={
-                                                        post.image ||
-                                                        "/placeholder.svg"
-                                                    }
-                                                    alt={post.title}
+                                                    src={post.image ? `/storage/${post.image}` : "/placeholder.svg"}
+                                                    alt={post.description}
                                                     className="h-16 w-16 object-cover rounded-md shadow-sm"
                                                 />
                                             </td>
@@ -375,19 +342,9 @@ const TailorPost = () => {
                     </div>
                 </div>
 
-                {/* Empty state */}
-                {posts.filter((post) => post.title.includes(searchTerm))
-                    .length === 0 && (
-                    <div className="text-center py-10">
-                        <h3 className="mt-2 text-sm font-bold font-zar text-gray-900">
-                            هیڅ پوست ونه موندل شو
-                        </h3>
-                    </div>
-                )}
-
-                {/* Add/Edit Post Form Overlay */}
+                {/* Form Modal */}
                 {showForm && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
                         <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
                             <form
                                 onSubmit={handleSubmit}
@@ -409,9 +366,9 @@ const TailorPost = () => {
                                         className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                                     />
 
-                                    {formErrors.image && (
+                                    {(formErrors.image || errors.image) && (
                                         <p className="mt-1 text-sm text-red-600">
-                                            {formErrors.image}
+                                            {formErrors.image || errors.image}
                                         </p>
                                     )}
                                 </div>
@@ -421,7 +378,7 @@ const TailorPost = () => {
                                     </label>
                                     <textarea
                                         name="description"
-                                        value={formValues.description}
+                                        value={data.description}
                                         onChange={handleInputChange}
                                         className={getInputClass("description")}
                                         rows="4"
@@ -430,9 +387,9 @@ const TailorPost = () => {
                                     <div className="text-sm text-gray-500">
                                         {descriptionChars}/2000 توري
                                     </div>
-                                    {formErrors.description && (
+                                    {(formErrors.description || errors.description) && (
                                         <p className="mt-1 text-sm text-red-600">
-                                            {formErrors.description}
+                                            {formErrors.description || errors.description}
                                         </p>
                                     )}
                                 </div>
@@ -443,7 +400,7 @@ const TailorPost = () => {
                                     </label>
                                     <select
                                         name="category"
-                                        value={formValues.category}
+                                        value={data.category}
                                         onChange={handleInputChange}
                                         className={getInputClass("category")}
                                     >
@@ -453,9 +410,9 @@ const TailorPost = () => {
                                         <option value="Kortai">Kortai</option>
                                         <option value="Sadrai">Sadrai</option>
                                     </select>
-                                    {formErrors.category && (
+                                    {(formErrors.category || errors.category) && (
                                         <p className="mt-1 text-sm text-red-600">
-                                            {formErrors.category}
+                                            {formErrors.category || errors.category}
                                         </p>
                                     )}
                                 </div>
@@ -469,6 +426,7 @@ const TailorPost = () => {
                                 <SystemButtons
                                     type="submit"
                                     onClick={handleSubmit}
+                                    disabled={processing}
                                     title={isEditing ? "سمول" : "اضافه کول"}
                                 />
                             </div>

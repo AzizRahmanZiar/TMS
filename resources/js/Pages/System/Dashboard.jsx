@@ -16,7 +16,6 @@ import {
 } from "react-icons/gi";
 import { useCloths } from "@/Contexts/ClothsContext";
 import { useUniform } from "@/Contexts/UniformContext";
-import { useKortai } from "@/Contexts/KortaiContext";
 import { useSadrai } from "@/Contexts/SadraiContext";
 import {
     Chart as ChartJS,
@@ -59,15 +58,10 @@ const Dashboard = () => {
 
     const { cloths } = useCloths();
     const { uniform } = useUniform();
-    const { kortai } = useKortai();
     const { sadrai } = useSadrai();
 
     // Calculate total money for each category
     const totalClothsMoney = cloths.reduce(
-        (acc, item) => acc + Number.parseFloat(item.money || 0),
-        0
-    );
-    const totalKortaiMoney = kortai.reduce(
         (acc, item) => acc + Number.parseFloat(item.money || 0),
         0
     );
@@ -89,10 +83,6 @@ const Dashboard = () => {
         (acc, item) => acc + Number.parseInt(item.tidad || 0, 10),
         0
     );
-    const totalKortaiTedad = kortai.reduce(
-        (acc, item) => acc + Number.parseInt(item.tidad || 0, 10),
-        0
-    );
     const totalUniformTedad = uniform.reduce(
         (acc, item) => acc + Number.parseInt(item.tidad || 0, 10),
         0
@@ -102,7 +92,6 @@ const Dashboard = () => {
     const totalRevenue =
         totalClothsMoney +
         totalUniformMoney +
-        totalKortaiMoney +
         totalSadraiMoney;
 
     // Calculate time-based benefits
@@ -130,15 +119,6 @@ const Dashboard = () => {
             bgColor: "bg-emerald-500",
             icon: GiArmoredPants,
             items: uniform.length,
-        },
-        {
-            name: "کورتی",
-            value: totalKortaiTedad,
-            money: totalKortaiMoney,
-            color: "#f43f5e",
-            bgColor: "bg-rose-500",
-            icon: GiMonclerJacket,
-            items: kortai.length,
         },
         {
             name: "صدری",

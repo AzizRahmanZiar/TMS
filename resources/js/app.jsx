@@ -7,7 +7,7 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createRoot } from "react-dom/client";
 import axios from "axios";
 
-import GlobalProviders from "./Contexts/GlobalProviders";
+import GlobalProviders from "./Components/GlobalProviders";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 

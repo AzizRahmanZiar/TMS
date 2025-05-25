@@ -8,11 +8,15 @@ use Inertia\Inertia;
 
 class UniformController extends Controller
 {
-    // List all uniforms
+    // List all uniforms for the system
     public function index()
     {
-        $uniforms = Uniform::orderBy('created_at', 'desc')->get();
-        return Inertia::render('Uniforms/Index', [
+        // Only get uniforms for the authenticated user
+        $uniforms = Uniform::where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        return Inertia::render('System/Uniform', [
             'uniforms' => $uniforms
         ]);
     }
@@ -42,14 +46,22 @@ class UniformController extends Controller
             'tasleem_tareekh' => 'nullable|date',
         ]);
 
-        Uniform::create($validated);
+        // Add user_id to the validated data
+        $validated['user_id'] = auth()->id();
 
-        return redirect()->route('uniforms.index')->with('success', 'Uniform created successfully.');
+        $uniform = Uniform::create($validated);
+
+        return back()->with('success', 'Uniform created successfully');
     }
 
     // Show a single uniform
     public function show(Uniform $uniform)
     {
+        // Check if the uniform belongs to the authenticated user
+        if ($uniform->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return Inertia::render('Uniforms/Show', [
             'uniform' => $uniform
         ]);
@@ -58,6 +70,11 @@ class UniformController extends Controller
     // Show the edit form
     public function edit(Uniform $uniform)
     {
+        // Check if the uniform belongs to the authenticated user
+        if ($uniform->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return Inertia::render('Uniforms/Edit', [
             'uniform' => $uniform
         ]);
@@ -66,6 +83,11 @@ class UniformController extends Controller
     // Update a uniform
     public function update(Request $request, Uniform $uniform)
     {
+        // Check if the uniform belongs to the authenticated user
+        if ($uniform->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
             'mobile' => 'required|string|max:20',
@@ -84,14 +106,18 @@ class UniformController extends Controller
 
         $uniform->update($validated);
 
-        return redirect()->route('uniforms.index')->with('success', 'Uniform updated successfully.');
+        return back()->with('success', 'Uniform updated successfully');
     }
 
     // Delete a uniform
     public function destroy(Uniform $uniform)
     {
-        $uniform->delete();
+        // Check if the uniform belongs to the authenticated user
+        if ($uniform->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
 
-        return redirect()->route('uniforms.index')->with('success', 'Uniform deleted successfully.');
+        $uniform->delete();
+        return back()->with('success', 'Uniform deleted successfully');
     }
 }
