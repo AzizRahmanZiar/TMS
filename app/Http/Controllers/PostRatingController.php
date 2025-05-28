@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PostRating;
 use App\Models\TailorPost;
+use App\Http\Requests\PostRatingRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -11,11 +12,11 @@ use Inertia\Inertia;
 
 class PostRatingController extends Controller
 {
-    public function store(Request $request, TailorPost $tailorPost)
+    public function store(PostRatingRequest $request, TailorPost $tailorPost)
     {
         // Check if user is authenticated
         if (!Auth::check()) {
-            return back()->with('error', 'You must be logged in to rate a post');
+            return back()->with('error', 'د ریټنګ ورکولو لپاره لومړی لاګ ان شئ');
         }
 
         // Check if user has already rated this post
@@ -24,35 +25,24 @@ class PostRatingController extends Controller
             ->first();
 
         if ($existingRating) {
-            return back()->with('error', 'You have already rated this post. You can only rate each post once.');
-        }
-
-        // Validate the request
-        $validator = Validator::make($request->all(), [
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string|min:10'
-        ]);
-
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->with('error', 'Please provide a valid rating between 1 and 5 and a comment with at least 10 characters.');
+            return back()->with('error', 'تاسو دمخه دا پوست ریټ کړی. هر پوست یوازې یو ځل ریټ کولی شئ.');
         }
 
         try {
+            $validated = $request->validated();
+
             // Create new rating
-            $rating = PostRating::create([
+            PostRating::create([
                 'user_id' => Auth::id(),
                 'tailor_post_id' => $tailorPost->id,
-                'rating' => $request->rating,
-                'comment' => $request->comment
+                'rating' => $validated['rating'],
+                'comment' => $validated['comment']
             ]);
 
-            // Load relationships for response
-            $rating->load(['user', 'tailorPost']);
-
-            return back()->with('success', 'Thank you for your rating!');
+            return back()->with('success', 'ستاسو د ریټنګ لپاره مننه!');
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to submit rating. Please try again.');
+            return back()->with('error', 'د ریټنګ ثبت کولو کې ستونزه رامنځته شوه. بیا هڅه وکړئ.');
         }
     }
 
@@ -76,4 +66,4 @@ class PostRatingController extends Controller
 
         return response()->json($testimonials);
     }
-} 
+}

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Http\Requests\MessageRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -16,15 +17,11 @@ class MessageController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(MessageRequest $request)
     {
-        $validated = $request->validate([
-            'phone' => 'required|string|max:20',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
-        ]);
+        $validated = $request->validated();
 
-        $message = Message::create([
+        Message::create([
             'user_id' => auth()->id(),
             'phone' => $validated['phone'],
             'subject' => $validated['subject'],

@@ -23,14 +23,17 @@ const SystemLayout = ({ children }) => {
     // Add click outside handler
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (profileRef.current && !profileRef.current.contains(event.target)) {
+            if (
+                profileRef.current &&
+                !profileRef.current.contains(event.target)
+            ) {
                 setShowProfileModal(false);
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
 
@@ -46,7 +49,7 @@ const SystemLayout = ({ children }) => {
     if (currentPath === "/admin") {
         allowedRoles = ["admin"];
     } else if (currentPath === "/dashboard") {
-        allowedRoles = ["tailor"];
+        allowedRoles = ["tailor", "shopkeeper"];
     } else if (
         currentPath.startsWith("/cloths") ||
         currentPath.startsWith("/uniform") ||
@@ -55,6 +58,8 @@ const SystemLayout = ({ children }) => {
         currentPath.startsWith("/adminpost")
     ) {
         allowedRoles = ["tailor"];
+    } else if (currentPath.startsWith("/advertisements")) {
+        allowedRoles = ["shopkeeper"];
     }
 
     const toggleSidebar = () => {
@@ -144,15 +149,60 @@ const SystemLayout = ({ children }) => {
                                             </div>
                                         </div>
                                         <div className="p-2">
-                                            <Link
-                                                href={route("logout")}
-                                                method="get"
-                                                as="button"
-                                                className="w-full text-xl flex items-center px-4 py-2  text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                            <form
+                                                action={route("logout")}
+                                                method="POST"
+                                                className="w-full"
+                                                onSubmit={async (e) => {
+                                                    e.preventDefault();
+
+                                                    // Get fresh CSRF token
+                                                    try {
+                                                        const tokenResponse =
+                                                            await fetch(
+                                                                "/refresh-csrf"
+                                                            );
+                                                        const tokenData =
+                                                            await tokenResponse.json();
+
+                                                        const formData =
+                                                            new FormData();
+                                                        formData.append(
+                                                            "_token",
+                                                            tokenData.token
+                                                        );
+
+                                                        const response =
+                                                            await fetch(
+                                                                route("logout"),
+                                                                {
+                                                                    method: "POST",
+                                                                    body: formData,
+                                                                    headers: {
+                                                                        "X-Requested-With":
+                                                                            "XMLHttpRequest",
+                                                                    },
+                                                                }
+                                                            );
+
+                                                        // Always redirect regardless of response
+                                                        window.location.href =
+                                                            "/";
+                                                    } catch (error) {
+                                                        // If anything fails, just redirect
+                                                        window.location.href =
+                                                            "/";
+                                                    }
+                                                }}
                                             >
-                                                <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
-                                                وتـــــــل
-                                            </Link>
+                                                <button
+                                                    type="submit"
+                                                    className="w-full text-xl flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                                >
+                                                    <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
+                                                    وتـــــــل
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 )}

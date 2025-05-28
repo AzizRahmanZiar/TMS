@@ -27,8 +27,24 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'string', 'min:6'],
+        ];
+    }
+
+    /**
+     * Get custom error messages for validation rules.
+     */
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'بریښنالیک اړین دی',
+            'email.string' => 'بریښنالیک باید متن وي',
+            'email.email' => 'بریښنالیک ناسم دی',
+            'email.max' => 'بریښنالیک باید له 255 تورو څخه لږ وي',
+            'password.required' => 'پټنوم اړین دی',
+            'password.string' => 'پټنوم باید متن وي',
+            'password.min' => 'پټنوم باید لږترلږه 6 توري ولري',
         ];
     }
 
@@ -45,7 +61,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'دا معلومات زموږ د ریکارډونو سره سمون نلري.',
             ]);
         }
 
@@ -68,10 +84,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+            'email' => "ډیر ګړندي هڅې. مهرباني وکړئ " . ceil($seconds / 60) . " دقیقې وروسته بیا هڅه وکړئ.",
         ]);
     }
 

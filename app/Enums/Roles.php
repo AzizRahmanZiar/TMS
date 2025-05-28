@@ -6,6 +6,7 @@ enum Roles: string
 {
     case ADMIN = 'admin';
     case TAILOR = 'tailor';
+    case SHOPKEEPER = 'shopkeeper';
     case USER = 'user';
     case CUSTOMER = 'customer';
 
@@ -14,6 +15,7 @@ enum Roles: string
         return match($this) {
             self::ADMIN => 'مدیر',
             self::TAILOR => 'خیاط',
+            self::SHOPKEEPER => 'دوکاندار',
             self::USER => 'کاربر',
             self::CUSTOMER => 'مشتری',
         };

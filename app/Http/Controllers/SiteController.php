@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 use App\Models\TailorPost;
 use App\Models\PostRating;
+use App\Models\CustomerOrder;
 
 class SiteController extends Controller
 {
@@ -37,17 +38,32 @@ class SiteController extends Controller
                 // Calculate average rating from all posts
                 $totalRating = 0;
                 $totalPosts = 0;
-                
+
                 foreach ($tailor->posts as $post) {
                     if ($post->ratings_avg_rating) {
                         $totalRating += $post->ratings_avg_rating;
                         $totalPosts++;
                     }
                 }
-                
+
                 $averageRating = $totalPosts > 0 ? ($totalRating / $totalPosts) : 0;
                 $ratingPercentage = ($averageRating / 5) * 100;
-                
+
+                // Force refresh the tailor data and get order statistics
+                $tailor->refresh();
+                $orderStats = $tailor->getOrderStatistics();
+
+                // Debug log for the specific tailor with weekly_order_limit = 100
+                if ($tailor->weekly_order_limit == 100) {
+                    \Log::info('Tailor Order Stats Debug:', [
+                        'tailor_id' => $tailor->id,
+                        'tailor_name' => $tailor->name,
+                        'weekly_order_limit' => $tailor->weekly_order_limit,
+                        'current_week_orders' => $tailor->current_week_orders,
+                        'order_stats' => $orderStats
+                    ]);
+                }
+
                 return [
                     'id' => $tailor->id,
                     'name' => $tailor->name,
@@ -61,7 +77,8 @@ class SiteController extends Controller
                     'work_availability' => $tailor->work_availability,
                     'tailoring_name' => $tailor->tailoring_name,
                     'created_at' => $tailor->created_at,
-                    'rating_percentage' => round($ratingPercentage, 1)
+                    'rating_percentage' => round($ratingPercentage, 1),
+                    'order_statistics' => $orderStats
                 ];
             });
 
@@ -97,7 +114,7 @@ class SiteController extends Controller
                 // Debug profile image path
                 $profileImagePath = $shop->profile_image;
                 $profileImageExists = $profileImagePath ? Storage::disk('public')->exists($profileImagePath) : false;
-                
+
                 // Ensure shop_images is properly formatted
                 $shopImages = $shop->shop_images;
                 if (is_string($shopImages)) {
@@ -108,7 +125,7 @@ class SiteController extends Controller
                         $shopImages = [$shopImages];
                     }
                 }
-                
+
                 return [
                     'id' => $shop->id,
                     'name' => $shop->name,
@@ -141,7 +158,7 @@ class SiteController extends Controller
             ->map(function ($post) {
                 $averageRating = $post->ratings->avg('rating') ?? 0;
                 $commentsCount = $post->ratings->whereNotNull('comment')->count();
-                
+
                 return [
                     'id' => $post->id,
                     'description' => $post->description,
@@ -156,9 +173,9 @@ class SiteController extends Controller
                     'created_at' => $post->created_at
                 ];
             });
-        
+
         \Log::info('Fetched TailorPosts:', ['count' => $posts->count(), 'posts' => $posts->toArray()]);
-        
+
         return Inertia::render('Site/Posts', [
             'tailorPosts' => $posts
         ]);
@@ -171,7 +188,7 @@ class SiteController extends Controller
             ->get()
             ->map(function ($post) {
                 $averageRating = $post->ratings->avg('rating') ?? 0;
-                
+
                 return [
                     'id' => $post->id,
                     'title' => $post->description, // Using description as title
@@ -222,4 +239,26 @@ class SiteController extends Controller
             'testimonialsWithComments' => $testimonialsWithComments,
         ]);
     }
-} 
+
+    public function order(Request $request)
+    {
+        $tailorId = $request->get('tailorId');
+        $tailorName = $request->get('tailorName');
+
+        $orderStatistics = null;
+
+        // If tailor is selected, get their order statistics
+        if ($tailorId) {
+            $tailor = User::find($tailorId);
+            if ($tailor && $tailor->isTailor()) {
+                $orderStatistics = $tailor->getOrderStatistics();
+            }
+        }
+
+        return Inertia::render('Site/Order', [
+            'tailorId' => $tailorId,
+            'tailorName' => $tailorName,
+            'orderStatistics' => $orderStatistics,
+        ]);
+    }
+}

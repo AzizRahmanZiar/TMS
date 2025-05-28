@@ -2,9 +2,10 @@
 
 use App\Http\Controllers\{
     AdminController,
-    ClothsController,
+    // ClothsController,
     ContactController,
     CustomerOrderController,
+    DashboardController,
     KortaiController,
     TailorPostController,
     SadraiController,
@@ -15,6 +16,7 @@ use App\Http\Controllers\{
     ClothController,
     PostRatingController,
     MessageController,
+    TailorSettingsController,
 };
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Middleware\CheckRole;
@@ -65,12 +67,7 @@ Route::get('/post', [SiteController::class, 'posts'])->name('posts');
 Route::post('/post/{tailorPost}/rate', [PostRatingController::class, 'store'])->name('post.rate');
 Route::get('/testimonials', [PostRatingController::class, 'getTestimonials'])->name('testimonials');
 
-Route::get('/order', function () {
-    return Inertia::render('Site/Order', [
-        'tailorId' => request('tailorId'),
-        'tailorName' => request('tailorName')
-    ]);
-})->name('order');
+Route::get('/order', [SiteController::class, 'order'])->name('order');
 
 Route::get('/contact', function () {
     return Inertia::render('Site/Contact');
@@ -80,6 +77,8 @@ Route::get('/about', function () {
     return Inertia::render('Site/About');
 })->name('about');
 
+Route::get('/adv', [App\Http\Controllers\AdvertisementController::class, 'getForSite'])->name('adv');
+
 
 Route::resource('kortai', KortaiController::class);
 Route::resource('uniforms', UniformController::class);
@@ -87,23 +86,19 @@ Route::resource('uniforms', UniformController::class);
 // Sadrai routes
 Route::resource('sadrai', SadraiController::class);
 
+// CSRF token refresh route
+Route::get('/refresh-csrf', function () {
+    return response()->json(['token' => csrf_token()]);
+});
+
 // Auth routes
 require __DIR__.'/auth.php';
 
 // Protected System routes
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Common system routes (accessible by both admin and tailor)
-    Route::middleware([CheckRole::class . ':admin,tailor'])->group(function () {
-        Route::get('/dashboard', function () {
-            $cloths = \App\Models\Cloth::where('user_id', auth()->id())->latest()->get();
-            $uniforms = \App\Models\Uniform::where('user_id', auth()->id())->latest()->get();
-            $kortais = \App\Models\Kortai::where('user_id', auth()->id())->latest()->get();
-            return Inertia::render('System/Dashboard', [
-                'cloths' => $cloths,
-                'uniforms' => $uniforms,
-                'kortais' => $kortais
-            ]);
-        })->name('dashboard');
+    // Common system routes (accessible by admin, tailor, and shopkeeper)
+    Route::middleware([CheckRole::class . ':admin,tailor,shopkeeper'])->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // Admin routes
         Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
@@ -118,6 +113,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/customerorder/{order}', [CustomerOrderController::class, 'show'])->name('customer.orders.show');
         Route::put('/customerorder/{order}', [CustomerOrderController::class, 'update'])->name('customer.orders.update');
         Route::delete('/customerorder/{order}', [CustomerOrderController::class, 'destroy'])->name('customer.orders.destroy');
+
+        // Settings routes (for tailors)
+        Route::get('/settings', [TailorSettingsController::class, 'index'])->name('settings.index');
+        Route::put('/settings/order-limit', [TailorSettingsController::class, 'updateOrderLimit'])->name('settings.update-order-limit');
+        Route::post('/settings/reset-weekly-count', [TailorSettingsController::class, 'resetWeeklyCount'])->name('settings.reset-weekly-count');
 
         // TailorPost routes
         Route::get('/tailor-posts', [TailorPostController::class, 'index'])->name('tailor-posts.index');
@@ -135,10 +135,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/tailorpost/{tailorPost}', [TailorPostController::class, 'destroy'])->name('tailorpost.destroy');
 
     // Cloths routes
-    Route::get('/cloths', [ClothsController::class, 'cloths'])->name('cloths.index');
-    Route::post('/cloths', [ClothsController::class, 'store'])->name('cloths.store');
-    Route::put('/cloths/{cloth}', [ClothsController::class, 'update'])->name('cloths.update');
-    Route::delete('/cloths/{cloth}', [ClothsController::class, 'destroy'])->name('cloths.destroy');
+    // Route::get('/cloths', [ClothController::class, 'cloths'])->name('cloths.index');
+    // Route::post('/cloths', [ClothController::class, 'store'])->name('cloths.store');
+    // Route::put('/cloths/{cloth}', [ClothController::class, 'update'])->name('cloths.update');
+    // Route::delete('/cloths/{cloth}', [ClothController::class, 'destroy'])->name('cloths.destroy');
+
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/cloths', [ClothController::class, 'index'])->name('cloths.index');
+    Route::post('/cloths', [ClothController::class, 'store'])->name('cloths.store');
+    Route::put('/cloths/{cloth}', [ClothController::class, 'update'])->name('cloths.update');
+    Route::delete('/cloths/{cloth}', [ClothController::class, 'destroy'])->name('cloths.destroy');
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/sadrai', [SadraiController::class, 'index'])->name('sadrai.index');
+    Route::post('/sadrai', [SadraiController::class, 'store'])->name('sadrai.store');
+    Route::put('/sadrai/{sadrai}', [SadraiController::class, 'update'])->name('sadrai.update');
+    Route::delete('/sadrai/{sadrai}', [SadraiController::class, 'destroy'])->name('sadrai.destroy');
+});
+
 
     // Uniform route
     Route::get('/uniforms', [UniformController::class, 'index'])->name('uniforms.index');
@@ -151,9 +166,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/kortai', [KortaiController::class, 'store'])->name('kortai.store');
     Route::put('/kortai/{kortai}', [KortaiController::class, 'update'])->name('kortai.update');
     Route::delete('/kortai/{kortai}', [KortaiController::class, 'destroy'])->name('kortai.destroy');
+
+    // Advertisement routes (for shopkeepers)
+    Route::middleware([CheckRole::class . ':shopkeeper'])->group(function () {
+        Route::get('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'index'])->name('advertisements.index');
+        Route::post('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'store'])->name('advertisements.store');
+        Route::match(['PUT', 'POST'], '/advertisements/{advertisement}', [App\Http\Controllers\AdvertisementController::class, 'update'])->name('advertisements.update');
+        Route::delete('/advertisements/{advertisement}', [App\Http\Controllers\AdvertisementController::class, 'destroy'])->name('advertisements.destroy');
+    });
 });
 
 // Customer Order Routes
 Route::middleware(['auth'])->group(function () {
     Route::post('/customer/orders', [CustomerOrderController::class, 'store'])->name('customer.orders.store');
+});
 });

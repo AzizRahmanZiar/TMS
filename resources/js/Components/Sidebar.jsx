@@ -13,6 +13,8 @@ import {
     FaBlog,
     FaTimes,
     FaEnvelope,
+    FaBullhorn,
+    FaCog,
 } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
 
@@ -20,16 +22,28 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     const { auth } = usePage().props;
     const user = auth.user;
 
-    // Load active path from localStorage
-    const [activePath, setActivePath] = useState(
-        localStorage.getItem("activeSidebarPath") ||
-            (user?.role === "admin" ? "/admin" : "/dashboard")
-    );
+    // Load active path from current URL
+    const [activePath, setActivePath] = useState(window.location.pathname);
 
     useEffect(() => {
+        // Set initial active path from current URL
+        setActivePath(window.location.pathname);
         // Save to localStorage whenever activePath changes
-        localStorage.setItem("activeSidebarPath", activePath);
-    }, [activePath]);
+        localStorage.setItem("activeSidebarPath", window.location.pathname);
+
+        // Listen for URL changes (for SPA navigation)
+        const handleLocationChange = () => {
+            setActivePath(window.location.pathname);
+            localStorage.setItem("activeSidebarPath", window.location.pathname);
+        };
+
+        // Listen for popstate events (back/forward navigation)
+        window.addEventListener("popstate", handleLocationChange);
+
+        return () => {
+            window.removeEventListener("popstate", handleLocationChange);
+        };
+    }, []);
 
     // Add this useEffect to handle window resize
     useEffect(() => {
@@ -59,8 +73,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {
             title: "ډشبــــــــــــــورډ",
             href: "/dashboard",
-            roles: ["tailor"],
+            roles: ["tailor", "shopkeeper"],
             icon: <FaTachometerAlt className="text-xl md:text-2xl" />,
+        },
+        {
+            title: "اعلانــــــــــــــات",
+            href: "/advertisements",
+            roles: ["shopkeeper"],
+            icon: <FaBullhorn className="text-xl md:text-2xl" />,
         },
         {
             title: "جامــــــــــــــې",
@@ -98,6 +118,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             href: "/customerorder",
             roles: ["tailor"],
             icon: <FiSend className="text-xl md:text-2xl" />,
+        },
+        {
+            title: "تنظیمــــــــــــات",
+            href: "/settings",
+            roles: ["tailor"],
+            icon: <FaCog className="text-xl md:text-2xl" />,
         },
     ];
 

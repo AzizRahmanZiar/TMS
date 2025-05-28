@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cloth;
+use App\Http\Requests\ClothRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -27,35 +28,9 @@ class ClothController extends Controller
     }
 
     // Store a new cloth
-    public function store(Request $request)
+    public function store(ClothRequest $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20',
-            'qadd' => 'required|numeric',
-            'shana' => 'required|numeric',
-            'ghara' => 'required|numeric',
-            'zegar' => 'required|numeric',
-            'lstoony' => 'required|numeric',
-            'partog' => 'required|numeric',
-            'pai_tsa' => 'required|numeric',
-            'lastoni' => 'required|boolean',
-            'lastoni_goti' => 'required|boolean',
-            'bin' => 'required|boolean',
-            'bin_kat' => 'required|boolean',
-            'makh_jib' => 'required|boolean',
-            'tarikhzi' => 'required|boolean',
-            'kalari' => 'required|boolean',
-            'shabazi' => 'required|boolean',
-            'arabi' => 'required|boolean',
-            'lemen' => 'required|boolean',
-            'lastoni_2' => 'required|boolean',
-            'rawrul_tareekh' => 'required|date',
-            'tasleem_tareekh' => 'nullable|date|after_or_equal:rawrul_tareekh',
-            'tidad' => 'required|integer',
-            'money' => 'required|numeric',
-        ]);
-
+        $validated = $request->validated();
         $validated['user_id'] = auth()->id(); // Add current user ID
         Cloth::create($validated);
 
@@ -83,37 +58,11 @@ class ClothController extends Controller
     }
 
     // Update the cloth
-    public function update(Request $request, Cloth $cloth)
+    public function update(ClothRequest $request, Cloth $cloth)
     {
         $this->authorizeCloth($cloth);
 
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20',
-            'qadd' => 'required|numeric',
-            'shana' => 'required|numeric',
-            'ghara' => 'required|numeric',
-            'zegar' => 'required|numeric',
-            'lstoony' => 'required|numeric',
-            'partog' => 'required|numeric',
-            'pai_tsa' => 'required|numeric',
-            'lastoni' => 'required|boolean',
-            'lastoni_goti' => 'required|boolean',
-            'bin' => 'required|boolean',
-            'bin_kat' => 'required|boolean',
-            'makh_jib' => 'required|boolean',
-            'tarikhzi' => 'required|boolean',
-            'kalari' => 'required|boolean',
-            'shabazi' => 'required|boolean',
-            'arabi' => 'required|boolean',
-            'lemen' => 'required|boolean',
-            'lastoni_2' => 'required|boolean',
-            'rawrul_tareekh' => 'required|date',
-            'tasleem_tareekh' => 'nullable|date|after_or_equal:rawrul_tareekh',
-            'tidad' => 'required|integer',
-            'money' => 'required|numeric',
-        ]);
-
+        $validated = $request->validated();
         $cloth->update($validated);
 
         return redirect()->route('cloths.index')->with('success', 'Cloth updated successfully.');

@@ -1,9 +1,16 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import SiteLayout from "../../Layouts/SiteLayout";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaCalendarAlt, FaUser, FaStar, FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+    FaCalendarAlt,
+    FaUser,
+    FaStar,
+    FaSearch,
+    FaChevronLeft,
+    FaChevronRight,
+} from "react-icons/fa";
 import { useRate } from "@/Contexts/RatingContext";
-import { usePage, router } from "@inertiajs/react";
+import { usePage, router, useForm } from "@inertiajs/react";
 import Toast from "@/Components/Toast";
 
 const Post = () => {
@@ -26,28 +33,49 @@ const Post = () => {
     // Check for pending rating after registration
     useEffect(() => {
         if (props.auth?.user) {
-            const pendingRating = sessionStorage.getItem('pendingRating');
+            const pendingRating = sessionStorage.getItem("pendingRating");
             if (pendingRating) {
                 const { postId, rating } = JSON.parse(pendingRating);
-                const post = posts.find(p => p.id === postId);
+                const post = posts.find((p) => p.id === postId);
                 if (post) {
                     setSelectedPost(post);
                     setSelectedRating(rating);
                     setShowModal(true);
                 }
                 // Clear the pending rating
-                sessionStorage.removeItem('pendingRating');
+                sessionStorage.removeItem("pendingRating");
             }
         }
     }, [props.auth?.user]);
 
-    // Update posts when tailorPosts prop changes
+    // Update posts when tailorPosts prop changes and initialize rated posts
     useEffect(() => {
         if (props.tailorPosts) {
             setPosts(props.tailorPosts);
             setOriginalPosts(props.tailorPosts);
+
+            // Initialize rated posts from backend data (posts that user has already rated)
+            if (props.auth?.user) {
+                const userRatedPostIds = new Set();
+
+                // Add from props.userRatedPosts if available
+                if (props.userRatedPosts) {
+                    props.userRatedPosts.forEach((postId) =>
+                        userRatedPostIds.add(postId)
+                    );
+                }
+
+                // Add from posts that have user_has_rated property
+                props.tailorPosts.forEach((post) => {
+                    if (post.user_has_rated) {
+                        userRatedPostIds.add(post.id);
+                    }
+                });
+
+                setRatedPosts(userRatedPostIds);
+            }
         }
-    }, [props.tailorPosts]);
+    }, [props.tailorPosts, props.userRatedPosts, props.auth?.user]);
 
     // Update error and success messages when flash messages change
     useEffect(() => {
@@ -58,25 +86,23 @@ const Post = () => {
     }, [props.flash]);
 
     // Add console log before rendering posts
-    console.log('Current posts state:', posts);
+    console.log("Current posts state:", posts);
+    console.log("Auth user:", props.auth?.user);
+    console.log("Props:", props);
 
     // Modal state
     const [showModal, setShowModal] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
     const [selectedRating, setSelectedRating] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [forceUpdate, setForceUpdate] = useState(0);
+    const [justRatedPosts, setJustRatedPosts] = useState(new Set());
 
-    // Form state
-    const [formData, setFormData] = useState({
+    // Form state using Inertia useForm
+    const { data, setData, post, processing, errors, reset } = useForm({
+        rating: 0,
         comment: "",
     });
-
-    // Form validation state
-    const [errors, setErrors] = useState({});
-
-    // File input ref
-    const fileInputRef = useRef(null);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState(null);
 
     // Get unique categories
     const categories = [...new Set(originalPosts.map((post) => post.category))];
@@ -93,9 +119,8 @@ const Post = () => {
         let filtered = originalPosts;
 
         if (searchTerm) {
-            filtered = filtered.filter(
-                (post) =>
-                    post.author.toLowerCase().includes(searchTerm.toLowerCase())
+            filtered = filtered.filter((post) =>
+                post.author.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -123,27 +148,60 @@ const Post = () => {
 
     // Pagination controls
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
-    const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
-    const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+    const nextPage = () =>
+        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
     // Function to handle star click
     const handleStarClick = (post, rating) => {
+        console.log("Star clicked:", {
+            post: post.id,
+            rating,
+            user: props.auth?.user,
+        });
+
         // Check if user is authenticated
         if (!props.auth?.user) {
+            console.log("User not authenticated, redirecting to register");
             // Store the post and rating in session storage for after registration
-            sessionStorage.setItem('pendingRating', JSON.stringify({
-                postId: post.id,
-                rating: rating
-            }));
+            sessionStorage.setItem(
+                "pendingRating",
+                JSON.stringify({
+                    postId: post.id,
+                    rating: rating,
+                })
+            );
             // Redirect to register page
-            router.visit(route('register'));
+            router.visit(route("register"));
             return;
         }
 
-        if (ratedPosts.has(post.id)) {
-            displayToast("You have already rated this post", "warning");
+        // Check if user has already rated this post (multiple sources)
+        const hasAlreadyRated =
+            ratedPosts.has(post.id) ||
+            post.user_has_rated ||
+            justRatedPosts.has(post.id);
+
+        console.log("Star click check:", {
+            postId: post.id,
+            ratedPostsHas: ratedPosts.has(post.id),
+            userHasRated: post.user_has_rated,
+            justRatedHas: justRatedPosts.has(post.id),
+            hasAlreadyRated: hasAlreadyRated,
+            ratedPostsArray: Array.from(ratedPosts),
+            justRatedArray: Array.from(justRatedPosts),
+        });
+
+        if (hasAlreadyRated) {
+            console.log("Preventing rating - user has already rated");
+            displayToast(
+                "تاسو دمخه دا پوسټ ریټ کړی دی! بیا ریټنګ نشئ ورکولی.",
+                "error"
+            );
             return;
         }
+
+        console.log("Opening modal for rating");
         setError("");
         setSuccess("");
         setSelectedPost(post);
@@ -151,158 +209,189 @@ const Post = () => {
         setShowModal(true);
     };
 
-    // Function to handle form input changes
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
+    const handleRatingSubmit = (e) => {
+        e.preventDefault();
+
+        console.log("=== RATING SUBMISSION ATTEMPT ===");
+        console.log("Selected Post ID:", selectedPost.id);
+        console.log("Selected Rating:", selectedRating);
+        console.log("Comment:", data.comment);
+
+        // IMMEDIATE PREVENTION - Add to justRatedPosts right away
+        setJustRatedPosts((prev) => {
+            const newSet = new Set([...prev, selectedPost.id]);
+            console.log("IMMEDIATELY BLOCKING POST:", selectedPost.id);
+            return newSet;
         });
 
-        // Clear error for this field when user types
-        if (errors[name]) {
-            setErrors({
-                ...errors,
-                [name]: null,
-            });
-        }
-    };
+        // Double-check if user has already rated this post
+        const hasAlreadyRated =
+            ratedPosts.has(selectedPost.id) ||
+            selectedPost.user_has_rated ||
+            justRatedPosts.has(selectedPost.id);
 
-    // Function to handle file input change
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-
-        if (file) {
-            // Validate file type
-            const validTypes = [
-                "image/jpeg",
-                "image/png",
-                "image/gif",
-                "image/webp",
-            ];
-            if (!validTypes.includes(file.type)) {
-                setErrors({
-                    ...errors,
-                    userImage:
-                        "یوازې د انځور فایلونه (JPG, PNG, GIF, WEBP) اجازه لري",
-                });
-                return;
-            }
-
-            // Validate file size (max 2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                setErrors({
-                    ...errors,
-                    userImage: "د انځور اندازه باید له 2MB څخه کمه وي",
-                });
-                return;
-            }
-
-            setSelectedFile(file);
-            setErrors({
-                ...errors,
-                userImage: null,
-            });
-
-            // Create preview URL
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreviewUrl(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    // Function to validate form
-    const validateForm = () => {
-        const newErrors = {};
-
-        if (!formData.comment.trim()) {
-            newErrors.comment = "نظر اړین دی";
-        } else if (formData.comment.trim().length < 10) {
-            newErrors.comment = "نظر باید لږ تر لږه 10 توري ولري";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleRatingSubmit = (postId, rating, comment) => {
-        if (ratedPosts.has(postId)) {
-            displayToast("You have already rated this post", "warning");
+        if (hasAlreadyRated) {
+            console.log("BLOCKING: User has already rated");
+            displayToast(
+                "تاسو دمخه دا پوسټ ریټ کړی دی! بیا ریټنګ نشئ ورکولی.",
+                "error"
+            );
+            setShowModal(false);
             return;
         }
 
-        if (!comment || comment.length < 10) {
-            setError("Please provide a comment with at least 10 characters");
+        // Validate rating and comment
+        if (!selectedRating || selectedRating === 0) {
+            setError("مهرباني وکړئ لومړی ریټنګ ورکړئ");
+            // Remove from justRatedPosts if validation fails
+            setJustRatedPosts((prev) => {
+                const newSet = new Set(prev);
+                newSet.delete(selectedPost.id);
+                return newSet;
+            });
             return;
         }
 
-        router.post(route('post.rate', postId), {
-            rating,
-            comment
-        }, {
-            onSuccess: () => {
-                // Add post to rated posts
-                setRatedPosts(prev => new Set([...prev, postId]));
+        if (!data.comment || data.comment.trim().length < 10) {
+            setError("نظر باید لږترلږه 10 توري ولري");
+            // Remove from justRatedPosts if validation fails
+            setJustRatedPosts((prev) => {
+                const newSet = new Set(prev);
+                newSet.delete(selectedPost.id);
+                return newSet;
+            });
+            return;
+        }
 
-                // Update the current post's rating in the posts array
-                setPosts(currentPosts => 
-                    currentPosts.map(post => 
-                        post.id === postId 
-                            ? {
-                                ...post,
-                                rating: rating,
-                                comments: (post.comments || 0) + 1
-                            }
-                            : post
-                    )
-                );
+        // Clear any previous errors
+        setError("");
 
-                // Update originalPosts as well to maintain consistency
-                setOriginalPosts(currentOriginalPosts => 
-                    currentOriginalPosts.map(post => 
-                        post.id === postId 
-                            ? {
-                                ...post,
-                                rating: rating,
-                                comments: (post.comments || 0) + 1
-                            }
-                            : post
-                    )
-                );
+        // Prevent multiple submissions
+        if (isSubmitting) {
+            console.log("Already submitting, ignoring duplicate submission");
+            return;
+        }
 
-                // Close modal and reset form
-                setShowModal(false);
-                setFormData({ comment: "" });
-                setSelectedRating(0);
-                setError("");
-                displayToast("Thank you for your rating!", "success");
+        setIsSubmitting(true);
+        console.log("PROCEEDING WITH SUBMISSION...");
+
+        // Use router.post directly with explicit data
+        router.post(
+            route("post.rate", selectedPost.id),
+            {
+                rating: selectedRating,
+                comment: data.comment.trim(),
             },
-            onError: (errors) => {
-                const errorMessage = errors.rating || errors.comment || "Failed to submit rating. Please try again.";
-                setError(errorMessage);
-                displayToast(errorMessage, "error");
-            }
-        });
-    };
+            {
+                onSuccess: (response) => {
+                    console.log("Rating submitted successfully:", response);
+                    console.log("Selected post ID:", selectedPost.id);
+                    console.log(
+                        "Current ratedPosts before update:",
+                        ratedPosts
+                    );
 
-    // Function to close modal and reset form
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setFormData({
-            comment: "",
-        });
-        setSelectedFile(null);
-        setPreviewUrl(null);
-        setErrors({});
+                    // Add post to rated posts immediately - CRITICAL for preventing multiple ratings
+                    setRatedPosts((prev) => {
+                        const newSet = new Set([...prev, selectedPost.id]);
+                        console.log("Updated ratedPosts:", Array.from(newSet));
+                        return newSet;
+                    });
+
+                    // Also add to justRatedPosts for immediate prevention
+                    setJustRatedPosts((prev) => {
+                        const newSet = new Set([...prev, selectedPost.id]);
+                        console.log(
+                            "Updated justRatedPosts:",
+                            Array.from(newSet)
+                        );
+                        return newSet;
+                    });
+
+                    // Update the current post's rating in the posts array
+                    setPosts((currentPosts) => {
+                        const updatedPosts = currentPosts.map((post) =>
+                            post.id === selectedPost.id
+                                ? {
+                                      ...post,
+                                      rating: selectedRating,
+                                      comments: (post.comments || 0) + 1,
+                                      user_has_rated: true, // Mark as rated by current user
+                                  }
+                                : post
+                        );
+                        console.log(
+                            "Updated posts array:",
+                            updatedPosts.find((p) => p.id === selectedPost.id)
+                        );
+                        return updatedPosts;
+                    });
+
+                    // Update originalPosts as well to maintain consistency
+                    setOriginalPosts((currentOriginalPosts) =>
+                        currentOriginalPosts.map((post) =>
+                            post.id === selectedPost.id
+                                ? {
+                                      ...post,
+                                      rating: selectedRating,
+                                      comments: (post.comments || 0) + 1,
+                                      user_has_rated: true, // Mark as rated by current user
+                                  }
+                                : post
+                        )
+                    );
+
+                    // Close modal and reset form
+                    setShowModal(false);
+                    reset();
+                    setSelectedRating(0);
+                    setSelectedPost(null); // Clear selected post
+                    setError("");
+                    setIsSubmitting(false); // Reset submission state
+                    setForceUpdate((prev) => prev + 1); // Force re-render
+
+                    // Show success toast message for first-time rating
+                    displayToast(
+                        "ستاسو ریټنګ بریالۍ ثبت شو! ستاسو د نظر او ریټنګ لپاره مننه.",
+                        "success"
+                    );
+                },
+                onError: (errors) => {
+                    console.log("=== RATING SUBMISSION ERROR ===");
+                    console.log("Rating submission error:", errors);
+                    setIsSubmitting(false); // Reset submission state on error
+
+                    // Remove from justRatedPosts on error so user can try again
+                    setJustRatedPosts((prev) => {
+                        const newSet = new Set(prev);
+                        newSet.delete(selectedPost.id);
+                        console.log(
+                            "REMOVED FROM BLOCK LIST DUE TO ERROR:",
+                            selectedPost.id
+                        );
+                        return newSet;
+                    });
+
+                    const errorMessage =
+                        errors.rating ||
+                        errors.comment ||
+                        "د ریټنګ ثبت کولو کې ستونزه رامنځته شوه. بیا هڅه وکړئ.";
+                    setError(errorMessage);
+                    displayToast(errorMessage, "error");
+                },
+            }
+        );
     };
 
     // Function to render star ratings (clickable)
     const renderStarRating = (post, currentRating, isClickable = false) => {
         const stars = [];
         const maxRating = 5;
-        const hasRated = ratedPosts.has(post.id);
+        // Check all sources for rated status
+        const hasRated =
+            ratedPosts.has(post.id) ||
+            post.user_has_rated ||
+            justRatedPosts.has(post.id);
         const rating = post.rating || 0;
 
         for (let i = 1; i <= maxRating; i++) {
@@ -314,18 +403,25 @@ const Post = () => {
                 >
                     <FaStar
                         className={`${
-                            i <= rating
-                                ? "text-yellow-500"
-                                : "text-gray-300"
+                            i <= rating ? "text-yellow-500" : "text-gray-300"
                         } ${
                             isClickable && !hasRated
                                 ? "cursor-pointer hover:text-yellow-400"
+                                : hasRated
+                                ? "cursor-not-allowed opacity-60"
                                 : ""
                         }`}
                         onClick={
                             isClickable && !hasRated
                                 ? () => handleStarClick(post, i)
                                 : undefined
+                        }
+                        title={
+                            hasRated
+                                ? "تاسو دمخه دا پوسټ ریټ کړی دی"
+                                : isClickable
+                                ? "د ریټنګ ورکولو لپاره کلیک وکړئ"
+                                : ""
                         }
                     />
                 </motion.div>
@@ -386,87 +482,183 @@ const Post = () => {
                     exit={{ opacity: 0 }}
                 >
                     <motion.div
-                        className="bg-white rounded-lg p-6 max-w-3xl w-full"
+                        className="bg-white/95 backdrop-blur-sm rounded-3xl p-4 sm:p-6 lg:p-8 max-w-3xl w-full mx-4 shadow-2xl border border-white/30"
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.9, opacity: 0 }}
                         transition={{ type: "spring", damping: 20 }}
                     >
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-2xl font-zar font-bold">
+                        <div className="flex justify-between items-center mb-6 sm:mb-8">
+                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-zar font-bold bg-gradient-to-r from-primary-800 via-secondary-600 to-tertiary-600 bg-clip-text text-transparent">
                                 ارزونه ورکړئ
                             </h3>
+                            <motion.button
+                                type="button"
+                                onClick={() => {
+                                    setShowModal(false);
+                                    setError("");
+                                    reset();
+                                    setSelectedRating(0);
+                                }}
+                                className="text-gray-500 hover:text-gray-700 text-2xl sm:text-3xl p-2 rounded-full hover:bg-gray-100 transition-colors"
+                                whileHover={{ scale: 1.1, rotate: 90 }}
+                                whileTap={{ scale: 0.9 }}
+                            >
+                                ×
+                            </motion.button>
                         </div>
 
                         {error && (
-                            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                            <motion.div
+                                className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-100 text-red-700 rounded-2xl border border-red-200"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
                                 {error}
-                            </div>
+                            </motion.div>
                         )}
 
                         {success && (
-                            <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md">
+                            <motion.div
+                                className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-100 text-green-700 rounded-2xl border border-green-200"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
                                 {success}
-                            </div>
+                            </motion.div>
                         )}
 
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            handleRatingSubmit(selectedPost.id, selectedRating, formData.comment);
-                        }}>
-                            <div className="grid grid-cols-1 gap-6">
-                                <div className="space-y-4">
-                                    <motion.div
-                                        initial={{ x: -20, opacity: 0 }}
-                                        animate={{ x: 0, opacity: 1 }}
-                                        transition={{ delay: 0.2 }}
-                                    >
-                                        <label className="block mb-2 font-medium">
-                                            نظر
-                                        </label>
-                                        <textarea
-                                            name="comment"
-                                            className={`w-full p-2 border ${
-                                                error ? "border-red-500" : "border-gray-300"
-                                            } rounded-md min-h-[120px]`}
-                                            value={formData.comment}
-                                            onChange={(e) => {
-                                                setFormData({ ...formData, comment: e.target.value });
-                                                setError("");
-                                            }}
-                                            required
-                                        ></textarea>
-                                    </motion.div>
-                                </div>
+                        <form onSubmit={handleRatingSubmit}>
+                            <div className="space-y-6 sm:space-y-8">
+                                {/* Rating Display */}
+                                <motion.div
+                                    initial={{ x: -20, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    transition={{ delay: 0.1 }}
+                                    className="bg-gradient-to-r from-primary-50 to-secondary-50 p-4 sm:p-6 rounded-2xl border border-primary-200"
+                                >
+                                    <label className="block mb-3 sm:mb-4 font-medium text-base sm:text-lg font-zar">
+                                        ستاسو ریټنګ: {selectedRating}/5
+                                    </label>
+                                    <div className="flex items-center gap-2 sm:gap-3 justify-center sm:justify-start">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <motion.div
+                                                key={star}
+                                                whileHover={{ scale: 1.2 }}
+                                                whileTap={{ scale: 0.9 }}
+                                            >
+                                                <FaStar
+                                                    className={`text-2xl sm:text-3xl cursor-pointer ${
+                                                        star <= selectedRating
+                                                            ? "text-yellow-500"
+                                                            : "text-gray-300"
+                                                    } hover:text-yellow-400 transition-colors`}
+                                                    onClick={() => {
+                                                        setSelectedRating(star);
+                                                        setError("");
+                                                    }}
+                                                />
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                </motion.div>
+
+                                {/* Comment Section */}
+                                <motion.div
+                                    initial={{ x: -20, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    transition={{ delay: 0.2 }}
+                                >
+                                    <label className="block mb-3 sm:mb-4 font-medium text-base sm:text-lg font-zar">
+                                        نظر (لږترلږه 10 توري)
+                                    </label>
+                                    <textarea
+                                        name="comment"
+                                        className={`w-full p-3 sm:p-4 border ${
+                                            errors.comment
+                                                ? "border-red-500 focus:ring-red-300"
+                                                : "border-gray-300 focus:ring-secondary-300"
+                                        } rounded-2xl min-h-[120px] sm:min-h-[140px] focus:ring-2 focus:border-secondary-500 transition-all bg-white/90 backdrop-blur-sm text-sm sm:text-base`}
+                                        value={data.comment}
+                                        onChange={(e) => {
+                                            setData("comment", e.target.value);
+                                            setError("");
+                                        }}
+                                        placeholder="دلته خپل نظر ولیکئ..."
+                                        required
+                                    ></textarea>
+                                    <div className="flex justify-between items-center mt-2">
+                                        <div className="text-xs sm:text-sm text-gray-500">
+                                            {data.comment.length}/1000 توري
+                                        </div>
+                                        <div
+                                            className={`text-xs sm:text-sm ${
+                                                data.comment.length >= 10
+                                                    ? "text-green-600"
+                                                    : "text-red-500"
+                                            }`}
+                                        >
+                                            {data.comment.length >= 10
+                                                ? "✓ کافي"
+                                                : `${
+                                                      10 - data.comment.length
+                                                  } نور توري ته اړتیا`}
+                                        </div>
+                                    </div>
+                                    {errors.comment && (
+                                        <motion.p
+                                            className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-lg"
+                                            initial={{ opacity: 0, y: -5 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                        >
+                                            {errors.comment}
+                                        </motion.p>
+                                    )}
+                                </motion.div>
                             </div>
 
                             <motion.div
-                                className="flex justify-end gap-4 mt-6"
+                                className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 mt-8 sm:mt-10"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.5 }}
                             >
                                 <motion.button
                                     type="button"
-                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl border border-gray-300 hover:bg-gray-100 transition"
+                                    className="font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-zar text-base sm:text-lg border-2 border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-300 order-2 sm:order-1"
                                     onClick={() => {
                                         setShowModal(false);
                                         setError("");
-                                        setFormData({ comment: "" });
+                                        reset();
                                         setSelectedRating(0);
                                     }}
-                                    whileHover={{ backgroundColor: "#f3f4f6" }}
-                                    whileTap={{ scale: 0.95 }}
+                                    whileHover={{ scale: 1.02, y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
                                     لغو کول
                                 </motion.button>
                                 <motion.button
                                     type="submit"
-                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-600 text-white hover:bg-secondary-700 transition"
-                                    whileHover={{ backgroundColor: "#4338ca" }}
-                                    whileTap={{ scale: 0.95 }}
+                                    disabled={processing || isSubmitting}
+                                    className={`font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-zar text-base sm:text-lg transition-all duration-300 order-1 sm:order-2 ${
+                                        processing || isSubmitting
+                                            ? "bg-gray-400 cursor-not-allowed"
+                                            : "bg-gradient-to-r from-secondary-600 to-tertiary-600 text-white hover:from-secondary-700 hover:to-tertiary-700 shadow-xl hover:shadow-2xl"
+                                    }`}
+                                    whileHover={
+                                        !processing && !isSubmitting
+                                            ? { scale: 1.02, y: -2 }
+                                            : {}
+                                    }
+                                    whileTap={
+                                        !processing && !isSubmitting
+                                            ? { scale: 0.98 }
+                                            : {}
+                                    }
                                 >
-                                    ارزونه ثبت کړئ
+                                    {processing || isSubmitting
+                                        ? "ثبتیږي..."
+                                        : "ارزونه ثبت کړئ"}
                                 </motion.button>
                             </motion.div>
                         </form>
@@ -478,56 +670,112 @@ const Post = () => {
 
     return (
         <SiteLayout title="پوسټونه - خیاط ماسټر">
-            {/* Hero Section */}
+            {/* Enhanced Hero Section */}
             <motion.section
-                className="text-primary-900 py-10 lg:px-10 flex flex-col md:flex-row items-center"
+                className="relative py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-primary-50 via-white to-secondary-50 overflow-hidden"
                 initial="hidden"
                 animate="visible"
                 variants={fadeIn}
             >
-                <motion.div className=" mx-auto px-4  w-1/2" variants={fadeIn}>
-                    <motion.h1
-                        className="text-3xl md:text-5xl font-bold font-zar mb-4"
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        زموږ بلاګ
-                    </motion.h1>
-                    <motion.p
-                        className="text-xl font-zar md:text-2xl  max-w-3xl mx-auto"
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                    >
-                        د خیاطۍ، فیشن او د جامو په اړه تازه معلومات ترلاسه کړئ.
-                    </motion.p>
-                </motion.div>
-                <motion.div
-                    className="w-1/2"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.4, type: "spring", damping: 15 }}
-                >
-                    <img src="./imgs/blog.jpg" alt="posts" />
-                </motion.div>
+                {/* Background Elements */}
+                <div className="absolute inset-0 overflow-hidden">
+                    <motion.div
+                        className="absolute top-10 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-gradient-to-br from-secondary-200 to-tertiary-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"
+                        animate={{
+                            x: [0, 50, 0],
+                            y: [0, -50, 0],
+                            scale: [1, 1.1, 1],
+                        }}
+                        transition={{
+                            duration: 20,
+                            repeat: Infinity,
+                            ease: "linear",
+                        }}
+                    />
+                    <motion.div
+                        className="absolute bottom-10 right-10 w-64 sm:w-96 h-64 sm:h-96 bg-gradient-to-br from-primary-200 to-secondary-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"
+                        animate={{
+                            x: [0, -60, 0],
+                            y: [0, 60, 0],
+                            scale: [1, 0.9, 1],
+                        }}
+                        transition={{
+                            duration: 25,
+                            repeat: Infinity,
+                            ease: "linear",
+                        }}
+                    />
+                </div>
+
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+                        <motion.div
+                            className="lg:w-1/2 text-center lg:text-right"
+                            variants={fadeIn}
+                        >
+                            <motion.h1
+                                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-zar mb-4 sm:mb-6 bg-gradient-to-r from-primary-800 via-secondary-600 to-tertiary-600 bg-clip-text text-transparent leading-tight"
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                زموږ بلاګ
+                            </motion.h1>
+                            <motion.p
+                                className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-zar text-primary-700 leading-relaxed max-w-2xl mx-auto lg:mx-0"
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                            >
+                                د خیاطۍ، فیشن او د جامو په اړه تازه معلومات
+                                ترلاسه کړئ.
+                            </motion.p>
+                        </motion.div>
+                        <motion.div
+                            className="lg:w-1/2"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{
+                                delay: 0.4,
+                                type: "spring",
+                                damping: 15,
+                            }}
+                        >
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-gradient-to-br from-secondary-400/20 to-tertiary-400/20 rounded-3xl transform rotate-3 scale-105"></div>
+                                <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/30">
+                                    <motion.img
+                                        src="./imgs/blog.jpg"
+                                        alt="posts"
+                                        className="w-full h-auto rounded-2xl shadow-lg"
+                                        whileHover={{ scale: 1.02 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 300,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
             </motion.section>
 
-            {/* Search and Filter Section */}
+            {/* Enhanced Search and Filter Section */}
             <motion.section
-                className="py-8 bg-gray-100"
+                className="py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-primary-25 to-white"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
             >
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div
-                        className="bg-white p-6 rounded-lg border"
+                        className="bg-white/80 backdrop-blur-sm p-6 sm:p-8 lg:p-10 rounded-3xl border border-white/30 shadow-2xl"
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.6 }}
                     >
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                             <motion.div
                                 className="relative"
                                 whileHover={{ scale: 1.02 }}
@@ -536,17 +784,17 @@ const Post = () => {
                                 <input
                                     type="text"
                                     placeholder="د خیاط نوم له مخې لټون"
-                                    className="w-full p-3 border border-gray-300 outline-none rounded-md pr-10 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
+                                    className="w-full p-3 sm:p-4 border border-gray-300 outline-none rounded-2xl pr-12 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all shadow-lg bg-white/90 backdrop-blur-sm text-sm sm:text-base"
                                     value={searchTerm}
                                     onChange={(e) =>
                                         setSearchTerm(e.target.value)
                                     }
                                 />
-                                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400" />
+                                <FaSearch className="absolute right-4 top-1/2 transform -translate-y-1/2 text-primary-400 text-lg" />
                             </motion.div>
 
                             <motion.select
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all"
+                                className="w-full p-3 sm:p-4 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all shadow-lg bg-white/90 backdrop-blur-sm text-sm sm:text-base"
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
                                 whileHover={{ scale: 1.02 }}
@@ -560,176 +808,193 @@ const Post = () => {
                                 ))}
                             </motion.select>
 
-                            <div className="flex gap-2">
-                                <button
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
+                                <motion.button
                                     onClick={handleFilter}
-                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl flex-1 bg-secondary-600 text-primary-50  hover:bg-secondary-700 transition"
+                                    className="font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-2xl font-zar text-base sm:text-lg flex-1 bg-gradient-to-r from-secondary-600 to-tertiary-600 text-white hover:from-secondary-700 hover:to-tertiary-700 transition-all duration-300 shadow-xl hover:shadow-2xl"
+                                    whileHover={{ scale: 1.02, y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
                                     لټون
-                                </button>
-                                <button
+                                </motion.button>
+                                <motion.button
                                     onClick={resetFilters}
-                                    className="font-bold px-6 py-3 rounded-md font-zar text-xl flex-1 bg-tertiary-600 text-primary-50  hover:bg-tertiary-700 transition"
+                                    className="font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-2xl font-zar text-base sm:text-lg flex-1 bg-white border-2 border-tertiary-600 text-tertiary-600 hover:bg-tertiary-600 hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl"
+                                    whileHover={{ scale: 1.02, y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
                                     بیا تنظیم
-                                </button>
+                                </motion.button>
                             </div>
                         </div>
                     </motion.div>
                 </div>
             </motion.section>
 
-            {/* Posts Grid */}
-            <div className="container mx-auto px-4 py-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Enhanced Posts Grid */}
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    animate="visible"
+                >
                     {currentPosts.map((post) => (
                         <motion.div
                             key={post.id}
-                            className="bg-primary-50 w-96 rounded-lg border overflow-hidden"
+                            className="bg-white/90 backdrop-blur-sm rounded-2xl border border-white/40 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 max-w-sm mx-auto w-full"
                             variants={cardVariants}
                             whileHover="hover"
                         >
-                            <motion.img
-                                src={post.image || "/placeholder.svg"}
-                                alt={post.description}
-                                className="w-full h-44 object-cover"
-                                whileHover={{ scale: 1.05 }}
-                                transition={{ duration: 0.3 }}
-                            />
-                            <div className="p-6">
-                                <div className="grid grid-cols-2 gap-4 mb-4">
-                                    <motion.div
-                                        className="flex items-center gap-2 text-gray-600"
-                                        whileHover={{ x: 5 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 400,
-                                        }}
-                                    >
-                                        <FaUser className="text-primary-600" />
-                                        <span>{post.author}</span>
-                                    </motion.div>
-                                    <motion.div
-                                        className="flex items-center"
-                                        whileHover={{ x: 5 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 400,
-                                        }}
-                                    >
-                                        <FaCalendarAlt className="ml-1 text-primary-500" />
-                                        <span className="font-medium ml-2">
-                                            نېټه:
+                            <div className="relative overflow-hidden">
+                                <motion.img
+                                    src={post.image || "/placeholder.svg"}
+                                    alt={post.description}
+                                    className="w-full h-36 sm:h-40 object-cover"
+                                    whileHover={{ scale: 1.05 }}
+                                    transition={{ duration: 0.3 }}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+                            </div>
+                            <div className="p-3 sm:p-4">
+                                {/* Compact Header */}
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-1">
+                                        <FaUser className="text-primary-600 text-xs" />
+                                        <span className="text-xs font-medium text-gray-700">
+                                            {post.author}
                                         </span>
-                                        <span>{new Date(post.date).toLocaleDateString()}</span>
-                                    </motion.div>
-
-                                    <motion.div
-                                        className="flex items-center"
-                                        whileHover={{ x: 5 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 400,
-                                        }}
-                                    >
-                                        <span className="font-medium ml-2">
-                                            درجه:
-                                        </span>
-                                        {renderStarRating(
-                                            post,
-                                            post.rating || 0,
-                                            true
-                                        )}
-                                        <span className="mr-2">
-                                            ({post.rating ? post.rating.toFixed(1) : 0}/5)
-                                        </span>
-                                    </motion.div>
+                                    </div>
                                     {post.category && (
-                                        <motion.div
-                                            className="flex items-center"
-                                            whileHover={{ x: 5 }}
-                                            transition={{
-                                                type: "spring",
-                                                stiffness: 400,
-                                            }}
-                                        >
-                                            <span className="font-medium ml-2">
-                                                کټګوري:
-                                            </span>
-                                            <span className="text-tertiary-700 px-2 py-1 rounded-md">
-                                                {post.category}
-                                            </span>
-                                        </motion.div>
+                                        <span className="bg-gradient-to-r from-tertiary-100 to-secondary-100 text-tertiary-700 px-2 py-1 rounded-full text-xs font-medium">
+                                            {post.category}
+                                        </span>
                                     )}
                                 </div>
 
-                                <motion.h3
-                                    className="text-2xl font-zar font-bold text-tertiary-700 mb-2"
-                                    whileHover={{ x: 5 }}
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 400,
-                                    }}
-                                >
-                                    {post.category}:
-                                </motion.h3>
-                                <motion.p
-                                    className="text-primary-700 mb-4"
-                                    initial={{ opacity: 0.8 }}
-                                    whileHover={{ opacity: 1 }}
-                                >
+                                {/* Title */}
+                                <h3 className="text-sm sm:text-base font-zar font-bold text-tertiary-700 mb-2 line-clamp-2">
+                                    {post.category}
+                                </h3>
+
+                                {/* Description */}
+                                <p className="text-primary-700 mb-3 text-xs sm:text-sm leading-relaxed line-clamp-2">
                                     {post.description}
-                                </motion.p>
-                                <div className="flex justify-between text-sm text-gray-500">
-                                    <span>Comments: {post.comments}</span>
-                                    <span>Views: {post.views}</span>
+                                </p>
+
+                                {/* Footer */}
+                                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                                    <div className="flex items-center gap-1 text-gray-500">
+                                        <FaCalendarAlt className="text-primary-500 text-xs" />
+                                        <span className="text-xs">
+                                            {new Date(
+                                                post.date
+                                            ).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div
+                                            className={`flex items-center gap-1 ${
+                                                justRatedPosts.has(post.id)
+                                                    ? "opacity-50"
+                                                    : ""
+                                            }`}
+                                            key={`rating-${post.id}-${forceUpdate}`}
+                                        >
+                                            {renderStarRating(
+                                                post,
+                                                post.rating || 0,
+                                                true
+                                            )}
+                                            {justRatedPosts.has(post.id) && (
+                                                <span className="text-xs text-green-600 font-medium">
+                                                    ✓ ریټ شوی
+                                                </span>
+                                            )}
+                                            <span className="text-xs text-gray-600">
+                                                (
+                                                {post.rating
+                                                    ? post.rating.toFixed(1)
+                                                    : 0}
+                                                )
+                                            </span>
+                                        </div>
+                                        <span className="flex items-center gap-1 text-xs text-gray-500">
+                                            <span className="bg-secondary-100 text-secondary-700 px-1.5 py-0.5 rounded-full text-xs">
+                                                {post.comments}
+                                            </span>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>
                     ))}
-                </div>
+                </motion.div>
 
-                {/* Pagination Controls */}
+                {/* Enhanced Pagination Controls */}
                 {totalPages > 1 && (
-                    <div className="flex justify-center items-center mt-8 gap-2">
-                        <button
+                    <motion.div
+                        className="flex justify-center items-center mt-12 sm:mt-16 gap-2 sm:gap-3"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        <motion.button
                             onClick={prevPage}
                             disabled={currentPage === 1}
-                            className={`p-2 rounded-md ${
+                            className={`p-2 sm:p-3 rounded-2xl transition-all duration-300 ${
                                 currentPage === 1
-                                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                    : 'bg-secondary-600 text-white hover:bg-secondary-700'
+                                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                    : "bg-gradient-to-r from-secondary-600 to-tertiary-600 text-white hover:from-secondary-700 hover:to-tertiary-700 shadow-lg hover:shadow-xl"
                             }`}
+                            whileHover={
+                                currentPage !== 1 ? { scale: 1.05, y: -2 } : {}
+                            }
+                            whileTap={currentPage !== 1 ? { scale: 0.95 } : {}}
                         >
-                            <FaChevronLeft />
-                        </button>
-                        
-                        {[...Array(totalPages)].map((_, index) => (
-                            <button
-                                key={index + 1}
-                                onClick={() => paginate(index + 1)}
-                                className={`px-4 py-2 rounded-md ${
-                                    currentPage === index + 1
-                                        ? 'bg-secondary-600 text-white'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                }`}
-                            >
-                                {index + 1}
-                            </button>
-                        ))}
+                            <FaChevronLeft className="text-sm sm:text-base" />
+                        </motion.button>
 
-                        <button
+                        <div className="flex gap-1 sm:gap-2 max-w-xs overflow-x-auto">
+                            {[...Array(totalPages)].map((_, index) => (
+                                <motion.button
+                                    key={index + 1}
+                                    onClick={() => paginate(index + 1)}
+                                    className={`px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-300 text-sm sm:text-base font-medium ${
+                                        currentPage === index + 1
+                                            ? "bg-gradient-to-r from-secondary-600 to-tertiary-600 text-white shadow-lg"
+                                            : "bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-gray-100 border border-gray-200"
+                                    }`}
+                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    {index + 1}
+                                </motion.button>
+                            ))}
+                        </div>
+
+                        <motion.button
                             onClick={nextPage}
                             disabled={currentPage === totalPages}
-                            className={`p-2 rounded-md ${
+                            className={`p-2 sm:p-3 rounded-2xl transition-all duration-300 ${
                                 currentPage === totalPages
-                                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                    : 'bg-secondary-600 text-white hover:bg-secondary-700'
+                                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                    : "bg-gradient-to-r from-secondary-600 to-tertiary-600 text-white hover:from-secondary-700 hover:to-tertiary-700 shadow-lg hover:shadow-xl"
                             }`}
+                            whileHover={
+                                currentPage !== totalPages
+                                    ? { scale: 1.05, y: -2 }
+                                    : {}
+                            }
+                            whileTap={
+                                currentPage !== totalPages
+                                    ? { scale: 0.95 }
+                                    : {}
+                            }
                         >
-                            <FaChevronRight />
-                        </button>
-                    </div>
+                            <FaChevronRight className="text-sm sm:text-base" />
+                        </motion.button>
+                    </motion.div>
                 )}
             </div>
 

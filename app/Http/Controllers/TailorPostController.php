@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TailorPost;
+use App\Http\Requests\TailorPostRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +15,7 @@ class TailorPostController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             // If user is admin, show all posts
             if ($user->role->value === 'admin') {
                 $posts = TailorPost::with('user')->latest()->get();
@@ -22,7 +23,7 @@ class TailorPostController extends Controller
                 // For tailors, only show their own posts
                 $posts = TailorPost::with('user')->where('user_id', $user->id)->latest()->get();
             }
-            
+
             return Inertia::render('System/TailorPost', [
                 'posts' => $posts
             ]);
@@ -32,7 +33,7 @@ class TailorPostController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(TailorPostRequest $request)
     {
         // Check if user has reached the post limit
         $postCount = TailorPost::where('user_id', auth()->id())->count();
@@ -40,19 +41,14 @@ class TailorPostController extends Controller
             return back()->with('error', 'You needed posts not allowed other');
         }
 
-        $request->validate([
-            'description' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'category' => 'required|string',
-        ]);
-
+        $validated = $request->validated();
         $imagePath = $request->file('image')->store('posts', 'public');
 
-        $post = TailorPost::create([
+        TailorPost::create([
             'user_id' => auth()->id(),
-            'description' => $request->description,
+            'description' => $validated['description'],
             'image' => $imagePath,
-            'category' => $request->category,
+            'category' => $validated['category'],
             'date' => now(),
             'author' => auth()->user()->name,
             'email' => auth()->user()->email,
@@ -61,14 +57,10 @@ class TailorPostController extends Controller
         return redirect()->route('tailor-posts.index')->with('success', 'Post created successfully.');
     }
 
-    public function update(Request $request, TailorPost $tailorPost)
+    public function update(TailorPostRequest $request, TailorPost $tailorPost)
     {
         try {
-            $validated = $request->validate([
-                'description' => 'required|min:10|max:2000',
-                'category' => 'required|in:Cloths,Uniform,Kortai,Sadrai',
-                'image' => 'nullable|image|max:2048'
-            ]);
+            $validated = $request->validated();
 
             $data = [
                 'description' => $validated['description'],
@@ -99,7 +91,7 @@ class TailorPostController extends Controller
             if ($tailorPost->image) {
                 Storage::disk('public')->delete($tailorPost->image);
             }
-            
+
             $tailorPost->delete();
             return redirect()->back()->with('success', 'Post deleted successfully');
         } catch (\Exception $e) {

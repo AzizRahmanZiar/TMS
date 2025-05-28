@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use App\Notifications\NewUserRegistration;
@@ -25,38 +26,14 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(RegisterRequest $request): RedirectResponse
     {
         // Check if trying to register as admin when one already exists
         if ($request->role === 'admin' && User::where('role', 'admin')->exists()) {
-            return back()->withErrors(['role' => 'Only one admin is allowed in the system.']);
+            return back()->withErrors(['role' => 'یوازې یو مدیر د سیسټم کې اجازه لري.']);
         }
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', Rules\Password::defaults()],
-            'role' => 'required|string',
-            'experience' => 'nullable|integer',
-            'career' => 'nullable|string',
-            'previous_work' => 'nullable|string',
-            'certifications' => 'nullable|string',
-            'skills' => 'nullable|string',
-            'work_availability' => 'nullable|string',
-            'tailoring_name' => 'nullable|string',
-            'tailoring_address' => 'nullable|string',
-            'tailor_count' => 'nullable|integer',
-            'published_year' => 'nullable|integer',
-            'contact_number' => 'nullable|string',
-            'shop_email' => 'nullable|email',
-            'working_hours' => 'nullable|string',
-            'services' => 'nullable|string',
-            'payment_methods' => 'nullable|string',
-            'social_links' => 'nullable|string',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'shop_images' => 'nullable|array',
-            'shop_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
+        $validated = $request->validated();
 
         $user = User::create([
             'name' => $validated['name'],

@@ -308,6 +308,9 @@ const Registration = ({ hasAdmin }) => {
                                             <option value="admin">مدیر</option>
                                         )}
                                         <option value="tailor">خیاط</option>
+                                        <option value="shopkeeper">
+                                            دوکاندار
+                                        </option>
                                         <option value="customer">مشتری</option>
                                     </select>
                                     {errors.role && (
@@ -528,7 +531,9 @@ const Registration = ({ hasAdmin }) => {
                                                     : "border-gray-200"
                                             }`}
                                         >
-                                            <option value="">وخت انتخاب کړئ</option>
+                                            <option value="">
+                                                وخت انتخاب کړئ
+                                            </option>
                                             <option value="Full-time">
                                                 مکمل وخت
                                             </option>
@@ -875,14 +880,20 @@ const Registration = ({ hasAdmin }) => {
                                         <input
                                             type="url"
                                             name="social_links.facebook"
-                                            value={formData.social_links.facebook}
+                                            value={
+                                                formData.social_links.facebook
+                                            }
                                             onChange={handleChange}
                                             className="w-full p-3 border text-xl border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary-100 focus:border-secondary-500 transition-all shadow-input"
                                             placeholder="د فیسبوک پاڼه URL"
                                         />
                                         {errors["social_links.facebook"] && (
                                             <p className="text-red-500 text-sm mt-1">
-                                                {errors["social_links.facebook"]}
+                                                {
+                                                    errors[
+                                                        "social_links.facebook"
+                                                    ]
+                                                }
                                             </p>
                                         )}
                                     </div>
@@ -895,14 +906,20 @@ const Registration = ({ hasAdmin }) => {
                                         <input
                                             type="url"
                                             name="social_links.instagram"
-                                            value={formData.social_links.instagram}
+                                            value={
+                                                formData.social_links.instagram
+                                            }
                                             onChange={handleChange}
                                             className="w-full text-xl p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary-100 focus:border-secondary-500 transition-all shadow-input"
                                             placeholder="د انستګرام پروفایل URL"
                                         />
                                         {errors["social_links.instagram"] && (
                                             <p className="text-red-500 text-sm mt-1">
-                                                {errors["social_links.instagram"]}
+                                                {
+                                                    errors[
+                                                        "social_links.instagram"
+                                                    ]
+                                                }
                                             </p>
                                         )}
                                     </div>
@@ -915,14 +932,20 @@ const Registration = ({ hasAdmin }) => {
                                         <input
                                             type="url"
                                             name="social_links.telegram"
-                                            value={formData.social_links.telegram}
+                                            value={
+                                                formData.social_links.telegram
+                                            }
                                             onChange={handleChange}
                                             className="w-full text-xl p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary-100 focus:border-secondary-500 transition-all shadow-input"
                                             placeholder="د ټلګرام چینل URL"
                                         />
                                         {errors["social_links.telegram"] && (
                                             <p className="text-red-500 text-sm mt-1">
-                                                {errors["social_links.telegram"]}
+                                                {
+                                                    errors[
+                                                        "social_links.telegram"
+                                                    ]
+                                                }
                                             </p>
                                         )}
                                     </div>
@@ -947,15 +970,13 @@ const Registration = ({ hasAdmin }) => {
                             </span>
                         </button>
 
-                        <div className='flex items-center justify-center text-lg'>
-                            که مخکې حساب لرئ، 
+                        <div className="flex items-center justify-center text-lg">
+                            که مخکې حساب لرئ،
                             <Link
                                 href={route("login")}
                                 className="text-primary-600 hover:text-primary-700 font-medium mr-1"
                             >
-                                <span>
-                                    نو داخل شئ
-                                </span>
+                                <span>نو داخل شئ</span>
                             </Link>
                         </div>
                     </form>

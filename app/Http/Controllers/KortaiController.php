@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kortai;
+use App\Http\Requests\KortaiRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -26,23 +27,9 @@ class KortaiController extends Controller
     }
 
     // Store a new kortai
-    public function store(Request $request)
+    public function store(KortaiRequest $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20',
-            'money' => 'required|numeric',
-            'shana' => 'required|string',
-            'tenna' => 'required|string',
-            'lstoony_ojd' => 'required|string',
-            'lstoony_browali' => 'required|string',
-            'ghara_dol' => 'required|string',
-            'zegar' => 'required|string',
-            'tidad' => 'required|integer',
-            'rawrul_tareekh' => 'required|date',
-            'tasleem_tareekh' => 'nullable|date|after:rawrul_tareekh',
-        ]);
-
+        $validated = $request->validated();
         $validated['user_id'] = auth()->id();
         Kortai::create($validated);
 
@@ -72,27 +59,13 @@ class KortaiController extends Controller
     }
 
     // Update kortai
-    public function update(Request $request, Kortai $kortai)
+    public function update(KortaiRequest $request, Kortai $kortai)
     {
         if ($kortai->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
 
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20',
-            'money' => 'required|numeric',
-            'shana' => 'required|string',
-            'tenna' => 'required|string',
-            'lstoony_ojd' => 'required|string',
-            'lstoony_browali' => 'required|string',
-            'ghara_dol' => 'required|string',
-            'zegar' => 'required|string',
-            'tidad' => 'required|integer',
-            'rawrul_tareekh' => 'required|date',
-            'tasleem_tareekh' => 'nullable|date|after:rawrul_tareekh',
-        ]);
-
+        $validated = $request->validated();
         $kortai->update($validated);
 
         return redirect()->route('kortai.index')->with('success', 'Kortai updated successfully.');

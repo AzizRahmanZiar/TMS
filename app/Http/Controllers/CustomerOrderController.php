@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CustomerOrder;
+use App\Http\Requests\CustomerOrderRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -35,7 +36,7 @@ class CustomerOrderController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(CustomerOrderRequest $request)
     {
         \Log::info('Order creation request started:', [
             'request_data' => $request->all(),
@@ -48,11 +49,7 @@ class CustomerOrderController extends Controller
 
         try {
             \Log::info('Validating request data');
-            $validated = $request->validate([
-                'phone' => 'required|string',
-                'address' => 'required|string',
-                'tailor_id' => 'required|exists:users,id',
-            ]);
+            $validated = $request->validated();
             \Log::info('Request validation passed', ['validated_data' => $validated]);
 
             // Verify the tailor exists and is a Tailor
@@ -67,6 +64,16 @@ class CustomerOrderController extends Controller
             }
             \Log::info('Tailor verification passed', ['tailor' => $tailor->toArray()]);
 
+            // Check if tailor can accept more orders this week
+            if (!$tailor->canAcceptMoreOrders()) {
+                \Log::warning('Tailor has reached weekly order limit', [
+                    'tailor_id' => $tailor->id,
+                    'weekly_limit' => $tailor->weekly_order_limit,
+                    'current_week_orders' => $tailor->getCurrentWeekOrderCount()
+                ]);
+                return back()->with('error', 'دا خیاط د دغه اونۍ لپاره خپل حد ته رسیدلی. مهرباني وکړئ بل خیاط وټاکئ یا راتلونکې اونۍ هڅه وکړئ.');
+            }
+
             // Create the order with pending status and not visible
             \Log::info('Creating order');
             $order = CustomerOrder::create([
@@ -79,6 +86,9 @@ class CustomerOrderController extends Controller
                 'created_at' => now(),
             ]);
             \Log::info('Order created successfully', ['order' => $order->toArray()]);
+
+            // Update tailor's weekly order tracking
+            $tailor->updateWeeklyOrderTracking();
 
             return redirect()->route('home')->with('success', 'فرمایش مو په بریالیتوب سره درکړل شو. د خیاط د تایید انتظار کول');
         } catch (\Exception $e) {
@@ -94,7 +104,7 @@ class CustomerOrderController extends Controller
     public function update(Request $request, CustomerOrder $order)
     {
         $user = auth()->user();
-        
+
         // Check if the user has permission to update this order
         if ($user->role === 'Tailor' && $order->tailor_id !== $user->id) {
             return redirect()->back()->with('error', 'Unauthorized');
@@ -153,7 +163,7 @@ class CustomerOrderController extends Controller
     public function show(CustomerOrder $order)
     {
         $user = auth()->user();
-        
+
         // Check if the user has permission to view this order
         if ($user->role === 'Tailor' && $order->tailor_id !== $user->id) {
             return redirect()->back()->with('error', 'Unauthorized');

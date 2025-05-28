@@ -11,15 +11,33 @@ const Navbar = () => {
     const [showProfileModal, setShowProfileModal] = useState(false);
     const profileRef = useRef(null);
 
-    // Load active path from localStorage
-    const [activePath, setActivePath] = useState(
-        localStorage.getItem("activeNavbarPath") || "/"
-    );
+    // Load active path from current URL
+    const [activePath, setActivePath] = useState(window.location.pathname);
 
     useEffect(() => {
+        // Update active path when URL changes (Inertia navigation)
+        setActivePath(window.location.pathname);
         // Save to localStorage whenever activePath changes
-        localStorage.setItem("activeNavbarPath", activePath);
-    }, [activePath]);
+        localStorage.setItem("activeNavbarPath", window.location.pathname);
+    }, [url]);
+
+    useEffect(() => {
+        // Set initial active path from current URL
+        setActivePath(window.location.pathname);
+
+        // Listen for URL changes (for SPA navigation)
+        const handleLocationChange = () => {
+            setActivePath(window.location.pathname);
+            localStorage.setItem("activeNavbarPath", window.location.pathname);
+        };
+
+        // Listen for popstate events (back/forward navigation)
+        window.addEventListener("popstate", handleLocationChange);
+
+        return () => {
+            window.removeEventListener("popstate", handleLocationChange);
+        };
+    }, []);
 
     // Add click outside handler for profile modal
     useEffect(() => {
@@ -169,6 +187,7 @@ const Navbar = () => {
                             { href: "/post", text: "پوسټونه" },
                             { href: "/order", text: "فرمایش" },
                             { href: "/shop", text: "دوکانونه" },
+                            { href: "/adv", text: "اعلانات" },
                             { href: "/contact", text: "اړیکه" },
                             { href: "/tailor", text: "خیاطان" },
                         ].map((link, index) => (
@@ -207,7 +226,8 @@ const Navbar = () => {
                         {user ? (
                             <>
                                 {(user.role === "admin" ||
-                                    user.role === "tailor") && (
+                                    user.role === "tailor" ||
+                                    user.role === "shopkeeper") && (
                                     <motion.div
                                         variants={buttonVariants}
                                         whileHover="hover"
@@ -230,7 +250,9 @@ const Navbar = () => {
                                     <div className="relative" ref={profileRef}>
                                         <button
                                             onClick={() =>
-                                                setShowProfileModal(!showProfileModal)
+                                                setShowProfileModal(
+                                                    !showProfileModal
+                                                )
                                             }
                                             className="p-2 rounded-full bg-primary-600 hover:bg-primary-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300"
                                         >
@@ -238,14 +260,17 @@ const Navbar = () => {
                                                 {user?.profile_image ? (
                                                     <img
                                                         src={`/storage/${user.profile_image}`}
-                                                        alt={user.name || "User"}
+                                                        alt={
+                                                            user.name || "User"
+                                                        }
                                                         className="w-full h-full object-cover"
                                                         onError={(e) => {
                                                             console.error(
                                                                 "Profile image failed to load:",
                                                                 user.profile_image
                                                             );
-                                                            e.target.onerror = null;
+                                                            e.target.onerror =
+                                                                null;
                                                             e.target.src =
                                                                 "/placeholder.svg";
                                                         }}
@@ -266,10 +291,13 @@ const Navbar = () => {
                                                                 <img
                                                                     src={`/storage/${user.profile_image}`}
                                                                     alt={
-                                                                        user.name || "User"
+                                                                        user.name ||
+                                                                        "User"
                                                                     }
                                                                     className="w-full h-full object-cover"
-                                                                    onError={(e) => {
+                                                                    onError={(
+                                                                        e
+                                                                    ) => {
                                                                         e.target.onerror =
                                                                             null;
                                                                         e.target.src =
@@ -290,18 +318,66 @@ const Navbar = () => {
                                                     </div>
                                                 </div>
                                                 <div className="p-2">
-                                                    <Link
-                                                        href={route("logout")}
-                                                        method="get"
-                                                        as="button"
-                                                        onClick={() =>
-                                                            setShowProfileModal(false)
-                                                        }
-                                                        className="w-full text-xl flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                                    <form
+                                                        action={route("logout")}
+                                                        method="POST"
+                                                        className="w-full"
+                                                        onSubmit={async (e) => {
+                                                            e.preventDefault();
+                                                            setShowProfileModal(
+                                                                false
+                                                            );
+
+                                                            // Get fresh CSRF token
+                                                            try {
+                                                                const tokenResponse =
+                                                                    await fetch(
+                                                                        "/refresh-csrf"
+                                                                    );
+                                                                const tokenData =
+                                                                    await tokenResponse.json();
+
+                                                                const formData =
+                                                                    new FormData();
+                                                                formData.append(
+                                                                    "_token",
+                                                                    tokenData.token
+                                                                );
+
+                                                                const response =
+                                                                    await fetch(
+                                                                        route(
+                                                                            "logout"
+                                                                        ),
+                                                                        {
+                                                                            method: "POST",
+                                                                            body: formData,
+                                                                            headers:
+                                                                                {
+                                                                                    "X-Requested-With":
+                                                                                        "XMLHttpRequest",
+                                                                                },
+                                                                        }
+                                                                    );
+
+                                                                // Always redirect regardless of response
+                                                                window.location.href =
+                                                                    "/";
+                                                            } catch (error) {
+                                                                // If anything fails, just redirect
+                                                                window.location.href =
+                                                                    "/";
+                                                            }
+                                                        }}
                                                     >
-                                                        <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
-                                                        وتـــــــل
-                                                    </Link>
+                                                        <button
+                                                            type="submit"
+                                                            className="w-full text-xl flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                                        >
+                                                            <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
+                                                            وتـــــــل
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         )}
@@ -383,6 +459,7 @@ const Navbar = () => {
                                     { href: "/post", text: "پوسټونه" },
                                     { href: "/order", text: "فرمایش" },
                                     { href: "/shop", text: "دوکانونه" },
+                                    { href: "/adv", text: "اعلانات" },
                                     { href: "/contact", text: "اړیکه" },
                                     { href: "/tailor", text: "خیاطان" },
                                 ].map((link, index) => (
@@ -411,14 +488,17 @@ const Navbar = () => {
                                 {user ? (
                                     <>
                                         {(user.role === "admin" ||
-                                            user.role === "tailor") && (
+                                            user.role === "tailor" ||
+                                            user.role === "shopkeeper") && (
                                             <motion.div
                                                 variants={mobileItemVariants}
                                                 className="mt-2"
                                             >
                                                 <Link
                                                     href={route("dashboard")}
-                                                    onClick={() => setIsOpen(false)}
+                                                    onClick={() =>
+                                                        setIsOpen(false)
+                                                    }
                                                     className="block w-full text-center font-bold font-zar text-xl px-4 py-2 rounded-md transition bg-secondary-600 text-primary-50 hover:bg-secondary-700"
                                                 >
                                                     ډشبورډ
@@ -435,11 +515,18 @@ const Navbar = () => {
                                                         {user?.profile_image ? (
                                                             <img
                                                                 src={`/storage/${user.profile_image}`}
-                                                                alt={user.name || "User"}
+                                                                alt={
+                                                                    user.name ||
+                                                                    "User"
+                                                                }
                                                                 className="w-full h-full object-cover"
-                                                                onError={(e) => {
-                                                                    e.target.onerror = null;
-                                                                    e.target.src = "/placeholder.svg";
+                                                                onError={(
+                                                                    e
+                                                                ) => {
+                                                                    e.target.onerror =
+                                                                        null;
+                                                                    e.target.src =
+                                                                        "/placeholder.svg";
                                                                 }}
                                                             />
                                                         ) : (
@@ -447,20 +534,73 @@ const Navbar = () => {
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-primary-50">{user.name}</p>
-                                                        <p className="text-sm text-primary-200">{user.email}</p>
+                                                        <p className="font-bold text-primary-50">
+                                                            {user.name}
+                                                        </p>
+                                                        <p className="text-sm text-primary-200">
+                                                            {user.email}
+                                                        </p>
                                                     </div>
                                                 </div>
-                                                <Link
-                                                    href={route("logout")}
-                                                    method="get"
-                                                    as="button"
-                                                    onClick={() => setIsOpen(false)}
-                                                    className="flex items-center space-x-2 rtl:space-x-reverse text-primary-50 hover:text-secondary-400"
+                                                <form
+                                                    action={route("logout")}
+                                                    method="POST"
+                                                    onSubmit={async (e) => {
+                                                        e.preventDefault();
+                                                        setIsOpen(false);
+
+                                                        // Get fresh CSRF token
+                                                        try {
+                                                            const tokenResponse =
+                                                                await fetch(
+                                                                    "/refresh-csrf"
+                                                                );
+                                                            const tokenData =
+                                                                await tokenResponse.json();
+
+                                                            const formData =
+                                                                new FormData();
+                                                            formData.append(
+                                                                "_token",
+                                                                tokenData.token
+                                                            );
+
+                                                            const response =
+                                                                await fetch(
+                                                                    route(
+                                                                        "logout"
+                                                                    ),
+                                                                    {
+                                                                        method: "POST",
+                                                                        body: formData,
+                                                                        headers:
+                                                                            {
+                                                                                "X-Requested-With":
+                                                                                    "XMLHttpRequest",
+                                                                            },
+                                                                    }
+                                                                );
+
+                                                            // Always redirect regardless of response
+                                                            window.location.href =
+                                                                "/";
+                                                        } catch (error) {
+                                                            // If anything fails, just redirect
+                                                            window.location.href =
+                                                                "/";
+                                                        }
+                                                    }}
                                                 >
-                                                    <FaSignOutAlt className="text-xl" />
-                                                    <span className="font-bold font-zar text-xl">وتل</span>
-                                                </Link>
+                                                    <button
+                                                        type="submit"
+                                                        className="flex items-center space-x-2 rtl:space-x-reverse text-primary-50 hover:text-secondary-400"
+                                                    >
+                                                        <FaSignOutAlt className="text-xl" />
+                                                        <span className="font-bold font-zar text-xl">
+                                                            وتل
+                                                        </span>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </motion.div>
                                     </>

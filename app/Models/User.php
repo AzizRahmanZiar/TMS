@@ -42,6 +42,9 @@ class User extends Authenticatable
         'payment_methods',
         'shop_images',
         'social_links',
+        'weekly_order_limit',
+        'current_week_orders',
+        'week_start_date',
     ];
 
     /**
@@ -68,12 +71,13 @@ class User extends Authenticatable
             'payment_methods' => 'array',
             'shop_images' => 'array',
             'social_links' => 'array',
+            'week_start_date' => 'date',
         ];
     }
 
     public function hasRole(Roles $role): bool
     {
-        return $this->role === $role->value;
+        return $this->role === $role;
     }
 
     public function isAdmin(): bool
@@ -84,6 +88,11 @@ class User extends Authenticatable
     public function isTailor(): bool
     {
         return $this->hasRole(Roles::TAILOR);
+    }
+
+    public function isShopkeeper(): bool
+    {
+        return $this->hasRole(Roles::SHOPKEEPER);
     }
 
     public function isUser(): bool
@@ -99,5 +108,73 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(TailorPost::class, 'user_id');
+    }
+
+    public function customerOrders()
+    {
+        return $this->hasMany(CustomerOrder::class, 'tailor_id');
+    }
+
+    /**
+     * Get the current week's order count for this tailor
+     */
+    public function getCurrentWeekOrderCount()
+    {
+        $startOfWeek = now()->startOfWeek();
+
+        return $this->customerOrders()
+            ->where('created_at', '>=', $startOfWeek)
+            ->count();
+    }
+
+    /**
+     * Get remaining order capacity for this week
+     */
+    public function getRemainingOrderCapacity()
+    {
+        $currentWeekOrders = $this->getCurrentWeekOrderCount();
+        return max(0, $this->weekly_order_limit - $currentWeekOrders);
+    }
+
+    /**
+     * Check if tailor can accept more orders this week
+     */
+    public function canAcceptMoreOrders()
+    {
+        return $this->getRemainingOrderCapacity() > 0;
+    }
+
+    /**
+     * Update weekly order tracking
+     */
+    public function updateWeeklyOrderTracking()
+    {
+        $startOfWeek = now()->startOfWeek();
+
+        // Reset if it's a new week
+        if (!$this->week_start_date || $this->week_start_date->lt($startOfWeek)) {
+            $this->update([
+                'current_week_orders' => $this->getCurrentWeekOrderCount(),
+                'week_start_date' => $startOfWeek,
+            ]);
+        }
+    }
+
+    /**
+     * Get order statistics for this tailor
+     */
+    public function getOrderStatistics()
+    {
+        $this->updateWeeklyOrderTracking();
+
+        return [
+            'total_orders' => $this->customerOrders()->count(),
+            'current_week_orders' => $this->getCurrentWeekOrderCount(),
+            'weekly_limit' => $this->weekly_order_limit,
+            'remaining_capacity' => $this->getRemainingOrderCapacity(),
+            'can_accept_orders' => $this->canAcceptMoreOrders(),
+            'accepted_orders' => $this->customerOrders()->where('status', 'accepted')->count(),
+            'pending_orders' => $this->customerOrders()->where('status', 'pending')->count(),
+        ];
     }
 }

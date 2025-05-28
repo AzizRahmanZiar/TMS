@@ -24,6 +24,8 @@ const Tailors = ({ tailors }) => {
     const [processedTailors, setProcessedTailors] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedTailor, setSelectedTailor] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const itemsPerPage = 9;
 
     // Process tailor data
@@ -95,6 +97,17 @@ const Tailors = ({ tailors }) => {
             setCurrentPage(page);
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
+    };
+
+    // Modal functions
+    const openModal = (tailor) => {
+        setSelectedTailor(tailor);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedTailor(null);
+        setIsModalOpen(false);
     };
 
     // Animation variants
@@ -205,7 +218,9 @@ const Tailors = ({ tailors }) => {
                                 <FaClock className="text-primary-400" />
                                 <select
                                     value={experience}
-                                    onChange={(e) => setExperience(e.target.value)}
+                                    onChange={(e) =>
+                                        setExperience(e.target.value)
+                                    }
                                     className="flex-1 outline-none bg-transparent"
                                 >
                                     <option value="">ټول تجربې</option>
@@ -251,7 +266,7 @@ const Tailors = ({ tailors }) => {
                     ) : (
                         <>
                             <motion.div
-                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6"
                                 initial="hidden"
                                 animate="visible"
                                 variants={{
@@ -268,145 +283,222 @@ const Tailors = ({ tailors }) => {
                                     paginatedTailors.map((tailor, index) => (
                                         <motion.div
                                             key={index}
-                                            className="bg-white rounded-xl overflow-hidden shadow-lg border border-primary-100 hover:shadow-xl transition duration-300 group"
+                                            className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100/50 backdrop-blur-sm"
                                             variants={cardVariants}
                                             whileHover="hover"
                                             custom={index}
                                         >
-                                            {/* Profile Image Section */}
-                                            <div className="relative h-48 bg-gradient-to-br from-primary-500 to-secondary-500">
-                                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300" />
+                                            {/* Modern Gradient Background */}
+                                            <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-secondary-50 opacity-60"></div>
+
+                                            {/* Profile Image Section - Modern */}
+                                            <div className="relative h-40 bg-gradient-to-br from-primary-400 via-primary-500 to-secondary-500 overflow-hidden">
+                                                {/* Animated Background Pattern */}
+                                                <div className="absolute inset-0 opacity-20">
+                                                    <div className="absolute top-0 left-0 w-32 h-32 bg-white/20 rounded-full -translate-x-16 -translate-y-16 group-hover:scale-150 transition-transform duration-700"></div>
+                                                    <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/10 rounded-full translate-x-12 translate-y-12 group-hover:scale-125 transition-transform duration-500"></div>
+                                                </div>
+
+                                                {/* Profile Image Container */}
                                                 <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden shadow-lg transform group-hover:scale-110 transition-transform duration-300">
-                                                        {tailor.profile_photo_url ? (
-                                                            <img
-                                                                src={tailor.profile_photo_url}
-                                                                alt={tailor.name}
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                        ) : (
-                                                            <div className="w-full h-full bg-white/90 flex items-center justify-center">
-                                                                <FaUser className="text-5xl text-primary-500" />
+                                                    <div className="relative">
+                                                        <div className="w-24 h-24 rounded-2xl border-4 border-white/30 overflow-hidden shadow-2xl transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 bg-white/95 backdrop-blur-sm">
+                                                            {tailor.profile_photo_url ? (
+                                                                <img
+                                                                    src={
+                                                                        tailor.profile_photo_url
+                                                                    }
+                                                                    alt={
+                                                                        tailor.name
+                                                                    }
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                                                                    <FaUser className="text-2xl text-primary-500" />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        {/* Floating Badge */}
+                                                        {tailor.has_shop && (
+                                                            <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-secondary-400 to-secondary-500 rounded-full flex items-center justify-center shadow-lg">
+                                                                <FaStore className="text-white text-xs" />
                                                             </div>
                                                         )}
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {/* Content Section */}
-                                            <div className="p-6">
-                                                {/* Name and Shop Badge */}
-                                                <div className="text-center mb-6">
-                                                    <motion.h2
-                                                        className="text-3xl font-bold font-zar text-primary-800 mb-2"
-                                                        initial={{ opacity: 0 }}
-                                                        animate={{ opacity: 1 }}
-                                                        transition={{ delay: 0.3 + index * 0.05 }}
-                                                    >
+                                            {/* Content Section - Modern */}
+                                            <div className="relative p-6 bg-white/80 backdrop-blur-sm">
+                                                {/* Name and Title */}
+                                                <div className="text-center mb-4">
+                                                    <h3 className="text-xl font-bold font-zar text-gray-800 mb-2 line-clamp-1 group-hover:text-primary-600 transition-colors duration-300">
                                                         {tailor.name}
-                                                    </motion.h2>
-                                                    {tailor.has_shop && (
-                                                        <motion.div
-                                                            className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-secondary-100 text-secondary-700 text-sm font-medium"
-                                                            initial={{ opacity: 0 }}
-                                                            animate={{ opacity: 1 }}
-                                                            transition={{ delay: 0.4 + index * 0.05 }}
-                                                        >
-                                                            <FaStore className="text-sm" />
-                                                            <span>د دوکان لرونکی</span>
-                                                        </motion.div>
+                                                    </h3>
+                                                    <p className="text-sm text-gray-600 font-medium mb-3">
+                                                        {tailor.career}
+                                                    </p>
+
+                                                    {/* Modern Badges */}
+                                                    <div className="flex items-center justify-center gap-2 mb-4">
+                                                        {tailor.experience && (
+                                                            <div className="px-3 py-1.5 bg-gradient-to-r from-primary-100 to-primary-200 text-primary-700 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+                                                                <FaClock className="text-xs" />
+                                                                {
+                                                                    tailor.experience
+                                                                }{" "}
+                                                                کاله
+                                                            </div>
+                                                        )}
+                                                        {tailor.rating_percentage >
+                                                            0 && (
+                                                            <div className="px-3 py-1.5 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-700 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+                                                                <span>⭐</span>
+                                                                {
+                                                                    tailor.rating_percentage
+                                                                }
+                                                                %
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Contact Info Cards */}
+                                                <div className="space-y-2 mb-4">
+                                                    <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-50/80 hover:bg-gray-100/80 transition-colors duration-200">
+                                                        <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
+                                                            <FaEnvelope className="text-primary-600 text-xs" />
+                                                        </div>
+                                                        <span className="text-xs text-gray-700 line-clamp-1 flex-1">
+                                                            {tailor.email}
+                                                        </span>
+                                                    </div>
+
+                                                    {tailor.work_availability && (
+                                                        <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-50/80 hover:bg-gray-100/80 transition-colors duration-200">
+                                                            <div className="w-8 h-8 rounded-lg bg-secondary-100 flex items-center justify-center">
+                                                                <FaClock className="text-secondary-600 text-xs" />
+                                                            </div>
+                                                            <span className="text-xs text-gray-700 line-clamp-1 flex-1">
+                                                                {
+                                                                    tailor.work_availability
+                                                                }
+                                                            </span>
+                                                        </div>
                                                     )}
                                                 </div>
 
-                                                {/* Experience Badge */}
-                                                {tailor.experience && (
-                                                    <div className="flex justify-center mb-6">
-                                                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 text-primary-700">
-                                                            <FaClock className="text-sm" />
-                                                            <span className="font-medium">{tailor.experience} کاله تجربه</span>
+                                                {/* Order Statistics */}
+                                                {tailor.order_statistics && (
+                                                    <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                                                        <div className="text-center mb-2">
+                                                            <h4 className="text-xs font-bold text-gray-700 font-zar">
+                                                                د فرمایشونو حالت
+                                                            </h4>
                                                         </div>
-                                                    </div>
-                                                )}
-
-                                                {/* Skills Tags */}
-                                                {tailor.skills && (
-                                                    <div className="mb-6">
-                                                        <h3 className="text-sm font-medium text-gray-500 mb-2">مهارتونه</h3>
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {tailor.skills.split(',').map((skill, i) => (
-                                                                <span
-                                                                    key={i}
-                                                                    className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm"
+                                                        <div className="grid grid-cols-2 gap-2">
+                                                            <div className="text-center">
+                                                                <div
+                                                                    className={`w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-1 ${
+                                                                        tailor
+                                                                            .order_statistics
+                                                                            .can_accept_orders
+                                                                            ? "bg-green-500"
+                                                                            : "bg-red-500"
+                                                                    }`}
                                                                 >
-                                                                    {skill.trim()}
-                                                                </span>
-                                                            ))}
+                                                                    <span className="text-white text-xs font-bold">
+                                                                        {
+                                                                            tailor
+                                                                                .order_statistics
+                                                                                .remaining_capacity
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                <p className="text-xs text-gray-600 font-zar">
+                                                                    پاتې
+                                                                </p>
+                                                            </div>
+                                                            <div className="text-center">
+                                                                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-1">
+                                                                    <span className="text-white text-xs font-bold">
+                                                                        {
+                                                                            tailor
+                                                                                .order_statistics
+                                                                                .current_week_orders
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                <p className="text-xs text-gray-600 font-zar">
+                                                                    دا اونۍ
+                                                                </p>
+                                                            </div>
                                                         </div>
+                                                        {!tailor
+                                                            .order_statistics
+                                                            .can_accept_orders && (
+                                                            <div className="mt-2 text-center">
+                                                                <span className="text-xs text-red-600 font-zar">
+                                                                    حد ته رسیدلی
+                                                                </span>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 )}
 
-                                                {/* Contact Info */}
-                                                <motion.div
-                                                    className="space-y-3"
-                                                    initial={{ opacity: 0, y: 20 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ delay: 0.4 + index * 0.05 }}
-                                                >
-                                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                                                        <FaEnvelope className="text-primary-500 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">{tailor.email}</p>
-                                                    </div>
+                                                {/* Modern Action Buttons */}
+                                                <div className="flex gap-3">
+                                                    <button
+                                                        onClick={() => {
+                                                            router.visit(
+                                                                route("order", {
+                                                                    tailorId:
+                                                                        tailor.id,
+                                                                    tailorName:
+                                                                        tailor.name,
+                                                                })
+                                                            );
+                                                        }}
+                                                        disabled={
+                                                            tailor.order_statistics &&
+                                                            !tailor
+                                                                .order_statistics
+                                                                .can_accept_orders
+                                                        }
+                                                        className={`flex-1 py-3 px-4 rounded-xl transition-all duration-300 text-sm font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 ${
+                                                            tailor.order_statistics &&
+                                                            !tailor
+                                                                .order_statistics
+                                                                .can_accept_orders
+                                                                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                                                                : "bg-gradient-to-r from-primary-500 via-primary-600 to-secondary-500 text-white hover:from-primary-600 hover:via-primary-700 hover:to-secondary-600"
+                                                        }`}
+                                                    >
+                                                        <FaShoppingBag className="text-sm" />
+                                                        <span>
+                                                            {tailor.order_statistics &&
+                                                            !tailor
+                                                                .order_statistics
+                                                                .can_accept_orders
+                                                                ? "حد ته رسیدلی"
+                                                                : "فرمایش"}
+                                                        </span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() =>
+                                                            openModal(tailor)
+                                                        }
+                                                        className="flex-1 bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-4 rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-300 text-sm font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                                                    >
+                                                        <FaUser className="text-sm" />
+                                                        <span>نور</span>
+                                                    </button>
+                                                </div>
 
-                                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                                                        <FaBriefcase className="text-secondary-500 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">{tailor.career}</p>
-                                                    </div>
-
-                                                    {tailor.certifications && (
-                                                        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                                                            <FaGraduationCap className="text-tertiary-500 flex-shrink-0" />
-                                                            <p className="text-sm text-gray-600">{tailor.certifications}</p>
-                                                        </div>
-                                                    )}
-
-                                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                                                        <FaClock className="text-secondary-600 flex-shrink-0" />
-                                                        <p className="text-sm text-gray-600">{tailor.work_availability}</p>
-                                                    </div>
-                                                </motion.div>
-
-                                                {/* View Profile Button */}
-                                                <motion.div
-                                                    className="mt-6"
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ opacity: 1 }}
-                                                    transition={{ delay: 0.5 + index * 0.05 }}
-                                                >
-                                                    <div className="flex gap-3">
-                                                       
-                                                        <button
-                                                            onClick={() => {
-                                                                router.visit(route('order', {
-                                                                    tailorId: tailor.id,
-                                                                    tailorName: tailor.name
-                                                                }));
-                                                            }}
-                                                            className="flex-1 bg-secondary-600 text-white px-4 py-2 rounded-lg hover:bg-secondary-700 transition-colors duration-200 flex items-center justify-center gap-2"
-                                                        >
-                                                            <FaShoppingBag className="text-sm" />
-                                                            <span>فرمایش</span>
-                                                        </button>
-                                                    </div>
-                                                </motion.div>
-
-                                                {/* Rating Percentage */}
-                                                <div className="text-center mt-4">
-                                                    {tailor.rating_percentage > 0 && (
-                                                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 text-primary-700">
-                                                            <span className="font-semibold text-primary-600">{tailor.rating_percentage}%</span>
-                                                            <span>Customer Rating</span>
-                                                        </div>
-                                                    )}
+                                                {/* Floating Status Indicator */}
+                                                <div className="absolute top-4 right-4">
+                                                    <div className="w-3 h-3 bg-green-400 rounded-full shadow-lg animate-pulse"></div>
                                                 </div>
                                             </div>
                                         </motion.div>
@@ -599,6 +691,306 @@ const Tailors = ({ tailors }) => {
                     )}
                 </div>
             </section>
+
+            {/* Tailor Details Modal */}
+            {isModalOpen && selectedTailor && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <motion.div
+                        className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        {/* Modal Header */}
+                        <div className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white p-6 rounded-t-2xl">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-2xl font-bold font-zar">
+                                    د خیاط بشپړ معلومات
+                                </h2>
+                                <button
+                                    onClick={closeModal}
+                                    className="text-white hover:text-gray-200 transition-colors duration-200"
+                                >
+                                    <svg
+                                        className="w-6 h-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Modal Content */}
+                        <div className="p-6" dir="rtl">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                {/* Profile Section */}
+                                <div className="lg:col-span-1">
+                                    <div className="text-center mb-6">
+                                        <div className="w-32 h-32 rounded-full border-4 border-primary-200 overflow-hidden shadow-lg mx-auto mb-4">
+                                            {selectedTailor.profile_photo_url ? (
+                                                <img
+                                                    src={
+                                                        selectedTailor.profile_photo_url
+                                                    }
+                                                    alt={selectedTailor.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                                                    <FaUser className="text-4xl text-gray-400" />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <h3 className="text-2xl font-bold font-zar text-gray-800 mb-2">
+                                            {selectedTailor.name}
+                                        </h3>
+                                        <div className="flex justify-center gap-2 mb-4">
+                                            {selectedTailor.has_shop && (
+                                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-100 text-secondary-700 text-sm">
+                                                    <FaStore className="text-sm" />
+                                                    د دوکان لرونکی
+                                                </span>
+                                            )}
+                                            {selectedTailor.rating_percentage >
+                                                0 && (
+                                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm">
+                                                    <span className="font-semibold">
+                                                        {
+                                                            selectedTailor.rating_percentage
+                                                        }
+                                                        %
+                                                    </span>
+                                                    ریټنګ
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Details Section */}
+                                <div className="lg:col-span-2">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {/* Personal Information */}
+                                        <div className="bg-gray-50 p-4 rounded-xl">
+                                            <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                                                <FaUser className="text-primary-500 mr-2" />
+                                                شخصي معلومات
+                                            </h4>
+                                            <div className="space-y-3">
+                                                <div>
+                                                    <span className="text-sm text-gray-500">
+                                                        بریښنالیک:
+                                                    </span>
+                                                    <p className="font-medium">
+                                                        {selectedTailor.email}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span className="text-sm text-gray-500">
+                                                        تجربه:
+                                                    </span>
+                                                    <p className="font-medium">
+                                                        {
+                                                            selectedTailor.experience
+                                                        }{" "}
+                                                        کاله
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span className="text-sm text-gray-500">
+                                                        مسلک:
+                                                    </span>
+                                                    <p className="font-medium">
+                                                        {selectedTailor.career}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span className="text-sm text-gray-500">
+                                                        د کار شتون:
+                                                    </span>
+                                                    <p className="font-medium">
+                                                        {
+                                                            selectedTailor.work_availability
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Professional Information */}
+                                        <div className="bg-gray-50 p-4 rounded-xl">
+                                            <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                                                <FaBriefcase className="text-secondary-500 mr-2" />
+                                                مسلکي معلومات
+                                            </h4>
+                                            <div className="space-y-3">
+                                                {selectedTailor.previous_work && (
+                                                    <div>
+                                                        <span className="text-sm text-gray-500">
+                                                            پخوانی کار:
+                                                        </span>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.previous_work
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {selectedTailor.certifications && (
+                                                    <div>
+                                                        <span className="text-sm text-gray-500">
+                                                            سندونه:
+                                                        </span>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.certifications
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {selectedTailor.skills && (
+                                                    <div>
+                                                        <span className="text-sm text-gray-500">
+                                                            مهارتونه:
+                                                        </span>
+                                                        <div className="flex flex-wrap gap-1 mt-1">
+                                                            {selectedTailor.skills
+                                                                .split(",")
+                                                                .map(
+                                                                    (
+                                                                        skill,
+                                                                        i
+                                                                    ) => (
+                                                                        <span
+                                                                            key={
+                                                                                i
+                                                                            }
+                                                                            className="px-2 py-1 bg-primary-100 text-primary-700 rounded-full text-xs"
+                                                                        >
+                                                                            {skill.trim()}
+                                                                        </span>
+                                                                    )
+                                                                )}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Shop Information (if available) */}
+                                    {selectedTailor.has_shop && (
+                                        <div className="mt-6 bg-gradient-to-r from-secondary-50 to-primary-50 p-6 rounded-xl border border-secondary-200">
+                                            <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                                                <FaStore className="text-secondary-500 mr-2" />
+                                                د دوکان معلومات
+                                            </h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {selectedTailor.tailoring_name && (
+                                                    <div>
+                                                        <span className="text-sm text-gray-500">
+                                                            د دوکان نوم:
+                                                        </span>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.tailoring_name
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {selectedTailor.tailoring_address && (
+                                                    <div>
+                                                        <span className="text-sm text-gray-500">
+                                                            پته:
+                                                        </span>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.tailoring_address
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {selectedTailor.contact_number && (
+                                                    <div>
+                                                        <span className="text-sm text-gray-500">
+                                                            د اړیکو شمیره:
+                                                        </span>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.contact_number
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {selectedTailor.working_hours && (
+                                                    <div>
+                                                        <span className="text-sm text-gray-500">
+                                                            د کار وختونه:
+                                                        </span>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.working_hours
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {selectedTailor.services && (
+                                                    <div className="md:col-span-2">
+                                                        <span className="text-sm text-gray-500">
+                                                            خدمتونه:
+                                                        </span>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.services
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Action Buttons */}
+                                    <div className="mt-6 flex gap-4">
+                                        <button
+                                            onClick={() => {
+                                                router.visit(
+                                                    route("order", {
+                                                        tailorId:
+                                                            selectedTailor.id,
+                                                        tailorName:
+                                                            selectedTailor.name,
+                                                    })
+                                                );
+                                                closeModal();
+                                            }}
+                                            className="flex-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white py-3 px-6 rounded-lg hover:from-primary-600 hover:to-secondary-600 transition-all duration-200 font-medium flex items-center justify-center gap-2"
+                                        >
+                                            <FaShoppingBag className="text-sm" />
+                                            فرمایش ورکړئ
+                                        </button>
+                                        <button
+                                            onClick={closeModal}
+                                            className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-200 font-medium"
+                                        >
+                                            تړل
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
         </SiteLayout>
     );
 };

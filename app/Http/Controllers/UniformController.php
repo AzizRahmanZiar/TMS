@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Uniform;
+use App\Http\Requests\UniformRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,7 +16,7 @@ class UniformController extends Controller
         $uniforms = Uniform::where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->get();
-            
+
         return Inertia::render('System/Uniform', [
             'uniforms' => $uniforms
         ]);
@@ -28,30 +29,14 @@ class UniformController extends Controller
     }
 
     // Store a new uniform
-    public function store(Request $request)
+    public function store(UniformRequest $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20',
-            'money' => 'required|numeric',
-
-            'yakhun_qak' => 'nullable|string',
-            'patlun' => 'nullable|string',
-            'ghara' => 'nullable|string',
-            'zegar' => 'nullable|string',
-            'lstoony' => 'nullable|string',
-            'tidad' => 'nullable|integer',
-
-            'rawrul_tareekh' => 'nullable|date',
-            'tasleem_tareekh' => 'nullable|date',
-        ]);
-
-        // Add user_id to the validated data
+        $validated = $request->validated();
         $validated['user_id'] = auth()->id();
 
-        $uniform = Uniform::create($validated);
+        Uniform::create($validated);
 
-        return back()->with('success', 'Uniform created successfully');
+        return redirect()->route('uniforms.index')->with('success', 'Uniform created successfully');
     }
 
     // Show a single uniform
@@ -81,32 +66,17 @@ class UniformController extends Controller
     }
 
     // Update a uniform
-    public function update(Request $request, Uniform $uniform)
+    public function update(UniformRequest $request, Uniform $uniform)
     {
         // Check if the uniform belongs to the authenticated user
         if ($uniform->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
 
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20',
-            'money' => 'required|numeric',
-
-            'yakhun_qak' => 'nullable|string',
-            'patlun' => 'nullable|string',
-            'ghara' => 'nullable|string',
-            'zegar' => 'nullable|string',
-            'lstoony' => 'nullable|string',
-            'tidad' => 'nullable|integer',
-
-            'rawrul_tareekh' => 'nullable|date',
-            'tasleem_tareekh' => 'nullable|date',
-        ]);
-
+        $validated = $request->validated();
         $uniform->update($validated);
 
-        return back()->with('success', 'Uniform updated successfully');
+        return redirect()->route('uniforms.index')->with('success', 'Uniform updated successfully');
     }
 
     // Delete a uniform
