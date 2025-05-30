@@ -30,23 +30,9 @@ export default function Login({ status, canResetPassword }) {
     const submit = (e) => {
         e.preventDefault();
 
-        console.log("Submitting login with data:", data);
-        console.log(
-            "CSRF token:",
-            document
-                .querySelector('meta[name="csrf-token"]')
-                ?.getAttribute("content")
-        );
-
         post(route("login"), {
             onFinish: () => {
                 reset("password");
-            },
-            onSuccess: () => {
-                console.log("Login successful!");
-            },
-            onError: (errors) => {
-                console.log("Login failed with errors:", errors);
             },
         });
     };
@@ -63,6 +49,28 @@ export default function Login({ status, canResetPassword }) {
                                 داخلـــــــېدل
                             </h2>
                         </div>
+
+                        {/* Email Verification Success Message */}
+                        {status && (
+                            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                                <div className="flex items-center">
+                                    <svg
+                                        className="h-5 w-5 text-green-500 ml-2"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                    <p className="text-sm text-green-800 font-zar">
+                                        {status}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
                         <form onSubmit={submit} className="space-y-6">
                             {/* General Error Display */}
@@ -185,7 +193,7 @@ export default function Login({ status, canResetPassword }) {
                                         className="rounded border-gray-300 text-primary-600 shadow-sm focus:ring-primary-500"
                                     />
                                     <span className="mr-2 text-lg text-gray-600">
-                                        زه یادولئ
+                                        ما په یاد ولره
                                     </span>
                                 </label>
 

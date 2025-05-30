@@ -1,7 +1,22 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, usePage } from "@inertiajs/react";
-import { FaBars, FaTimes, FaUser, FaSignOutAlt, FaBell } from "react-icons/fa";
+import {
+    FaBars,
+    FaTimes,
+    FaUser,
+    FaSignOutAlt,
+    FaBell,
+    FaChevronDown,
+    FaHome,
+    FaInfoCircle,
+    FaBlog,
+    FaShoppingCart,
+    FaStore,
+    FaBullhorn,
+    FaPhone,
+    FaCut,
+} from "react-icons/fa";
 import { FaScissors } from "react-icons/fa6";
 
 const Navbar = () => {
@@ -149,13 +164,14 @@ const Navbar = () => {
 
     return (
         <motion.nav
-            className="bg-primary-900 shadow-md py-4"
+            className="bg-primary-900 shadow-lg sticky top-0 z-50 backdrop-blur-sm"
             variants={navbarVariants}
             initial="hidden"
             animate="visible"
         >
-            <div className="container mx-auto px-4">
-                <div className="flex justify-between items-center">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center h-16 lg:h-20">
+                    {/* Logo Section */}
                     <div>
                         <Link href="/" className="text-2xl font-bold">
                             <div className="flex items-center rotate-180 space-x-2">
@@ -168,7 +184,7 @@ const Navbar = () => {
                                     }}
                                     className="z-10"
                                 >
-                                    <FaScissors className="text-white h-10 w-10" />
+                                    <FaScissors className="text-white h-8 w-8 lg:h-10 lg:w-10 drop-shadow-lg" />
                                 </motion.span>
                             </div>
                         </Link>
@@ -176,51 +192,71 @@ const Navbar = () => {
 
                     {/* Desktop Navigation */}
                     <motion.div
-                        className="hidden md:flex items-center gap-8 rtl:gap-8"
+                        className="hidden lg:flex items-center space-x-1 rtl:space-x-reverse"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.4 }}
                     >
                         {[
-                            { href: "/", text: "کور" },
-                            { href: "/about", text: "زموږ په اړه" },
-                            { href: "/post", text: "پوسټونه" },
-                            { href: "/order", text: "فرمایش" },
-                            { href: "/shop", text: "دوکانونه" },
-                            { href: "/adv", text: "اعلانات" },
-                            { href: "/contact", text: "اړیکه" },
-                            { href: "/tailor", text: "خیاطان" },
-                        ].map((link, index) => (
-                            <motion.div
-                                key={index}
-                                variants={linkVariants}
-                                whileHover="hover"
-                                whileTap="tap"
-                                custom={index}
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.4 + index * 0.05 }}
-                            >
-                                <Link
-                                    href={link.href}
-                                    onClick={() => setActivePath(link.href)}
-                                    className={`font-bold font-zar text-xl transition-all duration-300 ${
-                                        isActive(link.href)
-                                            ? "text-secondary-400"
-                                            : "text-primary-50 hover:text-secondary-400"
-                                    }`}
+                            { href: "/", text: "کور", icon: FaHome },
+                            {
+                                href: "/about",
+                                text: "زموږ په اړه",
+                                icon: FaInfoCircle,
+                            },
+                            { href: "/post", text: "پوسټونه", icon: FaBlog },
+                            {
+                                href: "/order",
+                                text: "فرمایش",
+                                icon: FaShoppingCart,
+                            },
+                            { href: "/shop", text: "دوکانونه", icon: FaStore },
+                            { href: "/adv", text: "اعلانات", icon: FaBullhorn },
+                            { href: "/contact", text: "اړیکه", icon: FaPhone },
+                            { href: "/tailor", text: "خیاطان", icon: FaCut },
+                        ].map((link, index) => {
+                            const Icon = link.icon;
+                            const isActiveLink = isActive(link.href);
+
+                            return (
+                                <motion.div
+                                    key={index}
+                                    variants={linkVariants}
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                    custom={index}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.4 + index * 0.05 }}
                                 >
-                                    {link.text}
-                                </Link>
-                            </motion.div>
-                        ))}
+                                    <Link
+                                        href={link.href}
+                                        onClick={() => setActivePath(link.href)}
+                                        className={`group relative flex items-center space-x-2 rtl:space-x-reverse px-4 py-2 rounded-lg font-zar font-semibold text-sm lg:text-base transition-all duration-300 ${
+                                            isActiveLink
+                                                ? "bg-secondary-600 text-white shadow-lg"
+                                                : "text-gray-200 hover:text-white hover:bg-primary-700/50"
+                                        }`}
+                                    >
+                                        <Icon
+                                            className={`h-4 w-4 transition-all duration-300 ${
+                                                isActiveLink
+                                                    ? "text-white"
+                                                    : "text-gray-300 group-hover:text-white"
+                                            }`}
+                                        />
+                                        <span>{link.text}</span>
+                                    </Link>
+                                </motion.div>
+                            );
+                        })}
                     </motion.div>
 
                     {/* Right side buttons */}
                     <motion.div
-                        className="hidden md:flex items-center gap-4 rtl:gap-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
+                        className="hidden md:flex items-center space-x-3 rtl:space-x-reverse"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.5 }}
                     >
                         {user ? (
@@ -424,14 +460,14 @@ const Navbar = () => {
 
                     {/* Mobile menu button */}
                     <motion.div
-                        className="md:hidden flex items-center"
+                        className="lg:hidden flex items-center"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.6 }}
                     >
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="text-primary-50 hover:text-primary-400 focus:outline-none"
+                            className="p-2 rounded-lg text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-secondary-500 transition-colors duration-200"
                         >
                             {isOpen ? (
                                 <FaTimes className="h-6 w-6" />
@@ -446,44 +482,88 @@ const Navbar = () => {
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            className="md:hidden mt-4"
+                            className="lg:hidden bg-primary-800 shadow-lg border-t border-primary-700"
                             variants={mobileMenuVariants}
                             initial="hidden"
                             animate="visible"
                             exit="exit"
                         >
-                            <div className="flex flex-col space-y-4 rtl:space-y-4">
+                            <div className="px-4 py-4 space-y-2">
                                 {[
-                                    { href: "/", text: "کور" },
-                                    { href: "/about", text: "زموږ په اړه" },
-                                    { href: "/post", text: "پوسټونه" },
-                                    { href: "/order", text: "فرمایش" },
-                                    { href: "/shop", text: "دوکانونه" },
-                                    { href: "/adv", text: "اعلانات" },
-                                    { href: "/contact", text: "اړیکه" },
-                                    { href: "/tailor", text: "خیاطان" },
-                                ].map((link, index) => (
-                                    <motion.div
-                                        key={index}
-                                        variants={mobileItemVariants}
-                                        custom={index}
-                                    >
-                                        <Link
-                                            href={link.href}
-                                            onClick={() => {
-                                                setActivePath(link.href);
-                                                setIsOpen(false);
-                                            }}
-                                            className={`block px-4 py-2 font-bold font-zar text-xl transition-all duration-300 ${
-                                                isActive(link.href)
-                                                    ? "text-secondary-400"
-                                                    : "text-primary-50 hover:text-secondary-400"
-                                            }`}
+                                    {
+                                        href: "/",
+                                        text: "کور",
+                                        icon: FaHome,
+                                    },
+                                    {
+                                        href: "/about",
+                                        text: "زموږ په اړه",
+                                        icon: FaInfoCircle,
+                                    },
+                                    {
+                                        href: "/post",
+                                        text: "پوسټونه",
+                                        icon: FaBlog,
+                                    },
+                                    {
+                                        href: "/order",
+                                        text: "فرمایش",
+                                        icon: FaShoppingCart,
+                                    },
+                                    {
+                                        href: "/shop",
+                                        text: "دوکانونه",
+                                        icon: FaStore,
+                                    },
+                                    {
+                                        href: "/adv",
+                                        text: "اعلانات",
+                                        icon: FaBullhorn,
+                                    },
+                                    {
+                                        href: "/contact",
+                                        text: "اړیکه",
+                                        icon: FaPhone,
+                                    },
+                                    {
+                                        href: "/tailor",
+                                        text: "خیاطان",
+                                        icon: FaCut,
+                                    },
+                                ].map((link, index) => {
+                                    const Icon = link.icon;
+                                    const isActiveLink = isActive(link.href);
+
+                                    return (
+                                        <motion.div
+                                            key={index}
+                                            variants={mobileItemVariants}
+                                            custom={index}
                                         >
-                                            {link.text}
-                                        </Link>
-                                    </motion.div>
-                                ))}
+                                            <Link
+                                                href={link.href}
+                                                onClick={() => {
+                                                    setActivePath(link.href);
+                                                    setIsOpen(false);
+                                                }}
+                                                className={`flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-lg font-zar font-semibold text-base transition-all duration-300 ${
+                                                    isActiveLink
+                                                        ? "bg-secondary-600 text-white"
+                                                        : "text-gray-200 hover:text-white hover:bg-primary-700"
+                                                }`}
+                                            >
+                                                <Icon
+                                                    className={`h-5 w-5 ${
+                                                        isActiveLink
+                                                            ? "text-white"
+                                                            : "text-gray-300"
+                                                    }`}
+                                                />
+                                                <span>{link.text}</span>
+                                            </Link>
+                                        </motion.div>
+                                    );
+                                })}
 
                                 {user ? (
                                     <>

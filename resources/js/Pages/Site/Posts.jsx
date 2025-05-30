@@ -8,10 +8,12 @@ import {
     FaSearch,
     FaChevronLeft,
     FaChevronRight,
+    FaTrash,
 } from "react-icons/fa";
 import { useRate } from "@/Contexts/RatingContext";
 import { usePage, router, useForm } from "@inertiajs/react";
 import Toast from "@/Components/Toast";
+import DeleteModal from "@/Components/DeleteModal";
 
 const Post = () => {
     const { rate, setRating } = useRate();
@@ -85,11 +87,6 @@ const Post = () => {
         }
     }, [props.flash]);
 
-    // Add console log before rendering posts
-    console.log("Current posts state:", posts);
-    console.log("Auth user:", props.auth?.user);
-    console.log("Props:", props);
-
     // Modal state
     const [showModal, setShowModal] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
@@ -97,6 +94,11 @@ const Post = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [forceUpdate, setForceUpdate] = useState(0);
     const [justRatedPosts, setJustRatedPosts] = useState(new Set());
+
+    // Delete modal state
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [postToDelete, setPostToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Form state using Inertia useForm
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -154,15 +156,8 @@ const Post = () => {
 
     // Function to handle star click
     const handleStarClick = (post, rating) => {
-        console.log("Star clicked:", {
-            post: post.id,
-            rating,
-            user: props.auth?.user,
-        });
-
         // Check if user is authenticated
         if (!props.auth?.user) {
-            console.log("User not authenticated, redirecting to register");
             // Store the post and rating in session storage for after registration
             sessionStorage.setItem(
                 "pendingRating",
@@ -182,26 +177,13 @@ const Post = () => {
             post.user_has_rated ||
             justRatedPosts.has(post.id);
 
-        console.log("Star click check:", {
-            postId: post.id,
-            ratedPostsHas: ratedPosts.has(post.id),
-            userHasRated: post.user_has_rated,
-            justRatedHas: justRatedPosts.has(post.id),
-            hasAlreadyRated: hasAlreadyRated,
-            ratedPostsArray: Array.from(ratedPosts),
-            justRatedArray: Array.from(justRatedPosts),
-        });
-
         if (hasAlreadyRated) {
-            console.log("Preventing rating - user has already rated");
             displayToast(
                 "تاسو دمخه دا پوسټ ریټ کړی دی! بیا ریټنګ نشئ ورکولی.",
                 "error"
             );
             return;
         }
-
-        console.log("Opening modal for rating");
         setError("");
         setSuccess("");
         setSelectedPost(post);
@@ -212,15 +194,9 @@ const Post = () => {
     const handleRatingSubmit = (e) => {
         e.preventDefault();
 
-        console.log("=== RATING SUBMISSION ATTEMPT ===");
-        console.log("Selected Post ID:", selectedPost.id);
-        console.log("Selected Rating:", selectedRating);
-        console.log("Comment:", data.comment);
-
         // IMMEDIATE PREVENTION - Add to justRatedPosts right away
         setJustRatedPosts((prev) => {
             const newSet = new Set([...prev, selectedPost.id]);
-            console.log("IMMEDIATELY BLOCKING POST:", selectedPost.id);
             return newSet;
         });
 
@@ -231,7 +207,6 @@ const Post = () => {
             justRatedPosts.has(selectedPost.id);
 
         if (hasAlreadyRated) {
-            console.log("BLOCKING: User has already rated");
             displayToast(
                 "تاسو دمخه دا پوسټ ریټ کړی دی! بیا ریټنګ نشئ ورکولی.",
                 "error"
@@ -268,12 +243,10 @@ const Post = () => {
 
         // Prevent multiple submissions
         if (isSubmitting) {
-            console.log("Already submitting, ignoring duplicate submission");
             return;
         }
 
         setIsSubmitting(true);
-        console.log("PROCEEDING WITH SUBMISSION...");
 
         // Use router.post directly with explicit data
         router.post(
@@ -284,27 +257,15 @@ const Post = () => {
             },
             {
                 onSuccess: (response) => {
-                    console.log("Rating submitted successfully:", response);
-                    console.log("Selected post ID:", selectedPost.id);
-                    console.log(
-                        "Current ratedPosts before update:",
-                        ratedPosts
-                    );
-
                     // Add post to rated posts immediately - CRITICAL for preventing multiple ratings
                     setRatedPosts((prev) => {
                         const newSet = new Set([...prev, selectedPost.id]);
-                        console.log("Updated ratedPosts:", Array.from(newSet));
                         return newSet;
                     });
 
                     // Also add to justRatedPosts for immediate prevention
                     setJustRatedPosts((prev) => {
                         const newSet = new Set([...prev, selectedPost.id]);
-                        console.log(
-                            "Updated justRatedPosts:",
-                            Array.from(newSet)
-                        );
                         return newSet;
                     });
 
@@ -319,10 +280,6 @@ const Post = () => {
                                       user_has_rated: true, // Mark as rated by current user
                                   }
                                 : post
-                        );
-                        console.log(
-                            "Updated posts array:",
-                            updatedPosts.find((p) => p.id === selectedPost.id)
                         );
                         return updatedPosts;
                     });
@@ -357,18 +314,12 @@ const Post = () => {
                     );
                 },
                 onError: (errors) => {
-                    console.log("=== RATING SUBMISSION ERROR ===");
-                    console.log("Rating submission error:", errors);
                     setIsSubmitting(false); // Reset submission state on error
 
                     // Remove from justRatedPosts on error so user can try again
                     setJustRatedPosts((prev) => {
                         const newSet = new Set(prev);
                         newSet.delete(selectedPost.id);
-                        console.log(
-                            "REMOVED FROM BLOCK LIST DUE TO ERROR:",
-                            selectedPost.id
-                        );
                         return newSet;
                     });
 
@@ -398,8 +349,8 @@ const Post = () => {
             stars.push(
                 <motion.div
                     key={i}
-                    whileHover={isClickable && !hasRated ? { scale: 1.3 } : {}}
-                    whileTap={isClickable && !hasRated ? { scale: 0.9 } : {}}
+                    whileHover={!hasRated ? { scale: 1.3 } : {}}
+                    whileTap={!hasRated ? { scale: 0.9 } : {}}
                 >
                     <FaStar
                         className={`${
@@ -408,11 +359,13 @@ const Post = () => {
                             isClickable && !hasRated
                                 ? "cursor-pointer hover:text-yellow-400"
                                 : hasRated
-                                ? "cursor-not-allowed opacity-60"
+                                ? "cursor-not-allowed"
                                 : ""
                         }`}
                         onClick={
                             isClickable && !hasRated
+                                ? () => handleStarClick(post, i)
+                                : hasRated
                                 ? () => handleStarClick(post, i)
                                 : undefined
                         }
@@ -433,6 +386,108 @@ const Post = () => {
                 <div className="flex">{stars}</div>
             </div>
         );
+    };
+
+    // Function to handle clearing rating and comment
+    const handleClearRating = (post) => {
+        if (!props.auth?.user) {
+            displayToast("د ریټنګ حذف کولو لپاره لومړی لاګ ان شئ", "error");
+            return;
+        }
+
+        // Check if user has rated this post
+        const hasRated =
+            ratedPosts.has(post.id) ||
+            post.user_has_rated ||
+            justRatedPosts.has(post.id);
+
+        if (!hasRated) {
+            displayToast("تاسو دا پوسټ ریټ نه یاست کړی", "error");
+            return;
+        }
+
+        // Show delete modal
+        setPostToDelete(post);
+        setShowDeleteModal(true);
+    };
+
+    // Function to handle delete confirmation
+    const handleDeleteConfirm = () => {
+        if (!postToDelete) return;
+
+        setIsDeleting(true);
+
+        // Use router.delete to send DELETE request
+        router.delete(route("post.rate.delete", postToDelete.id), {
+            onSuccess: (response) => {
+                // Remove post from rated posts
+                setRatedPosts((prev) => {
+                    const newSet = new Set(prev);
+                    newSet.delete(postToDelete.id);
+                    return newSet;
+                });
+
+                // Remove from justRatedPosts as well
+                setJustRatedPosts((prev) => {
+                    const newSet = new Set(prev);
+                    newSet.delete(postToDelete.id);
+                    return newSet;
+                });
+
+                // Update the post in the posts array
+                setPosts((currentPosts) => {
+                    const updatedPosts = currentPosts.map((p) =>
+                        p.id === postToDelete.id
+                            ? {
+                                  ...p,
+                                  rating: 0,
+                                  comments: Math.max((p.comments || 1) - 1, 0),
+                                  user_has_rated: false,
+                              }
+                            : p
+                    );
+                    return updatedPosts;
+                });
+
+                // Update originalPosts as well
+                setOriginalPosts((currentOriginalPosts) =>
+                    currentOriginalPosts.map((p) =>
+                        p.id === postToDelete.id
+                            ? {
+                                  ...p,
+                                  rating: 0,
+                                  comments: Math.max((p.comments || 1) - 1, 0),
+                                  user_has_rated: false,
+                              }
+                            : p
+                    )
+                );
+
+                displayToast(
+                    "ستاسو ریټنګ او نظر په بریالیتوب سره حذف شو!",
+                    "success"
+                );
+
+                // Close modal and reset state
+                setShowDeleteModal(false);
+                setPostToDelete(null);
+                setIsDeleting(false);
+            },
+            onError: (errors) => {
+                const errorMessage =
+                    errors.error ||
+                    "د ریټنګ حذف کولو کې ستونزه رامنځته شوه. بیا هڅه وکړئ.";
+                displayToast(errorMessage, "error");
+                setIsDeleting(false);
+            },
+        });
+    };
+
+    // Function to cancel delete
+    const cancelDelete = () => {
+        setShowDeleteModal(false);
+        setPostToDelete(null);
+        setIsDeleting(false);
     };
 
     // Animation variants
@@ -883,48 +938,69 @@ const Post = () => {
                                 </p>
 
                                 {/* Footer */}
-                                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                                    <div className="flex items-center gap-1 text-gray-500">
-                                        <FaCalendarAlt className="text-primary-500 text-xs" />
-                                        <span className="text-xs">
-                                            {new Date(
-                                                post.date
-                                            ).toLocaleDateString()}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div
-                                            className={`flex items-center gap-1 ${
-                                                justRatedPosts.has(post.id)
-                                                    ? "opacity-50"
-                                                    : ""
-                                            }`}
-                                            key={`rating-${post.id}-${forceUpdate}`}
-                                        >
-                                            {renderStarRating(
-                                                post,
-                                                post.rating || 0,
-                                                true
-                                            )}
-                                            {justRatedPosts.has(post.id) && (
-                                                <span className="text-xs text-green-600 font-medium">
-                                                    ✓ ریټ شوی
-                                                </span>
-                                            )}
-                                            <span className="text-xs text-gray-600">
-                                                (
-                                                {post.rating
-                                                    ? post.rating.toFixed(1)
-                                                    : 0}
-                                                )
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                                        <div className="flex items-center gap-1 text-gray-500">
+                                            <FaCalendarAlt className="text-primary-500 text-xs" />
+                                            <span className="text-xs">
+                                                {new Date(
+                                                    post.date
+                                                ).toLocaleDateString()}
                                             </span>
                                         </div>
-                                        <span className="flex items-center gap-1 text-xs text-gray-500">
-                                            <span className="bg-secondary-100 text-secondary-700 px-1.5 py-0.5 rounded-full text-xs">
-                                                {post.comments}
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className="flex items-center gap-1"
+                                                key={`rating-${post.id}-${forceUpdate}`}
+                                            >
+                                                {renderStarRating(
+                                                    post,
+                                                    post.rating || 0,
+                                                    true
+                                                )}
+                                                {justRatedPosts.has(
+                                                    post.id
+                                                ) && (
+                                                    <span className="text-xs text-green-600 font-medium">
+                                                        ✓ ریټ شوی
+                                                    </span>
+                                                )}
+                                                <span className="text-xs text-gray-600">
+                                                    (
+                                                    {post.rating
+                                                        ? post.rating.toFixed(1)
+                                                        : 0}
+                                                    )
+                                                </span>
+                                            </div>
+                                            <span className="flex items-center gap-1 text-xs text-gray-500">
+                                                <span className="bg-secondary-100 text-secondary-700 px-1.5 py-0.5 rounded-full text-xs">
+                                                    {post.comments}
+                                                </span>
                                             </span>
-                                        </span>
+                                        </div>
                                     </div>
+
+                                    {/* Clear Rating Button - Only show if user has rated this post */}
+                                    {props.auth?.user &&
+                                        (ratedPosts.has(post.id) ||
+                                            post.user_has_rated ||
+                                            justRatedPosts.has(post.id)) && (
+                                            <motion.button
+                                                onClick={() =>
+                                                    handleClearRating(post)
+                                                }
+                                                className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg border border-red-200 hover:border-red-300 transition-all duration-200 text-xs font-medium"
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                title="د خپل ریټنګ او نظر حذف کول"
+                                            >
+                                                <FaTrash className="text-xs" />
+                                                <span className="font-zar">
+                                                    ریټنګ او نظر حذف کړئ
+                                                </span>
+                                            </motion.button>
+                                        )}
                                 </div>
                             </div>
                         </motion.div>
@@ -1000,6 +1076,16 @@ const Post = () => {
 
             {/* Rating Modal */}
             {renderRatingModal()}
+
+            {/* Delete Modal */}
+            <DeleteModal
+                isOpen={showDeleteModal}
+                onClose={cancelDelete}
+                onConfirm={handleDeleteConfirm}
+                title="د ریټنګ او نظر حذف کول"
+                message="آیا تاسو ډاډه یاست چې غواړئ خپل ریټنګ او نظر حذف کړئ؟"
+                isLoading={isDeleting}
+            />
 
             {/* Toast Notification */}
             {showToast && (

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\TailorPost;
 use App\Models\PostRating;
 use App\Models\CustomerOrder;
+use Illuminate\Support\Facades\Auth;
 
 class SiteController extends Controller
 {
@@ -152,12 +153,20 @@ class SiteController extends Controller
 
     public function posts()
     {
+        $currentUserId = Auth::id();
+
         $posts = TailorPost::with(['user', 'ratings'])
             ->latest()
             ->get()
-            ->map(function ($post) {
+            ->map(function ($post) use ($currentUserId) {
                 $averageRating = $post->ratings->avg('rating') ?? 0;
                 $commentsCount = $post->ratings->whereNotNull('comment')->count();
+
+                // Check if current user has rated this post
+                $userHasRated = false;
+                if ($currentUserId) {
+                    $userHasRated = $post->ratings->where('user_id', $currentUserId)->isNotEmpty();
+                }
 
                 return [
                     'id' => $post->id,
@@ -170,14 +179,22 @@ class SiteController extends Controller
                     'comments' => $commentsCount,
                     'views' => $post->views,
                     'rating' => $averageRating,
+                    'user_has_rated' => $userHasRated,
                     'created_at' => $post->created_at
                 ];
             });
 
-        \Log::info('Fetched TailorPosts:', ['count' => $posts->count(), 'posts' => $posts->toArray()]);
+        // Get list of post IDs that current user has rated
+        $userRatedPosts = [];
+        if ($currentUserId) {
+            $userRatedPosts = PostRating::where('user_id', $currentUserId)
+                ->pluck('tailor_post_id')
+                ->toArray();
+        }
 
         return Inertia::render('Site/Posts', [
-            'tailorPosts' => $posts
+            'tailorPosts' => $posts,
+            'userRatedPosts' => $userRatedPosts
         ]);
     }
 

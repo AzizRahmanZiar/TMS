@@ -37,7 +37,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit');
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
@@ -47,6 +47,9 @@ class ProfileController extends Controller
     {
         $request->validate([
             'password' => ['required', 'current_password'],
+        ], [
+            'password.required' => 'پټنوم ضروری دی',
+            'password.current_password' => 'پټنوم سم نه دی',
         ]);
 
         $user = $request->user();

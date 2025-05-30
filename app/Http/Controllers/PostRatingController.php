@@ -25,7 +25,12 @@ class PostRatingController extends Controller
             ->first();
 
         if ($existingRating) {
-            return back()->with('error', 'تاسو دمخه دا پوست ریټ کړی. هر پوست یوازې یو ځل ریټ کولی شئ.');
+            return response()->json([
+                'message' => 'تاسو دمخه دا پوسټ ریټ کړی دی! بیا ریټنګ نشئ ورکولی.',
+                'errors' => [
+                    'rating' => 'تاسو دمخه دا پوسټ ریټ کړی دی! بیا ریټنګ نشئ ورکولی.'
+                ]
+            ], 422);
         }
 
         try {
@@ -65,5 +70,30 @@ class PostRatingController extends Controller
             });
 
         return response()->json($testimonials);
+    }
+
+    public function destroy(TailorPost $tailorPost)
+    {
+        // Check if user is authenticated
+        if (!Auth::check()) {
+            return back()->with('error', 'د ریټنګ حذف کولو لپاره لومړی لاګ ان شئ');
+        }
+
+        // Find the user's rating for this post
+        $rating = PostRating::where('user_id', Auth::id())
+            ->where('tailor_post_id', $tailorPost->id)
+            ->first();
+
+        if (!$rating) {
+            return back()->with('error', 'تاسو دا پوسټ ریټ نه یاست کړی');
+        }
+
+        try {
+            $rating->delete();
+            return back()->with('success', 'ستاسو ریټنګ او نظر په بریالیتوب سره حذف شو!');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'د ریټنګ حذف کولو کې ستونزه رامنځته شوه. بیا هڅه وکړئ.');
+        }
     }
 }

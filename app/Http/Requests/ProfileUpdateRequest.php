@@ -27,4 +27,23 @@ class ProfileUpdateRequest extends FormRequest
             ],
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'نوم ضروری دی',
+            'name.string' => 'نوم باید متن وي',
+            'name.max' => 'نوم باید د :max توریو څخه کم وي',
+            'email.required' => 'بریښنالیک ضروری دی',
+            'email.string' => 'بریښنالیک باید متن وي',
+            'email.email' => 'د بریښنالیک بڼه سمه نده',
+            'email.max' => 'بریښنالیک باید د :max توریو څخه کم وي',
+            'email.unique' => 'دا بریښنالیک دمخه شتون لري',
+        ];
+    }
 }

@@ -65,6 +65,7 @@ Route::get('/shop', [SiteController::class, 'shops'])->name('shop');
 
 Route::get('/post', [SiteController::class, 'posts'])->name('posts');
 Route::post('/post/{tailorPost}/rate', [PostRatingController::class, 'store'])->name('post.rate');
+Route::delete('/post/{tailorPost}/rate', [PostRatingController::class, 'destroy'])->name('post.rate.delete');
 Route::get('/testimonials', [PostRatingController::class, 'getTestimonials'])->name('testimonials');
 
 Route::get('/order', [SiteController::class, 'order'])->name('order');
@@ -93,6 +94,13 @@ Route::get('/refresh-csrf', function () {
 
 // Auth routes
 require __DIR__.'/auth.php';
+
+// Profile Management routes
+Route::middleware('auth')->group(function () {
+    Route::get('profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
 // Protected System routes
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -140,22 +148,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::put('/cloths/{cloth}', [ClothController::class, 'update'])->name('cloths.update');
     // Route::delete('/cloths/{cloth}', [ClothController::class, 'destroy'])->name('cloths.destroy');
 
-    Route::middleware(['auth'])->group(function () {
+    // Cloths routes
     Route::get('/cloths', [ClothController::class, 'index'])->name('cloths.index');
     Route::post('/cloths', [ClothController::class, 'store'])->name('cloths.store');
     Route::put('/cloths/{cloth}', [ClothController::class, 'update'])->name('cloths.update');
     Route::delete('/cloths/{cloth}', [ClothController::class, 'destroy'])->name('cloths.destroy');
 
-
-Route::middleware(['auth'])->group(function () {
+    // Sadrai routes
     Route::get('/sadrai', [SadraiController::class, 'index'])->name('sadrai.index');
     Route::post('/sadrai', [SadraiController::class, 'store'])->name('sadrai.store');
     Route::put('/sadrai/{sadrai}', [SadraiController::class, 'update'])->name('sadrai.update');
     Route::delete('/sadrai/{sadrai}', [SadraiController::class, 'destroy'])->name('sadrai.destroy');
-});
 
-
-    // Uniform route
+    // Uniform routes
     Route::get('/uniforms', [UniformController::class, 'index'])->name('uniforms.index');
     Route::post('/uniforms', [UniformController::class, 'store'])->name('uniforms.store');
     Route::put('/uniforms/{uniform}', [UniformController::class, 'update'])->name('uniforms.update');
@@ -178,6 +183,6 @@ Route::middleware(['auth'])->group(function () {
 
 // Customer Order Routes
 Route::middleware(['auth'])->group(function () {
+    Route::get('/customer/orders', [CustomerOrderController::class, 'index'])->name('customer.orders.index');
     Route::post('/customer/orders', [CustomerOrderController::class, 'store'])->name('customer.orders.store');
-});
 });

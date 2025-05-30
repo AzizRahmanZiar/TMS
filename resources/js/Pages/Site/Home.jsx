@@ -39,10 +39,6 @@ const Home = () => {
         }
     }, [props.posts, props.ratings]);
 
-    // Debug logs
-    console.log("Rate data:", rate);
-    console.log("Posts data:", posts);
-
     // Function to get all ratings for a post
     const getPostRatings = (postId) => {
         return rate.filter((rating) => rating.postId === postId);
@@ -98,22 +94,13 @@ const Home = () => {
         };
     });
 
-    // Debug logs
-    console.log("Posts with ratings:", postsWithRatings);
-
     // Filter posts that have at least one rating
     const ratedPosts = postsWithRatings.filter((post) => post.hasRatings);
-
-    // Debug logs
-    console.log("Rated posts:", ratedPosts);
 
     // Sort by rating (highest first) and take top 10
     const topDesigns = ratedPosts
         .sort((a, b) => b.averageRating - a.averageRating)
         .slice(0, 10);
-
-    // Debug logs
-    console.log("Top designs:", topDesigns);
 
     // Modify the testimonials data preparation to:
     // 1. Limit to 15 testimonials
@@ -122,9 +109,6 @@ const Home = () => {
         .filter((rating) => rating.comment && rating.comment.trim() !== "")
         .sort((a, b) => b.id - a.id) // Sort by newest first (assuming higher ID = newer)
         .slice(0, 15); // Limit to 15 testimonials
-
-    // Debug logs
-    console.log("Testimonials with comments:", testimonialsWithComments);
 
     // Handle testimonial navigation
     const nextTestimonial = () => {

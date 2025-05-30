@@ -10,6 +10,7 @@ import {
     FaTwitter,
     FaInstagram,
     FaLinkedin,
+    FaUser,
 } from "react-icons/fa";
 import { router, usePage, useForm } from "@inertiajs/react";
 
