@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useReg } from "@/Contexts/RegContext";
 import { router, Link } from "@inertiajs/react";
 import Toast from "@/Components/Toast";
+import { motion } from "framer-motion";
 import {
     FaImage,
     FaUser,
@@ -221,48 +222,90 @@ const Registration = ({ hasAdmin }) => {
 
     return (
         <>
-            <div className="min-h-screen bg-gradient-to-b from-primary-50 via-white to-secondary-50 py-10">
-                <div
-                    className="max-w-4xl mx-auto p-8 bg-gradient-to-br from-white to-primary-50 rounded-2xl shadow-lg border border-primary-100"
+            <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-10">
+                <motion.div
+                    className="max-w-4xl mx-auto p-8 bg-gradient-to-br from-white via-white to-primary-50/30 rounded-3xl shadow-2xl border border-white/50 backdrop-blur-sm"
                     dir="rtl"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
                 >
-                    <h2 className="text-4xl font-bold mb-8 text-center text-gray-800 border-b pb-4">
-                        ثبت نام
-                    </h2>
+                    <motion.div
+                        className="text-center mb-10"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                    >
+                        <div className="w-24 h-24 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-lg">
+                            <FaUserPlus className="text-white text-3xl" />
+                        </div>
+                        <h2 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-secondary-600 font-zar mb-4">
+                            ثبت نام
+                        </h2>
+                        <div className="h-1 w-32 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full"></div>
+                        <p className="text-gray-600 mt-4 text-lg font-zar">
+                            د خپل حساب جوړولو لپاره لاندې معلومات ډک کړئ
+                        </p>
+                    </motion.div>
 
-                    <form onSubmit={handleSubmit} className="space-y-8">
+                    <motion.form
+                        onSubmit={handleSubmit}
+                        className="space-y-8"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                    >
                         {/* Section 1: User Information */}
-                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                            <h3 className="text-xl md:text-xl font-semibold mb-6 text-gray-800 flex items-center">
-                                <span className="bg-gradient-to-r from-primary-100 to-primary-200 text-primary-600 rounded-full w-8 h-8 inline-flex items-center justify-center ml-2">
+                        <motion.div
+                            className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-gray-200/50 shadow-lg hover:shadow-xl transition-all duration-300"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4, duration: 0.5 }}
+                            whileHover={{ y: -2 }}
+                        >
+                            <h3 className="text-2xl font-bold mb-8 text-gray-800 flex items-center font-zar">
+                                <span className="bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-full w-10 h-10 inline-flex items-center justify-center ml-3 shadow-lg">
                                     1
                                 </span>
                                 د کارکوونکي معلومات
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-xl mb-2 font-medium text-gray-700">
-                                        <FaUser className="inline ml-2 text-primary-600" />
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.5, duration: 0.5 }}
+                                >
+                                    <label className="flex items-center text-lg font-semibold text-gray-700 mb-3 font-zar">
+                                        <FaUser className="ml-2 text-primary-600" />
                                         نوم
                                     </label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        className={`w-full p-3 border text-xl rounded-lg focus:ring-2 focus:ring-primary-100 focus:border-primary-500 transition-all shadow-input ${
-                                            errors.name
-                                                ? "border-red-500 bg-red-50"
-                                                : "border-gray-200"
-                                        }`}
-                                        placeholder=" نوم ولیکئ"
-                                    />
+                                    <div className="relative group">
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            className={`w-full p-4 border-2 text-lg rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 shadow-sm hover:shadow-md bg-white/80 backdrop-blur-sm ${
+                                                errors.name
+                                                    ? "border-red-300 focus:border-red-500 focus:ring-red-100 bg-red-50/50"
+                                                    : "border-gray-200 focus:border-primary-500 focus:ring-primary-100 hover:border-gray-300"
+                                            }`}
+                                            placeholder="نوم ولیکئ"
+                                        />
+                                    </div>
                                     {errors.name && (
-                                        <p className="text-red-500 text-sm mt-1">
+                                        <motion.p
+                                            className="mt-3 text-sm text-red-600 flex items-center font-zar"
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                        >
+                                            <span className="w-4 h-4 bg-red-100 rounded-full flex items-center justify-center mr-2">
+                                                <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                                            </span>
                                             {errors.name}
-                                        </p>
+                                        </motion.p>
                                     )}
-                                </div>
+                                </motion.div>
 
                                 <div>
                                     <label className="block mb-2 text-xl font-medium text-gray-700">
@@ -383,7 +426,7 @@ const Registration = ({ hasAdmin }) => {
                                     )}
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
 
                         {/* Section 2: Tailor Information (conditional) */}
                         {formData.role === "tailor" && (
@@ -841,7 +884,7 @@ const Registration = ({ hasAdmin }) => {
                                                 {errors.shop_images}
                                             </p>
                                         )}
-                                        <h3 className="text-sm text-xl text-gray-500 mt-1">
+                                        <h3 className="text-sm text-gray-500 mt-1">
                                             د خپل دوکان تصویرونه اپلوډ کړئ
                                         </h3>
 
@@ -953,34 +996,69 @@ const Registration = ({ hasAdmin }) => {
                             </div>
                         )}
 
-                        <button
-                            type="submit"
-                            className="w-full justify-center py-3 font-amiri text-lg bg-gradient-to-r from-secondary-500 to-primary-600 hover:from-secondary-600 hover:to-primary-700 text-white rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center"
-                            disabled={isSubmitted}
+                        <motion.div
+                            className="flex flex-col space-y-6 mt-10"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.8, duration: 0.5 }}
                         >
-                            <span className="mx-auto text-xl flex items-center">
-                                {isSubmitted ? (
-                                    "د ثبت نام په حال کې..."
-                                ) : (
-                                    <>
-                                        ثبت کړئ
-                                        <FaUserPlus className="mr-2 text-sm" />
-                                    </>
-                                )}
-                            </span>
-                        </button>
-
-                        <div className="flex items-center justify-center text-lg">
-                            که مخکې حساب لرئ،
-                            <Link
-                                href={route("login")}
-                                className="text-primary-600 hover:text-primary-700 font-medium mr-1"
+                            <motion.button
+                                type="submit"
+                                className={`w-full justify-center py-4 font-zar text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center transform hover:scale-[1.02] ${
+                                    isSubmitted
+                                        ? "bg-gray-400 cursor-not-allowed"
+                                        : "bg-gradient-to-r from-secondary-500 to-primary-600 hover:from-secondary-600 hover:to-primary-700 text-white"
+                                }`}
+                                disabled={isSubmitted}
+                                whileHover={!isSubmitted ? { y: -2 } : {}}
+                                whileTap={!isSubmitted ? { scale: 0.98 } : {}}
                             >
-                                <span>نو داخل شئ</span>
-                            </Link>
-                        </div>
-                    </form>
-                </div>
+                                <span className="mx-auto text-lg flex items-center font-semibold">
+                                    {isSubmitted ? (
+                                        <>
+                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                                            د ثبت نام په حال کې...
+                                        </>
+                                    ) : (
+                                        <>
+                                            ثبت کړئ
+                                            <FaUserPlus className="mr-3 text-base" />
+                                        </>
+                                    )}
+                                </span>
+                            </motion.button>
+
+                            <motion.div
+                                className="text-center"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.9, duration: 0.5 }}
+                            >
+                                <div className="relative">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <div className="w-full border-t border-gray-200"></div>
+                                    </div>
+                                    <div className="relative flex justify-center text-sm">
+                                        <span className="px-4 bg-white text-gray-500 font-zar">
+                                            یا
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="mt-6 flex items-center justify-center text-base font-zar">
+                                    <span className="text-gray-600">
+                                        که مخکې حساب لرئ،
+                                    </span>
+                                    <Link
+                                        href={route("login")}
+                                        className="text-primary-600 hover:text-primary-700 font-semibold mr-2 hover:underline transition-all duration-200"
+                                    >
+                                        نو داخل شئ
+                                    </Link>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    </motion.form>
+                </motion.div>
             </div>
 
             {showToast && (

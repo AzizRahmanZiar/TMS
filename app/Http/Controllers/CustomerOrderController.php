@@ -5,27 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\CustomerOrder;
 use App\Http\Requests\CustomerOrderRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class CustomerOrderController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
-        \Log::info('CustomerOrder index accessed:', [
+        $user = Auth::user();
+        Log::info('CustomerOrder index accessed:', [
             'user_id' => $user->id,
             'user_role' => $user->role
         ]);
 
-        // Get only accepted and visible orders for the tailor
+        // Get only visible orders for the tailor
         $orders = CustomerOrder::with(['user', 'tailor'])
             ->where('tailor_id', $user->id)
-            ->where('status', 'accepted')
             ->where('is_visible', true)
             ->latest()
             ->get();
 
-        \Log::info('Orders retrieved for tailor:', [
+        Log::info('Orders retrieved for tailor:', [
             'tailor_id' => $user->id,
             'count' => $orders->count(),
             'orders' => $orders->toArray()
@@ -38,35 +39,35 @@ class CustomerOrderController extends Controller
 
     public function store(CustomerOrderRequest $request)
     {
-        \Log::info('Order creation request started:', [
+        Log::info('Order creation request started:', [
             'request_data' => $request->all(),
-            'auth_user' => auth()->user() ? [
-                'id' => auth()->user()->id,
-                'name' => auth()->user()->name,
-                'role' => auth()->user()->role
+            'auth_user' => Auth::user() ? [
+                'id' => Auth::user()->id,
+                'name' => Auth::user()->name,
+                'role' => Auth::user()->role
             ] : null
         ]);
 
         try {
-            \Log::info('Validating request data');
+            Log::info('Validating request data');
             $validated = $request->validated();
-            \Log::info('Request validation passed', ['validated_data' => $validated]);
+            Log::info('Request validation passed', ['validated_data' => $validated]);
 
             // Verify the tailor exists and is a Tailor
-            \Log::info('Checking tailor details', ['tailor_id' => $validated['tailor_id']]);
+            Log::info('Checking tailor details', ['tailor_id' => $validated['tailor_id']]);
             $tailor = \App\Models\User::where('id', $validated['tailor_id'])
                                    ->where('role', 'Tailor')
                                    ->first();
 
             if (!$tailor) {
-                \Log::error('Invalid tailor ID or role:', ['tailor_id' => $validated['tailor_id']]);
+                Log::error('Invalid tailor ID or role:', ['tailor_id' => $validated['tailor_id']]);
                 return back()->with('error', 'Invalid tailor selected');
             }
-            \Log::info('Tailor verification passed', ['tailor' => $tailor->toArray()]);
+            Log::info('Tailor verification passed', ['tailor' => $tailor->toArray()]);
 
             // Check if tailor can accept more orders this week
             if (!$tailor->canAcceptMoreOrders()) {
-                \Log::warning('Tailor has reached weekly order limit', [
+                Log::warning('Tailor has reached weekly order limit', [
                     'tailor_id' => $tailor->id,
                     'weekly_limit' => $tailor->weekly_order_limit,
                     'current_week_orders' => $tailor->getCurrentWeekOrderCount()
@@ -74,25 +75,39 @@ class CustomerOrderController extends Controller
                 return back()->with('error', 'دا خیاط د دغه اونۍ لپاره خپل حد ته رسیدلی. مهرباني وکړئ بل خیاط وټاکئ یا راتلونکې اونۍ هڅه وکړئ.');
             }
 
-            // Create the order with pending status and not visible
-            \Log::info('Creating order');
+            // Create the order and not visible initially
+            Log::info('Creating order');
             $order = CustomerOrder::create([
                 'phone' => $validated['phone'],
                 'address' => $validated['address'],
                 'tailor_id' => $validated['tailor_id'],
-                'user_id' => auth()->id(),
-                'status' => 'pending',
+                'user_id' => Auth::id(),
                 'is_visible' => false,
                 'created_at' => now(),
             ]);
-            \Log::info('Order created successfully', ['order' => $order->toArray()]);
+            Log::info('Order created successfully', ['order' => $order->toArray()]);
+
+            // Send notification to the tailor
+            \App\Models\Notification::createForUser(
+                $tailor->id,
+                'نوی آرډر',
+                'تاسو ته د ' . Auth::user()->name . ' لخوا نوی آرډر راغلی دی',
+                'order',
+                [
+                    'order_id' => $order->id,
+                    'customer_name' => Auth::user()->name,
+                    'customer_phone' => $order->phone,
+                    'customer_address' => $order->address,
+                    'icon' => 'shopping-cart',
+                ]
+            );
 
             // Update tailor's weekly order tracking
             $tailor->updateWeeklyOrderTracking();
 
             return redirect()->route('home')->with('success', 'فرمایش مو په بریالیتوب سره درکړل شو. د خیاط د تایید انتظار کول');
         } catch (\Exception $e) {
-            \Log::error('Error in order creation:', [
+            Log::error('Error in order creation:', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'request_data' => $request->all()
@@ -103,7 +118,7 @@ class CustomerOrderController extends Controller
 
     public function update(Request $request, CustomerOrder $order)
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Check if the user has permission to update this order
         if ($user->role === 'Tailor' && $order->tailor_id !== $user->id) {
@@ -121,8 +136,8 @@ class CustomerOrderController extends Controller
 
     public function customerorder()
     {
-        $user = auth()->user();
-        \Log::info('CustomerOrder page accessed:', [
+        $user = Auth::user();
+        Log::info('CustomerOrder page accessed:', [
             'user_id' => $user->id,
             'user_role' => $user->role
         ]);
@@ -133,7 +148,7 @@ class CustomerOrderController extends Controller
             ->latest()
             ->get();
 
-        \Log::info('Orders retrieved for tailor:', [
+        Log::info('Orders retrieved for tailor:', [
             'tailor_id' => $user->id,
             'count' => $orders->count(),
             'orders' => $orders->toArray()
@@ -147,7 +162,7 @@ class CustomerOrderController extends Controller
     public function destroy(CustomerOrder $order)
     {
         // Check if the user has permission to delete this order
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user->role === 'Tailor' && $order->tailor_id !== $user->id) {
             return redirect()->back()->with('error', 'Unauthorized');
         }
@@ -162,7 +177,7 @@ class CustomerOrderController extends Controller
 
     public function show(CustomerOrder $order)
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Check if the user has permission to view this order
         if ($user->role === 'Tailor' && $order->tailor_id !== $user->id) {

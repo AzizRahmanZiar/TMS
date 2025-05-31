@@ -7,6 +7,7 @@ use App\Enums\Roles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\DatabaseNotification;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -173,8 +174,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'weekly_limit' => $this->weekly_order_limit,
             'remaining_capacity' => $this->getRemainingOrderCapacity(),
             'can_accept_orders' => $this->canAcceptMoreOrders(),
-            'accepted_orders' => $this->customerOrders()->where('status', 'accepted')->count(),
-            'pending_orders' => $this->customerOrders()->where('status', 'pending')->count(),
+            'total_visible_orders' => $this->customerOrders()->where('is_visible', true)->count(),
         ];
     }
 }

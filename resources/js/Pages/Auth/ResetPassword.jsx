@@ -1,6 +1,8 @@
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, useForm, router } from "@inertiajs/react";
-import { FaEnvelope, FaLock, FaKey } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaKey, FaEye, FaEyeSlash } from "react-icons/fa";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function ResetPassword({ token, email }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -9,6 +11,10 @@ export default function ResetPassword({ token, email }) {
         password: "",
         password_confirmation: "",
     });
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordConfirmation, setShowPasswordConfirmation] =
+        useState(false);
 
     const submit = (e) => {
         e.preventDefault();
@@ -19,16 +25,42 @@ export default function ResetPassword({ token, email }) {
         <GuestLayout>
             <Head title="پټنوم بیا تنظیمول" />
 
-            <div className="w-full max-w-md mx-auto">
-                <div className="bg-gradient-to-br from-white to-primary-50 rounded-2xl shadow-lg p-8 border border-primary-100">
-                    <div className="text-center mb-8">
-                        <h1 className="font-amiri text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-secondary-600">
+            <motion.div
+                className="w-full max-w-md mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+            >
+                <motion.div
+                    className="bg-gradient-to-br from-white via-white to-primary-50/30 rounded-3xl shadow-2xl p-8 border border-white/50 backdrop-blur-sm"
+                    whileHover={{ y: -2 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <motion.div
+                        className="text-center mb-8"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                    >
+                        <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+                            <FaKey className="text-white text-2xl" />
+                        </div>
+                        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-secondary-600 font-zar">
                             پټنوم بیا تنظیمول
                         </h1>
-                        <div className="h-1 w-16 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto mt-2 rounded-full"></div>
-                    </div>
+                        <div className="h-1 w-20 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto mt-3 rounded-full"></div>
+                        <p className="text-gray-600 mt-4 text-base font-zar">
+                            خپل نوی پټنوم ولیکئ
+                        </p>
+                    </motion.div>
 
-                    <form onSubmit={submit} className="space-y-6">
+                    <motion.form
+                        onSubmit={submit}
+                        className="space-y-6"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                    >
                         <div>
                             <label
                                 htmlFor="email"
@@ -122,25 +154,37 @@ export default function ResetPassword({ token, email }) {
                             )}
                         </div>
 
-                        <button
+                        <motion.button
                             type="submit"
-                            className="w-full justify-center py-3 font-amiri text-lg bg-gradient-to-r from-primary-500 to-secondary-600 hover:from-primary-600 hover:to-secondary-700 text-white rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center"
+                            className={`w-full justify-center py-4 font-zar text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center transform hover:scale-[1.02] ${
+                                processing
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-gradient-to-r from-primary-500 to-secondary-600 hover:from-primary-600 hover:to-secondary-700 text-white"
+                            }`}
                             disabled={processing}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6, duration: 0.5 }}
+                            whileHover={!processing ? { y: -2 } : {}}
+                            whileTap={!processing ? { scale: 0.98 } : {}}
                         >
-                            <span className="mx-auto flex items-center">
+                            <span className="mx-auto flex items-center text-lg font-semibold">
                                 {processing ? (
-                                    "د تنظیم په حال کې..."
+                                    <>
+                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                                        د تنظیم په حال کې...
+                                    </>
                                 ) : (
                                     <>
                                         پټنوم بیا تنظیم کړئ
-                                        <FaKey className="mr-2 text-sm" />
+                                        <FaKey className="mr-3 text-base" />
                                     </>
                                 )}
                             </span>
-                        </button>
-                    </form>
-                </div>
-            </div>
+                        </motion.button>
+                    </motion.form>
+                </motion.div>
+            </motion.div>
         </GuestLayout>
     );
 }

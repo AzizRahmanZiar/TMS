@@ -148,32 +148,7 @@ const CustomerOrder = ({ orders, order, message }) => {
                                         </span>{" "}
                                         {order.id}
                                     </p>
-                                    <p>
-                                        <span className="font-semibold">
-                                            حالت:
-                                        </span>
-                                        <span
-                                            className={`ml-2 px-3 py-1 rounded-full text-sm ${
-                                                order.status === "pending"
-                                                    ? "bg-yellow-100 text-yellow-800"
-                                                    : order.status ===
-                                                      "accepted"
-                                                    ? "bg-green-100 text-green-800"
-                                                    : order.status ===
-                                                      "completed"
-                                                    ? "bg-blue-100 text-blue-800"
-                                                    : "bg-gray-100 text-gray-800"
-                                            }`}
-                                        >
-                                            {order.status === "pending"
-                                                ? "په انتظار کې"
-                                                : order.status === "accepted"
-                                                ? "منل شوی"
-                                                : order.status === "completed"
-                                                ? "مکمل شوی"
-                                                : "په پروسه کې"}
-                                        </span>
-                                    </p>
+
                                     <p>
                                         <span className="font-semibold">
                                             د ثبت نیټه:
@@ -263,12 +238,7 @@ const CustomerOrder = ({ orders, order, message }) => {
                                                 <FaMapMarkerAlt className="text-primary-600" />
                                             </div>
                                         </th>
-                                        <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <span>حالت</span>
-                                                <div className="w-3 h-3 rounded-full bg-primary-600"></div>
-                                            </div>
-                                        </th>
+
                                         <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden md:table-cell">
                                             <div className="flex items-center justify-end gap-2">
                                                 <span>د ثبت نیټه</span>
@@ -345,49 +315,7 @@ const CustomerOrder = ({ orders, order, message }) => {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-4 md:px-6 py-4 text-right">
-                                                    <div className="flex items-center justify-end">
-                                                        <span
-                                                            className={`px-4 py-2 rounded-full text-xs font-bold font-zar flex items-center gap-2 ${
-                                                                order.status ===
-                                                                "pending"
-                                                                    ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
-                                                                    : order.status ===
-                                                                      "accepted"
-                                                                    ? "bg-green-100 text-green-800 border border-green-200"
-                                                                    : order.status ===
-                                                                      "completed"
-                                                                    ? "bg-blue-100 text-blue-800 border border-blue-200"
-                                                                    : "bg-gray-100 text-gray-800 border border-gray-200"
-                                                            }`}
-                                                        >
-                                                            <div
-                                                                className={`w-2 h-2 rounded-full ${
-                                                                    order.status ===
-                                                                    "pending"
-                                                                        ? "bg-yellow-500"
-                                                                        : order.status ===
-                                                                          "accepted"
-                                                                        ? "bg-green-500"
-                                                                        : order.status ===
-                                                                          "completed"
-                                                                        ? "bg-blue-500"
-                                                                        : "bg-gray-500"
-                                                                }`}
-                                                            ></div>
-                                                            {order.status ===
-                                                            "pending"
-                                                                ? "په انتظار کې"
-                                                                : order.status ===
-                                                                  "accepted"
-                                                                ? "منل شوی"
-                                                                : order.status ===
-                                                                  "completed"
-                                                                ? "مکمل شوی"
-                                                                : "په پروسه کې"}
-                                                        </span>
-                                                    </div>
-                                                </td>
+
                                                 <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
                                                     <div className="flex items-center justify-end gap-2">
                                                         <span className="font-zar text-sm text-gray-600">
@@ -444,7 +372,7 @@ const CustomerOrder = ({ orders, order, message }) => {
                                     ) : (
                                         <tr>
                                             <td
-                                                colSpan="7"
+                                                colSpan="6"
                                                 className="px-6 py-12 text-center"
                                             >
                                                 <motion.div

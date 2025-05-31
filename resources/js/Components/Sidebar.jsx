@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import { IoMdArrowDropleft } from "react-icons/io";
-import { GiSewingMachine } from "react-icons/gi";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     FaUserShield,
@@ -15,6 +14,7 @@ import {
     FaEnvelope,
     FaBullhorn,
     FaCog,
+    FaCut,
 } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
 
@@ -114,7 +114,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         },
 
         {
-            title: "پرمـــــــــــایش",
+            title: "پرمــــــــــــایش",
             href: "/customerorder",
             roles: ["tailor"],
             icon: <FiSend className="text-xl md:text-2xl" />,
@@ -144,108 +144,210 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     return (
         <>
             {/* Mobile overlay */}
-            {isOpen && (
-                <div
-                    className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-20"
-                    onClick={toggleSidebar}
-                ></div>
-            )}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-20"
+                        onClick={toggleSidebar}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                    ></motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Sidebar */}
             <AnimatePresence>
                 <motion.div
-                    className={`fixed md:relative z-30 flex flex-col h-screen overflow-hidden border-primary-300 bg-primary-700 text-white rtl`}
+                    className={`fixed md:relative z-30 flex flex-col h-screen overflow-hidden bg-gradient-to-b from-primary-800 via-primary-700 to-primary-900 text-white rtl shadow-2xl border-r border-primary-600/30`}
                     initial={{
                         width: isOpen
-                            ? "16rem"
+                            ? "18rem"
                             : window.innerWidth < 768
                             ? "0"
-                            : "4rem",
+                            : "4.5rem",
                     }}
                     animate={{
                         width: isOpen
-                            ? "16rem"
+                            ? "18rem"
                             : window.innerWidth < 768
                             ? "0"
-                            : "4rem",
+                            : "4.5rem",
                     }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
                     {/* Close button for mobile */}
-                    {isOpen && window.innerWidth < 768 && (
-                        <button
-                            className="absolute top-4 right-4 text-white p-1"
-                            onClick={toggleSidebar}
-                        >
-                            <FaTimes className="text-xl" />
-                        </button>
-                    )}
+                    <AnimatePresence>
+                        {isOpen && window.innerWidth < 768 && (
+                            <motion.button
+                                className="absolute top-4 right-4 text-white p-2 rounded-xl hover:bg-white/10 transition-all duration-300 z-50 shadow-lg backdrop-blur-sm border border-white/20"
+                                onClick={toggleSidebar}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                            >
+                                <FaTimes className="text-lg" />
+                            </motion.button>
+                        )}
+                    </AnimatePresence>
 
-                    <div className="flex items-center justify-center h-20 space-x-2 rtl:space-x-reverse">
-                        <Link
-                            href={
-                                user?.role === "admin" ? "/admin" : "/dashboard"
-                            }
-                            className="text-2xl font-bold flex items-center justify-center"
-                            onClick={() =>
-                                handleLinkClick(
+                    <motion.div
+                        className="flex items-center justify-center h-20 md:h-24 border-b border-primary-600/30 bg-gradient-to-r from-primary-800 to-secondary-800 px-4"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                    >
+                        <div className="w-full flex justify-center">
+                            <Link
+                                href={
                                     user?.role === "admin"
                                         ? "/admin"
                                         : "/dashboard"
-                                )
-                            }
-                        >
-                            <GiSewingMachine className="text-secondary-400 h-12 w-12 md:h-16 md:w-16" />
-                        </Link>
-                    </div>
-
-                    <ul className="w-full border-t-0.5 pt-6 border-primary-500 pr-0">
-                        {filteredMenuItems.map((item, index) => (
-                            <motion.li
-                                key={index}
-                                whileHover={{ scale: 1.02 }}
-                                transition={{ type: "spring", stiffness: 300 }}
+                                }
+                                className="flex items-center justify-center group p-2"
+                                onClick={() =>
+                                    handleLinkClick(
+                                        user?.role === "admin"
+                                            ? "/admin"
+                                            : "/dashboard"
+                                    )
+                                }
                             >
-                                <Link
-                                    href={item.href}
-                                    onClick={() => handleLinkClick(item.href)}
-                                    className={`font-bold font-zar text-lg md:text-2xl flex flex-row items-center p-4 text-right transition-all duration-300 ${
-                                        activePath === item.href
-                                            ? "text-secondary-400 "
-                                            : "text-primary-50 hover:text-secondary-400"
-                                    }`}
+                                <motion.div
+                                    className="relative"
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    transition={{ duration: 0.3 }}
                                 >
-                                    {isOpen && (
-                                        <span className="flex items-center w-full justify-between gap-2">
-                                            {item.title}
-                                            <motion.span
-                                                animate={{
-                                                    x:
-                                                        activePath === item.href
-                                                            ? 0
-                                                            : -5,
-                                                    opacity:
-                                                        activePath === item.href
-                                                            ? 1
-                                                            : 0.7,
-                                                }}
+                                    {/* Main Icon */}
+                                    <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg">
+                                        <FaCut className="text-white text-xl md:text-2xl" />
+                                    </div>
+                                </motion.div>
+                            </Link>
+                        </div>
+                    </motion.div>
+
+                    <div className="flex-1 overflow-y-auto py-4 flex flex-col items-center">
+                        <ul
+                            className={`space-y-2 w-full flex flex-col ${
+                                isOpen
+                                    ? "items-center px-3"
+                                    : "items-center px-0"
+                            }`}
+                        >
+                            {filteredMenuItems.map((item, index) => (
+                                <motion.li
+                                    key={index}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{
+                                        delay: index * 0.1,
+                                        duration: 0.3,
+                                    }}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <Link
+                                        href={item.href}
+                                        onClick={() =>
+                                            handleLinkClick(item.href)
+                                        }
+                                        className={`font-bold font-zar text-base md:text-lg flex items-center rounded-xl transition-all duration-300 group relative overflow-hidden ${
+                                            isOpen
+                                                ? "justify-between p-3 w-full"
+                                                : "justify-center p-2 w-12 h-12 mx-auto"
+                                        } ${
+                                            activePath === item.href
+                                                ? "text-white bg-gradient-to-r from-secondary-500 to-secondary-600 shadow-lg"
+                                                : "text-primary-100 hover:text-white hover:bg-white/10 hover:shadow-md"
+                                        }`}
+                                    >
+                                        {/* Background gradient for active item */}
+                                        {activePath === item.href && (
+                                            <motion.div
+                                                className="absolute inset-0 bg-gradient-to-r from-secondary-400/20 to-secondary-600/20 rounded-xl"
+                                                layoutId="activeBackground"
                                                 transition={{
                                                     type: "spring",
                                                     stiffness: 300,
+                                                    damping: 30,
                                                 }}
-                                            >
-                                                <IoMdArrowDropleft className="text-lg" />
-                                            </motion.span>
-                                        </span>
-                                    )}
+                                            />
+                                        )}
 
-                                    <div className="flex items-center justify-center min-w-[24px] mr-3">
-                                        {item.icon}
-                                    </div>
-                                </Link>
-                            </motion.li>
-                        ))}
-                    </ul>
+                                        {/* Icon - always visible */}
+                                        <motion.div
+                                            className={`flex items-center justify-center relative z-10 ${
+                                                isOpen
+                                                    ? "min-w-[28px] mr-3 text-lg"
+                                                    : "w-full h-full text-lg"
+                                            }`}
+                                            whileHover={{ scale: 1.1 }}
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 400,
+                                            }}
+                                        >
+                                            {item.icon}
+                                        </motion.div>
+
+                                        {/* Text and arrow - only when open */}
+                                        <AnimatePresence>
+                                            {isOpen && (
+                                                <motion.div
+                                                    className="flex items-center justify-between flex-1 relative z-10"
+                                                    initial={{
+                                                        opacity: 0,
+                                                        width: 0,
+                                                    }}
+                                                    animate={{
+                                                        opacity: 1,
+                                                        width: "auto",
+                                                    }}
+                                                    exit={{
+                                                        opacity: 0,
+                                                        width: 0,
+                                                    }}
+                                                    transition={{
+                                                        duration: 0.2,
+                                                    }}
+                                                >
+                                                    <span className="truncate text-right flex-1">
+                                                        {item.title}
+                                                    </span>
+                                                    <motion.span
+                                                        className="ml-2"
+                                                        animate={{
+                                                            x:
+                                                                activePath ===
+                                                                item.href
+                                                                    ? 0
+                                                                    : -5,
+                                                            opacity:
+                                                                activePath ===
+                                                                item.href
+                                                                    ? 1
+                                                                    : 0.7,
+                                                        }}
+                                                        transition={{
+                                                            type: "spring",
+                                                            stiffness: 300,
+                                                        }}
+                                                    >
+                                                        <IoMdArrowDropleft className="text-lg flex-shrink-0" />
+                                                    </motion.span>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </Link>
+                                </motion.li>
+                            ))}
+                        </ul>
+                    </div>
                 </motion.div>
             </AnimatePresence>
         </>

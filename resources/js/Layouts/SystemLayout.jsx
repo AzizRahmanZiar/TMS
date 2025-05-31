@@ -1,18 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Link, usePage, router } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import ProtectedRoute from "../Components/ProtectedRoute";
 import Sidebar from "../Components/Sidebar";
-import {
-    FaBars,
-    FaUser,
-    FaSignOutAlt,
-    FaUserPlus,
-    FaEnvelope,
-    FaTimes,
-    FaChevronDown,
-} from "react-icons/fa";
+import NotificationDropdown from "../Components/NotificationDropdown";
+import Portal from "../Components/Portal";
+import { FaBars, FaUser, FaSignOutAlt, FaHome, FaTimes } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SystemLayout = ({ children }) => {
     const { auth } = usePage().props;
@@ -68,26 +63,47 @@ const SystemLayout = ({ children }) => {
 
     return (
         <ProtectedRoute roles={allowedRoles}>
-            <div className="flex h-screen rtl">
+            <div className="flex h-screen rtl bg-gray-50">
                 <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-                <div className="flex w-full border-r-0.5 border-primary-500 flex-col">
-                    <header className="flex w-full h-16 md:h-20 justify-between items-center bg-primary-700 px-3 md:px-6 shadow-md">
-                        <button
-                            className="text-white p-2 rounded-md focus:outline-none hover:bg-primary-600 transition-colors"
+                <div className="flex w-full flex-col">
+                    <motion.header
+                        className="flex w-full h-16 md:h-20 justify-between items-center bg-gradient-to-r from-primary-700 via-primary-600 to-secondary-700 px-4 md:px-8 shadow-xl border-b border-primary-500/20 backdrop-blur-sm"
+                        initial={{ y: -20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <motion.button
+                            className="text-white p-3 rounded-xl focus:outline-none hover:bg-white/10 transition-all duration-300 shadow-lg backdrop-blur-sm border border-white/20"
                             onClick={toggleSidebar}
                             aria-label="Toggle sidebar"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                         >
-                            <FaBars className="text-xl" />
-                        </button>
+                            <motion.div
+                                animate={{ rotate: sidebarOpen ? 180 : 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                {sidebarOpen ? (
+                                    <FaTimes className="text-xl" />
+                                ) : (
+                                    <FaBars className="text-xl" />
+                                )}
+                            </motion.div>
+                        </motion.button>
 
-                        <div className="flex items-center space-x-4 md:space-x-4 rtl:space-x-reverse">
+                        <div className="flex items-center space-x-3 md:space-x-4">
+                            {/* Notifications */}
+                            <NotificationDropdown />
+
                             {/* User Profile Image */}
                             <div className="relative" ref={profileRef}>
-                                <button
+                                <motion.button
                                     onClick={() =>
                                         setShowProfileModal(!showProfileModal)
                                     }
-                                    className="p-2 rounded-full bg-primary-600 hover:bg-primary-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300"
+                                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/30 shadow-lg backdrop-blur-sm border border-white/20"
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                 >
                                     <div className="w-8 h-8 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
                                         {auth.user &&
@@ -110,116 +126,189 @@ const SystemLayout = ({ children }) => {
                                             <FaUser className="text-white text-lg" />
                                         )}
                                     </div>
-                                </button>
+                                </motion.button>
 
                                 {/* Profile Dropdown */}
-                                {showProfileModal && (
-                                    <div className="absolute left-2 w-72 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
-                                        <div className="p-4 border-b">
-                                            <div className="flex flex-col justify-center items-center">
-                                                <div className="w-12 h-12 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
-                                                    {auth.user &&
-                                                    auth.user.profile_image ? (
-                                                        <img
-                                                            src={`/storage/${auth.user.profile_image}`}
-                                                            alt={
-                                                                auth.user
-                                                                    .name ||
-                                                                "User"
-                                                            }
-                                                            className="w-full h-full object-cover"
-                                                            onError={(e) => {
-                                                                e.target.onerror =
-                                                                    null;
-                                                                e.target.src =
-                                                                    "/placeholder.svg";
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        <FaUser className="text-white text-2xl" />
-                                                    )}
-                                                </div>
+                                <AnimatePresence>
+                                    {showProfileModal && (
+                                        <Portal>
+                                            {/* Backdrop */}
+                                            <motion.div
+                                                className="fixed inset-0 bg-black/20 z-[999998]"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                exit={{ opacity: 0 }}
+                                                onClick={() =>
+                                                    setShowProfileModal(false)
+                                                }
+                                            />
+                                            {/* Modal */}
+                                            <motion.div
+                                                className="fixed left-52 top-16 w-80 -translate-x-1/2 bg-white
 
-                                                <h3 className="text-xl font-medium text-gray-900">
-                                                    {auth.user?.name}
-                                                </h3>
-                                                <p className="text-xl text-gray-500">
-                                                    {auth.user?.email}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="p-2">
-                                            <form
-                                                action={route("logout")}
-                                                method="POST"
-                                                className="w-full"
-                                                onSubmit={async (e) => {
-                                                    e.preventDefault();
-
-                                                    // Get fresh CSRF token
-                                                    try {
-                                                        const tokenResponse =
-                                                            await fetch(
-                                                                "/refresh-csrf"
-                                                            );
-                                                        const tokenData =
-                                                            await tokenResponse.json();
-
-                                                        const formData =
-                                                            new FormData();
-                                                        formData.append(
-                                                            "_token",
-                                                            tokenData.token
-                                                        );
-
-                                                        const response =
-                                                            await fetch(
-                                                                route("logout"),
-                                                                {
-                                                                    method: "POST",
-                                                                    body: formData,
-                                                                    headers: {
-                                                                        "X-Requested-With":
-                                                                            "XMLHttpRequest",
-                                                                    },
-                                                                }
-                                                            );
-
-                                                        // Always redirect regardless of response
-                                                        window.location.href =
-                                                            "/";
-                                                    } catch (error) {
-                                                        // If anything fails, just redirect
-                                                        window.location.href =
-                                                            "/";
-                                                    }
+                                                rounded-2xl shadow-2xl ring-1 ring-black/10 z-[999999] border border-gray-200"
+                                                initial={{
+                                                    opacity: 0,
+                                                    scale: 0.95,
+                                                    y: -10,
                                                 }}
+                                                animate={{
+                                                    opacity: 1,
+                                                    scale: 1,
+                                                    y: 0,
+                                                }}
+                                                exit={{
+                                                    opacity: 0,
+                                                    scale: 0.95,
+                                                    y: -10,
+                                                }}
+                                                transition={{ duration: 0.2 }}
                                             >
-                                                <button
-                                                    type="submit"
-                                                    className="w-full text-xl flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-                                                >
-                                                    <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
-                                                    وتـــــــل
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                )}
+                                                <div className="p-6 border-b border-gray-100">
+                                                    <div className="flex flex-col justify-center items-center">
+                                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center overflow-hidden shadow-lg ring-4 ring-white">
+                                                            {auth.user &&
+                                                            auth.user
+                                                                .profile_image ? (
+                                                                <img
+                                                                    src={`/storage/${auth.user.profile_image}`}
+                                                                    alt={
+                                                                        auth
+                                                                            .user
+                                                                            .name ||
+                                                                        "User"
+                                                                    }
+                                                                    className="w-full h-full object-cover"
+                                                                    onError={(
+                                                                        e
+                                                                    ) => {
+                                                                        e.target.onerror =
+                                                                            null;
+                                                                        e.target.src =
+                                                                            "/placeholder.svg";
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                <FaUser className="text-white text-2xl" />
+                                                            )}
+                                                        </div>
+
+                                                        <h3 className="text-xl font-bold text-gray-900 mt-3 font-zar">
+                                                            {auth.user?.name}
+                                                        </h3>
+                                                        <p className="text-base text-gray-600 font-zar">
+                                                            {auth.user?.email}
+                                                        </p>
+                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800 mt-2">
+                                                            {auth.user?.role ===
+                                                            "admin"
+                                                                ? "اډمین"
+                                                                : auth.user
+                                                                      ?.role ===
+                                                                  "tailor"
+                                                                ? "خیاط"
+                                                                : auth.user
+                                                                      ?.role ===
+                                                                  "shopkeeper"
+                                                                ? "شرکت"
+                                                                : "کارکوونکی"}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="p-4">
+                                                    <form
+                                                        action={route("logout")}
+                                                        method="POST"
+                                                        className="w-full"
+                                                        onSubmit={async (e) => {
+                                                            e.preventDefault();
+
+                                                            // Get fresh CSRF token
+                                                            try {
+                                                                const tokenResponse =
+                                                                    await fetch(
+                                                                        "/refresh-csrf"
+                                                                    );
+                                                                const tokenData =
+                                                                    await tokenResponse.json();
+
+                                                                const formData =
+                                                                    new FormData();
+                                                                formData.append(
+                                                                    "_token",
+                                                                    tokenData.token
+                                                                );
+
+                                                                await fetch(
+                                                                    route(
+                                                                        "logout"
+                                                                    ),
+                                                                    {
+                                                                        method: "POST",
+                                                                        body: formData,
+                                                                        headers:
+                                                                            {
+                                                                                "X-Requested-With":
+                                                                                    "XMLHttpRequest",
+                                                                            },
+                                                                    }
+                                                                );
+
+                                                                // Always redirect regardless of response
+                                                                window.location.href =
+                                                                    "/";
+                                                            } catch (error) {
+                                                                // If anything fails, just redirect
+                                                                window.location.href =
+                                                                    "/";
+                                                            }
+                                                        }}
+                                                    >
+                                                        <motion.button
+                                                            type="submit"
+                                                            className="w-full flex items-center justify-center px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 font-zar text-lg font-semibold border border-red-200 hover:border-red-300"
+                                                            whileHover={{
+                                                                scale: 1.02,
+                                                            }}
+                                                            whileTap={{
+                                                                scale: 0.98,
+                                                            }}
+                                                        >
+                                                            <FaSignOutAlt className="ml-3 text-lg" />
+                                                            وتـــــــل
+                                                        </motion.button>
+                                                    </form>
+                                                </div>
+                                            </motion.div>
+                                        </Portal>
+                                    )}
+                                </AnimatePresence>
                             </div>
 
-                            <Link
-                                href="/"
-                                className="font-bold px-3 py-2 md:px-6 md:py-3 rounded-md font-zar text-sm md:text-xl bg-tertiary-500 hover:bg-tertiary-400 text-white transition-colors shadow-md"
+                            <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                             >
-                                کـــــــور
-                            </Link>
+                                <Link
+                                    href="/"
+                                    className="font-bold px-4 py-3 md:px-6 md:py-3 rounded-xl font-zar text-sm md:text-lg bg-gradient-to-r from-tertiary-500 to-tertiary-600 hover:from-tertiary-600 hover:to-tertiary-700 text-white transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm border border-white/20 flex items-center gap-2"
+                                >
+                                    <FaHome className="text-base" />
+                                    کـــــــور
+                                </Link>
+                            </motion.div>
                         </div>
-                    </header>
+                    </motion.header>
 
-                    <main className="flex-1 overflow-y-auto w-full bg-gray-50">
-                        {children}
-                    </main>
+                    <motion.main
+                        className="flex-1 overflow-y-auto w-full bg-gradient-to-br from-gray-50 to-gray-100 relative"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary-50/20 to-secondary-50/20 pointer-events-none"></div>
+                        <div className="relative z-0">{children}</div>
+                    </motion.main>
                 </div>
             </div>
         </ProtectedRoute>

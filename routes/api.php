@@ -26,6 +26,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead']);
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
+    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount']);
 
     // Order routes
     Route::post('/orders/{id}/accept', [CustomerOrderController::class, 'accept']);
@@ -34,4 +35,4 @@ Route::middleware(['web', 'auth'])->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('kortai', KortaiController::class);
-}); 
+});

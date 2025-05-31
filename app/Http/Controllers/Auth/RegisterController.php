@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use App\Notifications\NewUserRegistration;
+use App\Notifications\NewUserRegistrationNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -84,7 +84,7 @@ class RegisterController extends Controller
         // Send notification to all admin users
         $adminUsers = User::where('role', 'admin')->get();
         foreach ($adminUsers as $admin) {
-            $admin->notify(new NewUserRegistration($user));
+            $admin->notify(new NewUserRegistrationNotification($user));
         }
 
         event(new Registered($user));

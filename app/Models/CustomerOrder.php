@@ -14,7 +14,6 @@ class CustomerOrder extends Model
         'address',
         'tailor_id',
         'user_id',
-        'status',
         'is_visible',
         'created_at'
     ];

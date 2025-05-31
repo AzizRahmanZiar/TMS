@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\User;
 use App\Http\Requests\MessageRequest;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class MessageController extends Controller
@@ -21,12 +23,38 @@ class MessageController extends Controller
     {
         $validated = $request->validated();
 
-        Message::create([
-            'user_id' => auth()->id(),
+        $message = Message::create([
+            'user_id' => Auth::id(),
             'phone' => $validated['phone'],
             'subject' => $validated['subject'],
             'message' => $validated['message'],
         ]);
+
+        // Send notification to all admin users
+        $adminUsers = User::where('role', 'admin')->get();
+
+        if ($adminUsers->count() > 0) {
+            foreach ($adminUsers as $admin) {
+                try {
+                    \App\Models\Notification::createForUser(
+                        $admin->id,
+                        'نوی پیغام',
+                        'تاسو ته د ' . Auth::user()->name . ' لخوا نوی پیغام راغلی دی: ' . $message->subject,
+                        'message',
+                        [
+                            'message_id' => $message->id,
+                            'sender_name' => Auth::user()->name,
+                            'subject' => $message->subject,
+                            'icon' => 'message',
+                        ]
+                    );
+                } catch (\Exception $e) {
+                    Log::error('Failed to send notification to admin: ' . $e->getMessage());
+                }
+            }
+        } else {
+            Log::warning('No admin users found to send notification');
+        }
 
         return back()->with('success', 'پیغام په بریالیتوب سره ولېږل شو');
     }

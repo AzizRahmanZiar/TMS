@@ -137,6 +137,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Message routes (accessible by all authenticated users)
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
 
+    // Notification routes (accessible by all authenticated users)
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
+
+
+
+
+
+
+
     Route::get('/tailorpost', [TailorPostController::class, 'index'])->name('tailorpost.index');
     Route::post('/tailorpost', [TailorPostController::class, 'store'])->name('tailorpost.store');
     Route::put('/tailorpost/{tailorPost}', [TailorPostController::class, 'update'])->name('tailorpost.update');
