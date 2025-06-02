@@ -46,6 +46,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'weekly_order_limit',
         'current_week_orders',
         'week_start_date',
+        'week_end_date',
     ];
 
     /**
@@ -73,6 +74,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'shop_images' => 'array',
             'social_links' => 'array',
             'week_start_date' => 'date',
+            'week_end_date' => 'date',
         ];
     }
 
@@ -151,14 +153,29 @@ class User extends Authenticatable implements MustVerifyEmail
     public function updateWeeklyOrderTracking()
     {
         $startOfWeek = now()->startOfWeek();
+        $endOfWeek = now()->endOfWeek();
 
         // Reset if it's a new week
         if (!$this->week_start_date || $this->week_start_date->lt($startOfWeek)) {
             $this->update([
                 'current_week_orders' => $this->getCurrentWeekOrderCount(),
                 'week_start_date' => $startOfWeek,
+                'week_end_date' => $endOfWeek,
             ]);
         }
+    }
+
+    /**
+     * Check if user has already placed an order this week
+     */
+    public function hasOrderedThisWeek()
+    {
+        $startOfWeek = now()->startOfWeek();
+        $endOfWeek = now()->endOfWeek();
+
+        return CustomerOrder::where('user_id', $this->id)
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->exists();
     }
 
     /**
@@ -175,6 +192,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'remaining_capacity' => $this->getRemainingOrderCapacity(),
             'can_accept_orders' => $this->canAcceptMoreOrders(),
             'total_visible_orders' => $this->customerOrders()->where('is_visible', true)->count(),
+            'week_start_date' => $this->week_start_date?->format('Y-m-d'),
+            'week_end_date' => $this->week_end_date?->format('Y-m-d'),
         ];
     }
 }

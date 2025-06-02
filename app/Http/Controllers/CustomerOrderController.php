@@ -65,6 +65,15 @@ class CustomerOrderController extends Controller
             }
             Log::info('Tailor verification passed', ['tailor' => $tailor->toArray()]);
 
+            // Check if user has already placed an order this week
+            if (Auth::user()->hasOrderedThisWeek()) {
+                Log::warning('User has already placed an order this week', [
+                    'user_id' => Auth::user()->id,
+                    'user_name' => Auth::user()->name
+                ]);
+                return back()->with('error', 'تاسو د دغه اونۍ لپاره دمخه یو فرمایش ورکړی دی. هره اونۍ یوازې یو فرمایش ورکولی شئ.');
+            }
+
             // Check if tailor can accept more orders this week
             if (!$tailor->canAcceptMoreOrders()) {
                 Log::warning('Tailor has reached weekly order limit', [
@@ -77,12 +86,17 @@ class CustomerOrderController extends Controller
 
             // Create the order and not visible initially
             Log::info('Creating order');
+            $startOfWeek = now()->startOfWeek();
+            $endOfWeek = now()->endOfWeek();
+
             $order = CustomerOrder::create([
                 'phone' => $validated['phone'],
                 'address' => $validated['address'],
                 'tailor_id' => $validated['tailor_id'],
                 'user_id' => Auth::id(),
                 'is_visible' => false,
+                'order_week_start' => $startOfWeek,
+                'order_week_end' => $endOfWeek,
                 'created_at' => now(),
             ]);
             Log::info('Order created successfully', ['order' => $order->toArray()]);

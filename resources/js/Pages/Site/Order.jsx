@@ -37,6 +37,9 @@ const Order = () => {
         status: "pending",
     });
 
+    // Check if user has already ordered this week
+    const userHasOrderedThisWeek = props.userHasOrderedThisWeek;
+
     useEffect(() => {
         // Check if user is authenticated
         if (!props.auth?.user) {
@@ -86,6 +89,14 @@ const Order = () => {
 
         if (!props.auth?.user) {
             router.visit(route("login"));
+            return;
+        }
+
+        // Check if user has already ordered this week
+        if (userHasOrderedThisWeek) {
+            toast.error(
+                "تاسو د دغه اونۍ لپاره دمخه یو فرمایش ورکړی دی. هره اونۍ یوازې یو فرمایش ورکولی شئ."
+            );
             return;
         }
 
@@ -297,10 +308,65 @@ const Order = () => {
                                     </div>
                                 )}
 
+                                {/* Weekly Order Status */}
+                                {userHasOrderedThisWeek ? (
+                                    <div className="bg-gradient-to-r from-red-50 to-pink-50 p-6 border-b border-red-200">
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                                <span className="text-white font-bold text-sm">
+                                                    ✕
+                                                </span>
+                                            </div>
+                                            <div className="text-red-800 font-zar">
+                                                <h3 className="font-bold text-lg mb-2">
+                                                    د اونۍ فرمایش مکمل شوی
+                                                </h3>
+                                                <p className="text-sm leading-relaxed">
+                                                    تاسو د دغه اونۍ لپاره دمخه
+                                                    یو فرمایش ورکړی دی. هر
+                                                    پیرودونکی د اونۍ په اوږدو کې
+                                                    یوازې{" "}
+                                                    <strong>یو فرمایش</strong>{" "}
+                                                    ورکولی شي. د راتلونکې اونۍ
+                                                    لپاره بیا هڅه وکړئ.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 border-b border-amber-200">
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                                <span className="text-white font-bold text-sm">
+                                                    !
+                                                </span>
+                                            </div>
+                                            <div className="text-amber-800 font-zar">
+                                                <h3 className="font-bold text-lg mb-2">
+                                                    د اونۍ د فرمایش حد
+                                                </h3>
+                                                <p className="text-sm leading-relaxed">
+                                                    هر پیرودونکی د اونۍ په اوږدو
+                                                    کې یوازې{" "}
+                                                    <strong>یو فرمایش</strong>{" "}
+                                                    ورکولی شي. که چیرې تاسو د
+                                                    دغه اونۍ لپاره دمخه فرمایش
+                                                    ورکړی وي، نو تاسو نشئ کولی
+                                                    بل فرمایش ورکړئ.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* Form */}
                                 <form
                                     onSubmit={handleSubmit}
-                                    className="p-8 md:p-10 space-y-8"
+                                    className={`p-8 md:p-10 space-y-8 ${
+                                        userHasOrderedThisWeek
+                                            ? "opacity-50 pointer-events-none"
+                                            : ""
+                                    }`}
                                 >
                                     {/* Phone Field */}
                                     <motion.div
@@ -402,20 +468,23 @@ const Order = () => {
                                             type="submit"
                                             disabled={
                                                 processing ||
+                                                userHasOrderedThisWeek ||
                                                 (props.orderStatistics &&
                                                     !props.orderStatistics
                                                         .can_accept_orders)
                                             }
                                             className={`w-full font-bold py-5 px-8 rounded-2xl text-xl font-zar shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-3 rtl:space-x-reverse ${
-                                                props.orderStatistics &&
-                                                !props.orderStatistics
-                                                    .can_accept_orders
+                                                userHasOrderedThisWeek ||
+                                                (props.orderStatistics &&
+                                                    !props.orderStatistics
+                                                        .can_accept_orders)
                                                     ? "bg-gradient-to-r from-gray-400 to-gray-500 text-gray-600"
                                                     : "bg-gradient-to-r from-secondary-500 via-secondary-600 to-primary-500 hover:from-secondary-600 hover:via-secondary-700 hover:to-primary-600 text-white"
                                             }`}
                                             whileHover={{
                                                 scale:
                                                     processing ||
+                                                    userHasOrderedThisWeek ||
                                                     (props.orderStatistics &&
                                                         !props.orderStatistics
                                                             .can_accept_orders)
@@ -423,6 +492,7 @@ const Order = () => {
                                                         : 1.03,
                                                 y:
                                                     processing ||
+                                                    userHasOrderedThisWeek ||
                                                     (props.orderStatistics &&
                                                         !props.orderStatistics
                                                             .can_accept_orders)
@@ -432,6 +502,7 @@ const Order = () => {
                                             whileTap={{
                                                 scale:
                                                     processing ||
+                                                    userHasOrderedThisWeek ||
                                                     (props.orderStatistics &&
                                                         !props.orderStatistics
                                                             .can_accept_orders)
@@ -443,6 +514,13 @@ const Order = () => {
                                                 <>
                                                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                                                     <span>لږ صبر وکړئ...</span>
+                                                </>
+                                            ) : userHasOrderedThisWeek ? (
+                                                <>
+                                                    <span>
+                                                        تاسو د دغه اونۍ فرمایش
+                                                        ورکړی دی
+                                                    </span>
                                                 </>
                                             ) : props.orderStatistics &&
                                               !props.orderStatistics

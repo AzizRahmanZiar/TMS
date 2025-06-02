@@ -15,11 +15,15 @@ class CustomerOrder extends Model
         'tailor_id',
         'user_id',
         'is_visible',
+        'order_week_start',
+        'order_week_end',
         'created_at'
     ];
 
     protected $casts = [
-        'created_at' => 'datetime'
+        'created_at' => 'datetime',
+        'order_week_start' => 'date',
+        'order_week_end' => 'date'
     ];
 
     public function user()

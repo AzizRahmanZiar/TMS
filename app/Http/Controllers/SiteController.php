@@ -10,6 +10,7 @@ use App\Models\TailorPost;
 use App\Models\PostRating;
 use App\Models\CustomerOrder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class SiteController extends Controller
 {
@@ -56,7 +57,7 @@ class SiteController extends Controller
 
                 // Debug log for the specific tailor with weekly_order_limit = 100
                 if ($tailor->weekly_order_limit == 100) {
-                    \Log::info('Tailor Order Stats Debug:', [
+                    Log::info('Tailor Order Stats Debug:', [
                         'tailor_id' => $tailor->id,
                         'tailor_name' => $tailor->name,
                         'weekly_order_limit' => $tailor->weekly_order_limit,
@@ -228,7 +229,7 @@ class SiteController extends Controller
             ->values();
 
         // Debug logging
-        \Log::info('Top Designs Data:', [
+        Log::info('Top Designs Data:', [
             'count' => $topDesigns->count(),
             'designs' => $topDesigns->toArray()
         ]);
@@ -263,6 +264,12 @@ class SiteController extends Controller
         $tailorName = $request->get('tailorName');
 
         $orderStatistics = null;
+        $userHasOrderedThisWeek = false;
+
+        // Check if user has already ordered this week
+        if (Auth::check()) {
+            $userHasOrderedThisWeek = Auth::user()->hasOrderedThisWeek();
+        }
 
         // If tailor is selected, get their order statistics
         if ($tailorId) {
@@ -276,6 +283,7 @@ class SiteController extends Controller
             'tailorId' => $tailorId,
             'tailorName' => $tailorName,
             'orderStatistics' => $orderStatistics,
+            'userHasOrderedThisWeek' => $userHasOrderedThisWeek,
         ]);
     }
 }

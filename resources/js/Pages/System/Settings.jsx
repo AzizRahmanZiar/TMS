@@ -237,6 +237,45 @@ const Settings = () => {
                                 </h2>
                             </div>
 
+                            {/* Week Date Range Display */}
+                            {orderStatistics?.week_start_date &&
+                                orderStatistics?.week_end_date && (
+                                    <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <FaCalendarWeek className="text-blue-500" />
+                                            <h3 className="text-lg font-bold text-blue-700 font-zar">
+                                                د اوسنۍ اونۍ نیټې
+                                            </h3>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="bg-white p-3 rounded-lg border border-blue-100">
+                                                <div className="text-sm text-gray-600 font-zar mb-1">
+                                                    د اونۍ پیل
+                                                </div>
+                                                <div className="text-lg font-bold text-blue-600">
+                                                    {new Date(
+                                                        orderStatistics.week_start_date
+                                                    ).toLocaleDateString(
+                                                        "fa-AF"
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="bg-white p-3 rounded-lg border border-blue-100">
+                                                <div className="text-sm text-gray-600 font-zar mb-1">
+                                                    د اونۍ پای
+                                                </div>
+                                                <div className="text-lg font-bold text-blue-600">
+                                                    {new Date(
+                                                        orderStatistics.week_end_date
+                                                    ).toLocaleDateString(
+                                                        "fa-AF"
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
                                 <div className="flex items-start gap-3">
                                     <FaInfoCircle className="text-blue-500 mt-1" />
@@ -244,12 +283,16 @@ const Settings = () => {
                                         <p className="font-semibold mb-1">
                                             د حد تنظیم کول:
                                         </p>
-                                        <p>
+                                        <p className="mb-2">
                                             تاسو کولی شئ د خپل د کار د ظرفیت له
                                             مخې د اونۍ د فرمایشونو حد وټاکئ. که
                                             چیرې تاسو ډیر بوخت یاست، ټیټ حد
                                             وټاکئ، او که چیرې تاسو ډیر کار کولی
                                             شئ، لوړ حد وټاکئ.
+                                        </p>
+                                        <p className="text-sm font-semibold text-blue-800">
+                                            یادونه: هر پیرودونکی د اونۍ په اوږدو
+                                            کې یوازې یو فرمایش ورکولی شي.
                                         </p>
                                     </div>
                                 </div>
