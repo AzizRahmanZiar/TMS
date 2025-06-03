@@ -19,7 +19,6 @@ import { Head, router } from "@inertiajs/react";
 
 const Tailors = ({ tailors }) => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [experience, setExperience] = useState("");
     const [career, setCareer] = useState("");
     const [processedTailors, setProcessedTailors] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -34,6 +33,11 @@ const Tailors = ({ tailors }) => {
             setProcessedTailors(tailors);
         }
     }, [tailors]);
+
+    // Auto-filter when search term or career changes
+    useEffect(() => {
+        handleFilter();
+    }, [searchTerm, career, tailors]);
 
     // Function to handle filtering
     const handleFilter = () => {
@@ -55,14 +59,6 @@ const Tailors = ({ tailors }) => {
             );
         }
 
-        if (experience) {
-            filtered = filtered.filter(
-                (tailor) =>
-                    tailor.experience &&
-                    tailor.experience >= parseInt(experience)
-            );
-        }
-
         if (career) {
             filtered = filtered.filter(
                 (tailor) =>
@@ -78,7 +74,6 @@ const Tailors = ({ tailors }) => {
     // Function to reset filters
     const resetFilters = () => {
         setSearchTerm("");
-        setExperience("");
         setCareer("");
         setProcessedTailors(tailors);
         setCurrentPage(1);
@@ -208,36 +203,13 @@ const Tailors = ({ tailors }) => {
                                     className="flex-1 outline-none bg-transparent"
                                 >
                                     <option value="">ټول تخصصونه</option>
-                                    <option value="Cloths">جامې</option>
-                                    <option value="Uniform">یونیفورم</option>
-                                    <option value="Sadra">سدري</option>
-                                    <option value="Kortai">کورتی</option>
+                                    <option value="جامې">جامې</option>
+                                    <option value="یونیفورم">یونیفورم</option>
+                                    <option value="صدری">صدری</option>
+                                    <option value="کورتی">کورتی</option>
                                 </select>
                             </div>
-                            <div className="flex flex-1 items-center gap-2 border border-primary-200 p-3 rounded-lg bg-white">
-                                <FaClock className="text-primary-400" />
-                                <select
-                                    value={experience}
-                                    onChange={(e) =>
-                                        setExperience(e.target.value)
-                                    }
-                                    className="flex-1 outline-none bg-transparent"
-                                >
-                                    <option value="">ټول تجربې</option>
-                                    <option value="1">1 کاله</option>
-                                    <option value="2">2 کاله</option>
-                                    <option value="5">5 کاله</option>
-                                    <option value="10">10 کاله</option>
-                                </select>
-                            </div>
-                            <motion.button
-                                onClick={handleFilter}
-                                className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-600 hover:bg-secondary-700 text-white  transition duration-200 shadow-md"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                لټون
-                            </motion.button>
+
                             <motion.button
                                 onClick={resetFilters}
                                 className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-primary-500 hover:bg-primary-600 text-white  transition duration-200 shadow-md"
@@ -342,15 +314,6 @@ const Tailors = ({ tailors }) => {
 
                                                     {/* Modern Badges */}
                                                     <div className="flex items-center justify-center gap-2 mb-4">
-                                                        {tailor.experience && (
-                                                            <div className="px-3 py-1.5 bg-gradient-to-r from-primary-100 to-primary-200 text-primary-700 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-sm">
-                                                                <FaClock className="text-xs" />
-                                                                {
-                                                                    tailor.experience
-                                                                }{" "}
-                                                                کاله
-                                                            </div>
-                                                        )}
                                                         {tailor.rating_percentage >
                                                             0 && (
                                                             <div className="px-3 py-1.5 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-700 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-sm">
@@ -794,17 +757,7 @@ const Tailors = ({ tailors }) => {
                                                         {selectedTailor.email}
                                                     </p>
                                                 </div>
-                                                <div>
-                                                    <span className="text-sm text-gray-500">
-                                                        تجربه:
-                                                    </span>
-                                                    <p className="font-medium">
-                                                        {
-                                                            selectedTailor.experience
-                                                        }{" "}
-                                                        کاله
-                                                    </p>
-                                                </div>
+
                                                 <div>
                                                     <span className="text-sm text-gray-500">
                                                         مسلک:

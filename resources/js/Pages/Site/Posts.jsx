@@ -9,6 +9,7 @@ import {
     FaChevronLeft,
     FaChevronRight,
     FaTrash,
+    FaFilter,
 } from "react-icons/fa";
 import { useRate } from "@/Contexts/RatingContext";
 import { usePage, router, useForm } from "@inertiajs/react";
@@ -115,6 +116,11 @@ const Post = () => {
         setToastType(type);
         setShowToast(true);
     };
+
+    // Auto-filter when search term or category changes
+    useEffect(() => {
+        handleFilter();
+    }, [searchTerm, category, originalPosts]);
 
     // Function to handle filtering
     const handleFilter = () => {
@@ -735,7 +741,7 @@ const Post = () => {
                 {/* Background Elements */}
                 <div className="absolute inset-0 overflow-hidden">
                     <motion.div
-                        className="absolute top-10 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-gradient-to-br from-secondary-200 to-tertiary-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"
+                        className="absolute top-10 left-10 w-48 sm:w-72 h-48 sm:h-72   mix-blend-multiply filter blur-xl opacity-70"
                         animate={{
                             x: [0, 50, 0],
                             y: [0, -50, 0],
@@ -769,7 +775,7 @@ const Post = () => {
                             variants={fadeIn}
                         >
                             <motion.h1
-                                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-zar mb-4 sm:mb-6 bg-gradient-to-r from-primary-800 via-secondary-600 to-tertiary-600 bg-clip-text text-transparent leading-tight"
+                                className="text-4xl py-3 sm:text-5xl md:text-6xl lg:text-7xl font-bold font-zar mb-4 sm:mb-6 bg-gradient-to-r from-primary-800 via-secondary-600 to-tertiary-600 bg-clip-text text-transparent leading-tight"
                                 initial={{ opacity: 0, y: -20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}
@@ -796,91 +802,83 @@ const Post = () => {
                                 damping: 15,
                             }}
                         >
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-gradient-to-br from-secondary-400/20 to-tertiary-400/20 rounded-3xl transform rotate-3 scale-105"></div>
-                                <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/30">
-                                    <motion.img
-                                        src="./imgs/blog.jpg"
-                                        alt="posts"
-                                        className="w-full h-auto rounded-2xl shadow-lg"
-                                        whileHover={{ scale: 1.02 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 300,
-                                        }}
-                                    />
-                                </div>
-                            </div>
+                            {/* Clean Image Only */}
+                            <motion.img
+                                src="./imgs/blog.jpg"
+                                alt="posts"
+                                className="w-full h-auto"
+                                whileHover={{ scale: 1.02 }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 300,
+                                }}
+                            />
                         </motion.div>
                     </div>
                 </div>
             </motion.section>
 
-            {/* Enhanced Search and Filter Section */}
+            {/* Filter section */}
             <motion.section
-                className="py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-primary-25 to-white"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                className="py-8 bg-white shadow-md"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
             >
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="container mx-auto px-4">
                     <motion.div
-                        className="bg-white/80 backdrop-blur-sm p-6 sm:p-8 lg:p-10 rounded-3xl border border-white/30 shadow-2xl"
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.6 }}
+                        className="bg-white p-6 rounded-xl border"
+                        whileHover={{
+                            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+                        }}
                     >
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                            <motion.div
-                                className="relative"
-                                whileHover={{ scale: 1.02 }}
-                                transition={{ type: "spring", stiffness: 400 }}
-                            >
+                        <div className="flex flex-col md:flex-row gap-4">
+                            <div className="flex flex-1 items-center gap-2 border border-primary-200 p-3 rounded-lg bg-white">
+                                <FaSearch className="text-primary-400" />
                                 <input
                                     type="text"
-                                    placeholder="د خیاط نوم له مخې لټون"
-                                    className="w-full p-3 sm:p-4 border border-gray-300 outline-none rounded-2xl pr-12 focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all shadow-lg bg-white/90 backdrop-blur-sm text-sm sm:text-base"
+                                    placeholder="د خیاط نوم له مخې لټون..."
                                     value={searchTerm}
                                     onChange={(e) =>
                                         setSearchTerm(e.target.value)
                                     }
+                                    className="flex-1 outline-none"
                                 />
-                                <FaSearch className="absolute right-4 top-1/2 transform -translate-y-1/2 text-primary-400 text-lg" />
-                            </motion.div>
-
-                            <motion.select
-                                className="w-full p-3 sm:p-4 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-secondary-300 focus:border-secondary-500 transition-all shadow-lg bg-white/90 backdrop-blur-sm text-sm sm:text-base"
-                                value={category}
-                                onChange={(e) => setCategory(e.target.value)}
-                                whileHover={{ scale: 1.02 }}
-                                transition={{ type: "spring", stiffness: 400 }}
-                            >
-                                <option value="">ټولې کټګورۍ</option>
-                                {categories.map((cat, index) => (
-                                    <option key={index} value={cat}>
-                                        {cat}
-                                    </option>
-                                ))}
-                            </motion.select>
-
-                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
-                                <motion.button
-                                    onClick={handleFilter}
-                                    className="font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-2xl font-zar text-base sm:text-lg flex-1 bg-gradient-to-r from-secondary-600 to-tertiary-600 text-white hover:from-secondary-700 hover:to-tertiary-700 transition-all duration-300 shadow-xl hover:shadow-2xl"
-                                    whileHover={{ scale: 1.02, y: -2 }}
-                                    whileTap={{ scale: 0.98 }}
-                                >
-                                    لټون
-                                </motion.button>
-                                <motion.button
-                                    onClick={resetFilters}
-                                    className="font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-2xl font-zar text-base sm:text-lg flex-1 bg-white border-2 border-tertiary-600 text-tertiary-600 hover:bg-tertiary-600 hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl"
-                                    whileHover={{ scale: 1.02, y: -2 }}
-                                    whileTap={{ scale: 0.98 }}
-                                >
-                                    بیا تنظیم
-                                </motion.button>
                             </div>
+                            <div className="flex flex-1 items-center gap-2 border border-primary-200 p-3 rounded-lg bg-white">
+                                <FaFilter className="text-primary-400" />
+                                <select
+                                    value={category}
+                                    onChange={(e) =>
+                                        setCategory(e.target.value)
+                                    }
+                                    className="flex-1 outline-none bg-transparent"
+                                >
+                                    <option value="">ټولې کټګورۍ</option>
+                                    {categories.map((cat, index) => (
+                                        <option key={index} value={cat}>
+                                            {cat === "Cloths"
+                                                ? "جامې"
+                                                : cat === "Uniform"
+                                                ? "یونیفورم"
+                                                : cat === "Kortai"
+                                                ? "کورتی"
+                                                : cat === "Sadrai"
+                                                ? "صدری"
+                                                : cat}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <motion.button
+                                onClick={resetFilters}
+                                className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-primary-500 hover:bg-primary-600 text-white  transition duration-200 shadow-md"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                ریسیټ
+                            </motion.button>
                         </div>
                     </motion.div>
                 </div>
@@ -922,14 +920,30 @@ const Post = () => {
                                     </div>
                                     {post.category && (
                                         <span className="bg-gradient-to-r from-tertiary-100 to-secondary-100 text-tertiary-700 px-2 py-1 rounded-full text-xs font-medium">
-                                            {post.category}
+                                            {post.category === "Cloths"
+                                                ? "جامې"
+                                                : post.category === "Uniform"
+                                                ? "یونیفورم"
+                                                : post.category === "Kortai"
+                                                ? "کورتی"
+                                                : post.category === "Sadrai"
+                                                ? "صدری"
+                                                : post.category}
                                         </span>
                                     )}
                                 </div>
 
                                 {/* Title */}
                                 <h3 className="text-sm sm:text-base font-zar font-bold text-tertiary-700 mb-2 line-clamp-2">
-                                    {post.category}
+                                    {post.category === "Cloths"
+                                        ? "جامې"
+                                        : post.category === "Uniform"
+                                        ? "یونیفورم"
+                                        : post.category === "Kortai"
+                                        ? "کورتی"
+                                        : post.category === "Sadrai"
+                                        ? "صدری"
+                                        : post.category}
                                 </h3>
 
                                 {/* Description */}

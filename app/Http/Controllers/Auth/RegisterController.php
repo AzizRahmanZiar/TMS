@@ -65,7 +65,6 @@ class RegisterController extends Controller
             $user->shop_email = $validated['shop_email'] ?? null;
             $user->working_hours = $validated['working_hours'] ?? null;
             $user->services = $validated['services'] ?? null;
-            $user->payment_methods = $validated['payment_methods'] ?? null;
             $user->social_links = $validated['social_links'] ?? null;
 
             // Handle shop images upload

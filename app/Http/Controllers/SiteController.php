@@ -101,6 +101,7 @@ class SiteController extends Controller
                 'profile_image',
                 'tailoring_name',
                 'tailoring_address',
+                'tailor_count',
                 'contact_number',
                 'shop_email',
                 'working_hours',
@@ -117,15 +118,12 @@ class SiteController extends Controller
                 $profileImagePath = $shop->profile_image;
                 $profileImageExists = $profileImagePath ? Storage::disk('public')->exists($profileImagePath) : false;
 
-                // Ensure shop_images is properly formatted
+                // Get shop_images - model casting should handle JSON conversion
                 $shopImages = $shop->shop_images;
-                if (is_string($shopImages)) {
-                    try {
-                        $shopImages = json_decode($shopImages, true);
-                    } catch (\Exception $e) {
-                        // If JSON decode fails, treat as a single image path
-                        $shopImages = [$shopImages];
-                    }
+
+                // Ensure it's an array (fallback for edge cases)
+                if (!is_array($shopImages)) {
+                    $shopImages = $shopImages ? [$shopImages] : [];
                 }
 
                 return [
@@ -135,6 +133,7 @@ class SiteController extends Controller
                     'profile_image' => $profileImageExists ? $profileImagePath : null,
                     'tailoring_name' => $shop->tailoring_name,
                     'tailoring_address' => $shop->tailoring_address,
+                    'tailor_count' => $shop->tailor_count,
                     'contact_number' => $shop->contact_number,
                     'shop_email' => $shop->shop_email,
                     'working_hours' => $shop->working_hours,

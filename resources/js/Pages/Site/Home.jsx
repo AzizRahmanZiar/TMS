@@ -9,17 +9,7 @@ import {
     FaUser,
     FaCalendarAlt,
     FaArrowRight,
-    FaCheckCircle,
-    FaCut,
-    FaTshirt,
-    FaAward,
-    FaShoppingBag,
     FaHeart,
-    FaQuoteLeft,
-    FaPlay,
-    FaGem,
-    FaMagic,
-    FaCrown,
 } from "react-icons/fa";
 
 const Home = () => {
@@ -178,16 +168,16 @@ const Home = () => {
 
     return (
         <SiteLayout>
-            {/* Modern Hero Section */}
-            <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-50 via-white to-secondary-50">
-                {/* Animated Background Elements */}
-                <div className="absolute inset-0 overflow-hidden">
+            {/* Modern Clean Hero Section */}
+            <section className="relative min-h-screen flex items-center justify-center">
+                {/* Simplified Background Elements */}
+                <div className="absolute">
                     <motion.div
-                        className="absolute top-10 sm:top-20 left-10 sm:left-20 w-48 sm:w-72 h-48 sm:h-72 bg-gradient-to-br from-secondary-200 to-tertiary-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"
+                        className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-br from-secondary-200/30 to-primary-200/30 rounded-full filter blur-3xl"
                         animate={{
-                            x: [0, 50, 0],
-                            y: [0, -50, 0],
-                            scale: [1, 1.2, 1],
+                            x: [0, 30, 0],
+                            y: [0, -30, 0],
+                            scale: [1, 1.1, 1],
                         }}
                         transition={{
                             duration: 20,
@@ -196,11 +186,11 @@ const Home = () => {
                         }}
                     />
                     <motion.div
-                        className="absolute top-20 sm:top-40 right-10 sm:right-20 w-64 sm:w-96 h-64 sm:h-96 bg-gradient-to-br from-primary-200 to-secondary-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"
+                        className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-br from-primary-200/30 to-secondary-200/30 rounded-full filter blur-3xl"
                         animate={{
-                            x: [0, -60, 0],
-                            y: [0, 60, 0],
-                            scale: [1, 0.8, 1],
+                            x: [0, -40, 0],
+                            y: [0, 40, 0],
+                            scale: [1, 0.9, 1],
                         }}
                         transition={{
                             duration: 25,
@@ -208,186 +198,82 @@ const Home = () => {
                             ease: "linear",
                         }}
                     />
-                    <motion.div
-                        className="absolute bottom-10 sm:bottom-20 left-1/2 w-56 sm:w-80 h-56 sm:h-80 bg-gradient-to-br from-tertiary-200 to-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"
-                        animate={{
-                            x: [0, 40, 0],
-                            y: [0, -40, 0],
-                            scale: [1, 1.1, 1],
-                        }}
-                        transition={{
-                            duration: 18,
-                            repeat: Infinity,
-                            ease: "linear",
-                        }}
-                    />
                 </div>
 
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="flex flex-col lg:flex-row items-center gap-12">
-                        {/* Left Content */}
+                    <div className="flex flex-col lg:flex-row items-center gap-16">
+                        {/* Left Content - Simplified */}
                         <motion.div
                             className="lg:w-1/2 text-center lg:text-right"
                             initial="hidden"
                             animate="visible"
                             variants={staggerContainer}
                         >
-                            {/* Badge */}
-                            <motion.div
-                                className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg mb-6 sm:mb-8 border border-white/20"
-                                variants={fadeInUp}
-                            >
-                                <FaCrown className="text-secondary-500 text-sm sm:text-base" />
-                                <span className="text-xs sm:text-sm font-semibold text-primary-600 uppercase tracking-wider">
-                                    د افغانستان غوره خیاط
-                                </span>
-                                <FaGem className="text-tertiary-500 text-sm sm:text-base" />
-                            </motion.div>
-
                             {/* Main Heading */}
                             <motion.h1
-                                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold font-zar mb-4 sm:mb-6 bg-gradient-to-r from-primary-800 via-secondary-600 to-tertiary-600 bg-clip-text text-transparent leading-tight"
+                                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold font-zar mb-8 bg-gradient-to-r from-primary-800 via-secondary-600 to-primary-700 bg-clip-text text-transparent leading-tight"
                                 variants={fadeInUp}
                             >
-                                ماسټر خیاط
+                                خیاط ماسټر
                             </motion.h1>
 
-                            {/* Subtitle */}
+                            {/* Clean Subtitle */}
                             <motion.p
-                                className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-6 sm:mb-8 font-zar text-primary-700 leading-relaxed max-w-2xl mx-auto lg:mx-0 px-4 lg:px-0"
+                                className="text-xl sm:text-2xl md:text-3xl mb-12 font-zar text-primary-600 leading-relaxed max-w-2xl mx-auto lg:mx-0"
                                 variants={fadeInUp}
                             >
                                 ستاسو د خوښې لباسونه دلته دي، د خیاطۍ خدمات په
                                 غوره بیه
                             </motion.p>
 
-                            {/* Features */}
+                            {/* Clean CTA Buttons */}
                             <motion.div
-                                className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-4 mb-8 sm:mb-10"
-                                variants={fadeInUp}
-                            >
-                                {[
-                                    {
-                                        icon: FaCheckCircle,
-                                        text: "د کیفیت تضمین",
-                                    },
-                                    { icon: FaCut, text: "مسلکي خیاطي" },
-                                    {
-                                        icon: FaAward,
-                                        text: "د پیرودونکو اطمینان",
-                                    },
-                                ].map((feature, index) => (
-                                    <motion.div
-                                        key={index}
-                                        className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-full shadow-md border border-white/30"
-                                        whileHover={{ scale: 1.05, y: -2 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 400,
-                                        }}
-                                    >
-                                        <feature.icon className="text-secondary-500 text-sm sm:text-base" />
-                                        <span className="text-xs sm:text-sm font-semibold text-primary-700 font-zar">
-                                            {feature.text}
-                                        </span>
-                                    </motion.div>
-                                ))}
-                            </motion.div>
-
-                            {/* CTA Buttons */}
-                            <motion.div
-                                className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
+                                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
                                 variants={fadeInUp}
                             >
                                 <motion.div
-                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileHover={{ scale: 1.05, y: -3 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
                                     <Link
                                         href="/tailor"
-                                        className="group bg-gradient-to-r from-secondary-600 to-tertiary-600 text-white font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-zar text-lg sm:text-xl shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3 justify-center min-w-[200px]"
+                                        className="group bg-gradient-to-r from-secondary-600 to-primary-600 text-white font-bold px-8 py-4 rounded-2xl font-zar text-xl shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-3 justify-center min-w-[220px]"
                                     >
-                                        <FaShoppingBag className="group-hover:rotate-12 transition-transform duration-300 text-sm sm:text-base" />
                                         خیاط ومومئ
-                                        <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300 text-sm sm:text-base" />
+                                        <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
                                     </Link>
                                 </motion.div>
                                 <motion.div
-                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileHover={{ scale: 1.05, y: -3 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
                                     <Link
                                         href="/post"
-                                        className="group bg-white/80 backdrop-blur-sm text-primary-700 font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-zar text-lg sm:text-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 justify-center border border-white/30 min-w-[200px]"
+                                        className="group bg-white/90 backdrop-blur-sm text-primary-700 font-bold px-8 py-4 rounded-2xl font-zar text-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 justify-center border border-primary-200 min-w-[220px]"
                                     >
-                                        <FaHeart className="group-hover:text-red-500 transition-colors duration-300 text-sm sm:text-base" />
                                         ډیزاینونه وګورئ
+                                        <FaHeart className="group-hover:text-red-500 transition-colors duration-300" />
                                     </Link>
                                 </motion.div>
                             </motion.div>
                         </motion.div>
 
-                        {/* Right Content - Enhanced Image */}
+                        {/* Right Content - Clean Image */}
                         <motion.div
                             className="lg:w-1/2 relative"
-                            initial={{ opacity: 0, x: 100, scale: 0.8 }}
+                            initial={{ opacity: 0, x: 100, scale: 0.9 }}
                             animate={{ opacity: 1, x: 0, scale: 1 }}
                             transition={{ duration: 1, delay: 0.3 }}
                         >
-                            {/* Decorative Elements */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-secondary-400/20 to-tertiary-400/20 rounded-3xl transform rotate-6 scale-105"></div>
-                            <div className="absolute inset-0 bg-gradient-to-tl from-primary-400/20 to-secondary-400/20 rounded-3xl transform -rotate-3 scale-110"></div>
-
-                            {/* Main Image Container */}
-                            <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/30">
-                                <motion.img
-                                    src="./imgs/ilus-3.jpg"
-                                    className="w-full h-auto transform scale-x-[-1] rounded-2xl shadow-lg"
-                                    alt="Master Tailor"
-                                    whileHover={{ scale: 1.05 }}
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 300,
-                                    }}
-                                />
-
-                                {/* Floating Elements */}
-                                <motion.div
-                                    className="absolute -top-4 -right-4 bg-gradient-to-br from-secondary-500 to-tertiary-500 text-white p-4 rounded-2xl shadow-xl"
-                                    animate={{ y: [0, -10, 0] }}
-                                    transition={{
-                                        duration: 3,
-                                        repeat: Infinity,
-                                    }}
-                                >
-                                    <FaTshirt className="text-2xl" />
-                                </motion.div>
-
-                                <motion.div
-                                    className="absolute -bottom-4 -left-4 bg-gradient-to-br from-primary-500 to-secondary-500 text-white p-4 rounded-2xl shadow-xl"
-                                    animate={{ y: [0, 10, 0] }}
-                                    transition={{
-                                        duration: 4,
-                                        repeat: Infinity,
-                                    }}
-                                >
-                                    <FaCut className="text-2xl" />
-                                </motion.div>
-                            </div>
+                            {/* Clean Image Only */}
+                            <img
+                                src="./imgs/ilus-3.jpg"
+                                className="w-full transform scale-x-[-1]"
+                                alt="Master Tailor"
+                            />
                         </motion.div>
                     </div>
                 </div>
-
-                {/* Scroll Indicator */}
-                <motion.div
-                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                >
-                    <div className="w-6 h-10 border-2 border-primary-400 rounded-full flex justify-center">
-                        <div className="w-1 h-3 bg-primary-400 rounded-full mt-2"></div>
-                    </div>
-                </motion.div>
             </section>
 
             {/* Enhanced Top Designs Section */}
@@ -411,18 +297,6 @@ const Home = () => {
                             viewport={{ once: true, amount: 0.3 }}
                             variants={staggerContainer}
                         >
-                            {/* Section Badge */}
-                            <motion.div
-                                className="inline-flex items-center gap-2 bg-gradient-to-r from-secondary-100 to-tertiary-100 px-6 py-3 rounded-full shadow-lg mb-8 border border-secondary-200"
-                                variants={fadeInUp}
-                            >
-                                <FaMagic className="text-secondary-600" />
-                                <span className="text-sm font-semibold text-secondary-700 uppercase tracking-wider">
-                                    د ماسټرانو کارونه
-                                </span>
-                                <FaGem className="text-tertiary-600" />
-                            </motion.div>
-
                             {/* Enhanced Heading */}
                             <motion.h2
                                 className="text-4xl md:text-6xl lg:text-7xl font-bold font-zar mb-6 bg-gradient-to-r from-primary-800 via-secondary-600 to-tertiary-600 bg-clip-text text-transparent leading-tight"
@@ -490,17 +364,6 @@ const Home = () => {
                                                 )}
                                             </span>
                                         </div>
-
-                                        {/* Hover Overlay with View Button */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-primary-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-6">
-                                            <motion.button
-                                                className="bg-white/90 backdrop-blur-sm text-primary-700 px-6 py-2 rounded-full font-semibold text-sm shadow-lg hover:bg-white transition-colors duration-200"
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                            >
-                                                تفصیلات وګورئ
-                                            </motion.button>
-                                        </div>
                                     </div>
 
                                     {/* Content */}
@@ -562,19 +425,8 @@ const Home = () => {
                             viewport={{ once: true, amount: 0.3 }}
                             variants={fadeInUp}
                         >
-                            <motion.div
-                                className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg mb-6"
-                                variants={fadeInUp}
-                            >
-                                <div className="w-2 h-2 bg-gradient-to-r from-secondary-500 to-tertiary-500 rounded-full animate-pulse"></div>
-                                <span className="text-sm font-semibold text-primary-600 uppercase tracking-wider">
-                                    د پیرودونکو تجربې
-                                </span>
-                                <div className="w-2 h-2 bg-gradient-to-r from-tertiary-500 to-secondary-500 rounded-full animate-pulse"></div>
-                            </motion.div>
-
                             <motion.h2
-                                className="text-4xl md:text-5xl font-bold font-zar bg-gradient-to-r from-primary-800 via-primary-900 to-primary-950 bg-clip-text text-transparent mb-6"
+                                className="text-4xl py-3 md:text-5xl  font-bold font-zar bg-gradient-to-r from-primary-800 via-primary-900 to-primary-950 bg-clip-text text-transparent mb-6"
                                 variants={fadeInUp}
                             >
                                 زموږ د پیرودونکو نظرونه

@@ -19,6 +19,8 @@ import {
     FaChevronLeft,
     FaChevronRight,
     FaUser,
+    FaCut,
+    FaImage,
 } from "react-icons/fa";
 import { Head } from "@inertiajs/react";
 
@@ -31,78 +33,107 @@ const Shop = ({ shops }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedShop, setSelectedShop] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedTailor, setSelectedTailor] = useState(null);
+    const [isTailorModalOpen, setIsTailorModalOpen] = useState(false);
     const itemsPerPage = 9;
 
-    // Process shop data
+    // Debug: Log all shops data on component mount
     useEffect(() => {
+        console.log("=== SHOP DEBUG INFO ===");
+        console.log("Total shops received:", shops?.length || 0);
+        console.log("All shops data:", shops);
         if (shops && shops.length > 0) {
-            console.log("Raw shop data:", shops[0]); // Debug: Log first shop's data
-            const processed = shops.map((shop) => {
-                // Create a new object with all the shop properties
-                const processedShop = { ...shop };
-
-                // Process shop images if they exist
-                if (shop.shop_images) {
-                    try {
-                        console.log("Raw shop_images:", shop.shop_images); // Debug: Log raw shop_images
-                        let images;
-                        // Check if shop_images is already an array (from JSON column)
-                        if (Array.isArray(shop.shop_images)) {
-                            images = shop.shop_images;
-                        } else {
-                            // Try to parse as JSON
-                            try {
-                                images = JSON.parse(shop.shop_images);
-                            } catch (e) {
-                                // If parsing fails, treat as a single image path
-                                images = [shop.shop_images];
-                            }
-                        }
-                        console.log("Processed images:", images); // Debug: Log processed images
-                        processedShop.shopImageUrls = images.map(
-                            (image) => `/storage/${image}`
-                        );
-                        console.log(
-                            "Final image URLs:",
-                            processedShop.shopImageUrls
-                        ); // Debug: Log final URLs
-                    } catch (e) {
-                        console.error("Error processing shop images:", e); // Debug: Log processing errors
-                        processedShop.shopImageUrls = [];
-                    }
-                } else {
-                    console.log(
-                        "No shop_images found for shop:",
-                        shop.tailoring_name
-                    ); // Debug: Log missing images
-                    processedShop.shopImageUrls = [];
-                }
-
-                // Process social links if they exist
-                if (shop.social_links) {
-                    try {
-                        processedShop.socialLinks = JSON.parse(
-                            shop.social_links
-                        );
-                    } catch (e) {
-                        processedShop.socialLinks = {};
-                    }
-                } else {
-                    processedShop.socialLinks = {};
-                }
-
-                return processedShop;
+            shops.forEach((shop, index) => {
+                console.log(`Shop ${index + 1}:`, {
+                    name: shop.tailoring_name,
+                    shop_images: shop.shop_images,
+                    shop_images_type: typeof shop.shop_images,
+                    shop_images_length: Array.isArray(shop.shop_images)
+                        ? shop.shop_images.length
+                        : "Not array",
+                });
             });
-
-            setProcessedShops(processed);
         }
+        console.log("=== END SHOP DEBUG ===");
+    }, []);
+
+    // Process shop data - now handled in handleFilter
+    useEffect(() => {
+        // Data processing is now handled in handleFilter function
     }, [shops]);
+
+    // Auto-filter when search term or specialization changes
+    useEffect(() => {
+        handleFilter();
+    }, [searchTerm, specialization, priceRange, shops]);
 
     // Function to handle filtering
     const handleFilter = () => {
         if (!shops) return;
 
-        let filtered = shops;
+        // First process the shops to add shopImageUrls and socialLinks
+        const processed = shops.map((shop) => {
+            const processedShop = { ...shop };
+
+            // Process shop images
+            if (shop.shop_images) {
+                try {
+                    let images = [];
+                    if (Array.isArray(shop.shop_images)) {
+                        if (shop.shop_images.length > 0) {
+                            const firstElement = shop.shop_images[0];
+                            if (typeof firstElement === "string") {
+                                try {
+                                    images = JSON.parse(firstElement);
+                                } catch (e) {
+                                    images = [firstElement];
+                                }
+                            } else {
+                                images = shop.shop_images;
+                            }
+                        }
+                    } else if (typeof shop.shop_images === "string") {
+                        try {
+                            images = JSON.parse(shop.shop_images);
+                        } catch (e) {
+                            images = [shop.shop_images];
+                        }
+                    } else {
+                        images = [shop.shop_images];
+                    }
+
+                    processedShop.shopImageUrls = images.map((image) => {
+                        const cleanImage = image.replace(/^\/storage\//, "");
+                        return `/storage/${cleanImage}`;
+                    });
+                } catch (e) {
+                    processedShop.shopImageUrls = [];
+                }
+            } else {
+                processedShop.shopImageUrls = [];
+            }
+
+            // Process social links
+            if (shop.social_links && typeof shop.social_links === "object") {
+                processedShop.socialLinks = shop.social_links;
+            } else if (
+                shop.social_links &&
+                typeof shop.social_links === "string"
+            ) {
+                try {
+                    processedShop.socialLinks = JSON.parse(shop.social_links);
+                } catch (e) {
+                    processedShop.socialLinks = {};
+                }
+            } else {
+                processedShop.socialLinks = {};
+            }
+
+            return processedShop;
+        });
+
+        // Then apply filters to the processed data
+        let filtered = processed;
 
         if (searchTerm) {
             filtered = filtered.filter(
@@ -143,11 +174,10 @@ const Shop = ({ shops }) => {
         setSearchTerm("");
         setSpecialization("");
         setPriceRange("");
-
-        if (shops) {
-            setProcessedShops(shops);
-        }
         setCurrentPage(1);
+
+        // Trigger handleFilter to reprocess and show all shops
+        handleFilter();
     };
 
     // Pagination logic
@@ -174,6 +204,16 @@ const Shop = ({ shops }) => {
     const closeModal = () => {
         setSelectedShop(null);
         setIsModalOpen(false);
+    };
+
+    const openTailorModal = (shop) => {
+        setSelectedTailor(shop);
+        setIsTailorModalOpen(true);
+    };
+
+    const closeTailorModal = () => {
+        setSelectedTailor(null);
+        setIsTailorModalOpen(false);
     };
 
     // Animation variants
@@ -307,21 +347,13 @@ const Shop = ({ shops }) => {
                                     className="flex-1 outline-none bg-transparent"
                                 >
                                     <option value="">ټول تخصصونه</option>
-                                    <option value="Wedding">د واده جامې</option>
-                                    <option value="Traditional">
-                                        دودیز جامې
-                                    </option>
-                                    <option value="Modern">مدرن جامې</option>
+                                    <option value="جامې">جامې</option>
+                                    <option value="یونیفورم">یونیفورم</option>
+                                    <option value="صدری">صدری</option>
+                                    <option value="کورتی">کورتی</option>
                                 </select>
                             </div>
-                            <motion.button
-                                onClick={handleFilter}
-                                className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-secondary-600 hover:bg-secondary-700 text-white  transition duration-200 shadow-md"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                لټون
-                            </motion.button>
+
                             <motion.button
                                 onClick={resetFilters}
                                 className="font-bold px-6 py-3 rounded-md font-zar text-xl bg-primary-500 hover:bg-primary-600 text-white  transition duration-200 shadow-md"
@@ -390,6 +422,12 @@ const Shop = ({ shops }) => {
                                                                     shop.tailoring_name
                                                                 }
                                                                 className="w-full h-full object-cover"
+                                                                onError={(
+                                                                    e
+                                                                ) => {
+                                                                    e.target.style.display =
+                                                                        "none";
+                                                                }}
                                                             />
                                                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                                                         </div>
@@ -409,36 +447,11 @@ const Shop = ({ shops }) => {
 
                                             {/* Content Section - Modern */}
                                             <div className="relative p-6 bg-white/80 backdrop-blur-sm">
-                                                {/* Shop Name and Title */}
+                                                {/* Shop Name */}
                                                 <div className="text-center mb-4">
                                                     <h3 className="text-xl font-bold font-zar text-gray-800 mb-2 line-clamp-1 group-hover:text-secondary-600 transition-colors duration-300">
                                                         {shop.tailoring_name}
                                                     </h3>
-                                                    <div className="px-3 py-1.5 bg-gradient-to-r from-secondary-100 to-secondary-200 text-secondary-700 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 shadow-sm mb-3">
-                                                        <FaStore className="text-xs" />
-                                                        د خیاطۍ دوکان
-                                                    </div>
-
-                                                    {/* Business Info Badges */}
-                                                    <div className="flex items-center justify-center gap-2 mb-4">
-                                                        {shop.tailor_count && (
-                                                            <div className="px-3 py-1.5 bg-gradient-to-r from-primary-100 to-primary-200 text-primary-700 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-sm">
-                                                                <FaUsers className="text-xs" />
-                                                                {
-                                                                    shop.tailor_count
-                                                                }{" "}
-                                                                خیاطان
-                                                            </div>
-                                                        )}
-                                                        {shop.published_year && (
-                                                            <div className="px-3 py-1.5 bg-gradient-to-r from-green-100 to-green-200 text-green-700 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-sm">
-                                                                <FaCalendarAlt className="text-xs" />
-                                                                {
-                                                                    shop.published_year
-                                                                }
-                                                            </div>
-                                                        )}
-                                                    </div>
                                                 </div>
 
                                                 {/* Contact Info Cards */}
@@ -481,65 +494,18 @@ const Shop = ({ shops }) => {
                                                     )}
                                                 </div>
 
-                                                {/* Modern Social Links */}
-                                                {shop.socialLinks &&
-                                                    Object.keys(
-                                                        shop.socialLinks
-                                                    ).length > 0 && (
-                                                        <div className="flex justify-center gap-2 mb-4">
-                                                            {shop.socialLinks
-                                                                .facebook && (
-                                                                <a
-                                                                    href={
-                                                                        shop
-                                                                            .socialLinks
-                                                                            .facebook
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="w-8 h-8 rounded-xl bg-gradient-to-r from-blue-100 to-blue-200 flex items-center justify-center text-blue-600 hover:from-blue-200 hover:to-blue-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-110"
-                                                                >
-                                                                    <FaFacebook className="text-sm" />
-                                                                </a>
-                                                            )}
-                                                            {shop.socialLinks
-                                                                .instagram && (
-                                                                <a
-                                                                    href={
-                                                                        shop
-                                                                            .socialLinks
-                                                                            .instagram
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="w-8 h-8 rounded-xl bg-gradient-to-r from-pink-100 to-pink-200 flex items-center justify-center text-pink-600 hover:from-pink-200 hover:to-pink-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-110"
-                                                                >
-                                                                    <FaInstagram className="text-sm" />
-                                                                </a>
-                                                            )}
-                                                            {shop.socialLinks
-                                                                .telegram && (
-                                                                <a
-                                                                    href={
-                                                                        shop
-                                                                            .socialLinks
-                                                                            .telegram
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="w-8 h-8 rounded-xl bg-gradient-to-r from-blue-100 to-blue-200 flex items-center justify-center text-blue-600 hover:from-blue-200 hover:to-blue-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-110"
-                                                                >
-                                                                    <FaTelegram className="text-sm" />
-                                                                </a>
-                                                            )}
-                                                        </div>
-                                                    )}
-
                                                 {/* Modern Action Buttons */}
                                                 <div className="flex gap-3">
-                                                    <button className="flex-1 bg-gradient-to-r from-secondary-500 via-secondary-600 to-primary-500 text-white py-3 px-4 rounded-xl hover:from-secondary-600 hover:via-secondary-700 hover:to-primary-600 transition-all duration-300 text-sm font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                                                        <FaStore className="text-sm" />
-                                                        <span>دوکان</span>
+                                                    <button
+                                                        onClick={() =>
+                                                            openTailorModal(
+                                                                shop
+                                                            )
+                                                        }
+                                                        className="flex-1 bg-gradient-to-r from-secondary-500 via-secondary-600 to-primary-500 text-white py-3 px-4 rounded-xl hover:from-secondary-600 hover:via-secondary-700 hover:to-primary-600 transition-all duration-300 text-sm font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                                                    >
+                                                        <FaUser className="text-sm" />
+                                                        <span>خیاط</span>
                                                     </button>
                                                     <button
                                                         onClick={() =>
@@ -749,8 +715,332 @@ const Shop = ({ shops }) => {
                 </div>
             </section>
 
-            {/* Shop Details Modal */}
+            {/* Shop Details Modal - Compact Design */}
             {isModalOpen && selectedShop && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <motion.div
+                        className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-xl"
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                    >
+                        {/* Modal Header - Compact */}
+                        <div className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white p-6 rounded-t-2xl">
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                        <FaStore className="text-xl text-white" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-2xl font-bold font-zar">
+                                            د دوکان بشپړ معلومات
+                                        </h2>
+                                        <p className="text-white/80 text-sm">
+                                            {selectedShop.tailoring_name ||
+                                                selectedShop.name}
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={closeModal}
+                                    className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all duration-200"
+                                >
+                                    <svg
+                                        className="w-5 h-5 text-white"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Modal Content - Compact */}
+                        <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+                            <div className="p-6" dir="rtl">
+                                {/* د خیاطۍ تصویر - Always Show */}
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-bold text-gray-800 font-zar mb-3 flex items-center gap-2">
+                                        <FaImage className="text-primary-600" />
+                                        د خیاطۍ تصویر
+                                    </h3>
+                                    {selectedShop.shopImageUrls &&
+                                    selectedShop.shopImageUrls.length > 0 ? (
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                            {selectedShop.shopImageUrls.map(
+                                                (imageUrl, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="aspect-video rounded-lg overflow-hidden shadow-md"
+                                                    >
+                                                        <img
+                                                            src={imageUrl}
+                                                            alt={`${
+                                                                selectedShop.tailoring_name
+                                                            } - تصویر ${
+                                                                index + 1
+                                                            }`}
+                                                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                                            onError={(e) => {
+                                                                e.target.style.display =
+                                                                    "none";
+                                                                e.target.nextSibling.style.display =
+                                                                    "flex";
+                                                            }}
+                                                        />
+                                                        <div
+                                                            className="w-full h-full bg-gray-100 flex items-center justify-center"
+                                                            style={{
+                                                                display: "none",
+                                                            }}
+                                                        >
+                                                            <FaImage className="text-2xl text-gray-400" />
+                                                        </div>
+                                                    </div>
+                                                )
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="bg-gray-100 rounded-lg p-8 text-center border-2 border-dashed border-gray-300">
+                                            <FaImage className="text-4xl text-gray-400 mx-auto mb-3" />
+                                            <p className="text-gray-500 font-medium">
+                                                د خیاطۍ تصویرونه شتون نلري
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* د خیاطۍ معلومات - Complete Information */}
+                                <div className="bg-gray-50 rounded-xl p-6">
+                                    <h3 className="text-xl font-bold text-gray-800 font-zar mb-6 flex items-center gap-3">
+                                        <div className="w-8 h-8 bg-gradient-to-r from-secondary-100 to-secondary-200 text-secondary-600 rounded-full flex items-center justify-center">
+                                            <FaStore className="text-sm" />
+                                        </div>
+                                        د خیاطۍ معلومات
+                                    </h3>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {/* د خیاطۍ نوم */}
+                                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                            <label className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                                                <FaStore className="text-secondary-600" />
+                                                د خیاطۍ نوم:
+                                            </label>
+                                            <p className="font-medium text-gray-800 mt-1">
+                                                {selectedShop.tailoring_name ||
+                                                    "معلومات شتون نلري"}
+                                            </p>
+                                        </div>
+
+                                        {/* آدرس */}
+                                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                            <label className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                                                <FaMapMarkerAlt className="text-secondary-600" />
+                                                آدرس:
+                                            </label>
+                                            <p className="font-medium text-gray-800 mt-1">
+                                                {selectedShop.tailoring_address ||
+                                                    "معلومات شتون نلري"}
+                                            </p>
+                                        </div>
+
+                                        {/* د خیاطانو شمیر */}
+                                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                            <label className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                                                <FaUsers className="text-secondary-600" />
+                                                د خیاطانو شمیر:
+                                            </label>
+                                            <p className="font-medium text-gray-800 mt-1">
+                                                {selectedShop.tailor_count
+                                                    ? `${selectedShop.tailor_count} خیاطان`
+                                                    : "معلومات شتون نلري"}
+                                            </p>
+                                        </div>
+
+                                        {/* د تاسیس کال */}
+                                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                            <label className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                                                <FaCalendarAlt className="text-secondary-600" />
+                                                د تاسیس کال:
+                                            </label>
+                                            <p className="font-medium text-gray-800 mt-1">
+                                                {selectedShop.published_year ||
+                                                    "معلومات شتون نلري"}
+                                            </p>
+                                        </div>
+
+                                        {/* د اړیکو شمیره */}
+                                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                            <label className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                                                <FaPhone className="text-secondary-600" />
+                                                د اړیکو شمیره:
+                                            </label>
+                                            <p className="font-medium text-gray-800 mt-1">
+                                                {selectedShop.contact_number ||
+                                                    "معلومات شتون نلري"}
+                                            </p>
+                                        </div>
+
+                                        {/* د خیاطۍ ایمیل */}
+                                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                            <label className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                                                <FaEnvelope className="text-secondary-600" />
+                                                د خیاطۍ ایمیل:
+                                            </label>
+                                            <p className="font-medium text-gray-800 mt-1">
+                                                {selectedShop.shop_email ||
+                                                    "معلومات شتون نلري"}
+                                            </p>
+                                        </div>
+
+                                        {/* د کار ساعتونه */}
+                                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                            <label className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                                                <FaClock className="text-secondary-600" />
+                                                د کار ساعتونه:
+                                            </label>
+                                            <p className="font-medium text-gray-800 mt-1">
+                                                {selectedShop.working_hours ||
+                                                    "معلومات شتون نلري"}
+                                            </p>
+                                        </div>
+
+                                        {/* وړاندې شوي خدمتونه */}
+                                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                            <label className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                                                <FaTools className="text-secondary-600" />
+                                                وړاندې شوي خدمتونه:
+                                            </label>
+                                            <p className="font-medium text-gray-800 mt-1">
+                                                {selectedShop.services ||
+                                                    "معلومات شتون نلري"}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Social Media Links - Always Show */}
+                                    <div className="mt-6">
+                                        <h4 className="text-lg font-bold text-gray-800 font-zar mb-4 flex items-center gap-2">
+                                            <FaFacebook className="text-blue-600" />
+                                            ټولنیزو رسنیو معلومات
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            {/* د فیسبوک لینک */}
+                                            <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                                <label className="text-sm font-semibold text-blue-600 flex items-center gap-2 mb-2">
+                                                    <FaFacebook />
+                                                    {"د فیسبوک لینک:"}
+                                                </label>
+                                                {selectedShop.socialLinks
+                                                    ?.facebook ? (
+                                                    <a
+                                                        href={
+                                                            selectedShop
+                                                                .socialLinks
+                                                                .facebook
+                                                        }
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                                                    >
+                                                        <FaFacebook />
+                                                        لیدل
+                                                    </a>
+                                                ) : (
+                                                    <p className="text-gray-500 text-sm">
+                                                        معلومات شتون نلري
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            {/* د انستګرام لینک */}
+                                            <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                                <label className="text-sm font-semibold text-pink-600 flex items-center gap-2 mb-2">
+                                                    <FaInstagram />
+                                                    {"د انستګرام لینک:"}
+                                                </label>
+                                                {selectedShop.socialLinks
+                                                    ?.instagram ? (
+                                                    <a
+                                                        href={
+                                                            selectedShop
+                                                                .socialLinks
+                                                                .instagram
+                                                        }
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-2 px-3 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors duration-200 text-sm font-medium"
+                                                    >
+                                                        <FaInstagram />
+                                                        لیدل
+                                                    </a>
+                                                ) : (
+                                                    <p className="text-gray-500 text-sm">
+                                                        معلومات شتون نلري
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            {/* د ټلګرام لینک */}
+                                            <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                                <label className="text-sm font-semibold text-sky-600 flex items-center gap-2 mb-2">
+                                                    <FaTelegram />
+                                                    {"د ټلګرام لینک:"}
+                                                </label>
+                                                {selectedShop.socialLinks
+                                                    ?.telegram ? (
+                                                    <a
+                                                        href={
+                                                            selectedShop
+                                                                .socialLinks
+                                                                .telegram
+                                                        }
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-2 px-3 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors duration-200 text-sm font-medium"
+                                                    >
+                                                        <FaTelegram />
+                                                        لیدل
+                                                    </a>
+                                                ) : (
+                                                    <p className="text-gray-500 text-sm">
+                                                        معلومات شتون نلري
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="mt-6 flex gap-4">
+                                    <button className="flex-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white py-3 px-6 rounded-lg hover:from-primary-600 hover:to-secondary-600 transition-all duration-200 font-medium flex items-center justify-center gap-2">
+                                        <FaStore className="text-sm" />
+                                        دوکان ته ورشئ
+                                    </button>
+                                    <button
+                                        onClick={closeModal}
+                                        className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-200 font-medium"
+                                    >
+                                        تړل
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+
+            {/* Tailor Details Modal */}
+            {isTailorModalOpen && selectedTailor && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <motion.div
                         className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
@@ -763,10 +1053,10 @@ const Shop = ({ shops }) => {
                         <div className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white p-6 rounded-t-2xl">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-2xl font-bold font-zar">
-                                    د دوکان بشپړ معلومات
+                                    د خیاط بشپړ معلومات
                                 </h2>
                                 <button
-                                    onClick={closeModal}
+                                    onClick={closeTailorModal}
                                     className="text-white hover:text-gray-200 transition-colors duration-200"
                                 >
                                     <svg
@@ -789,35 +1079,41 @@ const Shop = ({ shops }) => {
                         {/* Modal Content */}
                         <div className="p-6" dir="rtl">
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                {/* Shop Images Section */}
+                                {/* Tailor Profile Section */}
                                 <div className="lg:col-span-1">
                                     <div className="text-center mb-6">
                                         <div className="w-full h-48 rounded-xl border-4 border-primary-200 overflow-hidden shadow-lg mb-4">
-                                            {selectedShop.shopImageUrls &&
-                                            selectedShop.shopImageUrls.length >
-                                                0 ? (
+                                            {selectedTailor.profile_image ? (
                                                 <img
-                                                    src={
-                                                        selectedShop
-                                                            .shopImageUrls[0]
-                                                    }
-                                                    alt={
-                                                        selectedShop.tailoring_name
-                                                    }
+                                                    src={`/storage/${selectedTailor.profile_image}`}
+                                                    alt={selectedTailor.name}
                                                     className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        e.target.style.display =
+                                                            "none";
+                                                        e.target.nextSibling.style.display =
+                                                            "flex";
+                                                    }}
                                                 />
-                                            ) : (
-                                                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                                                    <FaStore className="text-6xl text-gray-400" />
-                                                </div>
-                                            )}
+                                            ) : null}
+                                            <div
+                                                className="w-full h-full bg-gray-100 flex items-center justify-center"
+                                                style={{
+                                                    display:
+                                                        selectedTailor.profile_image
+                                                            ? "none"
+                                                            : "flex",
+                                                }}
+                                            >
+                                                <FaUser className="text-6xl text-gray-400" />
+                                            </div>
                                         </div>
                                         <h3 className="text-2xl font-bold font-zar text-gray-800 mb-2">
-                                            {selectedShop.tailoring_name}
+                                            {selectedTailor.name}
                                         </h3>
-                                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary-100 text-secondary-700 text-sm font-medium">
-                                            <FaStore className="text-sm" />د
-                                            خیاطۍ دوکان
+                                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 text-primary-700 text-sm font-medium">
+                                            <FaUser className="text-sm" />
+                                            خیاط
                                         </span>
                                     </div>
                                 </div>
@@ -825,203 +1121,124 @@ const Shop = ({ shops }) => {
                                 {/* Details Section */}
                                 <div className="lg:col-span-2">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {/* Contact Information */}
+                                        {/* Personal Information */}
                                         <div className="bg-gray-50 p-4 rounded-xl">
                                             <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                                <FaPhone className="text-primary-500 mr-2" />
-                                                د اړیکو معلومات
+                                                <FaUser className="text-primary-500 mr-2" />
+                                                شخصي معلومات
                                             </h4>
                                             <div className="space-y-3">
                                                 <div>
                                                     <span className="text-sm text-gray-500">
-                                                        پته:
+                                                        نوم:
                                                     </span>
                                                     <p className="font-medium">
-                                                        {
-                                                            selectedShop.tailoring_address
-                                                        }
+                                                        {selectedTailor.name}
                                                     </p>
                                                 </div>
                                                 <div>
                                                     <span className="text-sm text-gray-500">
-                                                        د اړیکو شمیره:
+                                                        بریښنالیک:
                                                     </span>
                                                     <p className="font-medium">
-                                                        {
-                                                            selectedShop.contact_number
-                                                        }
+                                                        {selectedTailor.email}
                                                     </p>
                                                 </div>
-                                                {selectedShop.shop_email && (
+                                                {selectedTailor.experience && (
                                                     <div>
                                                         <span className="text-sm text-gray-500">
-                                                            بریښنالیک:
+                                                            تجربه:
                                                         </span>
                                                         <p className="font-medium">
                                                             {
-                                                                selectedShop.shop_email
+                                                                selectedTailor.experience
+                                                            }{" "}
+                                                            کلونه
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {selectedTailor.career && (
+                                                    <div>
+                                                        <span className="text-sm text-gray-500">
+                                                            مسلک:
+                                                        </span>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.career
                                                             }
                                                         </p>
                                                     </div>
                                                 )}
-                                                <div>
-                                                    <span className="text-sm text-gray-500">
-                                                        د کار وختونه:
-                                                    </span>
-                                                    <p className="font-medium">
-                                                        {
-                                                            selectedShop.working_hours
-                                                        }
-                                                    </p>
-                                                </div>
                                             </div>
                                         </div>
 
-                                        {/* Business Information */}
+                                        {/* Professional Information */}
                                         <div className="bg-gray-50 p-4 rounded-xl">
                                             <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                                <FaStore className="text-secondary-500 mr-2" />
-                                                د سوداګرۍ معلومات
+                                                <FaTools className="text-secondary-500 mr-2" />
+                                                مسلکي معلومات
                                             </h4>
                                             <div className="space-y-3">
-                                                {selectedShop.tailor_count && (
+                                                {selectedTailor.skills && (
                                                     <div>
                                                         <span className="text-sm text-gray-500">
-                                                            د خیاطانو شمیر:
+                                                            مهارتونه:
                                                         </span>
                                                         <p className="font-medium">
                                                             {
-                                                                selectedShop.tailor_count
-                                                            }{" "}
-                                                            خیاطان
-                                                        </p>
-                                                    </div>
-                                                )}
-                                                {selectedShop.published_year && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            د پیل کال:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedShop.published_year
+                                                                selectedTailor.skills
                                                             }
                                                         </p>
                                                     </div>
                                                 )}
-                                                {selectedShop.payment_methods && (
+                                                {selectedTailor.work_availability && (
                                                     <div>
                                                         <span className="text-sm text-gray-500">
-                                                            د تادیې طریقې:
+                                                            د کار شتون:
                                                         </span>
-                                                        <div className="flex flex-wrap gap-1 mt-1">
-                                                            {JSON.parse(
-                                                                selectedShop.payment_methods
-                                                            ).map(
-                                                                (method, i) => (
-                                                                    <span
-                                                                        key={i}
-                                                                        className="px-2 py-1 bg-primary-100 text-primary-700 rounded-full text-xs"
-                                                                    >
-                                                                        {method}
-                                                                    </span>
-                                                                )
-                                                            )}
-                                                        </div>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.work_availability
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {selectedTailor.previous_work && (
+                                                    <div>
+                                                        <span className="text-sm text-gray-500">
+                                                            پخوانی کار:
+                                                        </span>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.previous_work
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {selectedTailor.certifications && (
+                                                    <div>
+                                                        <span className="text-sm text-gray-500">
+                                                            سندونه:
+                                                        </span>
+                                                        <p className="font-medium">
+                                                            {
+                                                                selectedTailor.certifications
+                                                            }
+                                                        </p>
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Services Information */}
-                                    {selectedShop.services && (
-                                        <div className="mt-6 bg-gradient-to-r from-secondary-50 to-primary-50 p-6 rounded-xl border border-secondary-200">
-                                            <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                                                <FaTools className="text-secondary-500 mr-2" />
-                                                خدمتونه
-                                            </h4>
-                                            <div className="flex flex-wrap gap-2">
-                                                {selectedShop.services
-                                                    .split(",")
-                                                    .map((service, i) => (
-                                                        <span
-                                                            key={i}
-                                                            className="px-3 py-2 bg-white text-gray-700 rounded-lg text-sm border"
-                                                        >
-                                                            {service.trim()}
-                                                        </span>
-                                                    ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Social Links */}
-                                    {selectedShop.socialLinks &&
-                                        Object.keys(selectedShop.socialLinks)
-                                            .length > 0 && (
-                                            <div className="mt-6">
-                                                <h4 className="text-lg font-bold text-gray-800 mb-4">
-                                                    ټولنیزې اړیکې
-                                                </h4>
-                                                <div className="flex gap-4">
-                                                    {selectedShop.socialLinks
-                                                        .facebook && (
-                                                        <a
-                                                            href={
-                                                                selectedShop
-                                                                    .socialLinks
-                                                                    .facebook
-                                                            }
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-200 transition-colors duration-200"
-                                                        >
-                                                            <FaFacebook className="text-xl" />
-                                                        </a>
-                                                    )}
-                                                    {selectedShop.socialLinks
-                                                        .instagram && (
-                                                        <a
-                                                            href={
-                                                                selectedShop
-                                                                    .socialLinks
-                                                                    .instagram
-                                                            }
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 hover:bg-pink-200 transition-colors duration-200"
-                                                        >
-                                                            <FaInstagram className="text-xl" />
-                                                        </a>
-                                                    )}
-                                                    {selectedShop.socialLinks
-                                                        .telegram && (
-                                                        <a
-                                                            href={
-                                                                selectedShop
-                                                                    .socialLinks
-                                                                    .telegram
-                                                            }
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-200 transition-colors duration-200"
-                                                        >
-                                                            <FaTelegram className="text-xl" />
-                                                        </a>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        )}
-
                                     {/* Action Buttons */}
                                     <div className="mt-6 flex gap-4">
                                         <button className="flex-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white py-3 px-6 rounded-lg hover:from-primary-600 hover:to-secondary-600 transition-all duration-200 font-medium flex items-center justify-center gap-2">
-                                            <FaStore className="text-sm" />
-                                            دوکان ته ورشئ
+                                            <FaUser className="text-sm" />د خیاط
+                                            سره اړیکه
                                         </button>
                                         <button
-                                            onClick={closeModal}
+                                            onClick={closeTailorModal}
                                             className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-200 font-medium"
                                         >
                                             تړل

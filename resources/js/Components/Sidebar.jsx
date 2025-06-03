@@ -160,7 +160,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             {/* Sidebar */}
             <AnimatePresence>
                 <motion.div
-                    className={`fixed md:relative z-30 flex flex-col h-screen overflow-hidden bg-gradient-to-b from-primary-800 via-primary-700 to-primary-900 text-white rtl shadow-2xl border-r border-primary-600/30`}
+                    className={`fixed md:relative z-30 flex flex-col h-screen overflow-hidden bg-gradient-to-br from-secondary-900 via-tertiary-800 to-secondary-950 text-white rtl shadow-2xl border-r border-tertiary-700/50`}
                     initial={{
                         width: isOpen
                             ? "18rem"
@@ -177,6 +177,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     }}
                     transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
+                    {/* Background Pattern */}
+                    <div className="absolute inset-0 opacity-10">
+                        <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full -translate-x-16 -translate-y-16"></div>
+                        <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-tertiary-400 to-primary-400 rounded-full translate-x-12 translate-y-12"></div>
+                        <div className="absolute top-1/2 left-1/2 w-20 h-20 bg-gradient-to-br from-secondary-400 to-tertiary-400 rounded-full -translate-x-10 -translate-y-10"></div>
+                    </div>
+
                     {/* Close button for mobile */}
                     <AnimatePresence>
                         {isOpen && window.innerWidth < 768 && (
@@ -195,7 +202,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     </AnimatePresence>
 
                     <motion.div
-                        className="flex items-center justify-center h-20 md:h-24 border-b border-primary-600/30 bg-gradient-to-r from-primary-800 to-secondary-800 px-4"
+                        className="flex items-center justify-center h-20 md:h-24  border-primary-600/30    px-4"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.5 }}

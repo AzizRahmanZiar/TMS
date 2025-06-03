@@ -773,16 +773,16 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
                                                         کټګورۍ وټاکئ
                                                     </option>
                                                     <option value="Cloths">
-                                                        جامې (Cloths)
+                                                        جامې
                                                     </option>
                                                     <option value="Uniform">
-                                                        یونیفورم (Uniform)
+                                                        یونیفورم
                                                     </option>
                                                     <option value="Kortai">
-                                                        کورتۍ (Kortai)
+                                                        کورتی
                                                     </option>
                                                     <option value="Sadrai">
-                                                        صدری (Sadrai)
+                                                        صدری
                                                     </option>
                                                 </select>
                                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

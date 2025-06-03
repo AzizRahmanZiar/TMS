@@ -18,7 +18,6 @@ import {
     FaUsers,
     FaCalendarAlt,
     FaPhone,
-    FaCreditCard,
     FaFacebook,
     FaInstagram,
     FaTelegram,
@@ -52,7 +51,7 @@ const Registration = ({ hasAdmin }) => {
         shop_email: "",
         working_hours: "",
         services: "",
-        payment_methods: [],
+
         shop_images: [],
         social_links: {
             facebook: "",
@@ -106,18 +105,6 @@ const Registration = ({ hasAdmin }) => {
         } else if (type === "checkbox") {
             if (name === "addShop") {
                 setFormData({ ...formData, addShop: checked });
-            } else if (checked) {
-                setFormData({
-                    ...formData,
-                    payment_methods: [...formData.payment_methods, value],
-                });
-            } else {
-                setFormData({
-                    ...formData,
-                    payment_methods: formData.payment_methods.filter(
-                        (method) => method !== value
-                    ),
-                });
             }
         } else if (name.includes(".")) {
             // Handle nested objects like social_links
@@ -185,10 +172,6 @@ const Registration = ({ hasAdmin }) => {
                     formData.working_hours
                 );
                 formDataToSubmit.append("services", formData.services);
-                formDataToSubmit.append(
-                    "payment_methods",
-                    JSON.stringify(formData.payment_methods)
-                );
 
                 // Add shop images if exists
                 if (formData.shop_images && formData.shop_images.length > 0) {
@@ -466,10 +449,9 @@ const Registration = ({ hasAdmin }) => {
                                     <div>
                                         <label className="block text-xl mb-2 font-medium text-gray-700">
                                             <FaUserTie className="inline ml-2 text-accent-600" />
-                                            مسلک/تخصص
+                                            مسلک
                                         </label>
-                                        <input
-                                            type="text"
+                                        <select
                                             name="career"
                                             value={formData.career}
                                             onChange={handleChange}
@@ -478,8 +460,17 @@ const Registration = ({ hasAdmin }) => {
                                                     ? "border-red-500 bg-red-50"
                                                     : "border-gray-200"
                                             }`}
-                                            placeholder="جامې ..."
-                                        />
+                                        >
+                                            <option value="">
+                                                مسلک انتخاب کړئ
+                                            </option>
+                                            <option value="جامې">جامې</option>
+                                            <option value="یونیفورم">
+                                                یونیفورم
+                                            </option>
+                                            <option value="صدری">صدری</option>
+                                            <option value="کورتی">کورتی</option>
+                                        </select>
                                         {errors.career && (
                                             <p className="text-red-500 text-sm mt-1">
                                                 {errors.career}
@@ -540,8 +531,7 @@ const Registration = ({ hasAdmin }) => {
                                             <FaTools className="inline ml-2 text-accent-600" />
                                             مهارتونه
                                         </label>
-                                        <input
-                                            type="text"
+                                        <select
                                             name="skills"
                                             value={formData.skills}
                                             onChange={handleChange}
@@ -550,8 +540,17 @@ const Registration = ({ hasAdmin }) => {
                                                     ? "border-red-500 bg-red-50"
                                                     : "border-gray-200"
                                             }`}
-                                            placeholder="ګلدوزي ..."
-                                        />
+                                        >
+                                            <option value="">
+                                                ټول تخصصونه
+                                            </option>
+                                            <option value="جامې">جامې</option>
+                                            <option value="یونیفورم">
+                                                یونیفورم
+                                            </option>
+                                            <option value="صدری">صدری</option>
+                                            <option value="کورتی">کورتی</option>
+                                        </select>
                                         {errors.skills && (
                                             <p className="text-red-500 text-sm mt-1">
                                                 {errors.skills}
@@ -771,8 +770,7 @@ const Registration = ({ hasAdmin }) => {
                                             <FaClock className="inline ml-2 text-secondary-600" />
                                             د کار ساعتونه
                                         </label>
-                                        <input
-                                            type="text"
+                                        <select
                                             name="working_hours"
                                             value={formData.working_hours}
                                             onChange={handleChange}
@@ -781,8 +779,19 @@ const Registration = ({ hasAdmin }) => {
                                                     ? "border-red-500 bg-red-50"
                                                     : "border-gray-200"
                                             }`}
-                                            placeholder="لکه: دوشنبه-جمعه: 9AM-6PM"
-                                        />
+                                        >
+                                            <option value="">
+                                                د کار ساعتونه انتخاب کړئ
+                                            </option>
+                                            <option value="د ۸:۰۰ سهار څخه تر ۱۲:۰۰ ماسپښین پورې">
+                                                د ۸:۰۰ سهار څخه تر ۱۲:۰۰ ماسپښین
+                                                پورې
+                                            </option>
+                                            <option value="د ۸:۰۰ سهار څخه تر ۴:۰۰ ماسپښین پورې">
+                                                د ۸:۰۰ سهار څخه تر ۴:۰۰ ماسپښین
+                                                پورې
+                                            </option>
+                                        </select>
                                         {errors.working_hours && (
                                             <p className="text-red-500 text-sm mt-1">
                                                 {errors.working_hours}
@@ -795,8 +804,7 @@ const Registration = ({ hasAdmin }) => {
                                             <FaTools className="inline ml-2 text-secondary-600" />
                                             وړاندې شوي خدمتونه
                                         </label>
-                                        <input
-                                            type="text"
+                                        <select
                                             name="services"
                                             value={formData.services}
                                             onChange={handleChange}
@@ -805,56 +813,20 @@ const Registration = ({ hasAdmin }) => {
                                                     ? "border-red-500 bg-red-50"
                                                     : "border-gray-200"
                                             }`}
-                                            placeholder="صدر, کورتی ..."
-                                        />
+                                        >
+                                            <option value="">
+                                                خدماتو انتخاب کړئ
+                                            </option>
+                                            <option value="جامې">جامې</option>
+                                            <option value="یونیفورم">
+                                                یونیفورم
+                                            </option>
+                                            <option value="صدری">صدری</option>
+                                            <option value="کورتی">کورتی</option>
+                                        </select>
                                         {errors.services && (
                                             <p className="text-red-500 text-sm mt-1">
                                                 {errors.services}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <div className="md:col-span-2">
-                                        <label className="block text-xl mb-2 font-medium text-gray-700">
-                                            <FaCreditCard className="inline ml-2 text-secondary-600" />
-                                            د تادیې میتودونه
-                                        </label>
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                            <label className="flex text-xl items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-secondary-50 transition-colors">
-                                                <input
-                                                    type="checkbox"
-                                                    name="payment_methods"
-                                                    value="Cash"
-                                                    checked={formData.payment_methods.includes(
-                                                        "Cash"
-                                                    )}
-                                                    onChange={handleChange}
-                                                    className="rounded text-xl text-secondary-500 focus:ring-2 focus:ring-secondary-300 ml-2"
-                                                />
-                                                <span className="text-gray-700">
-                                                    نقد
-                                                </span>
-                                            </label>
-
-                                            <label className="flex text-xl items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-secondary-50 transition-colors">
-                                                <input
-                                                    type="checkbox"
-                                                    name="payment_methods"
-                                                    value="Bank Transfer"
-                                                    checked={formData.payment_methods.includes(
-                                                        "Bank Transfer"
-                                                    )}
-                                                    onChange={handleChange}
-                                                    className="rounded text-xl text-secondary-500 focus:ring-2 focus:ring-secondary-300 ml-2"
-                                                />
-                                                <span className="text-gray-700">
-                                                    د بانک لیږد
-                                                </span>
-                                            </label>
-                                        </div>
-                                        {errors.payment_methods && (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                {errors.payment_methods}
                                             </p>
                                         )}
                                     </div>

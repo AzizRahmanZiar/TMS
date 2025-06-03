@@ -539,23 +539,6 @@ const Order = () => {
                                             )}
                                         </motion.button>
                                     </motion.div>
-
-                                    {/* Success Message */}
-                                    <motion.div
-                                        className="text-center pt-4"
-                                        initial={{ opacity: 0 }}
-                                        whileInView={{ opacity: 1 }}
-                                        transition={{ delay: 0.4 }}
-                                        viewport={{ once: true }}
-                                    >
-                                        <div className="flex items-center justify-center text-primary-600 font-zar">
-                                            <FaCheckCircle className="ml-2 text-secondary-500" />
-                                            <span className="text-sm">
-                                                ستاسو فرمایش به په ۲۴ ساعتونو کې
-                                                تصدیق شي
-                                            </span>
-                                        </div>
-                                    </motion.div>
                                 </form>
                             </motion.div>
                         </motion.div>

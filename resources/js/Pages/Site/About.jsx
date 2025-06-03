@@ -142,21 +142,17 @@ const About = () => {
                             transition={{ duration: 0.8 }}
                             viewport={{ once: true }}
                         >
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-gradient-to-br from-secondary-400/20 to-tertiary-400/20 rounded-3xl transform rotate-3 scale-105"></div>
-                                <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/30">
-                                    <motion.img
-                                        src="./imgs/team.jpg"
-                                        alt="زموږ کیسه"
-                                        className="w-full h-auto rounded-2xl shadow-lg"
-                                        whileHover={{ scale: 1.02 }}
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 300,
-                                        }}
-                                    />
-                                </div>
-                            </div>
+                            {/* Clean Image Only */}
+                            <motion.img
+                                src="./imgs/team.jpg"
+                                alt="زموږ کیسه"
+                                className="w-full h-auto rounded-2xl"
+                                whileHover={{ scale: 1.02 }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 300,
+                                }}
+                            />
                         </motion.div>
                     </div>
                 </div>

@@ -67,11 +67,16 @@ const SystemLayout = ({ children }) => {
                 <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
                 <div className="flex w-full flex-col">
                     <motion.header
-                        className="flex w-full h-16 md:h-20 justify-between items-center bg-gradient-to-r from-primary-700 via-primary-600 to-secondary-700 px-4 md:px-8 shadow-xl border-b border-primary-500/20 backdrop-blur-sm"
+                        className="flex w-full h-16 md:h-20 justify-between items-center bg-gradient-to-br from-secondary-900 via-tertiary-800 to-secondary-950 px-4 md:px-8 shadow-2xl border-b border-tertiary-700/50 backdrop-blur-sm relative overflow-hidden"
                         initial={{ y: -20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.5 }}
                     >
+                        {/* Background Pattern */}
+                        <div className="absolute inset-0 opacity-10">
+                            <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full -translate-x-16 -translate-y-16"></div>
+                            <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-tertiary-400 to-primary-400 rounded-full translate-x-12 translate-y-12"></div>
+                        </div>
                         <motion.button
                             className="text-white p-3 rounded-xl focus:outline-none hover:bg-white/10 transition-all duration-300 shadow-lg backdrop-blur-sm border border-white/20"
                             onClick={toggleSidebar}

@@ -209,12 +209,6 @@ const Adv = ({ advertisements }) => {
                                                 </div>
                                             </div>
 
-                                            {/* Compact Action Button */}
-                                            <button className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white py-2 px-3 rounded-lg hover:from-primary-600 hover:to-secondary-600 transition-all duration-300 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                                                <FaEye className="text-xs" />
-                                                <span>لیدل</span>
-                                            </button>
-
                                             {/* Floating Status Indicator */}
                                             <div className="absolute top-2 right-2">
                                                 <div className="w-2 h-2 bg-green-400 rounded-full shadow-sm animate-pulse"></div>
