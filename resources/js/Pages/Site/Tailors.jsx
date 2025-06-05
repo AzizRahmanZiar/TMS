@@ -283,7 +283,7 @@ const Tailors = ({ tailors }) => {
                                                                     alt={
                                                                         tailor.name
                                                                     }
-                                                                    className="w-full h-full object-cover"
+                                                                    className="w-full h-full "
                                                                 />
                                                             ) : (
                                                                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
@@ -312,11 +312,21 @@ const Tailors = ({ tailors }) => {
                                                         {tailor.career}
                                                     </p>
 
-                                                    {/* Modern Badges */}
-                                                    <div className="flex items-center justify-center gap-2 mb-4">
+                                                    {/* Modern Rating & Credibility Badges */}
+                                                    <div className="flex items-center justify-center gap-2 mb-4 flex-wrap">
                                                         {tailor.rating_percentage >
                                                             0 && (
-                                                            <div className="px-3 py-1.5 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-700 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+                                                            <div
+                                                                className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-sm ${
+                                                                    tailor.rating_percentage >=
+                                                                    80
+                                                                        ? "bg-gradient-to-r from-green-100 to-green-200 text-green-700"
+                                                                        : tailor.rating_percentage >=
+                                                                          60
+                                                                        ? "bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-700"
+                                                                        : "bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700"
+                                                                }`}
+                                                            >
                                                                 <span>⭐</span>
                                                                 {
                                                                     tailor.rating_percentage
@@ -705,7 +715,7 @@ const Tailors = ({ tailors }) => {
                                                         selectedTailor.profile_photo_url
                                                     }
                                                     alt={selectedTailor.name}
-                                                    className="w-full h-full object-cover"
+                                                    className="w-full h-full"
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-gray-100 flex items-center justify-center">
@@ -716,7 +726,7 @@ const Tailors = ({ tailors }) => {
                                         <h3 className="text-2xl font-bold font-zar text-gray-800 mb-2">
                                             {selectedTailor.name}
                                         </h3>
-                                        <div className="flex justify-center gap-2 mb-4">
+                                        <div className="flex justify-center gap-2 mb-4 flex-wrap">
                                             {selectedTailor.has_shop && (
                                                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-100 text-secondary-700 text-sm">
                                                     <FaStore className="text-sm" />
@@ -725,14 +735,25 @@ const Tailors = ({ tailors }) => {
                                             )}
                                             {selectedTailor.rating_percentage >
                                                 0 && (
-                                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm">
+                                                <span
+                                                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ${
+                                                        selectedTailor.rating_percentage >=
+                                                        80
+                                                            ? "bg-green-100 text-green-700"
+                                                            : selectedTailor.rating_percentage >=
+                                                              60
+                                                            ? "bg-yellow-100 text-yellow-700"
+                                                            : "bg-orange-100 text-orange-700"
+                                                    }`}
+                                                >
+                                                    <span>⭐</span>
                                                     <span className="font-semibold">
                                                         {
                                                             selectedTailor.rating_percentage
                                                         }
                                                         %
                                                     </span>
-                                                    ریټنګ
+                                                    د پیرودونکو خوښۍ
                                                 </span>
                                             )}
                                         </div>

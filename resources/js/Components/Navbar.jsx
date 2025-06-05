@@ -6,8 +6,6 @@ import {
     FaTimes,
     FaUser,
     FaSignOutAlt,
-    FaBell,
-    FaChevronDown,
     FaHome,
     FaInfoCircle,
     FaBlog,
@@ -164,7 +162,7 @@ const Navbar = () => {
 
     return (
         <motion.nav
-            className="bg-primary-900 shadow-lg sticky top-0 z-50 backdrop-blur-sm"
+            className="bg-primary-900 shadow-lg sticky top-0 z-[999999] backdrop-blur-sm"
             variants={navbarVariants}
             initial="hidden"
             animate="visible"
@@ -198,24 +196,21 @@ const Navbar = () => {
                         transition={{ delay: 0.4 }}
                     >
                         {[
-                            { href: "/", text: "کور", icon: FaHome },
+                            { href: "/", text: "کور" },
                             {
                                 href: "/about",
                                 text: "زموږ په اړه",
-                                icon: FaInfoCircle,
                             },
-                            { href: "/post", text: "پوسټونه", icon: FaBlog },
+                            { href: "/post", text: "پوسټونه" },
                             {
                                 href: "/order",
                                 text: "فرمایش",
-                                icon: FaShoppingCart,
                             },
-                            { href: "/shop", text: "دوکانونه", icon: FaStore },
-                            { href: "/adv", text: "اعلانات", icon: FaBullhorn },
-                            { href: "/contact", text: "اړیکه", icon: FaPhone },
-                            { href: "/tailor", text: "خیاطان", icon: FaCut },
+                            { href: "/shop", text: "دوکانونه" },
+                            { href: "/adv", text: "اعلانات" },
+                            { href: "/contact", text: "اړیکه" },
+                            { href: "/tailor", text: "خیاطان" },
                         ].map((link, index) => {
-                            const Icon = link.icon;
                             const isActiveLink = isActive(link.href);
 
                             return (
@@ -232,19 +227,12 @@ const Navbar = () => {
                                     <Link
                                         href={link.href}
                                         onClick={() => setActivePath(link.href)}
-                                        className={`group relative flex items-center space-x-2 rtl:space-x-reverse px-4 py-2 rounded-lg font-zar font-semibold text-sm lg:text-base transition-all duration-300 ${
+                                        className={`group relative flex items-center space-x-2 rtl:space-x-reverse px-4 py-2 rounded-lg font-zar font-bold lg:text-xl transition-all duration-300 ${
                                             isActiveLink
                                                 ? "bg-secondary-600 text-white shadow-lg"
                                                 : "text-gray-200 hover:text-white hover:bg-primary-700/50"
                                         }`}
                                     >
-                                        <Icon
-                                            className={`h-4 w-4 transition-all duration-300 ${
-                                                isActiveLink
-                                                    ? "text-white"
-                                                    : "text-gray-300 group-hover:text-white"
-                                            }`}
-                                        />
                                         <span>{link.text}</span>
                                     </Link>
                                 </motion.div>
@@ -408,9 +396,9 @@ const Navbar = () => {
                                                     >
                                                         <button
                                                             type="submit"
-                                                            className="w-full text-xl flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                                            className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                                                         >
-                                                            <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
+                                                            <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2 " />
                                                             وتـــــــل
                                                         </button>
                                                     </form>
@@ -493,45 +481,36 @@ const Navbar = () => {
                                     {
                                         href: "/",
                                         text: "کور",
-                                        icon: FaHome,
                                     },
                                     {
                                         href: "/about",
                                         text: "زموږ په اړه",
-                                        icon: FaInfoCircle,
                                     },
                                     {
                                         href: "/post",
                                         text: "پوسټونه",
-                                        icon: FaBlog,
                                     },
                                     {
                                         href: "/order",
                                         text: "فرمایش",
-                                        icon: FaShoppingCart,
                                     },
                                     {
                                         href: "/shop",
                                         text: "دوکانونه",
-                                        icon: FaStore,
                                     },
                                     {
                                         href: "/adv",
                                         text: "اعلانات",
-                                        icon: FaBullhorn,
                                     },
                                     {
                                         href: "/contact",
                                         text: "اړیکه",
-                                        icon: FaPhone,
                                     },
                                     {
                                         href: "/tailor",
                                         text: "خیاطان",
-                                        icon: FaCut,
                                     },
                                 ].map((link, index) => {
-                                    const Icon = link.icon;
                                     const isActiveLink = isActive(link.href);
 
                                     return (
@@ -546,19 +525,12 @@ const Navbar = () => {
                                                     setActivePath(link.href);
                                                     setIsOpen(false);
                                                 }}
-                                                className={`flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-lg font-zar font-semibold text-base transition-all duration-300 ${
+                                                className={`flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-lg font-zar font-semibold text-xl transition-all duration-300 ${
                                                     isActiveLink
                                                         ? "bg-secondary-600 text-white"
                                                         : "text-gray-200 hover:text-white hover:bg-primary-700"
                                                 }`}
                                             >
-                                                <Icon
-                                                    className={`h-5 w-5 ${
-                                                        isActiveLink
-                                                            ? "text-white"
-                                                            : "text-gray-300"
-                                                    }`}
-                                                />
                                                 <span>{link.text}</span>
                                             </Link>
                                         </motion.div>

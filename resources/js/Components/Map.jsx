@@ -22,7 +22,7 @@ const Map = () => {
     });
 
     return (
-        <div className="bg-white p-4 rounded-lg shadow-md h-[500px] w-full">
+        <div className="bg-white p-4 rounded-lg shadow-md h-[27.5rem] ">
             {isClient && (
                 <MapContainer
                     center={position}

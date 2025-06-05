@@ -282,7 +282,6 @@ const Post = () => {
                                 ? {
                                       ...post,
                                       rating: selectedRating,
-                                      comments: (post.comments || 0) + 1,
                                       user_has_rated: true, // Mark as rated by current user
                                   }
                                 : post
@@ -297,7 +296,6 @@ const Post = () => {
                                 ? {
                                       ...post,
                                       rating: selectedRating,
-                                      comments: (post.comments || 0) + 1,
                                       user_has_rated: true, // Mark as rated by current user
                                   }
                                 : post
@@ -447,7 +445,6 @@ const Post = () => {
                             ? {
                                   ...p,
                                   rating: 0,
-                                  comments: Math.max((p.comments || 1) - 1, 0),
                                   user_has_rated: false,
                               }
                             : p
@@ -462,7 +459,6 @@ const Post = () => {
                             ? {
                                   ...p,
                                   rating: 0,
-                                  comments: Math.max((p.comments || 1) - 1, 0),
                                   user_has_rated: false,
                               }
                             : p
@@ -733,7 +729,7 @@ const Post = () => {
         <SiteLayout title="پوسټونه - خیاط ماسټر">
             {/* Enhanced Hero Section */}
             <motion.section
-                className="relative py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-primary-50 via-white to-secondary-50 overflow-hidden"
+                className="relative h-screen  sm:py-5 py-0 bg-gradient-to-br from-primary-50 via-white to-secondary-50 overflow-hidden"
                 initial="hidden"
                 animate="visible"
                 variants={fadeIn}

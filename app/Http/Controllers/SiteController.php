@@ -37,19 +37,36 @@ class SiteController extends Controller
             }])
             ->get()
             ->map(function ($tailor) {
-                // Calculate average rating from all posts
-                $totalRating = 0;
-                $totalPosts = 0;
+                // Calculate Amazon-style tailor rating from all post ratings
+                $allRatings = collect();
 
                 foreach ($tailor->posts as $post) {
-                    if ($post->ratings_avg_rating) {
-                        $totalRating += $post->ratings_avg_rating;
-                        $totalPosts++;
-                    }
+                    // Get all individual ratings for this post
+                    $postRatings = \App\Models\PostRating::where('tailor_post_id', $post->id)->get();
+                    $allRatings = $allRatings->merge($postRatings);
                 }
 
-                $averageRating = $totalPosts > 0 ? ($totalRating / $totalPosts) : 0;
-                $ratingPercentage = ($averageRating / 5) * 100;
+                // Calculate Amazon-style Bayesian average
+                if ($allRatings->isEmpty()) {
+                    $ratingPercentage = 0;
+                    $credibilityScore = 0;
+                    $totalRatings = 0;
+                } else {
+                    $totalRatings = $allRatings->count();
+                    $rawSum = $allRatings->sum('rating');
+                    $rawAverage = $rawSum / $totalRatings;
+
+                    // Amazon-style Bayesian average
+                    $globalMean = 3.5; // Global average
+                    $minimumRatings = 5; // Minimum for credibility
+
+                    $bayesianAverage = (
+                        ($totalRatings * $rawAverage) + ($minimumRatings * $globalMean)
+                    ) / ($totalRatings + $minimumRatings);
+
+                    $ratingPercentage = ($bayesianAverage / 5) * 100;
+                    $credibilityScore = min(100, ($totalRatings / 10) * 100);
+                }
 
                 // Force refresh the tailor data and get order statistics
                 $tailor->refresh();
@@ -66,6 +83,15 @@ class SiteController extends Controller
                     ]);
                 }
 
+                // Get credibility level text
+                $getCredibilityLevel = function($score) {
+                    if ($score >= 80) return 'ډیر باوري'; // Very Reliable
+                    if ($score >= 60) return 'باوري'; // Reliable
+                    if ($score >= 40) return 'منځنی'; // Medium
+                    if ($score >= 20) return 'لږ باوري'; // Less Reliable
+                    return 'جدید'; // New
+                };
+
                 return [
                     'id' => $tailor->id,
                     'name' => $tailor->name,
@@ -80,6 +106,9 @@ class SiteController extends Controller
                     'tailoring_name' => $tailor->tailoring_name,
                     'created_at' => $tailor->created_at,
                     'rating_percentage' => round($ratingPercentage, 1),
+                    'total_ratings' => $totalRatings ?? 0,
+                    'credibility_score' => round($credibilityScore ?? 0),
+                    'credibility_level' => $getCredibilityLevel($credibilityScore ?? 0),
                     'order_statistics' => $orderStats
                 ];
             });
@@ -160,7 +189,8 @@ class SiteController extends Controller
             ->get()
             ->map(function ($post) use ($currentUserId) {
                 $averageRating = $post->ratings->avg('rating') ?? 0;
-                $commentsCount = $post->ratings->whereNotNull('comment')->count();
+                // Use stored comments count for better performance
+                $commentsCount = $post->comments;
 
                 // Check if current user has rated this post
                 $userHasRated = false;
@@ -177,7 +207,6 @@ class SiteController extends Controller
                     'email' => $post->email,
                     'category' => $post->category,
                     'comments' => $commentsCount,
-                    'views' => $post->views,
                     'rating' => $averageRating,
                     'user_has_rated' => $userHasRated,
                     'created_at' => $post->created_at
@@ -200,18 +229,23 @@ class SiteController extends Controller
 
     public function home()
     {
-        // Get top 10 rated posts
+        // Get top 10 rated posts with Amazon-style ratings
         $topDesigns = TailorPost::with(['ratings'])
             ->get()
             ->map(function ($post) {
-                $averageRating = $post->ratings->avg('rating') ?? 0;
+                $ratingData = $post->calculateAmazonStyleRating();
 
                 return [
                     'id' => $post->id,
-                    'title' => $post->description, // Using description as title
+                    'description' => $post->description,
                     'image' => $post->image ? asset('storage/' . $post->image) : null,
                     'category' => $post->category,
-                    'averageRating' => (float)$averageRating, // Ensure it's a number
+                    'averageRating' => (float)$ratingData['display_rating'], // Amazon-style rating
+                    'rawRating' => (float)$ratingData['raw_average'], // Simple average
+                    'totalRatings' => $ratingData['total_ratings'],
+                    'credibilityScore' => $ratingData['credibility_score'],
+                    'percentage' => $ratingData['percentage'],
+                    'credibilityLevel' => $post->getCredibilityLevel(),
                     'ratings' => $post->ratings->map(function($rating) {
                         return [
                             'id' => $rating->id,

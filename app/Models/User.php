@@ -196,4 +196,87 @@ class User extends Authenticatable implements MustVerifyEmail
             'week_end_date' => $this->week_end_date?->format('Y-m-d'),
         ];
     }
+
+    /**
+     * Get all ratings received by this tailor (through their posts)
+     */
+    public function receivedRatings()
+    {
+        return \App\Models\PostRating::whereHas('tailorPost', function ($query) {
+            $query->where('user_id', $this->id);
+        });
+    }
+
+    /**
+     * Get Amazon-style rating data for this tailor
+     */
+    public function getRatingData()
+    {
+        if (!$this->isTailor()) {
+            return null;
+        }
+
+        $ratingService = new \App\Services\TailorRatingService();
+        return $ratingService->getTailorRating($this->id);
+    }
+
+    /**
+     * Get rating summary for display
+     */
+    public function getRatingSummary()
+    {
+        if (!$this->isTailor()) {
+            return [
+                'rating' => 0,
+                'percentage' => 0,
+                'total_ratings' => 0,
+                'credibility' => 'نامعلوم'
+            ];
+        }
+
+        return [
+            'rating' => $this->cached_rating ?? 0,
+            'percentage' => $this->rating_percentage ?? 0,
+            'total_ratings' => $this->total_ratings ?? 0,
+            'credibility_score' => $this->credibility_score ?? 0,
+            'credibility' => $this->getCredibilityText(),
+            'performance' => $this->getPerformanceLevel()
+        ];
+    }
+
+    /**
+     * Get credibility text based on score
+     */
+    private function getCredibilityText()
+    {
+        $score = $this->credibility_score ?? 0;
+
+        if ($score >= 80) return 'ډیر باوري';
+        if ($score >= 60) return 'باوري';
+        if ($score >= 40) return 'منځنی';
+        if ($score >= 20) return 'لږ باوري';
+        return 'جدید';
+    }
+
+    /**
+     * Get performance level based on rating percentage
+     */
+    private function getPerformanceLevel()
+    {
+        $percentage = $this->rating_percentage ?? 0;
+
+        if ($percentage >= 90) return ['level' => 'غوره', 'color' => 'green'];
+        if ($percentage >= 80) return ['level' => 'ډیر ښه', 'color' => 'blue'];
+        if ($percentage >= 70) return ['level' => 'ښه', 'color' => 'yellow'];
+        if ($percentage >= 60) return ['level' => 'منځنی', 'color' => 'orange'];
+        return ['level' => 'کمزوری', 'color' => 'red'];
+    }
+
+    /**
+     * Check if tailor has sufficient ratings for credibility
+     */
+    public function hasCredibleRating()
+    {
+        return $this->total_ratings >= 5 && $this->credibility_score >= 50;
+    }
 }

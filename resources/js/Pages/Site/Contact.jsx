@@ -51,7 +51,7 @@ const Contact = () => {
     // Contact information
     const contactInfo = [
         {
-            icon: <FaMapMarkerAlt className="text-indigo-600" />,
+            icon: <FaMapMarkerAlt />,
             title: "زموږ موقعیت",
             details: [
                 "۱۲۳ارګ بازار",
@@ -60,23 +60,19 @@ const Contact = () => {
             ],
         },
         {
-            icon: <FaPhone className="text-indigo-600" />,
+            icon: <FaPhone />,
             title: "د تلیفون شمیره",
             details: ["+93 70 123 4567", "+93 70 987 6543"],
         },
         {
-            icon: <FaEnvelope className="text-indigo-600" />,
+            icon: <FaEnvelope />,
             title: "بریښنالیک",
             details: ["info@tailormaster.com", "support@tailormaster.com"],
         },
         {
-            icon: <FaClock className="text-indigo-600" />,
-            title: "د کار ساعتونه",
-            details: [
-                "دوشنبه - جمعه: ۹ بجې - ۶ بجې",
-                "شنبه: ۱۰ بجې - ۴ بجې",
-                "یکشنبه: تړلی",
-            ],
+            icon: <FaClock />,
+            title: "د کار ورځي",
+            details: ["ټوله هفته بې جمعې"],
         },
     ];
 
@@ -418,16 +414,21 @@ const Contact = () => {
 
                         {/* Map */}
                         <motion.div
-                            className="lg:w-1/2"
                             initial={{ opacity: 0, x: 50 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.6 }}
                             viewport={{ once: true }}
                         >
-                            <h2 className="text-3xl font-bold font-zar text-primary-800 mb-6">
-                                زموږ موقعیت
-                            </h2>
-                            <div className="rounded-lg overflow-hidden shadow-lg border border-primary-100">
+                            <div className="mb-8">
+                                <h2 className="text-3xl font-bold font-zar text-primary-800 mb-6">
+                                    زموږ موقعیت
+                                </h2>
+                                <p className="text-lg text-primary-600 font-zar">
+                                    زموږ موقعیت پر نقشه پیداکړئ
+                                </p>
+                            </div>
+
+                            <div className="rounded-lg  shadow-lg border border-primary-100">
                                 <Map />
                             </div>
                         </motion.div>
@@ -436,7 +437,7 @@ const Contact = () => {
             </section>
 
             {/* Social Media */}
-            <section className="py-16">
+            <section className="py-16 bg-gradient-to-b from-primary-100 to-white">
                 <div className="container mx-auto px-4 text-center">
                     <motion.h2
                         className="text-3xl font-bold font-zar text-primary-800  mb-8"
@@ -500,7 +501,7 @@ const Contact = () => {
                         }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        ژوندی چیټ پیل کړئ
+                        <a href="#">مسیج واستوئ</a>
                     </motion.button>
                 </div>
             </motion.section>

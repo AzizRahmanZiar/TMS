@@ -278,7 +278,7 @@ const Home = () => {
 
             {/* Enhanced Top Designs Section */}
             {topDesigns.length > 0 && (
-                <section className="py-24 bg-gradient-to-br from-white via-primary-25 to-secondary-25 relative overflow-hidden">
+                <section className="py-24 bg-gradient-to-br from-white via-primary-100 to-secondary-25 relative overflow-hidden">
                     {/* Background Pattern */}
                     <div className="absolute inset-0 opacity-5">
                         <div
