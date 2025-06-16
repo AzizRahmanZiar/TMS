@@ -101,6 +101,12 @@ class CustomerOrderController extends Controller
             ]);
             Log::info('Order created successfully', ['order' => $order->toArray()]);
 
+            // Update the tailor's weekly tracking dates first
+            $tailor->updateWeeklyOrderTracking();
+
+            // Then increment the current week orders count
+            $tailor->increment('current_week_orders');
+
             // Send notification to the tailor
             \App\Models\Notification::createForUser(
                 $tailor->id,
@@ -115,9 +121,6 @@ class CustomerOrderController extends Controller
                     'icon' => 'shopping-cart',
                 ]
             );
-
-            // Update tailor's weekly order tracking
-            $tailor->updateWeeklyOrderTracking();
 
             return redirect()->route('home')->with('success', 'فرمایش مو په بریالیتوب سره درکړل شو. د خیاط د تایید انتظار کول');
         } catch (\Exception $e) {

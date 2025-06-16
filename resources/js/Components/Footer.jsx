@@ -39,8 +39,8 @@ const Footer = () => {
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.3,
+                staggerChildren: 0.05,
+                delayChildren: 0.15,
             },
         },
     };
@@ -50,7 +50,7 @@ const Footer = () => {
         visible: {
             opacity: 1,
             y: 0,
-            transition: { type: "spring", stiffness: 100, damping: 10 },
+            transition: { type: "spring", stiffness: 200, damping: 15 },
         },
     };
 
@@ -58,7 +58,7 @@ const Footer = () => {
         hover: {
             scale: 1.05,
             color: "#ffffff",
-            transition: { type: "spring", stiffness: 300, damping: 10 },
+            transition: { type: "spring", stiffness: 400, damping: 15 },
         },
         tap: { scale: 0.95 },
     };
@@ -68,7 +68,7 @@ const Footer = () => {
             scale: 1.2,
             rotate: 5,
             color: "#ffffff",
-            transition: { type: "spring", stiffness: 500, damping: 10 },
+            transition: { type: "spring", stiffness: 600, damping: 15 },
         },
         tap: { scale: 0.9 },
     };
@@ -79,7 +79,7 @@ const Footer = () => {
             dir="rtl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.25 }}
         >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
@@ -103,7 +103,7 @@ const Footer = () => {
                                         rotate: [0, 180, 360],
                                     }}
                                     transition={{
-                                        duration: 4,
+                                        duration: 2,
                                         repeat: Infinity,
                                         ease: "linear",
                                     }}
@@ -116,7 +116,7 @@ const Footer = () => {
                                 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent font-zar"
                                 initial={{ opacity: 0, x: -20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.2 }}
+                                transition={{ delay: 0.1 }}
                                 viewport={{ once: true }}
                             >
                                 خیاط ماسټر
@@ -335,13 +335,13 @@ const Footer = () => {
                     className="border-t border-gray-800 mt-8 pt-6 text-center text-primary-50"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8, duration: 0.5 }}
+                    transition={{ delay: 0.4, duration: 0.25 }}
                     viewport={{ once: true }}
                 >
                     <motion.p
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
-                        transition={{ delay: 0.9 }}
+                        transition={{ delay: 0.45 }}
                         viewport={{ once: true }}
                     >
                         د چاپ حق © {new Date().getFullYear()} خیاط ماسټر. ټول

@@ -39,9 +39,8 @@ class KortaiController extends Controller
     // Show a specific kortai
     public function show(Kortai $kortai)
     {
-        if ($kortai->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+
+        abort_if($kortai->user_id !== auth()->id(), 403, 'Unauthorized action.');
         return Inertia::render('System/Kortai/Show', [
             'kortai' => $kortai
         ]);
@@ -50,9 +49,10 @@ class KortaiController extends Controller
     // Show edit form
     public function edit(Kortai $kortai)
     {
-        if ($kortai->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // if ($kortai->user_id !== auth()->id()) {
+        //     abort(403, 'Unauthorized action.');
+        // }
+        abort_if($kortai->user_id !== auth()->id(), 403, 'Unauthorized action.');
         return Inertia::render('System/Kortai/Edit', [
             'kortai' => $kortai
         ]);
@@ -61,9 +61,7 @@ class KortaiController extends Controller
     // Update kortai
     public function update(KortaiRequest $request, Kortai $kortai)
     {
-        if ($kortai->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        abort_if($kortai->user_id !== auth()->id(), 403, 'Unauthorized action.');
 
         $validated = $request->validated();
         $kortai->update($validated);
@@ -74,11 +72,13 @@ class KortaiController extends Controller
     // Delete kortai
     public function destroy(Kortai $kortai)
     {
-        if ($kortai->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // if ($kortai->user_id !== auth()->id()) {
+        //     abort(403, 'Unauthorized action.');
+        // }
+        abort_if($kortai->user_id !== auth()->id(), 403, 'Unauthorized action.');
         $kortai->delete();
 
         return redirect()->route('kortai.index')->with('success', 'Kortai deleted successfully.');
     }
 }
+

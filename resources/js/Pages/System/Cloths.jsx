@@ -6,6 +6,8 @@ import {
     MdCheck,
     MdOutlineCheckBox,
     MdOutlineCheckBoxOutlineBlank,
+    MdEdit,
+    MdVisibility,
 } from "react-icons/md";
 import {
     FaUser,
@@ -13,6 +15,9 @@ import {
     FaRuler,
     FaCalendarAlt,
     FaMoneyBill,
+    FaSort,
+    FaSortUp,
+    FaSortDown,
 } from "react-icons/fa";
 
 import { useCloths } from "@/Contexts/ClothsContext";
@@ -23,15 +28,15 @@ import DeleteModal from "@/Components/DeleteModal";
 import { router, useForm } from "@inertiajs/react";
 import TextInput from "@/Components/Form/TextInput";
 import InputLabel from "@/Components/Form/InputLabel";
+import Pagination from "@/Components/Pagination";
 
 const Cloths = ({ cloths: initialCloths }) => {
     const { cloths, setCloths } = useCloths();
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(null);
     const [clothToDelete, setClothToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -71,6 +76,9 @@ const Cloths = ({ cloths: initialCloths }) => {
     const [showFeaturesModal, setShowFeaturesModal] = useState(false);
     const [showMeasurementsModal, setShowMeasurementsModal] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
+    const [showViewModal, setShowViewModal] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
 
     // Initialize cloths from props
     useEffect(() => {
@@ -115,7 +123,7 @@ const Cloths = ({ cloths: initialCloths }) => {
 
     const closeModal = () => {
         setModalOpen(false);
-        setDeleteModalOpen(false);
+        setShowDeleteModal(false);
     };
 
     const handleChange = (e) => {
@@ -190,7 +198,9 @@ const Cloths = ({ cloths: initialCloths }) => {
     };
 
     const handleUpdate = (e) => {
-        e.preventDefault();
+        if (e && e.preventDefault) {
+            e.preventDefault();
+        }
 
         put(`/cloths/${editingId}`, {
             onSuccess: (page) => {
@@ -324,6 +334,21 @@ const Cloths = ({ cloths: initialCloths }) => {
         });
     };
 
+    const handleViewRecord = (row) => {
+        setSelectedRow(row);
+        setShowViewModal(true);
+    };
+
+    // Calculate pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+    const totalItems = filteredData.length;
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     return (
         <SystemLayout>
             <div className="p-6">
@@ -417,312 +442,155 @@ const Cloths = ({ cloths: initialCloths }) => {
                             <thead className="bg-gradient-to-r from-primary-50 to-secondary-50">
                                 <tr>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>نوم</span>
-                                            <FaUser className="text-primary-600" />
-                                        </div>
+                                        <span>نوم</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>مبایل</span>
-                                            <FaPhone className="text-primary-600" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>اندازې</span>
-                                            <FaRuler className="text-primary-600" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden lg:table-cell">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>خصوصیات</span>
-                                            <div className="w-3 h-3 rounded-full bg-primary-600"></div>
-                                        </div>
+                                        <span>مبایل</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden md:table-cell">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>د راوړلو تاریخ</span>
-                                            <FaCalendarAlt className="text-primary-600" />
-                                        </div>
+                                        <span>د راوړلو تاریخ</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>د تسلیمولو تاریخ</span>
-                                            <FaCalendarAlt className="text-primary-600" />
-                                        </div>
+                                        <span>د تسلیمولو تاریخ</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden sm:table-cell">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>تعداد</span>
-                                            <div className="w-3 h-3 rounded-full bg-primary-600"></div>
-                                        </div>
+                                        <span>تعداد</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>پیسې</span>
-                                            <FaMoneyBill className="text-primary-600" />
-                                        </div>
+                                        <span>پیسې</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>عملیات</span>
-                                            <FaRuler className="text-primary-600" />
-                                        </div>
+                                        <span>عملیات</span>
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white">
-                                {filteredData.length > 0 ? (
-                                    filteredData.map((row, index) => (
-                                        <motion.tr
-                                            key={index}
-                                            className={`hover:bg-primary-25 transition-all duration-300 border-b border-gray-100 ${
-                                                row.disabled
-                                                    ? "bg-blue-50/50"
-                                                    : ""
-                                            }`}
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{
-                                                duration: 0.3,
-                                                delay: index * 0.05,
-                                            }}
-                                            whileHover={{ scale: 1.01 }}
-                                        >
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-3">
-                                                    <div>
-                                                        <div className="font-zar text-sm md:text-base font-semibold text-gray-900">
-                                                            {row.nom}
-                                                        </div>
-                                                        <div className="text-xs text-gray-500 font-zar">
-                                                            مشتری
-                                                        </div>
-                                                    </div>
-                                                    <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-                                                        <FaUser className="text-primary-600 text-sm" />
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {currentItems.map((row, index) => (
+                                    <motion.tr
+                                        key={row.id}
+                                        className={`hover:bg-primary-25 transition-all duration-300 border-b border-gray-100 ${
+                                            row.disabled
+                                                ? "bg-purple-50/50"
+                                                : ""
+                                        }`}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{
+                                            duration: 0.3,
+                                            delay: index * 0.05,
+                                        }}
+                                    >
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center gap-3">
+                                                <div>
+                                                    <div className="font-zar text-sm md:text-base font-semibold text-gray-900">
+                                                        {row.nom}
                                                     </div>
                                                 </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <span className="font-zar text-sm md:text-base text-gray-900 font-medium">
-                                                        {row.mobile}
-                                                    </span>
-                                                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                                        <FaPhone className="text-green-600 text-xs" />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex flex-wrap items-center justify-end gap-2">
-                                                    <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold font-zar border border-blue-200">
-                                                        قد: {row.qadd}
-                                                    </span>
-                                                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold font-zar border border-green-200">
-                                                        شانه: {row.shana}
-                                                    </span>
-                                                    <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-bold font-zar border border-purple-200">
-                                                        غاړه: {row.ghara}
-                                                    </span>
-                                                    <motion.button
-                                                        onClick={() =>
-                                                            handleShowMeasurements(
-                                                                row
-                                                            )
-                                                        }
-                                                        className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold font-zar border border-indigo-200 hover:bg-indigo-200 transition-colors duration-200"
-                                                        whileHover={{
-                                                            scale: 1.05,
-                                                        }}
-                                                        whileTap={{
-                                                            scale: 0.95,
-                                                        }}
-                                                    >
-                                                        نور...
-                                                    </motion.button>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right hidden lg:table-cell">
-                                                <div className="flex flex-wrap items-center justify-end gap-2">
-                                                    {row.lastoni && (
-                                                        <span className="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold font-zar border border-indigo-200">
-                                                            لستوڼي
-                                                        </span>
-                                                    )}
-                                                    {row.bin && (
-                                                        <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold font-zar border border-green-200">
-                                                            بین
-                                                        </span>
-                                                    )}
-                                                    {row.kalari && (
-                                                        <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold font-zar border border-yellow-200">
-                                                            کالري
-                                                        </span>
-                                                    )}
-                                                    {(row.lastoni_goti ||
-                                                        row.bin_kat ||
-                                                        row.makh_jib ||
-                                                        row.tarikhzi ||
-                                                        row.shabazi ||
-                                                        row.arabi ||
-                                                        row.lemen ||
-                                                        row.lastoni_2) && (
-                                                        <motion.button
-                                                            onClick={() =>
-                                                                handleShowFeatures(
-                                                                    row
-                                                                )
-                                                            }
-                                                            className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold font-zar border border-blue-200 hover:bg-blue-200 transition-colors duration-200"
-                                                            whileHover={{
-                                                                scale: 1.05,
-                                                            }}
-                                                            whileTap={{
-                                                                scale: 0.95,
-                                                            }}
-                                                        >
-                                                            نور...
-                                                        </motion.button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <span className="text-sm text-gray-600 font-zar">
-                                                        {formatDate(
-                                                            row.rawrul_tareekh
-                                                        )}
-                                                    </span>
-                                                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                                                        <FaCalendarAlt className="text-purple-600 text-xs" />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end">
-                                                    {row.tasleem_tareekh ? (
-                                                        <span className="px-4 py-2 bg-green-100 text-green-800 rounded-full text-xs font-bold font-zar border border-green-200 flex items-center gap-2">
-                                                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                                            {formatDate(
-                                                                row.tasleem_tareekh
-                                                            )}
-                                                        </span>
-                                                    ) : (
-                                                        <span className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold font-zar border border-yellow-200 flex items-center gap-2">
-                                                            <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                                                            نه دی تسلیم سوی
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right hidden sm:table-cell">
-                                                <div className="flex items-center justify-end">
-                                                    <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-bold font-zar border border-orange-200">
-                                                        {row.tidad}
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <span className="font-zar text-sm md:text-base text-gray-900 font-bold">
-                                                        {row.money} افغانۍ
-                                                    </span>
-                                                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                                        <FaMoneyBill className="text-green-600 text-xs" />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <motion.button
-                                                        onClick={() =>
-                                                            handleEditClick(
-                                                                index
-                                                            )
-                                                        }
-                                                        disabled={row.disabled}
-                                                        className={`px-4 py-2 rounded-lg text-xs font-bold font-zar transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg ${
-                                                            row.disabled
-                                                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                                                : "bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white"
-                                                        }`}
-                                                        whileHover={
-                                                            !row.disabled
-                                                                ? {
-                                                                      scale: 1.05,
-                                                                  }
-                                                                : {}
-                                                        }
-                                                        whileTap={
-                                                            !row.disabled
-                                                                ? {
-                                                                      scale: 0.95,
-                                                                  }
-                                                                : {}
-                                                        }
-                                                        title={
-                                                            row.disabled
-                                                                ? "تسلیم شوي ریکارډونه نشي سمولی"
-                                                                : "سمول"
-                                                        }
-                                                    >
-                                                        <FaRuler className="text-xs" />
-                                                        سمول
-                                                    </motion.button>
-                                                    <motion.button
-                                                        onClick={() =>
-                                                            handleDeleteClick(
-                                                                row
-                                                            )
-                                                        }
-                                                        className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs transition-all duration-300 shadow-md hover:shadow-lg"
-                                                        whileHover={{
-                                                            scale: 1.05,
-                                                        }}
-                                                        whileTap={{
-                                                            scale: 0.95,
-                                                        }}
-                                                        title="حذف کول"
-                                                    >
-                                                        <MdDelete className="text-sm" />
-                                                    </motion.button>
-                                                </div>
-                                            </td>
-                                        </motion.tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td
-                                            colSpan="9"
-                                            className="px-6 py-12 text-center"
-                                        >
-                                            <motion.div
-                                                className="flex flex-col items-center justify-center gap-4"
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ duration: 0.5 }}
-                                            >
-                                                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                                                    <FaUser className="text-gray-400 text-2xl" />
-                                                </div>
-                                                <div className="text-center">
-                                                    <h3 className="text-lg font-bold text-gray-600 font-zar mb-2">
-                                                        هیڅ ریکارډ ونه موندل شو
-                                                    </h3>
-                                                    <p className="text-sm text-gray-500 font-zar">
-                                                        د لټون شرایط بدل کړئ یا
-                                                        نوی ریکارډ اضافه کړئ
-                                                    </p>
-                                                </div>
-                                            </motion.div>
+                                            </div>
                                         </td>
-                                    </tr>
-                                )}
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-zar text-sm md:text-base text-gray-900 font-medium">
+                                                    {row.mobile}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm text-gray-600 font-zar">
+                                                    {row.rawrul_tareekh}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm text-gray-600 font-zar">
+                                                    {row.tasleem_tareekh}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right hidden sm:table-cell">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm text-gray-600 font-zar">
+                                                    {row.tidad}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-zar text-sm md:text-base text-gray-900 font-bold">
+                                                    {row.money} افغانۍ
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center gap-3">
+                                                <motion.button
+                                                    onClick={() =>
+                                                        handleViewRecord(row)
+                                                    }
+                                                    className="p-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    title="لیدل"
+                                                >
+                                                    <MdVisibility className="text-lg" />
+                                                </motion.button>
+                                                <motion.button
+                                                    onClick={() =>
+                                                        handleEditClick(index)
+                                                    }
+                                                    disabled={row.disabled}
+                                                    className={`p-2 transition-colors duration-200 ${
+                                                        row.disabled
+                                                            ? "text-gray-400 cursor-not-allowed"
+                                                            : "text-green-600 hover:text-green-800"
+                                                    }`}
+                                                    whileHover={
+                                                        !row.disabled
+                                                            ? { scale: 1.1 }
+                                                            : {}
+                                                    }
+                                                    whileTap={
+                                                        !row.disabled
+                                                            ? { scale: 0.9 }
+                                                            : {}
+                                                    }
+                                                    title={
+                                                        row.disabled
+                                                            ? "تسلیم شوي ریکارډونه نشي سمولی"
+                                                            : "سمول"
+                                                    }
+                                                >
+                                                    <MdEdit className="text-lg" />
+                                                </motion.button>
+                                                <motion.button
+                                                    onClick={() =>
+                                                        handleDeleteClick(row)
+                                                    }
+                                                    className="p-2 text-red-600 hover:text-red-800 transition-colors duration-200"
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    title="حذف کول"
+                                                >
+                                                    <MdDelete className="text-lg" />
+                                                </motion.button>
+                                            </div>
+                                        </td>
+                                    </motion.tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Pagination */}
+                    <Pagination
+                        currentPage={currentPage}
+                        totalItems={totalItems}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={handlePageChange}
+                    />
 
                     {/* Modern Footer */}
                     <div className="px-6 py-4 bg-gradient-to-r from-primary-50 to-secondary-50 border-t border-primary-200">
@@ -840,9 +708,6 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                         }`}
                                                         placeholder="د پیرودونکي نوم"
                                                     />
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <FaUser className="h-5 w-5 text-primary-400" />
-                                                    </div>
                                                 </div>
                                                 {errors.nom && (
                                                     <motion.p
@@ -877,9 +742,6 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                         }`}
                                                         placeholder="د بیلګې په توګه: 0701234567"
                                                     />
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <FaPhone className="h-5 w-5 text-primary-400" />
-                                                    </div>
                                                 </div>
                                                 {errors.mobile && (
                                                     <motion.p
@@ -914,9 +776,6 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                         }`}
                                                         placeholder="د بیلګې په توګه: 5000"
                                                     />
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <FaMoneyBill className="h-5 w-5 text-primary-400" />
-                                                    </div>
                                                 </div>
                                                 {errors.money && (
                                                     <motion.p
@@ -1042,9 +901,6 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                                 field.placeholder
                                                             }
                                                         />
-                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                            <FaRuler className="h-5 w-5 text-primary-400" />
-                                                        </div>
                                                     </div>
                                                     {errors[field.name] && (
                                                         <motion.p
@@ -1100,9 +956,6 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                                 : "border-primary-200 focus:border-primary-500 focus:ring-primary-200"
                                                         }`}
                                                     />
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <FaCalendarAlt className="h-5 w-5 text-primary-400" />
-                                                    </div>
                                                 </div>
                                                 {errors.rawrul_tareekh && (
                                                     <motion.p
@@ -1139,9 +992,6 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                                 : "border-primary-200 focus:border-primary-500 focus:ring-primary-200"
                                                         }`}
                                                     />
-                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                        <FaCalendarAlt className="h-5 w-5 text-primary-400" />
-                                                    </div>
                                                 </div>
                                                 {errors.tasleem_tareekh && (
                                                     <motion.p
@@ -1288,53 +1138,15 @@ const Cloths = ({ cloths: initialCloths }) => {
                     </motion.div>
                 )}
 
-                {/* Delete Confirmation Modal */}
-                {isDeleteModalOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
-                            <div className="bg-red-600 text-white px-6 py-4 flex justify-between items-center rounded-t-lg">
-                                <h2 className="text-xl font-bold">
-                                    د ریکارډ حذف کول
-                                </h2>
-                                <button
-                                    onClick={closeModal}
-                                    className="text-white hover:bg-red-700 rounded-full p-1"
-                                >
-                                    <MdClose className="h-6 w-6" />
-                                </button>
-                            </div>
-
-                            <div className="p-6">
-                                <div className="flex items-center mb-4">
-                                    <div className="bg-red-100 rounded-full p-3 mr-4">
-                                        <MdDelete className="h-6 w-6 text-red-600" />
-                                    </div>
-                                    <p className="text-gray-700">
-                                        آیا تاسو ډاډه یاست چې غواړئ دا ریکارډ
-                                        حذف کړئ؟ دا عمل نشي بیرته کیدی.
-                                    </p>
-                                </div>
-
-                                <div className="flex justify-end gap-4 mt-6">
-                                    <button
-                                        type="button"
-                                        onClick={closeModal}
-                                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-zar text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    >
-                                        لغو کول
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleDeleteConfirm}
-                                        className="inline-flex justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-zar text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                    >
-                                        حذف کول
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                {/* Delete Modal */}
+                <DeleteModal
+                    isOpen={showDeleteModal}
+                    onClose={cancelDelete}
+                    onConfirm={handleDeleteConfirm}
+                    title="د ریکارډ حذف کول"
+                    message={`آیا تاسو ډاډه یاست چې غواړئ د "${clothToDelete?.nom}" ریکارډ حذف کړئ؟ دا عمل نشي بیرته کیدی.`}
+                    isLoading={isDeleting}
+                />
 
                 {/* Toast Notification */}
                 {toast.visible && (
@@ -1376,35 +1188,35 @@ const Cloths = ({ cloths: initialCloths }) => {
                                         {[
                                             {
                                                 name: "lastoni",
-                                                label: "لستوڼي",
+                                                label: "لستونی",
                                             },
                                             {
                                                 name: "lastoni_goti",
-                                                label: "لستوڼي غوټۍ",
+                                                label: "لستونی ګوټي",
                                             },
                                             { name: "bin", label: "بین" },
                                             {
                                                 name: "bin_kat",
-                                                label: "بین کاټ",
+                                                label: "بین کت",
                                             },
                                             {
                                                 name: "makh_jib",
-                                                label: "د مخ جیب",
+                                                label: "مخ جیب",
                                             },
                                             {
                                                 name: "tarikhzi",
-                                                label: "ترخزي",
+                                                label: "تاریخزی",
                                             },
-                                            { name: "kalari", label: "کالري" },
+                                            { name: "kalari", label: "کلاري" },
                                             {
                                                 name: "shabazi",
-                                                label: "شابازي",
+                                                label: "شبازي",
                                             },
                                             { name: "arabi", label: "عربي" },
-                                            { name: "lemen", label: "لمن" },
+                                            { name: "lemen", label: "لیمن" },
                                             {
                                                 name: "lastoni_2",
-                                                label: "لستوڼي",
+                                                label: "لستونی ۲",
                                             },
                                         ].map((feature) => (
                                             <div
@@ -1495,15 +1307,227 @@ const Cloths = ({ cloths: initialCloths }) => {
                     </div>
                 )}
 
-                {/* Delete Modal */}
-                <DeleteModal
-                    isOpen={showDeleteModal}
-                    onClose={cancelDelete}
-                    onConfirm={handleDeleteConfirm}
-                    title="د ریکارډ حذف کول"
-                    message={`آیا تاسو ډاډه یاست چې غواړئ د "${clothToDelete?.nom}" ریکارډ حذف کړئ؟ دا عمل نشي بیرته کیدی.`}
-                    isLoading={isDeleting}
-                />
+                {/* View Record Modal */}
+                {showViewModal && selectedRow && (
+                    <motion.div
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <motion.div
+                            className="bg-gradient-to-br from-white to-primary-50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-y-auto border border-primary-200"
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            {/* Header */}
+                            <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-t-2xl">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <h2 className="text-xl font-bold font-zar">
+                                            د ریکارډ تفصیلات
+                                        </h2>
+                                    </div>
+                                    <motion.button
+                                        type="button"
+                                        onClick={() => setShowViewModal(false)}
+                                        className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors duration-200"
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                    >
+                                        <MdClose className="text-white text-lg" />
+                                    </motion.button>
+                                </div>
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-8 space-y-8">
+                                {/* Personal Information */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.1 }}
+                                    className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-primary-200"
+                                >
+                                    <h3 className="text-lg font-bold text-primary-800 mb-6 font-zar">
+                                        د پیرودونکي معلومات
+                                    </h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-bold text-primary-800 font-zar">
+                                                نوم
+                                            </label>
+                                            <p className="text-gray-900 font-zar bg-gray-50 p-3 rounded-lg">
+                                                {selectedRow.nom}
+                                            </p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-bold text-primary-800 font-zar">
+                                                مبایل نمبر
+                                            </label>
+                                            <p className="text-gray-900 font-zar bg-gray-50 p-3 rounded-lg">
+                                                {selectedRow.mobile}
+                                            </p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-bold text-primary-800 font-zar">
+                                                پیسې
+                                            </label>
+                                            <p className="text-gray-900 font-zar bg-gray-50 p-3 rounded-lg">
+                                                {selectedRow.money} افغانۍ
+                                            </p>
+                                        </div>
+                                    </div>
+                                </motion.div>
+
+                                {/* Dates */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                    className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-primary-200"
+                                >
+                                    <h3 className="text-lg font-bold text-primary-800 mb-6 font-zar">
+                                        تاریخونه
+                                    </h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-bold text-primary-800 font-zar">
+                                                د راوړلو تاریخ
+                                            </label>
+                                            <p className="text-gray-900 font-zar bg-gray-50 p-3 rounded-lg">
+                                                {selectedRow.rawrul_tareekh}
+                                            </p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-bold text-primary-800 font-zar">
+                                                د تسلیمولو تاریخ
+                                            </label>
+                                            <p className="text-gray-900 font-zar bg-gray-50 p-3 rounded-lg">
+                                                {selectedRow.tasleem_tareekh}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </motion.div>
+
+                                {/* Measurements */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 }}
+                                    className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-primary-200"
+                                >
+                                    <h3 className="text-lg font-bold text-primary-800 mb-6 font-zar">
+                                        اندازې
+                                    </h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {[
+                                            { name: "qadd", label: "قد" },
+                                            { name: "shana", label: "شانه" },
+                                            { name: "ghara", label: "غاړه" },
+                                            { name: "zegar", label: "ځګر" },
+                                            {
+                                                name: "lstoony",
+                                                label: "لستوڼي اندازه",
+                                            },
+                                            { name: "partog", label: "پرتوګ" },
+                                            { name: "pai_tsa", label: "پایڅه" },
+                                            { name: "tidad", label: "تعداد" },
+                                        ].map((field) => (
+                                            <div
+                                                key={field.name}
+                                                className="space-y-2"
+                                            >
+                                                <label className="block text-sm font-bold text-primary-800 font-zar">
+                                                    {field.label}
+                                                </label>
+                                                <p className="text-gray-900 font-zar bg-gray-50 p-3 rounded-lg">
+                                                    {selectedRow[field.name] ||
+                                                        "نه دی ورکړل شوی"}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </motion.div>
+
+                                {/* Features */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.4 }}
+                                    className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-primary-200"
+                                >
+                                    <h3 className="text-lg font-bold text-primary-800 mb-6 font-zar">
+                                        د جامو خصوصیات
+                                    </h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {[
+                                            {
+                                                name: "lastoni",
+                                                label: "لستونی",
+                                            },
+                                            {
+                                                name: "lastoni_goti",
+                                                label: "لستونی ګوټي",
+                                            },
+                                            { name: "bin", label: "بین" },
+                                            {
+                                                name: "bin_kat",
+                                                label: "بین کت",
+                                            },
+                                            {
+                                                name: "makh_jib",
+                                                label: "مخ جیب",
+                                            },
+                                            {
+                                                name: "tarikhzi",
+                                                label: "تاریخزی",
+                                            },
+                                            { name: "kalari", label: "کلاري" },
+                                            { name: "shabazi", label: "شبازي" },
+                                            { name: "arabi", label: "عربي" },
+                                            { name: "lemen", label: "لیمن" },
+                                            {
+                                                name: "lastoni_2",
+                                                label: "لستونی ۲",
+                                            },
+                                        ].map((field) => (
+                                            <div
+                                                key={field.name}
+                                                className="space-y-2"
+                                            >
+                                                <label className="block text-sm font-bold text-primary-800 font-zar">
+                                                    {field.label}
+                                                </label>
+                                                <p className="text-gray-900 font-zar bg-gray-50 p-3 rounded-lg">
+                                                    {selectedRow[field.name]
+                                                        ? "هو"
+                                                        : "نه"}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="p-6 bg-gray-50 rounded-b-2xl">
+                                <motion.button
+                                    type="button"
+                                    onClick={() => setShowViewModal(false)}
+                                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white rounded-xl transition-all duration-300 font-semibold font-zar shadow-lg hover:shadow-xl"
+                                    whileHover={{ scale: 1.02, y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    تړل
+                                </motion.button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
             </div>
         </SystemLayout>
     );

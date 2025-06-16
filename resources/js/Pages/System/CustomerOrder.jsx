@@ -215,41 +215,23 @@ const CustomerOrder = ({ orders, order, message }) => {
                                 <thead className="bg-gradient-to-r from-primary-50 to-secondary-50">
                                     <tr>
                                         <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <span>شمیره</span>
-                                                <FaCog className="text-primary-600" />
-                                            </div>
+                                            <span>شمیره</span>
                                         </th>
                                         <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <span>د پیرودونکي نوم</span>
-                                                <FaUser className="text-primary-600" />
-                                            </div>
+                                            <span>د پیرودونکي نوم</span>
                                         </th>
                                         <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <span>تلیفون</span>
-                                                <FaPhone className="text-primary-600" />
-                                            </div>
+                                            <span>تلیفون</span>
                                         </th>
                                         <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden lg:table-cell">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <span>آدرس</span>
-                                                <FaMapMarkerAlt className="text-primary-600" />
-                                            </div>
+                                            <span>آدرس</span>
                                         </th>
 
                                         <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden md:table-cell">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <span>د ثبت نیټه</span>
-                                                <FaCalendarAlt className="text-primary-600" />
-                                            </div>
+                                            <span>د ثبت نیټه</span>
                                         </th>
                                         <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <span>عملیات</span>
-                                                <FaEye className="text-primary-600" />
-                                            </div>
+                                            <span>عملیات</span>
                                         </th>
                                     </tr>
                                 </thead>
@@ -265,7 +247,6 @@ const CustomerOrder = ({ orders, order, message }) => {
                                                     duration: 0.3,
                                                     delay: index * 0.05,
                                                 }}
-                                                whileHover={{ scale: 1.01 }}
                                             >
                                                 <td className="px-4 md:px-6 py-4 text-right">
                                                     <div className="flex items-center justify-end">

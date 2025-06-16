@@ -539,14 +539,14 @@ const Post = () => {
                     exit={{ opacity: 0 }}
                 >
                     <motion.div
-                        className="bg-white/95 backdrop-blur-sm rounded-3xl p-4 sm:p-6 lg:p-8 max-w-3xl w-full mx-4 shadow-2xl border border-white/30"
+                        className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-5 max-w-md w-full mx-4 shadow-xl border border-white/30"
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.9, opacity: 0 }}
                         transition={{ type: "spring", damping: 20 }}
                     >
-                        <div className="flex justify-between items-center mb-6 sm:mb-8">
-                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-zar font-bold bg-gradient-to-r from-primary-800 via-secondary-600 to-tertiary-600 bg-clip-text text-transparent">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-zar font-bold bg-gradient-to-r from-primary-800 via-secondary-600 to-tertiary-600 bg-clip-text text-transparent">
                                 ارزونه ورکړئ
                             </h3>
                             <motion.button
@@ -557,7 +557,7 @@ const Post = () => {
                                     reset();
                                     setSelectedRating(0);
                                 }}
-                                className="text-gray-500 hover:text-gray-700 text-2xl sm:text-3xl p-2 rounded-full hover:bg-gray-100 transition-colors"
+                                className="text-gray-500 hover:text-gray-700 text-xl p-1 rounded-full hover:bg-gray-100 transition-colors"
                                 whileHover={{ scale: 1.1, rotate: 90 }}
                                 whileTap={{ scale: 0.9 }}
                             >
@@ -567,7 +567,7 @@ const Post = () => {
 
                         {error && (
                             <motion.div
-                                className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-100 text-red-700 rounded-2xl border border-red-200"
+                                className="mb-3 p-2 bg-red-100 text-red-700 rounded-lg border border-red-200 text-sm"
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                             >
@@ -577,7 +577,7 @@ const Post = () => {
 
                         {success && (
                             <motion.div
-                                className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-100 text-green-700 rounded-2xl border border-green-200"
+                                className="mb-3 p-2 bg-green-100 text-green-700 rounded-lg border border-green-200 text-sm"
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                             >
@@ -586,18 +586,18 @@ const Post = () => {
                         )}
 
                         <form onSubmit={handleRatingSubmit}>
-                            <div className="space-y-6 sm:space-y-8">
+                            <div className="space-y-4">
                                 {/* Rating Display */}
                                 <motion.div
                                     initial={{ x: -20, opacity: 0 }}
                                     animate={{ x: 0, opacity: 1 }}
                                     transition={{ delay: 0.1 }}
-                                    className="bg-gradient-to-r from-primary-50 to-secondary-50 p-4 sm:p-6 rounded-2xl border border-primary-200"
+                                    className="bg-gradient-to-r from-primary-50 to-secondary-50 p-3 rounded-lg border border-primary-200"
                                 >
-                                    <label className="block mb-3 sm:mb-4 font-medium text-base sm:text-lg font-zar">
+                                    <label className="block mb-2 font-medium text-sm font-zar">
                                         ستاسو ریټنګ: {selectedRating}/5
                                     </label>
-                                    <div className="flex items-center gap-2 sm:gap-3 justify-center sm:justify-start">
+                                    <div className="flex items-center gap-2 justify-center">
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <motion.div
                                                 key={star}
@@ -605,7 +605,7 @@ const Post = () => {
                                                 whileTap={{ scale: 0.9 }}
                                             >
                                                 <FaStar
-                                                    className={`text-2xl sm:text-3xl cursor-pointer ${
+                                                    className={`text-xl cursor-pointer ${
                                                         star <= selectedRating
                                                             ? "text-yellow-500"
                                                             : "text-gray-300"
@@ -626,16 +626,16 @@ const Post = () => {
                                     animate={{ x: 0, opacity: 1 }}
                                     transition={{ delay: 0.2 }}
                                 >
-                                    <label className="block mb-3 sm:mb-4 font-medium text-base sm:text-lg font-zar">
+                                    <label className="block mb-2 font-medium text-sm font-zar">
                                         نظر (لږترلږه 10 توري)
                                     </label>
                                     <textarea
                                         name="comment"
-                                        className={`w-full p-3 sm:p-4 border ${
+                                        className={`w-full p-2 border ${
                                             errors.comment
                                                 ? "border-red-500 focus:ring-red-300"
                                                 : "border-gray-300 focus:ring-secondary-300"
-                                        } rounded-2xl min-h-[120px] sm:min-h-[140px] focus:ring-2 focus:border-secondary-500 transition-all bg-white/90 backdrop-blur-sm text-sm sm:text-base`}
+                                        } rounded-lg min-h-[80px] focus:ring-2 focus:border-secondary-500 transition-all bg-white/90 backdrop-blur-sm text-sm`}
                                         value={data.comment}
                                         onChange={(e) => {
                                             setData("comment", e.target.value);
@@ -644,12 +644,12 @@ const Post = () => {
                                         placeholder="دلته خپل نظر ولیکئ..."
                                         required
                                     ></textarea>
-                                    <div className="flex justify-between items-center mt-2">
-                                        <div className="text-xs sm:text-sm text-gray-500">
+                                    <div className="flex justify-between items-center mt-1">
+                                        <div className="text-xs text-gray-500">
                                             {data.comment.length}/1000 توري
                                         </div>
                                         <div
-                                            className={`text-xs sm:text-sm ${
+                                            className={`text-xs ${
                                                 data.comment.length >= 10
                                                     ? "text-green-600"
                                                     : "text-red-500"
@@ -664,7 +664,7 @@ const Post = () => {
                                     </div>
                                     {errors.comment && (
                                         <motion.p
-                                            className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-lg"
+                                            className="mt-1 text-xs text-red-600 bg-red-50 p-1 rounded"
                                             initial={{ opacity: 0, y: -5 }}
                                             animate={{ opacity: 1, y: 0 }}
                                         >
@@ -675,21 +675,21 @@ const Post = () => {
                             </div>
 
                             <motion.div
-                                className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 mt-8 sm:mt-10"
+                                className="flex justify-end gap-2 mt-4"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.5 }}
                             >
                                 <motion.button
                                     type="button"
-                                    className="font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-zar text-base sm:text-lg border-2 border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-300 order-2 sm:order-1"
+                                    className="font-bold px-4 py-2 rounded-lg font-zar text-sm border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-300"
                                     onClick={() => {
                                         setShowModal(false);
                                         setError("");
                                         reset();
                                         setSelectedRating(0);
                                     }}
-                                    whileHover={{ scale: 1.02, y: -2 }}
+                                    whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                 >
                                     لغو کول
@@ -697,14 +697,14 @@ const Post = () => {
                                 <motion.button
                                     type="submit"
                                     disabled={processing || isSubmitting}
-                                    className={`font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-zar text-base sm:text-lg transition-all duration-300 order-1 sm:order-2 ${
+                                    className={`font-bold px-4 py-2 rounded-lg font-zar text-sm transition-all duration-300 ${
                                         processing || isSubmitting
                                             ? "bg-gray-400 cursor-not-allowed"
-                                            : "bg-gradient-to-r from-secondary-600 to-tertiary-600 text-white hover:from-secondary-700 hover:to-tertiary-700 shadow-xl hover:shadow-2xl"
+                                            : "bg-gradient-to-r from-secondary-600 to-tertiary-600 text-white hover:from-secondary-700 hover:to-tertiary-700 shadow-lg hover:shadow-xl"
                                     }`}
                                     whileHover={
                                         !processing && !isSubmitting
-                                            ? { scale: 1.02, y: -2 }
+                                            ? { scale: 1.02 }
                                             : {}
                                     }
                                     whileTap={

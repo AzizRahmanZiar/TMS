@@ -19,7 +19,6 @@ use App\Http\Controllers\{
     TailorSettingsController,
 };
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -95,8 +94,8 @@ Route::get('/refresh-csrf', function () {
 // Auth routes
 require __DIR__.'/auth.php';
 
-// Profile Management routes
-Route::middleware('auth')->group(function () {
+// Profile Management routes (restricted to admin, tailor, and shopkeeper)
+Route::middleware(['auth', 'checkrole:admin,tailor,shopkeeper'])->group(function () {
     Route::get('profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::delete('profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -105,7 +104,7 @@ Route::middleware('auth')->group(function () {
 // Protected System routes
 Route::middleware(['auth', 'verified'])->group(function () {
     // Common system routes (accessible by admin, tailor, and shopkeeper)
-    Route::middleware([CheckRole::class . ':admin,tailor,shopkeeper'])->group(function () {
+    Route::middleware(['checkrole:admin,tailor,shopkeeper'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // Admin routes
@@ -185,7 +184,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/kortai/{kortai}', [KortaiController::class, 'destroy'])->name('kortai.destroy');
 
     // Advertisement routes (for shopkeepers)
-    Route::middleware([CheckRole::class . ':shopkeeper'])->group(function () {
+    Route::middleware(['checkrole:shopkeeper'])->group(function () {
         Route::get('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'index'])->name('advertisements.index');
         Route::post('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'store'])->name('advertisements.store');
         Route::match(['PUT', 'POST'], '/advertisements/{advertisement}', [App\Http\Controllers\AdvertisementController::class, 'update'])->name('advertisements.update');

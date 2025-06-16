@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\Request;
+use App\Enums\Roles;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -13,9 +12,6 @@ class LoginController extends Controller
 {
     public function create()
     {
-        // Always regenerate CSRF token when showing login page
-        request()->session()->regenerateToken();
-
         return Inertia::render('Auth/Login', [
             'canResetPassword' => true,
             'status' => session('status'),
@@ -29,9 +25,9 @@ class LoginController extends Controller
 
         $user = Auth::user();
 
-        if ($user->role === 'admin' || $user->role === 'tailor') {
+        if ($user->role === Roles::ADMIN || $user->role === Roles::TAILOR || $user->role === Roles::SHOPKEEPER) {
             return redirect()->intended(route('dashboard'));
-        } elseif ($user->role === 'customer') {
+        } elseif ($user->role === Roles::CUSTOMER) {
             return redirect()->intended(route('home'));
         }
 
@@ -42,8 +38,8 @@ class LoginController extends Controller
     {
         Auth::logout();
 
-        // Don't regenerate token or invalidate session to prevent CSRF issues
-        // Just logout the user and redirect
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
 
         return redirect('/')->with('status', 'You have been successfully logged out.');
     }

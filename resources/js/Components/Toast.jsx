@@ -35,9 +35,9 @@ const Toast = ({ message, type = "info", onClose, duration = 3000 }) => {
             >
                 <div className="flex items-center">
                     <span className="mr-2">
-                        {type === "success" && "✓"}
-                        {type === "error" && "✕"}
-                        {type === "warning" && "⚠"}
+                        {type === "success"}
+                        {type === "error"}
+                        {type === "warning"}
                     </span>
                     <p className="font-medium">{message}</p>
                     <button
@@ -52,4 +52,4 @@ const Toast = ({ message, type = "info", onClose, duration = 3000 }) => {
     );
 };
 
-export default Toast; 
+export default Toast;

@@ -23,13 +23,6 @@
     text-align: right;
 }
 
-/* Lists RTL */
-.rtl ul,
-.rtl ol {
-    padding-right: 1.5rem;
-    padding-left: 0;
-}
-
 /* Flex direction for RTL */
 .rtl .flex-row {
     flex-direction: row-reverse;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, usePage, router } from "@inertiajs/react";
 import ProtectedRoute from "../Components/ProtectedRoute";
 import Sidebar from "../Components/Sidebar";
 import NotificationDropdown from "../Components/NotificationDropdown";
@@ -45,6 +45,8 @@ const SystemLayout = ({ children }) => {
         allowedRoles = ["admin"];
     } else if (currentPath === "/dashboard") {
         allowedRoles = ["tailor", "shopkeeper"];
+    } else if (currentPath === "/profile") {
+        allowedRoles = ["admin", "tailor", "shopkeeper"];
     } else if (
         currentPath.startsWith("/cloths") ||
         currentPath.startsWith("/uniform") ||
@@ -70,7 +72,7 @@ const SystemLayout = ({ children }) => {
                         className="flex w-full h-16 md:h-20 justify-between items-center bg-gradient-to-br from-secondary-900 via-tertiary-800 to-secondary-950 px-4 md:px-8 shadow-2xl border-b border-tertiary-700/50 backdrop-blur-sm relative overflow-hidden"
                         initial={{ y: -20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.5 }}
+                        transition={{ duration: 0.2 }}
                     >
                         {/* Background Pattern */}
                         <div className="absolute inset-0 opacity-10">
@@ -86,7 +88,7 @@ const SystemLayout = ({ children }) => {
                         >
                             <motion.div
                                 animate={{ rotate: sidebarOpen ? 180 : 0 }}
-                                transition={{ duration: 0.3 }}
+                                transition={{ duration: 0.15 }}
                             >
                                 {sidebarOpen ? (
                                     <FaTimes className="text-xl" />
@@ -97,8 +99,10 @@ const SystemLayout = ({ children }) => {
                         </motion.button>
 
                         <div className="flex items-center space-x-3 md:space-x-4">
-                            {/* Notifications */}
-                            <NotificationDropdown />
+                            {/* Notifications - Hidden for shopkeepers */}
+                            {auth.user?.role !== "shopkeeper" && (
+                                <NotificationDropdown />
+                            )}
 
                             {/* User Profile Image */}
                             <div className="relative" ref={profileRef}>
@@ -137,21 +141,8 @@ const SystemLayout = ({ children }) => {
                                 <AnimatePresence>
                                     {showProfileModal && (
                                         <Portal>
-                                            {/* Backdrop */}
                                             <motion.div
-                                                className="fixed inset-0 bg-black/20 z-[999998]"
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                exit={{ opacity: 0 }}
-                                                onClick={() =>
-                                                    setShowProfileModal(false)
-                                                }
-                                            />
-                                            {/* Modal */}
-                                            <motion.div
-                                                className="fixed left-52 top-16 w-80 -translate-x-1/2 bg-white
-
-                                                rounded-2xl shadow-2xl ring-1 ring-black/10 z-[999999] border border-gray-200"
+                                                className="fixed left-52 top-16 w-72 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-[9999]"
                                                 initial={{
                                                     opacity: 0,
                                                     scale: 0.95,
@@ -167,14 +158,13 @@ const SystemLayout = ({ children }) => {
                                                     scale: 0.95,
                                                     y: -10,
                                                 }}
-                                                transition={{ duration: 0.2 }}
+                                                transition={{ duration: 0.1 }}
                                             >
-                                                <div className="p-6 border-b border-gray-100">
+                                                <div className="p-4 border-b">
                                                     <div className="flex flex-col justify-center items-center">
-                                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center overflow-hidden shadow-lg ring-4 ring-white">
-                                                            {auth.user &&
-                                                            auth.user
-                                                                .profile_image ? (
+                                                        <div className="w-12 h-12 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
+                                                            {auth.user
+                                                                ?.profile_image ? (
                                                                 <img
                                                                     src={`/storage/${auth.user.profile_image}`}
                                                                     alt={
@@ -198,91 +188,51 @@ const SystemLayout = ({ children }) => {
                                                             )}
                                                         </div>
 
-                                                        <h3 className="text-xl font-bold text-gray-900 mt-3 font-zar">
+                                                        <h3 className="text-xl font-medium text-gray-900 mt-2">
                                                             {auth.user?.name}
                                                         </h3>
-                                                        <p className="text-base text-gray-600 font-zar">
+                                                        <p className="text-xl text-gray-500">
                                                             {auth.user?.email}
                                                         </p>
-                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800 mt-2">
-                                                            {auth.user?.role ===
-                                                            "admin"
-                                                                ? "اډمین"
-                                                                : auth.user
-                                                                      ?.role ===
-                                                                  "tailor"
-                                                                ? "خیاط"
-                                                                : auth.user
-                                                                      ?.role ===
-                                                                  "shopkeeper"
-                                                                ? "شرکت"
-                                                                : "کارکوونکی"}
-                                                        </span>
                                                     </div>
                                                 </div>
-                                                <div className="p-4">
-                                                    <form
-                                                        action={route("logout")}
-                                                        method="POST"
-                                                        className="w-full"
-                                                        onSubmit={async (e) => {
-                                                            e.preventDefault();
-
-                                                            // Get fresh CSRF token
-                                                            try {
-                                                                const tokenResponse =
-                                                                    await fetch(
-                                                                        "/refresh-csrf"
-                                                                    );
-                                                                const tokenData =
-                                                                    await tokenResponse.json();
-
-                                                                const formData =
-                                                                    new FormData();
-                                                                formData.append(
-                                                                    "_token",
-                                                                    tokenData.token
-                                                                );
-
-                                                                await fetch(
-                                                                    route(
-                                                                        "logout"
-                                                                    ),
-                                                                    {
-                                                                        method: "POST",
-                                                                        body: formData,
-                                                                        headers:
-                                                                            {
-                                                                                "X-Requested-With":
-                                                                                    "XMLHttpRequest",
-                                                                            },
-                                                                    }
-                                                                );
-
-                                                                // Always redirect regardless of response
-                                                                window.location.href =
-                                                                    "/";
-                                                            } catch (error) {
-                                                                // If anything fails, just redirect
-                                                                window.location.href =
-                                                                    "/";
+                                                <div className="p-2">
+                                                    {/* Profile Edit Link - Only for admin, tailor, and shopkeeper */}
+                                                    {(auth.user?.role ===
+                                                        "admin" ||
+                                                        auth.user?.role ===
+                                                            "tailor" ||
+                                                        auth.user?.role ===
+                                                            "shopkeeper") && (
+                                                        <Link
+                                                            href={route(
+                                                                "profile.edit"
+                                                            )}
+                                                            onClick={() =>
+                                                                setShowProfileModal(
+                                                                    false
+                                                                )
                                                             }
-                                                        }}
-                                                    >
-                                                        <motion.button
-                                                            type="submit"
-                                                            className="w-full flex items-center justify-center px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 font-zar text-lg font-semibold border border-red-200 hover:border-red-300"
-                                                            whileHover={{
-                                                                scale: 1.02,
-                                                            }}
-                                                            whileTap={{
-                                                                scale: 0.98,
-                                                            }}
+                                                            className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 hover:bg-gray-100 rounded-md transition-colors mb-2"
                                                         >
-                                                            <FaSignOutAlt className="ml-3 text-lg" />
-                                                            وتـــــــل
-                                                        </motion.button>
-                                                    </form>
+                                                            <FaUser className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
+                                                            پروفایل
+                                                        </Link>
+                                                    )}
+                                                    <button
+                                                        onClick={() => {
+                                                            setShowProfileModal(
+                                                                false
+                                                            );
+                                                            router.post(
+                                                                route("logout")
+                                                            );
+                                                        }}
+                                                        className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                                    >
+                                                        <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
+                                                        وتـــــــل
+                                                    </button>
                                                 </div>
                                             </motion.div>
                                         </Portal>
@@ -309,7 +259,7 @@ const SystemLayout = ({ children }) => {
                         className="flex-1 overflow-y-auto w-full bg-gradient-to-br from-gray-50 to-gray-100 relative"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
+                        transition={{ delay: 0.1, duration: 0.2 }}
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-primary-50/20 to-secondary-50/20 pointer-events-none"></div>
                         <div className="relative z-0">{children}</div>

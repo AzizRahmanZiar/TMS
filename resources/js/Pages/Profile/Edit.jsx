@@ -29,10 +29,34 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
                         transition={{ duration: 0.5 }}
                         className="bg-gradient-to-r from-primary-600 to-secondary-600 rounded-2xl p-6 text-white shadow-lg"
                     >
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-6">
+                            {/* Profile Image */}
+                            <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center overflow-hidden shadow-lg ring-4 ring-white/30">
+                                {auth.user && auth.user.profile_image ? (
+                                    <img
+                                        src={`/storage/${auth.user.profile_image}`}
+                                        alt={auth.user.name || "User"}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            console.error(
+                                                "Profile image failed to load:",
+                                                auth.user.profile_image
+                                            );
+                                            e.target.onerror = null;
+                                            e.target.src = "/placeholder.svg";
+                                        }}
+                                    />
+                                ) : (
+                                    <FaUser className="text-white text-2xl" />
+                                )}
+                            </div>
+
+                            {/* Settings Icon and Text */}
                             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                                 <FaCog className="text-white text-xl" />
                             </div>
+
+                            {/* Header Text */}
                             <div>
                                 <h1 className="text-2xl font-bold font-zar">
                                     د پروفایل تنظیمات

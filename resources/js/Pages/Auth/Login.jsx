@@ -47,29 +47,29 @@ export default function Login({ status, canResetPassword }) {
                 <Head title="داخلـــــــېدل" />
 
                 <motion.div
-                    className="w-full max-w-md mx-auto"
+                    className="w-full max-w-sm mx-auto"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                 >
                     <motion.div
-                        className="bg-gradient-to-br from-white via-white to-primary-50/30 rounded-3xl shadow-2xl p-8 border border-white/50 backdrop-blur-sm"
+                        className="bg-gradient-to-br from-white via-white to-primary-50/30 rounded-2xl shadow-lg p-4 border border-white/50 backdrop-blur-sm"
                         whileHover={{ y: -2 }}
                         transition={{ duration: 0.3 }}
                     >
                         <motion.div
-                            className="text-center mb-8"
+                            className="text-center mb-4"
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2, duration: 0.5 }}
                         >
-                            <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-                                <FaSignInAlt className="text-white text-2xl" />
+                            <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl mx-auto mb-2 flex items-center justify-center shadow-md">
+                                <FaSignInAlt className="text-white text-lg" />
                             </div>
-                            <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-secondary-600 font-zar">
+                            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-secondary-600 font-zar">
                                 داخلـــــــېدل
                             </h2>
-                            <div className="h-1 w-20 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto mt-3 rounded-full"></div>
+                            <div className="h-0.5 w-12 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto mt-2 rounded-full"></div>
                         </motion.div>
 
                         {/* Email Verification Success Message */}
@@ -96,7 +96,7 @@ export default function Login({ status, canResetPassword }) {
 
                         <motion.form
                             onSubmit={submit}
-                            className="space-y-6"
+                            className="space-y-3"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.3, duration: 0.5 }}
@@ -153,21 +153,21 @@ export default function Login({ status, canResetPassword }) {
                             >
                                 <label
                                     htmlFor="email"
-                                    className="flex items-center text-lg font-semibold text-gray-700 mb-3 font-zar"
+                                    className="flex items-center text-sm font-semibold text-gray-700 mb-1 font-zar"
                                 >
-                                    <FaEnvelope className="ml-2 text-primary-500" />
+                                    <FaEnvelope className="ml-1 text-primary-500 text-xs" />
                                     بریښنالیک
                                 </label>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <FaEnvelope className="text-gray-400 group-focus-within:text-primary-500 transition-colors duration-200" />
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <FaEnvelope className="text-gray-400 group-focus-within:text-primary-500 transition-colors duration-200 text-xs" />
                                     </div>
                                     <input
                                         id="email"
                                         type="email"
                                         name="email"
                                         value={data.email}
-                                        className={`pl-12 w-full text-lg p-4 rounded-xl border-2 transition-all duration-300 shadow-sm hover:shadow-md bg-white/80 backdrop-blur-sm focus:ring-4 focus:outline-none ${
+                                        className={`pl-8 w-full text-sm p-2 rounded-lg border transition-all duration-300 shadow-sm hover:shadow-md bg-white/80 backdrop-blur-sm focus:ring-2 focus:outline-none ${
                                             errors.email
                                                 ? "border-red-300 focus:border-red-500 focus:ring-red-100 bg-red-50/50"
                                                 : "border-gray-200 focus:border-primary-500 focus:ring-primary-100 hover:border-gray-300"
@@ -201,14 +201,14 @@ export default function Login({ status, canResetPassword }) {
                             >
                                 <label
                                     htmlFor="password"
-                                    className="flex items-center text-lg font-semibold text-gray-700 mb-3 font-zar"
+                                    className="flex items-center text-sm font-semibold text-gray-700 mb-1 font-zar"
                                 >
-                                    <FaLock className="ml-2 text-primary-500" />
+                                    <FaLock className="ml-1 text-primary-500 text-xs" />
                                     پټنوم
                                 </label>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <FaLock className="text-gray-400 group-focus-within:text-primary-500 transition-colors duration-200" />
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <FaLock className="text-gray-400 group-focus-within:text-primary-500 transition-colors duration-200 text-xs" />
                                     </div>
                                     <input
                                         id="password"
@@ -217,7 +217,7 @@ export default function Login({ status, canResetPassword }) {
                                         }
                                         name="password"
                                         value={data.password}
-                                        className={`pl-12 pr-12 w-full text-lg p-4 rounded-xl border-2 transition-all duration-300 shadow-sm hover:shadow-md bg-white/80 backdrop-blur-sm focus:ring-4 focus:outline-none ${
+                                        className={`pl-8 pr-8 w-full text-sm p-2 rounded-lg border transition-all duration-300 shadow-sm hover:shadow-md bg-white/80 backdrop-blur-sm focus:ring-2 focus:outline-none ${
                                             errors.password
                                                 ? "border-red-300 focus:border-red-500 focus:ring-red-100 bg-red-50/50"
                                                 : "border-gray-200 focus:border-primary-500 focus:ring-primary-100 hover:border-gray-300"
@@ -230,7 +230,7 @@ export default function Login({ status, canResetPassword }) {
                                     />
                                     <button
                                         type="button"
-                                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary-500 transition-colors duration-200"
+                                        className="absolute inset-y-0 right-0 pr-2 flex items-center text-gray-400 hover:text-primary-500 transition-colors duration-200 text-xs"
                                         onClick={() =>
                                             setShowPassword(!showPassword)
                                         }
@@ -293,14 +293,14 @@ export default function Login({ status, canResetPassword }) {
                             </motion.div>
 
                             <motion.div
-                                className="flex flex-col space-y-6"
+                                className="flex flex-col space-y-3"
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.7, duration: 0.5 }}
                             >
                                 <motion.button
                                     type="submit"
-                                    className={`w-full justify-center py-4 font-zar text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center transform hover:scale-[1.02] ${
+                                    className={`w-full justify-center py-2 font-zar text-sm rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center transform hover:scale-[1.02] ${
                                         processing
                                             ? "bg-gray-400 cursor-not-allowed"
                                             : "bg-gradient-to-r from-secondary-500 to-primary-600 hover:from-secondary-600 hover:to-primary-700 text-white"
@@ -311,16 +311,16 @@ export default function Login({ status, canResetPassword }) {
                                         !processing ? { scale: 0.98 } : {}
                                     }
                                 >
-                                    <span className="mx-auto text-lg flex items-center font-semibold">
+                                    <span className="mx-auto text-sm flex items-center font-semibold">
                                         {processing ? (
                                             <>
-                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                                                 د داخلیدو په حال کې...
                                             </>
                                         ) : (
                                             <>
                                                 داخل شئ
-                                                <FaSignInAlt className="mr-3 text-base" />
+                                                <FaSignInAlt className="mr-2 text-xs" />
                                             </>
                                         )}
                                     </span>
@@ -336,19 +336,19 @@ export default function Login({ status, canResetPassword }) {
                                         <div className="absolute inset-0 flex items-center">
                                             <div className="w-full border-t border-gray-200"></div>
                                         </div>
-                                        <div className="relative flex justify-center text-sm">
-                                            <span className="px-4 bg-white text-gray-500 font-zar">
+                                        <div className="relative flex justify-center text-xs">
+                                            <span className="px-2 bg-white text-gray-500 font-zar">
                                                 یا
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="mt-6 flex items-center justify-center text-base font-zar">
+                                    <div className="mt-3 flex items-center justify-center text-xs font-zar">
                                         <span className="text-gray-600">
                                             که حساب نه لرئ،
                                         </span>
                                         <Link
                                             href={route("register")}
-                                            className="text-primary-600 hover:text-primary-700 font-semibold mr-2 hover:underline transition-all duration-200"
+                                            className="text-primary-600 hover:text-primary-700 font-semibold mr-1 hover:underline transition-all duration-200"
                                         >
                                             نو ځان ثبت کړئ
                                         </Link>

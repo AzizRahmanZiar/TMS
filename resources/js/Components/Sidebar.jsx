@@ -152,7 +152,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
+                        transition={{ duration: 0.15 }}
                     ></motion.div>
                 )}
             </AnimatePresence>
@@ -175,7 +175,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                             ? "0"
                             : "4.5rem",
                     }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
                 >
                     {/* Background Pattern */}
                     <div className="absolute inset-0 opacity-10">
@@ -227,7 +227,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                     className="relative"
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.95 }}
-                                    transition={{ duration: 0.3 }}
+                                    transition={{ duration: 0.15 }}
                                 >
                                     {/* Main Icon */}
                                     <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -252,8 +252,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{
-                                        delay: index * 0.1,
-                                        duration: 0.3,
+                                        delay: index * 0.05,
+                                        duration: 0.15,
                                     }}
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
@@ -320,7 +320,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                                         width: 0,
                                                     }}
                                                     transition={{
-                                                        duration: 0.2,
+                                                        duration: 0.1,
                                                     }}
                                                 >
                                                     <span className="truncate text-right flex-1">
@@ -342,7 +342,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                                         }}
                                                         transition={{
                                                             type: "spring",
-                                                            stiffness: 300,
+                                                            stiffness: 500,
                                                         }}
                                                     >
                                                         <IoMdArrowDropleft className="text-lg flex-shrink-0" />

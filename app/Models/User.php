@@ -123,10 +123,13 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getCurrentWeekOrderCount()
     {
-        $startOfWeek = now()->startOfWeek();
+        if (!$this->week_start_date || !$this->week_end_date) {
+            return 0;
+        }
 
         return $this->customerOrders()
-            ->where('created_at', '>=', $startOfWeek)
+            ->where('created_at', '>=', $this->week_start_date)
+            ->where('created_at', '<=', $this->week_end_date)
             ->count();
     }
 
@@ -152,15 +155,21 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function updateWeeklyOrderTracking()
     {
-        $startOfWeek = now()->startOfWeek();
-        $endOfWeek = now()->endOfWeek();
+        $currentDate = now()->startOfDay();
+        $endOfWeek = $currentDate->copy()->addDays(6)->endOfDay();
 
-        // Reset if it's a new week
-        if (!$this->week_start_date || $this->week_start_date->lt($startOfWeek)) {
+        // Reset if it's a new week or if week_start_date is not set
+        if (!$this->week_start_date || $this->week_start_date->lt($currentDate)) {
+            // Calculate current week orders before resetting
+            $currentWeekOrders = $this->customerOrders()
+                ->where('created_at', '>=', $currentDate)
+                ->where('created_at', '<=', $endOfWeek)
+                ->count();
+
             $this->update([
-                'current_week_orders' => $this->getCurrentWeekOrderCount(),
-                'week_start_date' => $startOfWeek,
+                'week_start_date' => $currentDate,
                 'week_end_date' => $endOfWeek,
+                'current_week_orders' => $currentWeekOrders
             ]);
         }
     }
@@ -170,11 +179,12 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function hasOrderedThisWeek()
     {
-        $startOfWeek = now()->startOfWeek();
-        $endOfWeek = now()->endOfWeek();
+        if (!$this->week_start_date || !$this->week_end_date) {
+            return false;
+        }
 
         return CustomerOrder::where('user_id', $this->id)
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->whereBetween('created_at', [$this->week_start_date, $this->week_end_date])
             ->exists();
     }
 

@@ -25,7 +25,7 @@ const Tailors = ({ tailors }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedTailor, setSelectedTailor] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const itemsPerPage = 9;
+    const itemsPerPage = 4;
 
     // Process tailor data
     useEffect(() => {
@@ -238,7 +238,7 @@ const Tailors = ({ tailors }) => {
                     ) : (
                         <>
                             <motion.div
-                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
                                 initial="hidden"
                                 animate="visible"
                                 variants={{
@@ -727,12 +727,12 @@ const Tailors = ({ tailors }) => {
                                             {selectedTailor.name}
                                         </h3>
                                         <div className="flex justify-center gap-2 mb-4 flex-wrap">
-                                            {selectedTailor.has_shop && (
+                                            {/* {selectedTailor.has_shop && (
                                                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-100 text-secondary-700 text-sm">
                                                     <FaStore className="text-sm" />
                                                     د دوکان لرونکی
                                                 </span>
-                                            )}
+                                            )} */}
                                             {selectedTailor.rating_percentage >
                                                 0 && (
                                                 <span
@@ -862,7 +862,7 @@ const Tailors = ({ tailors }) => {
                                     </div>
 
                                     {/* Shop Information (if available) */}
-                                    {selectedTailor.has_shop && (
+                                    {/* {selectedTailor.has_shop && (
                                         <div className="mt-6 bg-gradient-to-r from-secondary-50 to-primary-50 p-6 rounded-xl border border-secondary-200">
                                             <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
                                                 <FaStore className="text-secondary-500 mr-2" />
@@ -931,7 +931,7 @@ const Tailors = ({ tailors }) => {
                                                 )}
                                             </div>
                                         </div>
-                                    )}
+                                    )} */}
 
                                     {/* Action Buttons */}
                                     <div className="mt-6 flex gap-4">

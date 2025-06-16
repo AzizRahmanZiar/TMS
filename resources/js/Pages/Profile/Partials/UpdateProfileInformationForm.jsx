@@ -1,38 +1,159 @@
-import { useState } from 'react';
-import { Link, useForm, usePage } from '@inertiajs/react';
-import { motion } from 'framer-motion';
-import { FaUser, FaEnvelope, FaSpinner, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { useState } from "react";
+import { Link, useForm, usePage } from "@inertiajs/react";
+import { motion } from "framer-motion";
+import {
+    FaUser,
+    FaEnvelope,
+    FaSpinner,
+    FaCheckCircle,
+    FaExclamationTriangle,
+    FaCamera,
+    FaTrash,
+} from "react-icons/fa";
 
-export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }) {
+export default function UpdateProfileInformation({
+    mustVerifyEmail,
+    status,
+    className = "",
+}) {
     const user = usePage().props.auth.user;
+    const [previewImage, setPreviewImage] = useState(null);
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
-        name: user.name,
-        email: user.email,
-    });
+    const { data, setData, post, errors, processing, recentlySuccessful } =
+        useForm({
+            name: user.name,
+            email: user.email,
+            profile_image: null,
+            _method: "PATCH",
+        });
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setData("profile_image", file);
+
+            // Create preview URL
+            const reader = new FileReader();
+            reader.onload = (e) => setPreviewImage(e.target.result);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const removeImage = () => {
+        setData("profile_image", null);
+        setPreviewImage(null);
+        // Reset file input
+        const fileInput = document.getElementById("profile_image");
+        if (fileInput) fileInput.value = "";
+    };
 
     const submit = (e) => {
         e.preventDefault();
-        patch(route('profile.update'));
+        post(route("profile.update"), {
+            forceFormData: true,
+        });
     };
 
     return (
         <section className={className}>
             <header className="mb-6">
-                <h2 className="text-lg font-bold text-gray-900 font-zar">د پروفایل معلومات</h2>
+                <h2 className="text-lg font-bold text-gray-900 font-zar">
+                    د پروفایل معلومات
+                </h2>
                 <p className="mt-1 text-sm text-gray-600 font-zar">
                     خپل د حساب پروفایل معلومات او بریښنالیک پته تازه کړئ
                 </p>
             </header>
 
             <form onSubmit={submit} className="space-y-6">
+                {/* Profile Image Upload */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 }}
+                >
+                    <label className="block text-sm font-bold text-gray-700 font-zar mb-4">
+                        د پروفایل انځور
+                    </label>
+                    <div className="flex items-center space-x-6 rtl:space-x-reverse">
+                        {/* Current/Preview Image */}
+                        <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-4 border-gray-200">
+                            {previewImage ? (
+                                <img
+                                    src={previewImage}
+                                    alt="Preview"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : user.profile_image ? (
+                                <img
+                                    src={`/storage/${user.profile_image}`}
+                                    alt={user.name}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = "/placeholder.svg";
+                                    }}
+                                />
+                            ) : (
+                                <FaUser className="text-gray-400 text-3xl" />
+                            )}
+                        </div>
+
+                        {/* Upload Controls */}
+                        <div className="flex-1">
+                            <div className="flex items-center gap-3">
+                                <label
+                                    htmlFor="profile_image"
+                                    className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500 transition-all duration-200"
+                                >
+                                    <FaCamera className="ml-2 h-4 w-4" />
+                                    انځور غوره کړئ
+                                    <input
+                                        id="profile_image"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        className="sr-only"
+                                    />
+                                </label>
+
+                                {(previewImage || user.profile_image) && (
+                                    <button
+                                        type="button"
+                                        onClick={removeImage}
+                                        className="inline-flex items-center px-3 py-2 border border-red-300 rounded-lg shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
+                                    >
+                                        <FaTrash className="ml-1 h-3 w-3" />
+                                        لرې کړئ
+                                    </button>
+                                )}
+                            </div>
+                            <p className="mt-2 text-xs text-gray-500 font-zar">
+                                PNG, JPG, GIF تر 2MB پورې
+                            </p>
+                            {errors.profile_image && (
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="mt-2 text-sm text-red-600 font-zar"
+                                >
+                                    {errors.profile_image}
+                                </motion.p>
+                            )}
+                        </div>
+                    </div>
+                </motion.div>
+
                 {/* Name Field */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                 >
-                    <label htmlFor="name" className="block text-sm font-bold text-gray-700 font-zar mb-2">
+                    <label
+                        htmlFor="name"
+                        className="block text-sm font-bold text-gray-700 font-zar mb-2"
+                    >
                         نوم
                     </label>
                     <div className="relative">
@@ -41,11 +162,11 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                             type="text"
                             name="name"
                             value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
+                            onChange={(e) => setData("name", e.target.value)}
                             className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
                                 errors.name
-                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-200'
-                                    : 'border-gray-300 focus:border-primary-500 focus:ring-primary-200'
+                                    ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                                    : "border-gray-300 focus:border-primary-500 focus:ring-primary-200"
                             }`}
                             required
                             autoComplete="name"
@@ -71,7 +192,10 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                 >
-                    <label htmlFor="email" className="block text-sm font-bold text-gray-700 font-zar mb-2">
+                    <label
+                        htmlFor="email"
+                        className="block text-sm font-bold text-gray-700 font-zar mb-2"
+                    >
                         بریښنالیک
                     </label>
                     <div className="relative">
@@ -80,11 +204,11 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                             type="email"
                             name="email"
                             value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
+                            onChange={(e) => setData("email", e.target.value)}
                             className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
                                 errors.email
-                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-200'
-                                    : 'border-gray-300 focus:border-primary-500 focus:ring-primary-200'
+                                    ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                                    : "border-gray-300 focus:border-primary-500 focus:ring-primary-200"
                             }`}
                             required
                             autoComplete="username"
@@ -119,7 +243,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                     ستاسو بریښنالیک پته تصدیق شوې نده.
                                 </p>
                                 <Link
-                                    href={route('verification.send')}
+                                    href={route("verification.send")}
                                     method="post"
                                     as="button"
                                     className="text-sm text-yellow-800 underline hover:text-yellow-900 font-zar"
@@ -129,7 +253,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                             </div>
                         </div>
 
-                        {status === 'verification-link-sent' && (
+                        {status === "verification-link-sent" && (
                             <motion.p
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -159,7 +283,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                 د ساتلو په حال کې...
                             </>
                         ) : (
-                            'ساتل'
+                            "ساتل"
                         )}
                     </button>
 

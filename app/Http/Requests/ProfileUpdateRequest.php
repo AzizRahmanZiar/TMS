@@ -25,6 +25,7 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'profile_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 
@@ -44,6 +45,9 @@ class ProfileUpdateRequest extends FormRequest
             'email.email' => 'د بریښنالیک بڼه سمه نده',
             'email.max' => 'بریښنالیک باید د :max توریو څخه کم وي',
             'email.unique' => 'دا بریښنالیک دمخه شتون لري',
+            'profile_image.image' => 'فایل باید یو انځور وي',
+            'profile_image.mimes' => 'انځور باید jpeg, png, jpg, یا gif وي',
+            'profile_image.max' => 'انځور باید له 2MB څخه کم وي',
         ];
     }
 }

@@ -253,11 +253,9 @@ const Settings = () => {
                                                     د اونۍ پیل
                                                 </div>
                                                 <div className="text-lg font-bold text-blue-600">
-                                                    {new Date(
+                                                    {
                                                         orderStatistics.week_start_date
-                                                    ).toLocaleDateString(
-                                                        "fa-AF"
-                                                    )}
+                                                    }
                                                 </div>
                                             </div>
                                             <div className="bg-white p-3 rounded-lg border border-blue-100">
@@ -265,11 +263,9 @@ const Settings = () => {
                                                     د اونۍ پای
                                                 </div>
                                                 <div className="text-lg font-bold text-blue-600">
-                                                    {new Date(
+                                                    {
                                                         orderStatistics.week_end_date
-                                                    ).toLocaleDateString(
-                                                        "fa-AF"
-                                                    )}
+                                                    }
                                                 </div>
                                             </div>
                                         </div>

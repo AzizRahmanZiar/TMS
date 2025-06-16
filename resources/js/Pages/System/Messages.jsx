@@ -14,6 +14,7 @@ import SearchBar from "@/Components/SearchBar";
 import DeleteModal from "@/Components/DeleteModal";
 import { router, usePage } from "@inertiajs/react";
 import { toast } from "react-hot-toast";
+import Pagination from "@/Components/Pagination";
 
 const Messages = () => {
     const { messages } = usePage().props;
@@ -22,6 +23,8 @@ const Messages = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [messageToDelete, setMessageToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
 
     useEffect(() => {
         if (searchTerm) {
@@ -85,6 +88,19 @@ const Messages = () => {
         setIsDeleting(false);
     };
 
+    // Calculate pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredMessages.slice(
+        indexOfFirstItem,
+        indexOfLastItem
+    );
+    const totalItems = filteredMessages.length;
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     return (
         <SystemLayout>
             <div
@@ -137,199 +153,144 @@ const Messages = () => {
                             <thead className="bg-gradient-to-r from-primary-50 to-secondary-50">
                                 <tr>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>نوم</span>
-                                            <FaUser className="text-primary-600" />
-                                        </div>
+                                        <span>نوم</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden lg:table-cell">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>بریښنالیک</span>
-                                            <FaEnvelope className="text-primary-600" />
-                                        </div>
+                                        <span>بریښنالیک</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden md:table-cell">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>رول</span>
-                                            <FaUser className="text-primary-600" />
-                                        </div>
+                                        <span>رول</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>تلیفون</span>
-                                            <FaPhone className="text-primary-600" />
-                                        </div>
+                                        <span>تلیفون</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>موضوع</span>
-                                            <MdSubject className="text-primary-600" />
-                                        </div>
+                                        <span>موضوع</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>پیغام</span>
-                                            <FaComments className="text-primary-600" />
-                                        </div>
+                                        <span>پیغام</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden xl:table-cell">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>د ثبت نیټه</span>
-                                            <FaCalendarAlt className="text-primary-600" />
-                                        </div>
+                                        <span>د ثبت نیټه</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>عملیات</span>
-                                            <MdDelete className="text-primary-600" />
-                                        </div>
+                                        <span>عملیات</span>
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white">
-                                {filteredMessages &&
-                                filteredMessages.length > 0 ? (
-                                    filteredMessages.map((message, index) => (
-                                        <motion.tr
-                                            key={message.id}
-                                            className="hover:bg-primary-25 transition-all duration-300 border-b border-gray-100"
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{
-                                                duration: 0.3,
-                                                delay: index * 0.05,
-                                            }}
-                                            whileHover={{ scale: 1.01 }}
-                                        >
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-3">
-                                                    <div>
-                                                        <div className="font-zar text-sm md:text-base font-semibold text-gray-900">
-                                                            {message.user
-                                                                ?.name ||
-                                                                "نامعلوم"}
-                                                        </div>
-                                                        <div className="text-xs text-gray-500 font-zar">
-                                                            پیغام لیږونکی
-                                                        </div>
-                                                    </div>
-                                                    <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-                                                        <FaUser className="text-primary-600 text-sm" />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right hidden lg:table-cell">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <span className="font-zar text-sm text-gray-900 font-medium truncate max-w-[150px]">
-                                                        {message.user?.email ||
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {currentItems.map((message, index) => (
+                                    <motion.tr
+                                        key={message.id}
+                                        className="hover:bg-primary-25 transition-all duration-300 border-b border-gray-100"
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{
+                                            duration: 0.3,
+                                            delay: index * 0.05,
+                                        }}
+                                        
+                                    >
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-3">
+                                                <div>
+                                                    <div className="font-zar text-sm md:text-base font-semibold text-gray-900">
+                                                        {message.user?.name ||
                                                             "نامعلوم"}
-                                                    </span>
-                                                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                                                        <FaEnvelope className="text-purple-600 text-xs" />
+                                                    </div>
+                                                    <div className="text-xs text-gray-500 font-zar">
+                                                        پیغام لیږونکی
                                                     </div>
                                                 </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
-                                                <div className="flex items-center justify-end">
-                                                    <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold font-zar border border-blue-200">
-                                                        {message.user?.role ||
-                                                            "مشتری"}
-                                                    </span>
+                                                <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                                                    <FaUser className="text-primary-600 text-sm" />
                                                 </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <span className="font-zar text-sm text-gray-900 font-medium">
-                                                        {message.phone}
-                                                    </span>
-                                                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                                        <FaPhone className="text-green-600 text-xs" />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <span className="font-zar text-sm text-gray-900 font-medium truncate max-w-[120px]">
-                                                        {message.subject}
-                                                    </span>
-                                                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                                                        <MdSubject className="text-orange-600 text-xs" />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <span className="font-zar text-sm text-gray-900 max-w-[150px] truncate">
-                                                        {message.message}
-                                                    </span>
-                                                    <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                                        <FaComments className="text-indigo-600 text-xs" />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right hidden xl:table-cell">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <span className="text-sm text-gray-600 font-zar">
-                                                        {new Date(
-                                                            message.created_at
-                                                        ).toLocaleDateString()}
-                                                    </span>
-                                                    <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                                                        <FaCalendarAlt className="text-yellow-600 text-xs" />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end">
-                                                    <motion.button
-                                                        onClick={() =>
-                                                            handleDeleteClick(
-                                                                message
-                                                            )
-                                                        }
-                                                        className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs transition-all duration-300 shadow-md hover:shadow-lg"
-                                                        whileHover={{
-                                                            scale: 1.05,
-                                                        }}
-                                                        whileTap={{
-                                                            scale: 0.95,
-                                                        }}
-                                                        title="حذف کول"
-                                                    >
-                                                        <MdDelete className="text-sm" />
-                                                    </motion.button>
-                                                </div>
-                                            </td>
-                                        </motion.tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td
-                                            colSpan="8"
-                                            className="px-6 py-12 text-center"
-                                        >
-                                            <motion.div
-                                                className="flex flex-col items-center justify-center gap-4"
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ duration: 0.5 }}
-                                            >
-                                                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                                                    <FaComments className="text-gray-400 text-2xl" />
-                                                </div>
-                                                <div className="text-center">
-                                                    <h3 className="text-lg font-bold text-gray-600 font-zar mb-2">
-                                                        هیڅ پیغام ونه موندل شو
-                                                    </h3>
-                                                    <p className="text-sm text-gray-500 font-zar">
-                                                        د لټون شرایط بدل کړئ یا
-                                                        نوی پیغام انتظار وکړئ
-                                                    </p>
-                                                </div>
-                                            </motion.div>
+                                            </div>
                                         </td>
-                                    </tr>
-                                )}
+                                        <td className="px-4 md:px-6 py-4 text-right hidden lg:table-cell">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <span className="font-zar text-sm text-gray-900 font-medium truncate max-w-[150px]">
+                                                    {message.user?.email ||
+                                                        "نامعلوم"}
+                                                </span>
+                                                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                                    <FaEnvelope className="text-purple-600 text-xs" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
+                                            <div className="flex items-center justify-end">
+                                                <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold font-zar border border-blue-200">
+                                                    {message.user?.role ||
+                                                        "مشتری"}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <span className="font-zar text-sm text-gray-900 font-medium">
+                                                    {message.phone}
+                                                </span>
+                                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                                    <FaPhone className="text-green-600 text-xs" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <span className="font-zar text-sm text-gray-900 font-medium truncate max-w-[120px]">
+                                                    {message.subject}
+                                                </span>
+                                                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                                                    <MdSubject className="text-orange-600 text-xs" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <span className="font-zar text-sm text-gray-900 max-w-[150px] truncate">
+                                                    {message.message}
+                                                </span>
+                                                <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                                    <FaComments className="text-indigo-600 text-xs" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right hidden xl:table-cell">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <span className="text-sm text-gray-600 font-zar">
+                                                    {new Date(
+                                                        message.created_at
+                                                    ).toLocaleDateString()}
+                                                </span>
+                                                <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                                                    <FaCalendarAlt className="text-yellow-600 text-xs" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end">
+                                                <motion.button
+                                                    onClick={() =>
+                                                        handleDeleteClick(
+                                                            message
+                                                        )
+                                                    }
+                                                    className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs transition-all duration-300 shadow-md hover:shadow-lg"
+                                                    whileHover={{
+                                                        scale: 1.05,
+                                                    }}
+                                                    whileTap={{
+                                                        scale: 0.95,
+                                                    }}
+                                                    title="حذف کول"
+                                                >
+                                                    <MdDelete className="text-sm" />
+                                                </motion.button>
+                                            </div>
+                                        </td>
+                                    </motion.tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>

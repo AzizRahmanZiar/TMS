@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cloth;
 use App\Http\Requests\ClothRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class ClothController extends Controller
@@ -31,7 +32,7 @@ class ClothController extends Controller
     public function store(ClothRequest $request)
     {
         $validated = $request->validated();
-        $validated['user_id'] = auth()->id(); // Add current user ID
+        $validated['user_id'] = auth()->id(); 
         Cloth::create($validated);
 
         return redirect()->route('cloths.index')->with('success', 'Cloth created successfully.');
@@ -40,7 +41,7 @@ class ClothController extends Controller
     // Show a specific cloth
     public function show(Cloth $cloth)
     {
-        $this->authorizeCloth($cloth);
+         Gate::authorize('view', $cloth);
 
         return Inertia::render('System/Cloths/Show', [
             'cloth' => $cloth
@@ -50,7 +51,7 @@ class ClothController extends Controller
     // Show edit form
     public function edit(Cloth $cloth)
     {
-        $this->authorizeCloth($cloth);
+         Gate::authorize('edit', $cloth);
 
         return Inertia::render('System/Cloths/Edit', [
             'cloth' => $cloth
@@ -60,7 +61,7 @@ class ClothController extends Controller
     // Update the cloth
     public function update(ClothRequest $request, Cloth $cloth)
     {
-        $this->authorizeCloth($cloth);
+        Gate::authorize('update', $cloth);
 
         $validated = $request->validated();
         $cloth->update($validated);
@@ -71,17 +72,9 @@ class ClothController extends Controller
     // Delete cloth
     public function destroy(Cloth $cloth)
     {
-        $this->authorizeCloth($cloth);
+        Gate::authorize('delete', $cloth);
         $cloth->delete();
 
         return redirect()->route('cloths.index')->with('success', 'Cloth deleted successfully.');
-    }
-
-    // Private method for user authorization
-    private function authorizeCloth(Cloth $cloth)
-    {
-        if ($cloth->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
     }
 }

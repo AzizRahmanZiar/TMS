@@ -18,6 +18,7 @@ import DeleteModal from "@/Components/DeleteModal";
 import { router } from "@inertiajs/react";
 import { useForm } from "@inertiajs/react";
 import { toast } from "react-hot-toast";
+import Pagination from "@/Components/Pagination";
 
 const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
     const [showForm, setShowForm] = useState(false);
@@ -29,6 +30,8 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [postToDelete, setPostToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
         description: "",
@@ -224,6 +227,23 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
         });
     };
 
+    // Add this after your existing filtered posts logic
+    const filteredPosts = initialPosts.filter((post) =>
+        Object.values(post).some((value) =>
+            String(value).toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    );
+
+    // Calculate pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredPosts.slice(indexOfFirstItem, indexOfLastItem);
+    const totalItems = filteredPosts.length;
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     return (
         <SystemLayout>
             <div className="p-6">
@@ -277,181 +297,151 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
                             <thead className="bg-gradient-to-r from-primary-50 to-secondary-50">
                                 <tr>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>ډیزاین</span>
-                                            <FaImage className="text-primary-600" />
-                                        </div>
+                                        <span>ډیزاین</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>تفصیل</span>
-                                            <FaFileAlt className="text-primary-600" />
-                                        </div>
+                                        <span>تفصیل</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden md:table-cell">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>تاریخ</span>
-                                            <FaCalendarAlt className="text-primary-600" />
-                                        </div>
+                                        <span>تاریخ</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>کټګورۍ</span>
-                                            <FaTags className="text-primary-600" />
-                                        </div>
+                                        <span>کټګورۍ</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>عملیات</span>
-                                            <FaEye className="text-primary-600" />
-                                        </div>
+                                        <span>عملیات</span>
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white">
-                                {initialPosts
-                                    .filter((post) =>
-                                        post.description
-                                            .toLowerCase()
-                                            .includes(searchTerm.toLowerCase())
-                                    )
-                                    .map((post, index) => (
-                                        <motion.tr
-                                            key={post.id}
-                                            className="hover:bg-primary-25 transition-all duration-300 border-b border-gray-100"
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{
-                                                duration: 0.3,
-                                                delay: index * 0.05,
-                                            }}
-                                            whileHover={{ scale: 1.01 }}
-                                        >
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end">
-                                                    <div className="relative group">
-                                                        <img
-                                                            src={
-                                                                post.image
-                                                                    ? `/storage/${post.image}`
-                                                                    : "/placeholder.svg"
-                                                            }
-                                                            alt={
-                                                                post.description
-                                                            }
-                                                            className="h-16 w-16 object-cover rounded-xl shadow-lg border-2 border-primary-200 group-hover:shadow-xl transition-all duration-300"
-                                                        />
-                                                        <div className="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                                            <FaEye className="text-white text-lg" />
-                                                        </div>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {currentItems.map((post, index) => (
+                                    <motion.tr
+                                        key={post.id}
+                                        className="hover:bg-primary-25 transition-all duration-300 border-b border-gray-100"
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{
+                                            duration: 0.3,
+                                            delay: index * 0.05,
+                                        }}
+                                        
+                                    >
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end">
+                                                <div className="relative group">
+                                                    <img
+                                                        src={
+                                                            post.image
+                                                                ? `/storage/${post.image}`
+                                                                : "/placeholder.svg"
+                                                        }
+                                                        alt={post.description}
+                                                        className="h-16 w-16 object-cover rounded-xl shadow-lg border-2 border-primary-200 group-hover:shadow-xl transition-all duration-300"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                                        <FaEye className="text-white text-lg" />
                                                     </div>
                                                 </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="max-w-xs">
-                                                    <p className="text-sm md:text-base text-gray-900 font-medium font-zar line-clamp-2 leading-relaxed">
-                                                        {post.description}
-                                                    </p>
-                                                    <div className="mt-1 flex items-center gap-2">
-                                                        <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
-                                                        <span className="text-xs text-gray-500 font-zar">
-                                                            {
-                                                                post.description
-                                                                    .length
-                                                            }{" "}
-                                                            توري
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <span className="text-sm text-gray-600 font-zar">
-                                                        {formatDate(post.date)}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="max-w-xs">
+                                                <p className="text-sm md:text-base text-gray-900 font-medium font-zar line-clamp-2 leading-relaxed">
+                                                    {post.description}
+                                                </p>
+                                                <div className="mt-1 flex items-center gap-2">
+                                                    <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+                                                    <span className="text-xs text-gray-500 font-zar">
+                                                        {
+                                                            post.description
+                                                                .length
+                                                        }{" "}
+                                                        توري
                                                     </span>
-                                                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                                                        <FaCalendarAlt className="text-purple-600 text-xs" />
-                                                    </div>
                                                 </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end">
-                                                    <span
-                                                        className={`px-4 py-2 rounded-full text-xs font-bold font-zar flex items-center gap-2 border ${
-                                                            post.category ===
-                                                            "Cloths"
-                                                                ? "bg-blue-100 text-blue-800 border-blue-200"
-                                                                : post.category ===
-                                                                  "Uniform"
-                                                                ? "bg-green-100 text-green-800 border-green-200"
-                                                                : post.category ===
-                                                                  "Kortai"
-                                                                ? "bg-purple-100 text-purple-800 border-purple-200"
-                                                                : post.category ===
-                                                                  "Sadrai"
-                                                                ? "bg-orange-100 text-orange-800 border-orange-200"
-                                                                : "bg-gray-100 text-gray-800 border-gray-200"
-                                                        }`}
-                                                    >
-                                                        <FaTags className="text-xs" />
-                                                        {post.category ===
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <span className="text-sm text-gray-600 font-zar">
+                                                    {formatDate(post.date)}
+                                                </span>
+                                                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                                    <FaCalendarAlt className="text-purple-600 text-xs" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end">
+                                                <span
+                                                    className={`px-4 py-2 rounded-full text-xs font-bold font-zar flex items-center gap-2 border ${
+                                                        post.category ===
                                                         "Cloths"
-                                                            ? "جامې"
+                                                            ? "bg-blue-100 text-blue-800 border-blue-200"
                                                             : post.category ===
                                                               "Uniform"
-                                                            ? "یونیفورم"
+                                                            ? "bg-green-100 text-green-800 border-green-200"
                                                             : post.category ===
                                                               "Kortai"
-                                                            ? "کورتۍ"
+                                                            ? "bg-purple-100 text-purple-800 border-purple-200"
                                                             : post.category ===
                                                               "Sadrai"
-                                                            ? "صدری"
-                                                            : post.category}
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 md:px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <motion.button
-                                                        onClick={() =>
-                                                            handleEditPost(post)
-                                                        }
-                                                        className="px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white rounded-lg text-xs font-bold font-zar transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg"
-                                                        whileHover={{
-                                                            scale: 1.05,
-                                                        }}
-                                                        whileTap={{
-                                                            scale: 0.95,
-                                                        }}
-                                                    >
-                                                        <FaEdit className="text-xs" />
-                                                        سمول
-                                                    </motion.button>
-                                                    <motion.button
-                                                        onClick={() =>
-                                                            handleDeletePost(
-                                                                post
-                                                            )
-                                                        }
-                                                        className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs transition-all duration-300 shadow-md hover:shadow-lg"
-                                                        whileHover={{
-                                                            scale: 1.05,
-                                                        }}
-                                                        whileTap={{
-                                                            scale: 0.95,
-                                                        }}
-                                                    >
-                                                        <FaTrash className="text-xs" />
-                                                    </motion.button>
-                                                </div>
-                                            </td>
-                                        </motion.tr>
-                                    ))}
-                                {initialPosts.filter((post) =>
-                                    post.description
-                                        .toLowerCase()
-                                        .includes(searchTerm.toLowerCase())
-                                ).length === 0 && (
+                                                            ? "bg-orange-100 text-orange-800 border-orange-200"
+                                                            : "bg-gray-100 text-gray-800 border-gray-200"
+                                                    }`}
+                                                >
+                                                    <FaTags className="text-xs" />
+                                                    {post.category === "Cloths"
+                                                        ? "جامې"
+                                                        : post.category ===
+                                                          "Uniform"
+                                                        ? "یونیفورم"
+                                                        : post.category ===
+                                                          "Kortai"
+                                                        ? "کورتۍ"
+                                                        : post.category ===
+                                                          "Sadrai"
+                                                        ? "صدری"
+                                                        : post.category}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <motion.button
+                                                    onClick={() =>
+                                                        handleEditPost(post)
+                                                    }
+                                                    className="px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white rounded-lg text-xs font-bold font-zar transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg"
+                                                    whileHover={{
+                                                        scale: 1.05,
+                                                    }}
+                                                    whileTap={{
+                                                        scale: 0.95,
+                                                    }}
+                                                >
+                                                    <FaEdit className="text-xs" />
+                                                    سمول
+                                                </motion.button>
+                                                <motion.button
+                                                    onClick={() =>
+                                                        handleDeletePost(post)
+                                                    }
+                                                    className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs transition-all duration-300 shadow-md hover:shadow-lg"
+                                                    whileHover={{
+                                                        scale: 1.05,
+                                                    }}
+                                                    whileTap={{
+                                                        scale: 0.95,
+                                                    }}
+                                                >
+                                                    <FaTrash className="text-xs" />
+                                                </motion.button>
+                                            </div>
+                                        </td>
+                                    </motion.tr>
+                                ))}
+                                {filteredPosts.length === 0 && (
                                     <tr>
                                         <td
                                             colSpan="5"
@@ -483,6 +473,14 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
                         </table>
                     </div>
                 </motion.div>
+
+                {/* Add the pagination component at the bottom of your table */}
+                <Pagination
+                    currentPage={currentPage}
+                    totalItems={totalItems}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={handlePageChange}
+                />
 
                 {/* Form Modal */}
                 {showForm && (

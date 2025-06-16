@@ -10,11 +10,13 @@ import {
     FaCalendarAlt,
     FaEnvelope,
     FaUsers,
+    FaPhone,
 } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import SearchBar from "@/Components/SearchBar";
 import DeleteModal from "@/Components/DeleteModal";
 import { toast } from "react-hot-toast";
+import Pagination from "@/Components/Pagination";
 
 const Admin = () => {
     const pageProps = usePage().props;
@@ -27,6 +29,8 @@ const Admin = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
 
     // Debug the users data
     useEffect(() => {
@@ -35,11 +39,13 @@ const Admin = () => {
 
     // Filter users based on search term
     const filteredUsers = users.filter((user) => {
+        if (!user) return false;
         const searchLower = searchTerm.toLowerCase();
         return (
-            user.name.toLowerCase().includes(searchLower) ||
-            user.email.toLowerCase().includes(searchLower) ||
-            user.role.toLowerCase().includes(searchLower)
+            (user.name?.toLowerCase() || "").includes(searchLower) ||
+            (user.email?.toLowerCase() || "").includes(searchLower) ||
+            (user.role?.toLowerCase() || "").includes(searchLower) ||
+            (user.phone?.toLowerCase() || "").includes(searchLower)
         );
     });
 
@@ -104,6 +110,16 @@ const Admin = () => {
         setSearchTerm(value);
     };
 
+    // Calculate pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+    const totalItems = filteredUsers.length;
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     return (
         <SystemLayout>
             <div
@@ -156,39 +172,27 @@ const Admin = () => {
                             <thead className="bg-gradient-to-r from-primary-50 to-secondary-50">
                                 <tr>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>نوم</span>
-                                            <FaUser className="text-primary-600" />
-                                        </div>
+                                        <span>نوم</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>بریښنالیک</span>
-                                            <FaEnvelope className="text-primary-600" />
-                                        </div>
+                                        <span>بریښنالیک</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>رول</span>
-                                            <FaUserShield className="text-primary-600" />
-                                        </div>
+                                        <span>تلیفون</span>
+                                    </th>
+                                    <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
+                                        <span>رول</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200 hidden md:table-cell">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>د ثبت نیټه</span>
-                                            <FaCalendarAlt className="text-primary-600" />
-                                        </div>
+                                        <span>د ثبت نیټه</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <span>عملیات</span>
-                                            <MdDelete className="text-primary-600" />
-                                        </div>
+                                        <span>عملیات</span>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white">
-                                {filteredUsers.map((user, index) => (
+                                {currentItems.map((user, index) => (
                                     <motion.tr
                                         key={user.id}
                                         className="hover:bg-primary-25 transition-all duration-300 border-b border-gray-100"
@@ -198,7 +202,6 @@ const Admin = () => {
                                             duration: 0.3,
                                             delay: index * 0.05,
                                         }}
-                                        whileHover={{ scale: 1.01 }}
                                     >
                                         <td className="px-4 md:px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-3">
@@ -238,6 +241,16 @@ const Admin = () => {
                                                 </span>
                                                 <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
                                                     <FaEnvelope className="text-purple-600 text-xs" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <span className="font-zar text-sm text-gray-900 font-medium">
+                                                    {user.phone}
+                                                </span>
+                                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                                    <FaPhone className="text-green-600 text-xs" />
                                                 </div>
                                             </div>
                                         </td>
@@ -304,7 +317,7 @@ const Admin = () => {
                                 <span className="font-zar text-primary-800 font-semibold">
                                     ټول
                                     <span className="font-zar mx-2 text-primary-600 font-bold">
-                                        {filteredUsers.length}
+                                        {totalItems}
                                     </span>
                                     کارکوونکي
                                 </span>
@@ -326,6 +339,14 @@ const Admin = () => {
                         </div>
                     </div>
                 </motion.div>
+
+                {/* Pagination */}
+                <Pagination
+                    currentPage={currentPage}
+                    totalItems={totalItems}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={handlePageChange}
+                />
 
                 {/* Delete Modal */}
                 <DeleteModal

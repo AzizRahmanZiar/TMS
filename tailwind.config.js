@@ -85,10 +85,7 @@ module.exports = {
                 ".rtl table": {
                     textAlign: "right",
                 },
-                ".rtl ul, .rtl ol": {
-                    paddingRight: "1.5rem",
-                    paddingLeft: "0",
-                },
+
                 ".rtl .flex-row": {
                     flexDirection: "row-reverse",
                 },

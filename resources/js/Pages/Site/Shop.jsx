@@ -35,7 +35,7 @@ const Shop = ({ shops }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTailor, setSelectedTailor] = useState(null);
     const [isTailorModalOpen, setIsTailorModalOpen] = useState(false);
-    const itemsPerPage = 9;
+    const itemsPerPage = 4;
 
     // Debug: Log all shops data on component mount
     useEffect(() => {
@@ -382,7 +382,7 @@ const Shop = ({ shops }) => {
                     ) : (
                         <>
                             <motion.div
-                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
                                 variants={staggerContainer}
                                 initial="hidden"
                                 animate="visible"
@@ -1082,12 +1082,12 @@ const Shop = ({ shops }) => {
                                 {/* Tailor Profile Section */}
                                 <div className="lg:col-span-1">
                                     <div className="text-center mb-6">
-                                        <div className="w-full h-48 rounded-xl border-4 border-primary-200 overflow-hidden shadow-lg mb-4">
+                                        <div className="w-48 h-48 mx-auto rounded-xl border-4 border-primary-200 overflow-hidden shadow-lg mb-4">
                                             {selectedTailor.profile_image ? (
                                                 <img
                                                     src={`/storage/${selectedTailor.profile_image}`}
                                                     alt={selectedTailor.name}
-                                                    className="w-full h-full object-cover"
+                                                    className="w-full h-full"
                                                     onError={(e) => {
                                                         e.target.style.display =
                                                             "none";
@@ -1120,7 +1120,7 @@ const Shop = ({ shops }) => {
 
                                 {/* Details Section */}
                                 <div className="lg:col-span-2">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
                                         {/* Personal Information */}
                                         <div className="bg-gray-50 p-4 rounded-xl">
                                             <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
@@ -1144,20 +1144,20 @@ const Shop = ({ shops }) => {
                                                         {selectedTailor.email}
                                                     </p>
                                                 </div>
-                                                {selectedTailor.experience && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            تجربه:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.experience
-                                                            }{" "}
-                                                            کلونه
-                                                        </p>
-                                                    </div>
-                                                )}
-                                                {selectedTailor.career && (
+                                                {/*
+                                                <div>
+                                                    <span className="text-sm text-gray-500">
+                                                        تجربه:
+                                                    </span>
+                                                    <p className="font-medium">
+                                                        {
+                                                            selectedTailor.experience
+                                                        }
+                                                        کلونه
+                                                    </p>
+                                                </div> */}
+
+                                                {/* {selectedTailor.career && (
                                                     <div>
                                                         <span className="text-sm text-gray-500">
                                                             مسلک:
@@ -1168,12 +1168,12 @@ const Shop = ({ shops }) => {
                                                             }
                                                         </p>
                                                     </div>
-                                                )}
+                                                )} */}
                                             </div>
                                         </div>
 
                                         {/* Professional Information */}
-                                        <div className="bg-gray-50 p-4 rounded-xl">
+                                        {/* <div className="bg-gray-50 p-4 rounded-xl">
                                             <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                                                 <FaTools className="text-secondary-500 mr-2" />
                                                 مسلکي معلومات
@@ -1228,18 +1228,14 @@ const Shop = ({ shops }) => {
                                                     </div>
                                                 )}
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
 
                                     {/* Action Buttons */}
                                     <div className="mt-6 flex gap-4">
-                                        <button className="flex-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white py-3 px-6 rounded-lg hover:from-primary-600 hover:to-secondary-600 transition-all duration-200 font-medium flex items-center justify-center gap-2">
-                                            <FaUser className="text-sm" />د خیاط
-                                            سره اړیکه
-                                        </button>
                                         <button
                                             onClick={closeTailorModal}
-                                            className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-200 font-medium"
+                                            className="px-6 w-full py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-200 font-medium"
                                         >
                                             تړل
                                         </button>
