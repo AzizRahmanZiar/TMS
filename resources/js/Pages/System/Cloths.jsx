@@ -18,6 +18,7 @@ import {
     FaSort,
     FaSortUp,
     FaSortDown,
+    FaRegEdit,
 } from "react-icons/fa";
 
 import { useCloths } from "@/Contexts/ClothsContext";
@@ -460,7 +461,7 @@ const Cloths = ({ cloths: initialCloths }) => {
                                         <span>پیسې</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <span>عملیات</span>
+                                        <span>عملیې</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -530,19 +531,19 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                     onClick={() =>
                                                         handleViewRecord(row)
                                                     }
-                                                    className="p-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                                                    className=" text-blue-600 hover:text-blue-800 transition-colors duration-200"
                                                     whileHover={{ scale: 1.1 }}
                                                     whileTap={{ scale: 0.9 }}
                                                     title="لیدل"
                                                 >
-                                                    <MdVisibility className="text-lg" />
+                                                    <MdVisibility className="text-lg h-5 w-5" />
                                                 </motion.button>
                                                 <motion.button
                                                     onClick={() =>
                                                         handleEditClick(index)
                                                     }
                                                     disabled={row.disabled}
-                                                    className={`p-2 transition-colors duration-200 ${
+                                                    className={` transition-colors duration-200 ${
                                                         row.disabled
                                                             ? "text-gray-400 cursor-not-allowed"
                                                             : "text-green-600 hover:text-green-800"
@@ -563,18 +564,18 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                             : "سمول"
                                                     }
                                                 >
-                                                    <MdEdit className="text-lg" />
+                                                    <FaRegEdit className="text-lg h-5 w-5" />
                                                 </motion.button>
                                                 <motion.button
                                                     onClick={() =>
                                                         handleDeleteClick(row)
                                                     }
-                                                    className="p-2 text-red-600 hover:text-red-800 transition-colors duration-200"
+                                                    className=" text-red-600 hover:text-red-800 transition-colors duration-200"
                                                     whileHover={{ scale: 1.1 }}
                                                     whileTap={{ scale: 0.9 }}
                                                     title="حذف کول"
                                                 >
-                                                    <MdDelete className="text-lg" />
+                                                    <MdDelete className="text-lg h-5 w-5" />
                                                 </motion.button>
                                             </div>
                                         </td>
@@ -1151,7 +1152,7 @@ const Cloths = ({ cloths: initialCloths }) => {
                 {/* Toast Notification */}
                 {toast.visible && (
                     <div
-                        className={`fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 flex items-center ${
+                        className={`fixed bottom-4 left-10 px-6 py-3 rounded-lg shadow-lg flex items-center ${
                             toast.type === "success"
                                 ? "bg-green-600 text-white"
                                 : "bg-red-600 text-white"

@@ -36,7 +36,7 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
                                     <img
                                         src={`/storage/${auth.user.profile_image}`}
                                         alt={auth.user.name || "User"}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full"
                                         onError={(e) => {
                                             console.error(
                                                 "Profile image failed to load:",

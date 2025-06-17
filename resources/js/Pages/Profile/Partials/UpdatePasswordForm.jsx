@@ -1,32 +1,47 @@
-import { useState } from 'react';
-import { useForm } from '@inertiajs/react';
-import { motion } from 'framer-motion';
-import { FaLock, FaEye, FaEyeSlash, FaSpinner, FaCheckCircle } from 'react-icons/fa';
+import { useState } from "react";
+import { useForm } from "@inertiajs/react";
+import { motion } from "framer-motion";
+import {
+    FaLock,
+    FaEye,
+    FaEyeSlash,
+    FaSpinner,
+    FaCheckCircle,
+} from "react-icons/fa";
 
-export default function UpdatePasswordForm({ className = '' }) {
+export default function UpdatePasswordForm({ className = "" }) {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+    const [showPasswordConfirmation, setShowPasswordConfirmation] =
+        useState(false);
 
-    const { data, setData, errors, put, reset, processing, recentlySuccessful } = useForm({
-        current_password: '',
-        password: '',
-        password_confirmation: '',
+    const {
+        data,
+        setData,
+        errors,
+        put,
+        reset,
+        processing,
+        recentlySuccessful,
+    } = useForm({
+        current_password: "",
+        password: "",
+        password_confirmation: "",
     });
 
     const updatePassword = (e) => {
         e.preventDefault();
 
-        put(route('password.update'), {
+        put(route("password.update"), {
             preserveScroll: true,
             onSuccess: () => reset(),
             onError: (errors) => {
                 if (errors.password) {
-                    reset('password', 'password_confirmation');
+                    reset("password", "password_confirmation");
                 }
 
                 if (errors.current_password) {
-                    reset('current_password');
+                    reset("current_password");
                 }
             },
         });
@@ -35,9 +50,12 @@ export default function UpdatePasswordForm({ className = '' }) {
     return (
         <section className={className}>
             <header className="mb-6">
-                <h2 className="text-lg font-bold text-gray-900 font-zar">د پټنوم تازه کول</h2>
+                <h2 className="text-lg font-bold text-gray-900 font-zar">
+                    د پټنوم تازه کول
+                </h2>
                 <p className="mt-1 text-sm text-gray-600 font-zar">
-                    ډاډ ترلاسه کړئ چې ستاسو حساب د اوږد او تصادفي پټنوم څخه کار اخلي ترڅو خوندي پاتې شي
+                    ډاډ ترلاسه کړئ چې ستاسو حساب د اوږد او تصادفي پټنوم څخه کار
+                    اخلي ترڅو خوندي پاتې شي
                 </p>
             </header>
 
@@ -48,30 +66,36 @@ export default function UpdatePasswordForm({ className = '' }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                 >
-                    <label htmlFor="current_password" className="block text-sm font-bold text-gray-700 font-zar mb-2">
+                    <label
+                        htmlFor="current_password"
+                        className="block text-sm font-bold text-gray-700 font-zar mb-2"
+                    >
                         اوسنی پټنوم
                     </label>
                     <div className="relative">
                         <input
                             id="current_password"
-                            type={showCurrentPassword ? 'text' : 'password'}
+                            type={showCurrentPassword ? "text" : "password"}
+                            placeholder="اوسنی پټنوم"
                             name="current_password"
                             value={data.current_password}
-                            onChange={(e) => setData('current_password', e.target.value)}
-                            className={`w-full px-4 py-3 pr-12 pl-12 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
+                            onChange={(e) =>
+                                setData("current_password", e.target.value)
+                            }
+                            className={`w-full px-4 py-3  pl-12 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
                                 errors.current_password
-                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-200'
-                                    : 'border-gray-300 focus:border-primary-500 focus:ring-primary-200'
+                                    ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                                    : "border-gray-300 focus:border-primary-500 focus:ring-primary-200"
                             }`}
                             autoComplete="current-password"
                         />
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <FaLock className="h-5 w-5 text-gray-400" />
-                        </div>
+
                         <button
                             type="button"
-                            className="absolute inset-y-0 left-0 pl-3 flex items-center"
-                            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                            className="absolute inset-y-0 left-3 pl-3 flex items-center"
+                            onClick={() =>
+                                setShowCurrentPassword(!showCurrentPassword)
+                            }
                         >
                             {showCurrentPassword ? (
                                 <FaEyeSlash className="h-5 w-5 text-gray-400 hover:text-gray-600" />
@@ -97,29 +121,33 @@ export default function UpdatePasswordForm({ className = '' }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                 >
-                    <label htmlFor="password" className="block text-sm font-bold text-gray-700 font-zar mb-2">
+                    <label
+                        htmlFor="password"
+                        className="block text-sm font-bold text-gray-700 font-zar mb-2"
+                    >
                         نوی پټنوم
                     </label>
                     <div className="relative">
                         <input
                             id="password"
-                            type={showPassword ? 'text' : 'password'}
+                            type={showPassword ? "text" : "password"}
                             name="password"
+                            placeholder=" نوی پټنوم"
                             value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
-                            className={`w-full px-4 py-3 pr-12 pl-12 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
+                            onChange={(e) =>
+                                setData("password", e.target.value)
+                            }
+                            className={`w-full px-4 py-3  pl-12 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
                                 errors.password
-                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-200'
-                                    : 'border-gray-300 focus:border-primary-500 focus:ring-primary-200'
+                                    ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                                    : "border-gray-300 focus:border-primary-500 focus:ring-primary-200"
                             }`}
                             autoComplete="new-password"
                         />
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <FaLock className="h-5 w-5 text-gray-400" />
-                        </div>
+
                         <button
                             type="button"
-                            className="absolute inset-y-0 left-0 pl-3 flex items-center"
+                            className="absolute inset-y-0 left-3 pl-3 flex items-center"
                             onClick={() => setShowPassword(!showPassword)}
                         >
                             {showPassword ? (
@@ -146,30 +174,40 @@ export default function UpdatePasswordForm({ className = '' }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                 >
-                    <label htmlFor="password_confirmation" className="block text-sm font-bold text-gray-700 font-zar mb-2">
+                    <label
+                        htmlFor="password_confirmation"
+                        className="block text-sm font-bold text-gray-700 font-zar mb-2"
+                    >
                         د پټنوم تصدیق
                     </label>
                     <div className="relative">
                         <input
                             id="password_confirmation"
-                            type={showPasswordConfirmation ? 'text' : 'password'}
+                            type={
+                                showPasswordConfirmation ? "text" : "password"
+                            }
                             name="password_confirmation"
+                            placeholder=" د پټنوم تصدیق"
                             value={data.password_confirmation}
-                            onChange={(e) => setData('password_confirmation', e.target.value)}
-                            className={`w-full px-4 py-3 pr-12 pl-12 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
+                            onChange={(e) =>
+                                setData("password_confirmation", e.target.value)
+                            }
+                            className={`w-full px-4 py-3  pl-12 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
                                 errors.password_confirmation
-                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-200'
-                                    : 'border-gray-300 focus:border-primary-500 focus:ring-primary-200'
+                                    ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                                    : "border-gray-300 focus:border-primary-500 focus:ring-primary-200"
                             }`}
                             autoComplete="new-password"
                         />
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <FaLock className="h-5 w-5 text-gray-400" />
-                        </div>
+
                         <button
                             type="button"
-                            className="absolute inset-y-0 left-0 pl-3 flex items-center"
-                            onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
+                            className="absolute inset-y-0 left-3 pl-3 flex items-center"
+                            onClick={() =>
+                                setShowPasswordConfirmation(
+                                    !showPasswordConfirmation
+                                )
+                            }
                         >
                             {showPasswordConfirmation ? (
                                 <FaEyeSlash className="h-5 w-5 text-gray-400 hover:text-gray-600" />
@@ -207,7 +245,7 @@ export default function UpdatePasswordForm({ className = '' }) {
                                 د ساتلو په حال کې...
                             </>
                         ) : (
-                            'ساتل'
+                            "ساتل"
                         )}
                     </button>
 

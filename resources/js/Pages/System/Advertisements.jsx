@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo } from "react";
-import { useForm } from "@inertiajs/react";
+import { useForm, router } from "@inertiajs/react";
 import { motion } from "framer-motion";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SystemButtons from "@/Components/SystemButtons";
@@ -122,24 +122,17 @@ const Advertisements = ({ advertisements: initialAdvertisements }) => {
     const handleDeleteConfirm = () => {
         const advertisement = advertisements[selectedIndex];
 
-        fetch(`/advertisements/${advertisement.id}`, {
-            method: "DELETE",
-            headers: {
-                "X-CSRF-TOKEN": document
-                    .querySelector('meta[name="csrf-token"]')
-                    .getAttribute("content"),
-                Accept: "application/json",
-            },
-        })
-            .then(() => {
+        router.delete(`/advertisements/${advertisement.id}`, {
+            onSuccess: () => {
                 showToast("اعلان په بریالیتوب سره حذف شو", "success");
                 closeModal();
                 // Refresh the page to get updated data
                 window.location.reload();
-            })
-            .catch(() => {
+            },
+            onError: () => {
                 showToast("د اعلان حذف کولو کې ستونزه رامنځته شوه", "error");
-            });
+            },
+        });
     };
 
     // Pagination logic
@@ -774,7 +767,7 @@ const Advertisements = ({ advertisements: initialAdvertisements }) => {
                 {/* Toast Notification */}
                 {toast.visible && (
                     <div
-                        className={`fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 flex items-center ${
+                        className={`fixed bottom-4 left-10 px-6 py-3 rounded-lg shadow-lg z-50 flex items-center ${
                             toast.type === "success"
                                 ? "bg-green-600 text-white"
                                 : "bg-red-600 text-white"

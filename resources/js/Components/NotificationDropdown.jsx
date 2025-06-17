@@ -111,24 +111,24 @@ const NotificationDropdown = () => {
                         >
                             {/* Header */}
                             <div className="p-4 border-b border-gray-200/50 flex items-center justify-between">
-                                <h3 className="text-lg font-bold text-gray-900 font-zar">
+                                <h3 className="text-lg font-bold text-gray-900 font-bahij">
                                     خبرتیاوې
                                 </h3>
-                                <div className="flex items-center gap-2">
+                                {/* <div className="flex items-center gap-2">
                                     {unreadCount > 0 && (
                                         <motion.button
                                             onClick={markAllAsRead}
-                                            className="text-xs text-blue-600 hover:text-blue-800 font-zar flex items-center gap-1"
+                                            className="text-xs text-blue-600 hover:text-blue-800 font-bahij flex items-center gap-1"
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
                                         >
-                                            <FaCheck className="text-xs" />
+                                            <FaCheck className="text-xs font-bahij" />
                                             ټول لوستل شوي
                                         </motion.button>
                                     )}
                                     <motion.button
                                         onClick={fetchNotifications}
-                                        className="text-xs text-gray-600 hover:text-gray-800 font-zar flex items-center gap-1"
+                                        className="text-xl font-bahij text-gray-600 hover:text-gray-800 font-bahij flex items-center gap-1"
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         disabled={loading}
@@ -159,7 +159,7 @@ const NotificationDropdown = () => {
                                     >
                                         <FaTimes className="text-sm" />
                                     </motion.button>
-                                </div>
+                                </div> */}
                             </div>
 
                             {/* Notifications List */}
@@ -169,12 +169,12 @@ const NotificationDropdown = () => {
                                         <div className="text-red-500 text-2xl mb-2">
                                             ⚠️
                                         </div>
-                                        <p className="text-red-600 font-zar text-sm">
+                                        <p className="text-red-600 font-bahij text-sm">
                                             د خبرتیاوو په بارولو کې ستونزه
                                         </p>
                                         <button
                                             onClick={fetchNotifications}
-                                            className="mt-2 text-xs text-blue-600 hover:text-blue-800 font-zar"
+                                            className="mt-2 text-xs text-blue-600 hover:text-blue-800 font-bahij"
                                         >
                                             بیا هڅه وکړئ
                                         </button>
@@ -182,14 +182,14 @@ const NotificationDropdown = () => {
                                 ) : loading ? (
                                     <div className="p-4 text-center">
                                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto"></div>
-                                        <p className="text-gray-500 mt-2 font-zar">
+                                        <p className="text-gray-500 mt-2 font-bahij">
                                             د خبرتیاوو بارول...
                                         </p>
                                     </div>
                                 ) : notifications.length === 0 ? (
                                     <div className="p-8 text-center">
                                         <FaBell className="text-4xl text-gray-300 mx-auto mb-3" />
-                                        <p className="text-gray-500 font-zar">
+                                        <p className="text-gray-500 font-bahij">
                                             هیڅ خبرتیا نشته
                                         </p>
                                     </div>
@@ -230,14 +230,14 @@ const NotificationDropdown = () => {
                                                             )}
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="text-sm font-semibold text-gray-900 font-zar">
+                                                            <p className="text-sm font-semibold text-gray-900 font-bahij">
                                                                 {
                                                                     notification
                                                                         .data
                                                                         .title
                                                                 }
                                                             </p>
-                                                            <p className="text-sm text-gray-600 mt-1 font-zar line-clamp-2">
+                                                            <p className="text-sm text-gray-600 mt-1 font-bahij line-clamp-2">
                                                                 {
                                                                     notification
                                                                         .data
@@ -264,7 +264,7 @@ const NotificationDropdown = () => {
                             {/* Footer */}
                             {notifications.length > 0 && (
                                 <div className="p-3 border-t border-gray-200/50 text-center">
-                                    <button className="text-sm text-blue-600 hover:text-blue-800 font-zar">
+                                    <button className="text-sm text-blue-600 hover:text-blue-800 font-bahij">
                                         ټولې خبرتیاوې وګورئ
                                     </button>
                                 </div>

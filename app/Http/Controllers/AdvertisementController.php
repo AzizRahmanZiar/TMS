@@ -74,10 +74,15 @@ class AdvertisementController extends Controller
      */
     public function destroy(Advertisement $advertisement): RedirectResponse
     {
-        //Gate::authorize('delete', $advertisement);
-        abort_if($this->advertisement->shopkeeper_id === $this->user()->id, 403);
+        // Check if the user is authorized to delete this advertisement
+        abort_if($advertisement->shopkeeper_id !== auth()->id(), 403, 'Unauthorized action.');
 
-        Storage::disk('public')->delete($advertisement->image);
+        // Delete the image file if it exists
+        if ($advertisement->image) {
+            Storage::disk('public')->delete($advertisement->image);
+        }
+
+        // Delete the advertisement
         $advertisement->delete();
 
         return redirect()->route('advertisements.index')

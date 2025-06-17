@@ -134,7 +134,7 @@ const Messages = () => {
                                     placeholder="د نوم، بریښنالیک، تلیفون، موضوع یا پیغام په اساس لټون..."
                                     onSearch={handleSearch}
                                     initialValue={searchTerm}
-                                    className="w-full"
+                                    className="w-full text-gray-700"
                                 />
                             </div>
                         </div>
@@ -189,7 +189,6 @@ const Messages = () => {
                                             duration: 0.3,
                                             delay: index * 0.05,
                                         }}
-                                        
                                     >
                                         <td className="px-4 md:px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-3">

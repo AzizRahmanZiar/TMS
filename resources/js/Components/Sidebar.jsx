@@ -160,7 +160,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             {/* Sidebar */}
             <AnimatePresence>
                 <motion.div
-                    className={`fixed md:relative z-30 flex flex-col h-screen overflow-hidden bg-gradient-to-br from-secondary-900 via-tertiary-800 to-secondary-950 text-white rtl shadow-2xl border-r border-tertiary-700/50`}
+                    className={`fixed md:relative flex flex-col h-screen overflow-hidden bg-gradient-to-br from-secondary-900 via-tertiary-800 to-secondary-950 text-white rtl shadow-2xl border-r border-tertiary-700/50`}
                     initial={{
                         width: isOpen
                             ? "18rem"
@@ -188,7 +188,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     <AnimatePresence>
                         {isOpen && window.innerWidth < 768 && (
                             <motion.button
-                                className="absolute top-4 right-4 text-white p-2 rounded-xl hover:bg-white/10 transition-all duration-300 z-50 shadow-lg backdrop-blur-sm border border-white/20"
+                                className="absolute top-4 right-4 text-white p-2 rounded-xl hover:bg-white/10 transition-all duration-300  shadow-lg backdrop-blur-sm border border-white/20"
                                 onClick={toggleSidebar}
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -288,7 +288,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
                                         {/* Icon - always visible */}
                                         <motion.div
-                                            className={`flex items-center justify-center relative z-10 ${
+                                            className={`flex items-center justify-center relative ${
                                                 isOpen
                                                     ? "min-w-[28px] mr-3 text-lg"
                                                     : "w-full h-full text-lg"
@@ -306,7 +306,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                         <AnimatePresence>
                                             {isOpen && (
                                                 <motion.div
-                                                    className="flex items-center justify-between flex-1 relative z-10"
+                                                    className="flex items-center justify-between flex-1 relative"
                                                     initial={{
                                                         opacity: 0,
                                                         width: 0,

@@ -120,7 +120,7 @@ const SystemLayout = ({ children }) => {
                                             <img
                                                 src={`/storage/${auth.user.profile_image}`}
                                                 alt={auth.user.name || "User"}
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full"
                                                 onError={(e) => {
                                                     console.error(
                                                         "Profile image failed to load:",
@@ -173,7 +173,7 @@ const SystemLayout = ({ children }) => {
                                                                             .name ||
                                                                         "User"
                                                                     }
-                                                                    className="w-full h-full object-cover"
+                                                                    className="w-full h-full"
                                                                     onError={(
                                                                         e
                                                                     ) => {
@@ -188,10 +188,10 @@ const SystemLayout = ({ children }) => {
                                                             )}
                                                         </div>
 
-                                                        <h3 className="text-xl font-medium text-gray-900 mt-2">
+                                                        <h3 className="text-xl font-medium font-bahij text-gray-900 mt-2">
                                                             {auth.user?.name}
                                                         </h3>
-                                                        <p className="text-xl text-gray-500">
+                                                        <p className="text-xl font-bahij text-gray-500">
                                                             {auth.user?.email}
                                                         </p>
                                                     </div>
@@ -213,7 +213,7 @@ const SystemLayout = ({ children }) => {
                                                                     false
                                                                 )
                                                             }
-                                                            className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 hover:bg-gray-100 rounded-md transition-colors mb-2"
+                                                            className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 font-bahij hover:bg-gray-100 rounded-md transition-colors mb-2"
                                                         >
                                                             <FaUser className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
                                                             پروفایل
@@ -228,7 +228,7 @@ const SystemLayout = ({ children }) => {
                                                                 route("logout")
                                                             );
                                                         }}
-                                                        className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                                        className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 font-bahij hover:bg-gray-100 rounded-md transition-colors"
                                                     >
                                                         <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
                                                         وتـــــــل

@@ -287,7 +287,7 @@ const Navbar = () => {
                                                         alt={
                                                             user.name || "User"
                                                         }
-                                                        className="w-full h-full object-cover"
+                                                        className="w-full h-full"
                                                         onError={(e) => {
                                                             console.error(
                                                                 "Profile image failed to load:",
@@ -318,7 +318,7 @@ const Navbar = () => {
                                                                         user.name ||
                                                                         "User"
                                                                     }
-                                                                    className="w-full h-full object-cover"
+                                                                    className="w-full h-full"
                                                                     onError={(
                                                                         e
                                                                     ) => {
@@ -565,7 +565,7 @@ const Navbar = () => {
                                                                     user.name ||
                                                                     "User"
                                                                 }
-                                                                className="w-full h-full object-cover"
+                                                                className="w-full h-full"
                                                                 onError={(
                                                                     e
                                                                 ) => {

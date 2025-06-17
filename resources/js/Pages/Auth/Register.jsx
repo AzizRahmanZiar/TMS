@@ -371,7 +371,7 @@ const Registration = ({ hasAdmin }) => {
                                         </p>
                                     )}
                                     {profileImagePreview && (
-                                        <div className="mt-2 h-16 w-16 rounded-full overflow-hidden border border-gray-200">
+                                        <div className="mt-2 h-24 w-24 rounded-full overflow-hidden border border-gray-200">
                                             <img
                                                 src={
                                                     profileImagePreview ||
@@ -379,7 +379,7 @@ const Registration = ({ hasAdmin }) => {
                                                     "/placeholder.svg"
                                                 }
                                                 alt="Profile preview"
-                                                className="h-full w-full object-cover"
+                                                className="h-full w-full"
                                             />
                                         </div>
                                     )}
@@ -878,7 +878,7 @@ const Registration = ({ hasAdmin }) => {
                                                                 alt={`Shop image ${
                                                                     index + 1
                                                                 }`}
-                                                                className="w-full h-full object-cover"
+                                                                className="w-full h-full"
                                                             />
                                                         </div>
                                                     )

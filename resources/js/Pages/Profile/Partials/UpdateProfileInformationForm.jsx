@@ -77,7 +77,7 @@ export default function UpdateProfileInformation({
                     </label>
                     <div className="flex items-center space-x-6 rtl:space-x-reverse">
                         {/* Current/Preview Image */}
-                        <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-4 border-gray-200">
+                        <div className="w-24 mr-3 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-4 border-gray-200">
                             {previewImage ? (
                                 <img
                                     src={previewImage}
@@ -88,7 +88,7 @@ export default function UpdateProfileInformation({
                                 <img
                                     src={`/storage/${user.profile_image}`}
                                     alt={user.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full"
                                     onError={(e) => {
                                         e.target.onerror = null;
                                         e.target.src = "/placeholder.svg";
@@ -104,7 +104,7 @@ export default function UpdateProfileInformation({
                             <div className="flex items-center gap-3">
                                 <label
                                     htmlFor="profile_image"
-                                    className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500 transition-all duration-200"
+                                    className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-within:ring-2 gap-3 focus-within:ring-primary-500 focus-within:border-primary-500 transition-all duration-200"
                                 >
                                     <FaCamera className="ml-2 h-4 w-4" />
                                     انځور غوره کړئ
@@ -121,7 +121,7 @@ export default function UpdateProfileInformation({
                                     <button
                                         type="button"
                                         onClick={removeImage}
-                                        className="inline-flex items-center px-3 py-2 border border-red-300 rounded-lg shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
+                                        className="inline-flex items-center px-3 py-2 border border-red-300 rounded-lg shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:ring-2 focus:ring-red-500 gap-2 focus:border-red-500 transition-all duration-200"
                                     >
                                         <FaTrash className="ml-1 h-3 w-3" />
                                         لرې کړئ
@@ -163,7 +163,7 @@ export default function UpdateProfileInformation({
                             name="name"
                             value={data.name}
                             onChange={(e) => setData("name", e.target.value)}
-                            className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
+                            className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
                                 errors.name
                                     ? "border-red-500 focus:border-red-500 focus:ring-red-200"
                                     : "border-gray-300 focus:border-primary-500 focus:ring-primary-200"
@@ -171,9 +171,6 @@ export default function UpdateProfileInformation({
                             required
                             autoComplete="name"
                         />
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <FaUser className="h-5 w-5 text-gray-400" />
-                        </div>
                     </div>
                     {errors.name && (
                         <motion.p
@@ -205,7 +202,7 @@ export default function UpdateProfileInformation({
                             name="email"
                             value={data.email}
                             onChange={(e) => setData("email", e.target.value)}
-                            className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
+                            className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-4 focus:outline-none transition-all duration-300 font-zar text-right ${
                                 errors.email
                                     ? "border-red-500 focus:border-red-500 focus:ring-red-200"
                                     : "border-gray-300 focus:border-primary-500 focus:ring-primary-200"
@@ -213,9 +210,6 @@ export default function UpdateProfileInformation({
                             required
                             autoComplete="username"
                         />
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <FaEnvelope className="h-5 w-5 text-gray-400" />
-                        </div>
                     </div>
                     {errors.email && (
                         <motion.p

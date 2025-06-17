@@ -37,6 +37,11 @@ const Admin = () => {
         console.log("Users data in component:", users);
     }, [users]);
 
+    // Handle search
+    const handleSearch = (value) => {
+        setSearchTerm(value);
+    };
+
     // Filter users based on search term
     const filteredUsers = users.filter((user) => {
         if (!user) return false;
@@ -48,6 +53,16 @@ const Admin = () => {
             (user.phone?.toLowerCase() || "").includes(searchLower)
         );
     });
+
+    // Calculate pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+    const totalItems = filteredUsers.length;
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
 
     console.log("Filtered users:", filteredUsers);
 
@@ -106,20 +121,6 @@ const Admin = () => {
         }
     };
 
-    const handleSearch = (value) => {
-        setSearchTerm(value);
-    };
-
-    // Calculate pagination
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
-    const totalItems = filteredUsers.length;
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
-
     return (
         <SystemLayout>
             <div
@@ -153,7 +154,7 @@ const Admin = () => {
                                     placeholder="د نوم، بریښنالیک یا رول په اساس لټون..."
                                     onSearch={handleSearch}
                                     initialValue={searchTerm}
-                                    className="w-full"
+                                    className="w-full text-gray-700"
                                 />
                             </div>
                         </div>
