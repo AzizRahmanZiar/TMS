@@ -179,15 +179,20 @@ class User extends Authenticatable
     /**
      * Check if user has already placed an order this week
      */
-    public function hasOrderedThisWeek()
+    public function hasOrderedThisWeek($tailorId = null)
     {
         if (!$this->week_start_date || !$this->week_end_date) {
             return false;
         }
 
-        return CustomerOrder::where('user_id', $this->id)
-            ->whereBetween('created_at', [$this->week_start_date, $this->week_end_date])
-            ->exists();
+        $query = CustomerOrder::where('user_id', $this->id)
+            ->whereBetween('created_at', [$this->week_start_date, $this->week_end_date]);
+
+        if ($tailorId) {
+            $query->where('tailor_id', $tailorId);
+        }
+
+        return $query->exists();
     }
 
     /**

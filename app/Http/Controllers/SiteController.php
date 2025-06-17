@@ -301,7 +301,7 @@ class SiteController extends Controller
 
         // Check if user has already ordered this week
         if (Auth::check()) {
-            $userHasOrderedThisWeek = Auth::user()->hasOrderedThisWeek();
+            $userHasOrderedThisWeek = Auth::user()->hasOrderedThisWeek($tailorId);
         }
 
         // If tailor is selected, get their order statistics

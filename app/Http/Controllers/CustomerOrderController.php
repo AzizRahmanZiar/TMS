@@ -66,12 +66,13 @@ class CustomerOrderController extends Controller
             Log::info('Tailor verification passed', ['tailor' => $tailor->toArray()]);
 
             // Check if user has already placed an order this week
-            if (Auth::user()->hasOrderedThisWeek()) {
-                Log::warning('User has already placed an order this week', [
+            if (Auth::user()->hasOrderedThisWeek($validated['tailor_id'])) {
+                Log::warning('User has already placed an order with this tailor this week', [
                     'user_id' => Auth::user()->id,
-                    'user_name' => Auth::user()->name
+                    'user_name' => Auth::user()->name,
+                    'tailor_id' => $validated['tailor_id']
                 ]);
-                return back()->with('error', 'تاسو د دغه اونۍ لپاره دمخه یو فرمایش ورکړی دی. هره اونۍ یوازې یو فرمایش ورکولی شئ.');
+                return back()->with('error', 'تاسو د دغه خیاط سره د دغه اونۍ لپاره دمخه یو فرمایش ورکړی دی. تاسو کولی شئ د بل خیاط سره فرمایش ورکړئ.');
             }
 
             // Check if tailor can accept more orders this week
