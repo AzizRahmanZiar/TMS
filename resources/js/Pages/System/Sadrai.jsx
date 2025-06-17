@@ -7,7 +7,7 @@ import {
     MdEdit,
     MdVisibility,
 } from "react-icons/md";
-import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSort, FaSortUp, FaSortDown, FaRegEdit } from "react-icons/fa";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
@@ -451,7 +451,7 @@ const Sadrai = ({ sadrais: initialSadrais }) => {
                                         <span>پیسې</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <span>عملیات</span>
+                                        <span>عملیې</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -531,7 +531,7 @@ const Sadrai = ({ sadrais: initialSadrais }) => {
                                                     onClick={() =>
                                                         handleViewRecord(row)
                                                     }
-                                                    className="p-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                                                    className=" text-blue-600 hover:text-blue-800 transition-colors duration-200"
                                                     whileHover={{
                                                         scale: 1.1,
                                                     }}
@@ -540,14 +540,14 @@ const Sadrai = ({ sadrais: initialSadrais }) => {
                                                     }}
                                                     title="لیدل"
                                                 >
-                                                    <MdVisibility className="text-lg" />
+                                                    <MdVisibility className="text-lg w-5 h-5" />
                                                 </motion.button>
                                                 <motion.button
                                                     onClick={() =>
                                                         handleUpdate(index)
                                                     }
                                                     disabled={row.disabled}
-                                                    className={`p-2 transition-colors duration-200 ${
+                                                    className={` transition-colors duration-200 ${
                                                         row.disabled
                                                             ? "text-gray-400 cursor-not-allowed"
                                                             : "text-green-600 hover:text-green-800"
@@ -572,13 +572,13 @@ const Sadrai = ({ sadrais: initialSadrais }) => {
                                                             : "سمول"
                                                     }
                                                 >
-                                                    <MdEdit className="text-lg" />
+                                                    <FaRegEdit className="text-lg w-5 h-5" />
                                                 </motion.button>
                                                 <motion.button
                                                     onClick={() =>
                                                         handleDeleteClick(row)
                                                     }
-                                                    className="p-2 text-red-600 hover:text-red-800 transition-colors duration-200"
+                                                    className=" text-red-600 hover:text-red-800 transition-colors duration-200"
                                                     whileHover={{
                                                         scale: 1.1,
                                                     }}
@@ -587,7 +587,7 @@ const Sadrai = ({ sadrais: initialSadrais }) => {
                                                     }}
                                                     title="حذف کول"
                                                 >
-                                                    <MdDelete className="text-lg" />
+                                                    <MdDelete className="text-lg w-5 h-5" />
                                                 </motion.button>
                                             </div>
                                         </td>

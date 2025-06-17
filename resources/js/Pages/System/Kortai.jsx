@@ -7,7 +7,7 @@ import {
     MdEdit,
     MdVisibility,
 } from "react-icons/md";
-import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSort, FaSortUp, FaSortDown, FaRegEdit } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 
 import SystemLayout from "@/Layouts/SystemLayout";
@@ -410,7 +410,7 @@ const Kortai = ({ kortais: initialKortais }) => {
                                         <span>پیسې</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <span>عملیات</span>
+                                        <span>عملیې</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -495,14 +495,14 @@ const Kortai = ({ kortais: initialKortais }) => {
                                                     }}
                                                     title="لیدل"
                                                 >
-                                                    <MdVisibility className="text-lg" />
+                                                    <MdVisibility className="text-lg w-5 h-5" />
                                                 </motion.button>
                                                 <motion.button
                                                     onClick={() =>
                                                         handleUpdate(row)
                                                     }
                                                     disabled={row.disabled}
-                                                    className={`p-2 transition-colors duration-200 ${
+                                                    className={` transition-colors duration-200 ${
                                                         row.disabled
                                                             ? "text-gray-400 cursor-not-allowed"
                                                             : "text-green-600 hover:text-green-800"
@@ -527,7 +527,7 @@ const Kortai = ({ kortais: initialKortais }) => {
                                                             : "سمول"
                                                     }
                                                 >
-                                                    <MdEdit className="text-lg" />
+                                                    <FaRegEdit className="text-lg h-5 w-5" />
                                                 </motion.button>
                                                 <motion.button
                                                     onClick={() =>
@@ -542,7 +542,7 @@ const Kortai = ({ kortais: initialKortais }) => {
                                                     }}
                                                     title="حذف کول"
                                                 >
-                                                    <MdDelete className="text-lg" />
+                                                    <MdDelete className="text-lg w-5 h-5" />
                                                 </motion.button>
                                             </div>
                                         </td>

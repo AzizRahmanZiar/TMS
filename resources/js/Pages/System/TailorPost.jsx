@@ -309,7 +309,7 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
                                         <span>کټګورۍ</span>
                                     </th>
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <span>عملیات</span>
+                                        <span>عملیې</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -324,10 +324,9 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
                                             duration: 0.3,
                                             delay: index * 0.05,
                                         }}
-                                        
                                     >
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end">
+                                            <div className="flex items-center ">
                                                 <div className="relative group">
                                                     <img
                                                         src={
@@ -336,11 +335,11 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
                                                                 : "/placeholder.svg"
                                                         }
                                                         alt={post.description}
-                                                        className="h-16 w-16 object-cover rounded-xl shadow-lg border-2 border-primary-200 group-hover:shadow-xl transition-all duration-300"
+                                                        className="h-10 w-10 rounded-xl shadow-lg border-2 border-primary-200 group-hover:shadow-xl transition-all duration-300"
                                                     />
-                                                    <div className="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                                    {/* <div className="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                                                         <FaEye className="text-white text-lg" />
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </div>
                                         </td>
@@ -349,7 +348,7 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
                                                 <p className="text-sm md:text-base text-gray-900 font-medium font-zar line-clamp-2 leading-relaxed">
                                                     {post.description}
                                                 </p>
-                                                <div className="mt-1 flex items-center gap-2">
+                                                {/* <div className="mt-1 flex items-center gap-2">
                                                     <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
                                                     <span className="text-xs text-gray-500 font-zar">
                                                         {
@@ -358,11 +357,11 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
                                                         }{" "}
                                                         توري
                                                     </span>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
-                                            <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center  gap-2">
                                                 <span className="text-sm text-gray-600 font-zar">
                                                     {formatDate(post.date)}
                                                 </span>
@@ -372,7 +371,7 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end">
+                                            <div className="flex items-center ">
                                                 <span
                                                     className={`px-4 py-2 rounded-full text-xs font-bold font-zar flex items-center gap-2 border ${
                                                         post.category ===
@@ -407,7 +406,7 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center  gap-2">
                                                 <motion.button
                                                     onClick={() =>
                                                         handleEditPost(post)

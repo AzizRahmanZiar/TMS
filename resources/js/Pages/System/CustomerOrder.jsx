@@ -249,14 +249,14 @@ const CustomerOrder = ({ orders, order, message }) => {
                                                 }}
                                             >
                                                 <td className="px-4 md:px-6 py-4 text-right">
-                                                    <div className="flex items-center justify-end">
+                                                    <div className="flex items-center ">
                                                         <span className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                                                             {index + 1}
                                                         </span>
                                                     </div>
                                                 </td>
                                                 <td className="px-4 md:px-6 py-4 text-right">
-                                                    <div className="flex items-center justify-end gap-3">
+                                                    <div className="flex items-center  gap-3">
                                                         <div>
                                                             <div className="font-zar text-sm md:text-base font-semibold text-gray-900">
                                                                 {
@@ -277,7 +277,7 @@ const CustomerOrder = ({ orders, order, message }) => {
                                                     </div>
                                                 </td>
                                                 <td className="px-4 md:px-6 py-4 text-right">
-                                                    <div className="flex items-center justify-end gap-2">
+                                                    <div className="flex items-center  gap-2">
                                                         <span className="font-zar text-sm md:text-base text-gray-900 font-medium">
                                                             {order.phone}
                                                         </span>
@@ -287,7 +287,7 @@ const CustomerOrder = ({ orders, order, message }) => {
                                                     </div>
                                                 </td>
                                                 <td className="px-4 md:px-6 py-4 text-right hidden lg:table-cell">
-                                                    <div className="flex items-center justify-end gap-2">
+                                                    <div className="flex items-center  gap-2">
                                                         <span className="font-zar text-sm text-gray-700 max-w-xs truncate">
                                                             {order.address}
                                                         </span>
@@ -298,7 +298,7 @@ const CustomerOrder = ({ orders, order, message }) => {
                                                 </td>
 
                                                 <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
-                                                    <div className="flex items-center justify-end gap-2">
+                                                    <div className="flex items-center  gap-2">
                                                         <span className="font-zar text-sm text-gray-600">
                                                             {new Date(
                                                                 order.created_at
@@ -312,7 +312,7 @@ const CustomerOrder = ({ orders, order, message }) => {
                                                     </div>
                                                 </td>
                                                 <td className="px-4 md:px-6 py-4 text-right">
-                                                    <div className="flex items-center justify-end gap-2">
+                                                    <div className="flex items-center  gap-2">
                                                         <motion.button
                                                             onClick={() =>
                                                                 handleViewOrder(

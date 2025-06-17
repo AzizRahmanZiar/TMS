@@ -35,12 +35,6 @@ class TailorPostController extends Controller
 
     public function store(TailorPostRequest $request)
     {
-        // Check if user has reached the post limit
-        $postCount = TailorPost::where('user_id', auth()->id())->count();
-        if ($postCount >= 4) {
-            return back()->with('error', 'You needed posts not allowed other');
-        }
-
         $validated = $request->validated();
         $imagePath = $request->file('image')->store('posts', 'public');
 
