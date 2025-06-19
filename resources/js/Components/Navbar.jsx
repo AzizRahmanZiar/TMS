@@ -280,7 +280,7 @@ const Navbar = () => {
                                             }
                                             className="p-2 rounded-full bg-primary-600 hover:bg-primary-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300"
                                         >
-                                            <div className="w-8 h-8 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
+                                            <div className="w-10 h-10 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
                                                 {user?.profile_image ? (
                                                     <img
                                                         src={`/storage/${user.profile_image}`}
@@ -310,7 +310,7 @@ const Navbar = () => {
                                             <div className="absolute left-2 w-72 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-[9999]">
                                                 <div className="p-4 border-b">
                                                     <div className="flex flex-col justify-center items-center">
-                                                        <div className="w-12 h-12 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
+                                                        <div className="w-20 h-20 border-4 border-tertiary-200 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
                                                             {user?.profile_image ? (
                                                                 <img
                                                                     src={`/storage/${user.profile_image}`}

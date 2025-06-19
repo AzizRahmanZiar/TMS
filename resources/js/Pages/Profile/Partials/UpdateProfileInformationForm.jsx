@@ -82,7 +82,7 @@ export default function UpdateProfileInformation({
                                 <img
                                     src={previewImage}
                                     alt="Preview"
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full"
                                 />
                             ) : user.profile_image ? (
                                 <img

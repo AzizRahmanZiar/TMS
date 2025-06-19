@@ -162,7 +162,7 @@ const SystemLayout = ({ children }) => {
                                             >
                                                 <div className="p-4 border-b">
                                                     <div className="flex flex-col justify-center items-center">
-                                                        <div className="w-12 h-12 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
+                                                        <div className="w-20 h-20 border-4 border-tertiary-200 rounded-full bg-primary-400 flex items-center justify-center overflow-hidden">
                                                             {auth.user
                                                                 ?.profile_image ? (
                                                                 <img
