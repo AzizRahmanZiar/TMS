@@ -213,7 +213,7 @@ const SystemLayout = ({ children }) => {
                                                                     false
                                                                 )
                                                             }
-                                                            className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 font-bahij hover:bg-gray-100 rounded-md transition-colors mb-2"
+                                                            className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 font-bahij bg-gray-200 hover:bg-gray-100 rounded-md transition-colors mb-2"
                                                         >
                                                             <FaUser className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
                                                             پروفایل
@@ -228,7 +228,7 @@ const SystemLayout = ({ children }) => {
                                                                 route("logout")
                                                             );
                                                         }}
-                                                        className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 font-bahij hover:bg-gray-100 rounded-md transition-colors"
+                                                        className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 font-bahij bg-gray-200 hover:bg-gray-100 rounded-md transition-colors"
                                                     >
                                                         <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
                                                         وتـــــــل

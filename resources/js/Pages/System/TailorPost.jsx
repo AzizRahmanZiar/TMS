@@ -33,7 +33,7 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 3;
 
-    const { data, setData, post, put, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         description: "",
         category: "",
         image: null,
@@ -135,7 +135,8 @@ const TailorPost = ({ posts: initialPosts, errors: serverErrors }) => {
         e.preventDefault();
 
         if (isEditing) {
-            put(route("tailor-posts.update", currentPost.id), {
+            post(route("tailor-posts.update", currentPost.id), {
+                _method: "PUT",
                 onSuccess: () => {
                     setShowForm(false);
                     resetForm();

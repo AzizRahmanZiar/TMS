@@ -2,7 +2,14 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTrash, FaTimes, FaExclamationTriangle } from "react-icons/fa";
 
-const DeleteModal = ({ isOpen, onClose, onConfirm, title, message, isLoading = false }) => {
+const DeleteModal = ({
+    isOpen,
+    onClose,
+    onConfirm,
+    title,
+    message,
+    isLoading = false,
+}) => {
     if (!isOpen) return null;
 
     return (
@@ -29,7 +36,12 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, title, message, isLoading = f
                     initial={{ opacity: 0, scale: 0.8, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                    transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 30 }}
+                    transition={{
+                        duration: 0.3,
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                    }}
                     dir="rtl"
                 >
                     {/* Header */}
@@ -61,12 +73,13 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, title, message, isLoading = f
                                 <FaTrash className="text-red-600 text-2xl" />
                             </div>
                             <p className="text-gray-700 font-zar text-lg leading-relaxed">
-                                {message || "آیا تاسو ډاډه یاست چې غواړئ دا ریکارډ حذف کړئ؟ دا عمل نشي بیرته کیدی."}
+                                {message ||
+                                    "آیا تاسو ډاډه یاست چې غواړئ دا ریکارډ حذف کړئ؟ دا عمل نشي بیرته کیدی."}
                             </p>
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-3 justify-center">
+                        <div className="flex gap-3">
                             <motion.button
                                 onClick={onClose}
                                 className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-zar font-semibold transition-all duration-300 flex items-center gap-2"
@@ -74,10 +87,9 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, title, message, isLoading = f
                                 whileTap={{ scale: 0.98 }}
                                 disabled={isLoading}
                             >
-                                <FaTimes className="text-sm" />
-                                لغوه کول
+                                لغو
                             </motion.button>
-                            
+
                             <motion.button
                                 onClick={onConfirm}
                                 disabled={isLoading}
@@ -88,13 +100,10 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, title, message, isLoading = f
                                 {isLoading ? (
                                     <>
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        په حذفولو کې...
+                                        حذف...
                                     </>
                                 ) : (
-                                    <>
-                                        <FaTrash className="text-sm" />
-                                        حذف کول
-                                    </>
+                                    <>تایید</>
                                 )}
                             </motion.button>
                         </div>

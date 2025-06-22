@@ -129,7 +129,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // TailorPost routes
         Route::get('/tailor-posts', [TailorPostController::class, 'index'])->name('tailor-posts.index');
         Route::post('/tailor-posts', [TailorPostController::class, 'store'])->name('tailor-posts.store');
-        Route::put('/tailor-posts/{tailorPost}', [TailorPostController::class, 'update'])->name('tailor-posts.update');
+        Route::match(['PUT', 'POST'], '/tailor-posts/{tailorPost}', [TailorPostController::class, 'update'])->name('tailor-posts.update');
         Route::delete('/tailor-posts/{tailorPost}', [TailorPostController::class, 'destroy'])->name('tailor-posts.destroy');
     });
 

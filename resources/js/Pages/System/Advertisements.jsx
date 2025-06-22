@@ -747,7 +747,7 @@ const Advertisements = ({ advertisements: initialAdvertisements }) => {
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                     >
-                                        لغو کول
+                                        لغو
                                     </motion.button>
                                     <motion.button
                                         type="button"
@@ -756,7 +756,7 @@ const Advertisements = ({ advertisements: initialAdvertisements }) => {
                                         whileHover={{ scale: 1.02, y: -2 }}
                                         whileTap={{ scale: 0.98 }}
                                     >
-                                        حذف کول
+                                        تایید
                                     </motion.button>
                                 </motion.div>
                             </div>

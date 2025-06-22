@@ -160,7 +160,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             {/* Sidebar */}
             <AnimatePresence>
                 <motion.div
-                    className={`fixed md:relative flex flex-col h-screen overflow-hidden bg-gradient-to-br from-secondary-900 via-tertiary-800 to-secondary-950 text-white rtl shadow-2xl border-r border-tertiary-700/50`}
+                    className={`fixed md:relative z-20 flex flex-col h-screen overflow-hidden bg-gradient-to-br from-secondary-900 via-tertiary-800 to-secondary-950 text-white rtl shadow-2xl border-r border-tertiary-700/50`}
                     initial={{
                         width: isOpen
                             ? "18rem"

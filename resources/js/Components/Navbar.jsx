@@ -109,21 +109,21 @@ const Navbar = () => {
     };
 
     const mobileMenuVariants = {
-        hidden: { opacity: 0, height: 0 },
+        hidden: { opacity: 0, maxHeight: 0 },
         visible: {
             opacity: 1,
-            height: "auto",
+            maxHeight: "80vh",
             transition: {
-                duration: 0.15,
+                duration: 0.3,
                 staggerChildren: 0.02,
                 delayChildren: 0.05,
             },
         },
         exit: {
             opacity: 0,
-            height: 0,
+            maxHeight: 0,
             transition: {
-                duration: 0.15,
+                duration: 0.3,
                 when: "afterChildren",
                 staggerChildren: 0.02,
                 staggerDirection: -1,
@@ -229,8 +229,8 @@ const Navbar = () => {
                                         onClick={() => setActivePath(link.href)}
                                         className={`group relative flex items-center space-x-2 rtl:space-x-reverse px-4 py-2 rounded-lg font-zar font-bold lg:text-xl transition-all duration-300 ${
                                             isActiveLink
-                                                ? "bg-secondary-600 text-white shadow-lg"
-                                                : "text-gray-200 hover:text-white hover:bg-primary-700/50"
+                                                ? "text-secondary-400"
+                                                : "hover:text-secondary-400 text-white"
                                         }`}
                                     >
                                         <span>{link.text}</span>
@@ -357,7 +357,7 @@ const Navbar = () => {
                                                                     false
                                                                 )
                                                             }
-                                                            className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 hover:bg-gray-100 rounded-md transition-colors mb-2"
+                                                            className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 bg-gray-200 hover:bg-gray-100 rounded-md transition-colors mb-2"
                                                         >
                                                             <FaUser className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
                                                             پروفایل
@@ -372,7 +372,7 @@ const Navbar = () => {
                                                                 route("logout")
                                                             );
                                                         }}
-                                                        className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                                        className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 bg-gray-200 hover:bg-gray-100 rounded-md transition-colors"
                                                     >
                                                         <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2 " />
                                                         وتـــــــل
@@ -445,7 +445,7 @@ const Navbar = () => {
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            className="lg:hidden bg-primary-800 shadow-lg border-t border-primary-700"
+                            className="lg:hidden bg-primary-800 shadow-lg border-t border-primary-700 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary-600 scrollbar-track-primary-800"
                             variants={mobileMenuVariants}
                             initial="hidden"
                             animate="visible"
