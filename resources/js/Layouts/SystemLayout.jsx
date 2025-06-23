@@ -6,6 +6,9 @@ import ProtectedRoute from "../Components/ProtectedRoute";
 import Sidebar from "../Components/Sidebar";
 import NotificationDropdown from "../Components/NotificationDropdown";
 import Portal from "../Components/Portal";
+import CSRFManager from "../Components/CSRFManager";
+import SessionExpiryWarning from "../Components/SessionExpiryWarning";
+import SessionStatus from "../Components/SessionStatus";
 import { FaBars, FaUser, FaSignOutAlt, FaHome, FaTimes } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -219,20 +222,20 @@ const SystemLayout = ({ children }) => {
                                                             پروفایل
                                                         </Link>
                                                     )}
-                                                    <button
+                                                    <Link
+                                                        href={route("logout")}
+                                                        method="post"
+                                                        as="button"
                                                         onClick={() => {
                                                             setShowProfileModal(
                                                                 false
-                                                            );
-                                                            router.post(
-                                                                route("logout")
                                                             );
                                                         }}
                                                         className="w-full text-xl flex items-center px-4 py-2 gap-3 text-gray-700 font-bahij bg-gray-200 hover:bg-gray-100 rounded-md transition-colors"
                                                     >
                                                         <FaSignOutAlt className="ml-7 text-xl rtl:ml-0 rtl:mr-2" />
                                                         وتـــــــل
-                                                    </button>
+                                                    </Link>
                                                 </div>
                                             </motion.div>
                                         </Portal>
@@ -265,6 +268,26 @@ const SystemLayout = ({ children }) => {
                         <div className="relative z-0">{children}</div>
                     </motion.main>
                 </div>
+
+                {/* Session Expiry Warning */}
+                <SessionExpiryWarning
+                    warningMinutes={5}
+                    autoExtend={true}
+                    showCountdown={true}
+                />
+
+                {/* Session Status - Only show in development */}
+                <SessionStatus
+                    showByDefault={import.meta.env.DEV}
+                    position="top-left"
+                    updateInterval={5000}
+                />
+
+                {/* CSRF Manager - Only show in development or when there are errors */}
+                <CSRFManager
+                    showByDefault={import.meta.env.DEV}
+                    position="bottom-right"
+                />
             </div>
         </ProtectedRoute>
     );

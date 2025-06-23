@@ -91,6 +91,27 @@ Route::get('/refresh-csrf', function () {
     return response()->json(['token' => csrf_token()]);
 });
 
+// CSRF management routes (for development/debugging)
+Route::prefix('csrf')->group(function () {
+    Route::get('/status', function () {
+        return response()->json([
+            'token' => csrf_token(),
+            'session_id' => session()->getId(),
+            'session_lifetime' => config('session.lifetime'),
+            'timestamp' => now()->toISOString(),
+        ]);
+    });
+
+    Route::post('/regenerate', function () {
+        session()->regenerateToken();
+        return response()->json([
+            'message' => 'CSRF token regenerated',
+            'token' => csrf_token(),
+            'timestamp' => now()->toISOString(),
+        ]);
+    });
+});
+
 // Auth routes
 require __DIR__.'/auth.php';
 

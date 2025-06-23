@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('uniforms', function (Blueprint $table) {
-            // Add user_id column after id
-            $table->foreignId('user_id')->after('id')->constrained()->onDelete('cascade');
+            // Add user_id column after id only if it doesn't exist
+            if (!Schema::hasColumn('uniforms', 'user_id')) {
+                $table->foreignId('user_id')->after('id')->constrained()->onDelete('cascade');
+            }
         });
     }
 

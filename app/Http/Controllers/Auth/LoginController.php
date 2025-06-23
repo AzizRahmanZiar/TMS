@@ -21,7 +21,10 @@ class LoginController extends Controller
     public function store(LoginRequest $request)
     {
         $request->authenticate();
+
+        // Regenerate session and CSRF token
         $request->session()->regenerate();
+        $request->session()->regenerateToken();
 
         $user = Auth::user();
 

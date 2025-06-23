@@ -13,6 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import Toast from "@/Components/Toast";
 import { motion } from "framer-motion";
+import { ensureFreshCSRFToken } from "@/Utils/csrfUtils";
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -31,8 +32,11 @@ export default function Login({ status, canResetPassword }) {
         }
     }, [status]);
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
+
+        // Ensure we have a fresh CSRF token before submitting
+        await ensureFreshCSRFToken();
 
         post(route("login"), {
             onFinish: () => {
@@ -99,14 +103,15 @@ export default function Login({ status, canResetPassword }) {
                             className="space-y-3"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            transition={{ delay: 0.3, duration: 0.5 }}
+                            transition={{ duration: 0.2 }}
                         >
                             {/* General Error Display */}
                             {Object.keys(errors).length > 0 && (
                                 <motion.div
                                     className="bg-red-50 border border-red-200 rounded-xl p-4 shadow-sm"
-                                    initial={{ opacity: 0, y: -10 }}
+                                    initial={{ opacity: 0, y: -5 }}
                                     animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.15 }}
                                 >
                                     <div className="flex">
                                         <div className="flex-shrink-0">
