@@ -183,68 +183,7 @@ Examples:
     }
 };
 
-// Session Management
-import {
-    getSessionStatus,
-    extendSession,
-    sessionTracker
-} from './sessionUtils';
-
-window.SESSION = {
-    /**
-     * Get current session status
-     */
-    status: async () => {
-        const status = await getSessionStatus();
-        console.table(status);
-        return status;
-    },
-
-    /**
-     * Extend current session
-     */
-    extend: async () => {
-        console.log('🔄 Extending session...');
-        const success = await extendSession();
-        console.log(success ? '✅ Session extended successfully' : '❌ Failed to extend session');
-        return success;
-    },
-
-    /**
-     * Get session tracker info
-     */
-    tracker: () => {
-        const info = {
-            lastActivity: sessionTracker.lastActivity,
-            timeSinceLastActivity: sessionTracker.formatTimeSinceLastActivity(),
-            isMonitoring: !!sessionTracker.monitorInterval
-        };
-        console.table(info);
-        return info;
-    },
-
-    /**
-     * Show help
-     */
-    help: () => {
-        console.log(`
-⏰ Session Console Management Help
-
-Commands:
-  SESSION.status()    - Show current session status
-  SESSION.extend()    - Extend current session
-  SESSION.tracker()   - Show activity tracker info
-  SESSION.help()      - Show this help
-
-Examples:
-  SESSION.status()    // Check session status
-  SESSION.extend()    // Extend session manually
-        `);
-    }
-};
-
 // Initialize
 console.log('🛡️ CSRF Console Management loaded. Type CSRF.help() for commands.');
-console.log('⏰ Session Console Management loaded. Type SESSION.help() for commands.');
 
 export default window.CSRF;

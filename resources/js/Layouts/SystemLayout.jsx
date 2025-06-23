@@ -6,9 +6,7 @@ import ProtectedRoute from "../Components/ProtectedRoute";
 import Sidebar from "../Components/Sidebar";
 import NotificationDropdown from "../Components/NotificationDropdown";
 import Portal from "../Components/Portal";
-import CSRFManager from "../Components/CSRFManager";
-import SessionExpiryWarning from "../Components/SessionExpiryWarning";
-import SessionStatus from "../Components/SessionStatus";
+// Removed UI components - keeping background functionality only
 import { FaBars, FaUser, FaSignOutAlt, FaHome, FaTimes } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -269,25 +267,7 @@ const SystemLayout = ({ children }) => {
                     </motion.main>
                 </div>
 
-                {/* Session Expiry Warning */}
-                <SessionExpiryWarning
-                    warningMinutes={5}
-                    autoExtend={true}
-                    showCountdown={true}
-                />
-
-                {/* Session Status - Only show in development */}
-                <SessionStatus
-                    showByDefault={import.meta.env.DEV}
-                    position="top-left"
-                    updateInterval={5000}
-                />
-
-                {/* CSRF Manager - Only show in development or when there are errors */}
-                <CSRFManager
-                    showByDefault={import.meta.env.DEV}
-                    position="bottom-right"
-                />
+                {/* UI components removed - background functionality still active */}
             </div>
         </ProtectedRoute>
     );
