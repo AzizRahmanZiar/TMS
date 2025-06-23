@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tailor_posts', function (Blueprint $table) {
-            $table->dropColumn('title');
+            if (Schema::hasColumn('tailor_posts', 'title')) {
+                $table->dropColumn('title');
+            }
         });
     }
 

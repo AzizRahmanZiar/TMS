@@ -25,6 +25,7 @@ import {
     FaSignInAlt,
 } from "react-icons/fa";
 import { MdWorkOutline } from "react-icons/md";
+import { ensureFreshCSRFToken } from "@/Utils/csrfUtils";
 
 const Registration = ({ hasAdmin }) => {
     const { setReg } = useReg();
@@ -118,8 +119,11 @@ const Registration = ({ hasAdmin }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Ensure we have a fresh CSRF token before submitting
+        await ensureFreshCSRFToken();
 
         // Create FormData object to handle file uploads
         const formDataToSubmit = new FormData();
@@ -207,17 +211,17 @@ const Registration = ({ hasAdmin }) => {
         <>
             <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-10">
                 <motion.div
-                    className="max-w-4xl mx-auto p-8 bg-gradient-to-br from-white via-white to-primary-50/30 rounded-3xl shadow-2xl border border-white/50 backdrop-blur-sm"
+                    className="max-w-4xl mx-auto p-8 bg-gradient-to-br from-white via-white to-primary-50/30 rounded-3xl shadow-2xl border border-white/50"
                     dir="rtl"
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
+                    transition={{ duration: 0.2 }}
                 >
                     <motion.div
                         className="text-center mb-10"
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.1, duration: 0.2 }}
                     >
                         <div className="w-24 h-24 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-lg">
                             <FaUserPlus className="text-white text-3xl" />
@@ -236,15 +240,15 @@ const Registration = ({ hasAdmin }) => {
                         className="space-y-8"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
+                        transition={{ delay: 0.15, duration: 0.2 }}
                     >
                         {/* Section 1: User Information */}
                         <motion.div
-                            className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-gray-200/50 shadow-lg hover:shadow-xl transition-all duration-300"
-                            initial={{ opacity: 0, y: 20 }}
+                            className="bg-white/80 p-8 rounded-2xl border border-gray-200/50 shadow-lg transition-all duration-200"
+                            initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4, duration: 0.5 }}
-                            whileHover={{ y: -2 }}
+                            transition={{ delay: 0.2, duration: 0.2 }}
+                            whileHover={{ y: -1 }}
                         >
                             <h3 className="text-2xl font-bold mb-8 text-gray-800 flex items-center font-zar">
                                 <span className="bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-full w-10 h-10 inline-flex items-center justify-center ml-3 shadow-lg">
@@ -254,9 +258,9 @@ const Registration = ({ hasAdmin }) => {
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
+                                    initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.5, duration: 0.5 }}
+                                    transition={{ delay: 0.25, duration: 0.2 }}
                                 >
                                     <label className="flex items-center text-lg font-semibold text-gray-700 mb-3 font-zar">
                                         <FaUser className="ml-2 text-primary-600" />
@@ -279,8 +283,9 @@ const Registration = ({ hasAdmin }) => {
                                     {errors.name && (
                                         <motion.p
                                             className="mt-3 text-sm text-red-600 flex items-center font-zar"
-                                            initial={{ opacity: 0, y: -10 }}
+                                            initial={{ opacity: 0, y: -5 }}
                                             animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.15 }}
                                         >
                                             <span className="w-4 h-4 bg-red-100 rounded-full flex items-center justify-center mr-2">
                                                 <span className="w-2 h-2 bg-red-500 rounded-full"></span>

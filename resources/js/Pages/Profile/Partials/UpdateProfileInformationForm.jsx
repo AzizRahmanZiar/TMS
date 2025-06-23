@@ -10,6 +10,7 @@ import {
     FaCamera,
     FaTrash,
 } from "react-icons/fa";
+import { ensureFreshCSRFToken } from "@/Utils/csrfUtils";
 
 export default function UpdateProfileInformation({
     mustVerifyEmail,
@@ -47,8 +48,12 @@ export default function UpdateProfileInformation({
         if (fileInput) fileInput.value = "";
     };
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
+
+        // Ensure we have a fresh CSRF token before submitting
+        await ensureFreshCSRFToken();
+
         post(route("profile.update"), {
             forceFormData: true,
         });

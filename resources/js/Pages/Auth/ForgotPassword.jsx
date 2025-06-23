@@ -3,14 +3,19 @@ import { Head, useForm } from "@inertiajs/react";
 import { FaEnvelope, FaPaperPlane, FaKey } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import { motion } from "framer-motion";
+import { ensureFreshCSRFToken } from "@/Utils/csrfUtils";
 
 export default function ForgotPassword({ status }) {
     const { data, setData, post, processing, errors } = useForm({
         email: "",
     });
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
+
+        // Ensure we have a fresh CSRF token before submitting
+        await ensureFreshCSRFToken();
+
         router.post(route("password.email"), data, {
             preserveState: false,
             onError: (errors) => {
@@ -28,9 +33,9 @@ export default function ForgotPassword({ status }) {
 
             <motion.div
                 className="w-full max-w-sm mx-auto"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.2 }}
             >
                 <motion.div
                     className="bg-gradient-to-br from-white via-white to-primary-50/30 rounded-2xl shadow-lg p-4 border border-white/50 backdrop-blur-sm"

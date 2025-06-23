@@ -3,6 +3,7 @@ import { Head, useForm, router } from "@inertiajs/react";
 import { FaEnvelope, FaLock, FaKey, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { ensureFreshCSRFToken } from "@/Utils/csrfUtils";
 
 export default function ResetPassword({ token, email }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -16,8 +17,12 @@ export default function ResetPassword({ token, email }) {
     const [showPasswordConfirmation, setShowPasswordConfirmation] =
         useState(false);
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
+
+        // Ensure we have a fresh CSRF token before submitting
+        await ensureFreshCSRFToken();
+
         router.post(window.route("password.store"), data);
     };
 
@@ -27,9 +32,9 @@ export default function ResetPassword({ token, email }) {
 
             <motion.div
                 className="w-full max-w-sm mx-auto"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.2 }}
             >
                 <motion.div
                     className="bg-gradient-to-br from-white via-white to-primary-50/30 rounded-2xl shadow-lg p-4 border border-white/50 backdrop-blur-sm"
