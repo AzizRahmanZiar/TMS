@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('previous_work')->nullable();
             $table->text('certifications')->nullable();
             $table->text('skills')->nullable();
-            $table->enum('work_availability', ['Full-time', 'Part-time'])->nullable();
+            $table->enum('work_availability', ['مکمل وخت', 'نیم وخت'])->nullable();
 
             // Shop information
             $table->string('tailoring_name')->nullable();

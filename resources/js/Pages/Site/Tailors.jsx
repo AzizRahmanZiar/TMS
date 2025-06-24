@@ -27,6 +27,17 @@ const Tailors = ({ tailors }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const itemsPerPage = 4;
 
+    // Function to translate work availability to Pashto
+    const translateWorkAvailability = (availability) => {
+        const translations = {
+            'Full-time': 'مکمل وخت',
+            'Part-time': 'نیم وخت',
+            'مکمل وخت': 'مکمل وخت',
+            'نیم وخت': 'نیم وخت'
+        };
+        return translations[availability] || availability;
+    };
+
     // Process tailor data
     useEffect(() => {
         if (tailors && tailors.length > 0) {
@@ -355,7 +366,7 @@ const Tailors = ({ tailors }) => {
                                                             </div>
                                                             <span className="text-xs text-gray-700 line-clamp-1 flex-1">
                                                                 {
-                                                                    tailor.work_availability
+                                                                    translateWorkAvailability(tailor.work_availability)
                                                                 }
                                                             </span>
                                                         </div>
@@ -793,7 +804,7 @@ const Tailors = ({ tailors }) => {
                                                     </span>
                                                     <p className="font-medium">
                                                         {
-                                                            selectedTailor.work_availability
+                                                            translateWorkAvailability(selectedTailor.work_availability)
                                                         }
                                                     </p>
                                                 </div>

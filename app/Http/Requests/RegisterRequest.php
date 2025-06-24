@@ -29,7 +29,7 @@ class RegisterRequest extends FormRequest
             $rules['previous_work'] = 'required|string|max:255';
             $rules['certifications'] = 'required|string|max:255';
             $rules['skills'] = 'required|string|in:جامې,یونیفورم,صدری,کورتی';
-            $rules['work_availability'] = 'required|in:Full-time,Part-time';
+            $rules['work_availability'] = 'required|in:مکمل وخت,نیم وخت';
 
             // If addShop is true, add shop-related required fields
             if ($this->input('addShop')) {

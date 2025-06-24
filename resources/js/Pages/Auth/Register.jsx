@@ -581,10 +581,10 @@ const Registration = ({ hasAdmin }) => {
                                             <option value="">
                                                 وخت انتخاب کړئ
                                             </option>
-                                            <option value="Full-time">
+                                            <option value="مکمل وخت">
                                                 مکمل وخت
                                             </option>
-                                            <option value="Part-time">
+                                            <option value="نیم وخت">
                                                 نیم وخت
                                             </option>
                                         </select>
