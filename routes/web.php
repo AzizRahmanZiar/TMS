@@ -81,10 +81,16 @@ Route::get('/adv', [App\Http\Controllers\AdvertisementController::class, 'getFor
 
 
 Route::resource('kortai', KortaiController::class);
+Route::get('/kortai/download/excel', [KortaiController::class, 'downloadExcel'])->name('kortai.download.excel');
+Route::get('/kortai/download/pdf', [KortaiController::class, 'downloadPdf'])->name('kortai.download.pdf');
 Route::resource('uniforms', UniformController::class);
+Route::get('/uniforms/download/excel', [UniformController::class, 'downloadExcel'])->name('uniforms.download.excel');
+Route::get('/uniforms/download/pdf', [UniformController::class, 'downloadPdf'])->name('uniforms.download.pdf');
 
 // Sadrai routes
 Route::resource('sadrai', SadraiController::class);
+Route::get('/sadrai/download/excel', [SadraiController::class, 'downloadExcel'])->name('sadrai.download.excel');
+Route::get('/sadrai/download/pdf', [SadraiController::class, 'downloadPdf'])->name('sadrai.download.pdf');
 
 // CSRF token refresh route
 Route::get('/refresh-csrf', function () {
@@ -166,6 +172,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/cloths', [ClothController::class, 'store'])->name('cloths.store');
     Route::put('/cloths/{cloth}', [ClothController::class, 'update'])->name('cloths.update');
     Route::delete('/cloths/{cloth}', [ClothController::class, 'destroy'])->name('cloths.destroy');
+    Route::get('/cloths/download/excel', [ClothController::class, 'downloadExcel'])->name('cloths.download.excel');
+    Route::get('/cloths/download/pdf', [ClothController::class, 'downloadPdf'])->name('cloths.download.pdf');
 
     // Sadrai routes
     Route::get('/sadrai', [SadraiController::class, 'index'])->name('sadrai.index');

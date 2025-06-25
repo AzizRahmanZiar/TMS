@@ -5,17 +5,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     FaUserShield,
     FaTachometerAlt,
-    FaTshirt,
-    FaUserTie,
-    FaUserGraduate,
-    FaUserTag,
     FaBlog,
     FaTimes,
     FaEnvelope,
     FaBullhorn,
     FaCog,
-    FaCut,
+    FaTshirt,
+    FaUserTie,
 } from "react-icons/fa";
+import {
+    GiSewingMachine,
+    GiClothes,
+    GiShirt,
+} from "react-icons/gi";
 import { FiSend } from "react-icons/fi";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
@@ -56,7 +58,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         return () => window.removeEventListener("resize", handleResize);
     }, [activePath]);
 
-    // Define menu items with their required roles and icons
+    // Define menu items with their required roles and tailoring-related icons
     const menuItems = [
         {
             title: "اډمیــــــــــــــن",
@@ -86,7 +88,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             title: "جامــــــــــــــې",
             href: "/cloths",
             roles: ["tailor"],
-            icon: <FaTshirt className="text-xl md:text-2xl" />,
+            icon: <GiClothes className="text-xl md:text-2xl" />,
         },
         {
             title: "درشــــــــــــــي",
@@ -98,13 +100,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             title: "کــــــــــــــورتۍ",
             href: "/kortai",
             roles: ["tailor"],
-            icon: <FaUserGraduate className="text-xl md:text-2xl" />,
+            icon: <GiShirt className="text-xl md:text-2xl" />,
         },
         {
             title: "صــــــــــــــدرۍ",
             href: "/sadrai",
             roles: ["tailor"],
-            icon: <FaUserTag className="text-xl md:text-2xl" />,
+            icon: <FaTshirt className="text-xl md:text-2xl" />,
         },
         {
             title: "پوســــــــــــــټ",
@@ -112,7 +114,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             roles: ["tailor"],
             icon: <FaBlog className="text-xl md:text-2xl" />,
         },
-
         {
             title: "پرمــــــــــــایش",
             href: "/customerorder",
@@ -231,7 +232,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                 >
                                     {/* Main Icon */}
                                     <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg">
-                                        <FaCut className="text-white text-xl md:text-2xl" />
+                                        <GiSewingMachine className="text-white text-xl md:text-2xl" />
                                     </div>
                                 </motion.div>
                             </Link>

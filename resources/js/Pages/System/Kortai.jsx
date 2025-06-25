@@ -7,12 +7,13 @@ import {
     MdEdit,
     MdVisibility,
 } from "react-icons/md";
-import { FaSort, FaSortUp, FaSortDown, FaRegEdit } from "react-icons/fa";
+import { FaSort, FaSortUp, FaSortDown, FaRegEdit, FaDownload } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
+import DownloadButton from "@/Components/DownloadButton";
 import DeleteModal from "@/Components/DeleteModal";
 import Pagination from "@/Components/Pagination";
 
@@ -283,24 +284,25 @@ const Kortai = ({ kortais: initialKortais }) => {
         setSearchTerm(value);
     };
 
-    // Add this after your existing filtered kortaies logic
-    const filteredKortaies = kortais.filter((kortai) =>
-        Object.values(kortai).some((value) =>
-            String(value).toLowerCase().includes(searchTerm.toLowerCase())
-        )
-    );
-
-    // Calculate pagination
+    // Calculate pagination using the correct filtered data
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredKortaies.slice(
+    const currentItems = filteredData.slice(
         indexOfFirstItem,
         indexOfLastItem
     );
-    const totalItems = filteredKortaies.length;
+    const totalItems = filteredData.length;
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
+    };
+
+    const handleDownload = (type, format) => {
+        const url = format === 'pdf'
+            ? `/kortai/download/pdf?type=${type}`
+            : `/kortai/download/excel?type=${type}`;
+
+        window.open(url, '_blank');
     };
 
     return (
@@ -377,6 +379,9 @@ const Kortai = ({ kortais: initialKortais }) => {
                         >
                             بشپړ شوي
                         </motion.button>
+                        <DownloadButton
+                            onDownload={handleDownload}
+                        />
                     </div>
                 </motion.div>
 

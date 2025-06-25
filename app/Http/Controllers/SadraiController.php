@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Sadrai;
 use App\Http\Requests\SadraiRequest;
+use App\Services\PdfReportService;
+use App\Services\ExcelReportService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -82,5 +84,61 @@ class SadraiController extends Controller
         $sadrai->delete();
 
         return redirect()->route('sadrai.index')->with('success', 'Sadrai deleted successfully.');
+    }
+
+    // Download Excel report
+    public function downloadExcel(Request $request, ExcelReportService $excelService)
+    {
+        $type = $request->get('type', 'total');
+        $userId = auth()->id();
+
+        $query = Sadrai::where('user_id', $userId);
+
+        switch ($type) {
+            case 'active':
+                $query->whereNull('tasleem_tareekh');
+                break;
+            case 'disabled':
+                $query->whereNotNull('tasleem_tareekh');
+                break;
+        }
+
+        $sadrais = $query->orderBy('created_at', 'desc')->get();
+
+        $csvContent = $excelService->generateSadraisReport($sadrais, $type);
+
+        $filename = 'sadrais_' . $type . '_' . date('Y-m-d') . '.csv';
+
+        return response($csvContent)
+            ->header('Content-Type', 'text/csv; charset=UTF-8')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Content-Length', strlen($csvContent));
+    }
+
+    // Download PDF report
+    public function downloadPdf(Request $request, PdfReportService $pdfService)
+    {
+        $type = $request->get('type', 'total');
+        $userId = auth()->id();
+
+        $query = Sadrai::where('user_id', $userId);
+
+        switch ($type) {
+            case 'active':
+                $query->whereNull('tasleem_tareekh');
+                break;
+            case 'disabled':
+                $query->whereNotNull('tasleem_tareekh');
+                break;
+        }
+
+        $sadrais = $query->orderBy('created_at', 'desc')->get();
+
+        $pdf = $pdfService->generateSadraisReport($sadrais, $type);
+        $pdf->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+
+        $filename = 'sadrais_' . $type . '_' . date('Y-m-d') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }

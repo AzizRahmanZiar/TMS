@@ -7,11 +7,12 @@ import {
     MdEdit,
     MdVisibility,
 } from "react-icons/md";
-import { FaSort, FaSortUp, FaSortDown, FaRegEdit } from "react-icons/fa";
+import { FaSort, FaSortUp, FaSortDown, FaRegEdit, FaDownload } from "react-icons/fa";
 import { useUniform } from "@/Contexts/UniformContext";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
+import DownloadButton from "@/Components/DownloadButton";
 import DeleteModal from "@/Components/DeleteModal";
 import { router, usePage } from "@inertiajs/react";
 import Pagination from "@/Components/Pagination";
@@ -328,6 +329,14 @@ const Uniform = ({ uniforms: initialUniforms }) => {
         setCurrentPage(pageNumber);
     };
 
+    const handleDownload = (type, format) => {
+        const url = format === 'pdf'
+            ? `/uniforms/download/pdf?type=${type}`
+            : `/uniforms/download/excel?type=${type}`;
+
+        window.open(url, '_blank');
+    };
+
     return (
         <SystemLayout>
             <div className="p-6">
@@ -402,6 +411,9 @@ const Uniform = ({ uniforms: initialUniforms }) => {
                         >
                             بشپړ شوي
                         </motion.button>
+                        <DownloadButton
+                            onDownload={handleDownload}
+                        />
                     </div>
                 </motion.div>
 

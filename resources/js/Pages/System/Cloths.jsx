@@ -19,12 +19,14 @@ import {
     FaSortUp,
     FaSortDown,
     FaRegEdit,
+    FaDownload,
 } from "react-icons/fa";
 
 import { useCloths } from "@/Contexts/ClothsContext";
 import SystemLayout from "@/Layouts/SystemLayout";
 import SearchBar from "@/Components/SearchBar";
 import SystemButtons from "@/Components/SystemButtons";
+import DownloadButton from "@/Components/DownloadButton";
 import DeleteModal from "@/Components/DeleteModal";
 import { router, useForm } from "@inertiajs/react";
 import TextInput from "@/Components/Form/TextInput";
@@ -328,11 +330,7 @@ const Cloths = ({ cloths: initialCloths }) => {
     const formatDate = (dateString) => {
         if (!dateString) return "";
         const date = new Date(dateString);
-        return date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-        });
+        return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
     };
 
     const handleViewRecord = (row) => {
@@ -348,6 +346,14 @@ const Cloths = ({ cloths: initialCloths }) => {
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
+    };
+
+    const handleDownload = (type, format) => {
+        const url = format === 'pdf'
+            ? `/cloths/download/pdf?type=${type}`
+            : `/cloths/download/excel?type=${type}`;
+
+        window.open(url, '_blank');
     };
 
     return (
@@ -428,6 +434,9 @@ const Cloths = ({ cloths: initialCloths }) => {
                         >
                             بشپړ شوي
                         </motion.button>
+                        <DownloadButton
+                            onDownload={handleDownload}
+                        />
                     </div>
                 </motion.div>
 
@@ -500,14 +509,14 @@ const Cloths = ({ cloths: initialCloths }) => {
                                         <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-sm text-gray-600 font-zar">
-                                                    {row.rawrul_tareekh}
+                                                    {formatDate(row.rawrul_tareekh)}
                                                 </span>
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-sm text-gray-600 font-zar">
-                                                    {row.tasleem_tareekh}
+                                                    {formatDate(row.tasleem_tareekh)}
                                                 </span>
                                             </div>
                                         </td>
@@ -1400,7 +1409,7 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                 د راوړلو تاریخ
                                             </label>
                                             <p className="text-gray-900 font-zar bg-gray-50 p-3 rounded-lg">
-                                                {selectedRow.rawrul_tareekh}
+                                                {formatDate(selectedRow.rawrul_tareekh)}
                                             </p>
                                         </div>
                                         <div className="space-y-2">
@@ -1408,7 +1417,7 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                 د تسلیمولو تاریخ
                                             </label>
                                             <p className="text-gray-900 font-zar bg-gray-50 p-3 rounded-lg">
-                                                {selectedRow.tasleem_tareekh}
+                                                {formatDate(selectedRow.tasleem_tareekh)}
                                             </p>
                                         </div>
                                     </div>
