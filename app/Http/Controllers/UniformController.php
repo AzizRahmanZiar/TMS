@@ -112,14 +112,17 @@ class UniformController extends Controller
 
         $uniforms = $query->orderBy('created_at', 'desc')->get();
 
-        $csvContent = $excelService->generateUniformsReport($uniforms, $type);
+        $excelContent = $excelService->generateUniformsReport($uniforms, $type);
 
-        $filename = 'uniforms_' . $type . '_' . date('Y-m-d') . '.csv';
+        $filename = 'uniforms_' . $type . '_' . date('Y-m-d') . '.xls';
 
-        return response($csvContent)
-            ->header('Content-Type', 'text/csv; charset=UTF-8')
+        return response($excelContent)
+            ->header('Content-Type', 'application/vnd.ms-excel; charset=UTF-8')
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
-            ->header('Content-Length', strlen($csvContent));
+            ->header('Content-Length', strlen($excelContent))
+            ->header('Cache-Control', 'no-cache, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     // Download PDF report
