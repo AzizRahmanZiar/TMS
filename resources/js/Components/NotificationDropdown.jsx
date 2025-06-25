@@ -114,52 +114,6 @@ const NotificationDropdown = () => {
                                 <h3 className="text-lg font-bold text-gray-900 font-bahij">
                                     خبرتیاوې
                                 </h3>
-                                {/* <div className="flex items-center gap-2">
-                                    {unreadCount > 0 && (
-                                        <motion.button
-                                            onClick={markAllAsRead}
-                                            className="text-xs text-blue-600 hover:text-blue-800 font-bahij flex items-center gap-1"
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                        >
-                                            <FaCheck className="text-xs font-bahij" />
-                                            ټول لوستل شوي
-                                        </motion.button>
-                                    )}
-                                    <motion.button
-                                        onClick={fetchNotifications}
-                                        className="text-xl font-bahij text-gray-600 hover:text-gray-800 font-bahij flex items-center gap-1"
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        disabled={loading}
-                                    >
-                                        <motion.div
-                                            animate={
-                                                loading ? { rotate: 360 } : {}
-                                            }
-                                            transition={
-                                                loading
-                                                    ? {
-                                                          duration: 1,
-                                                          repeat: Infinity,
-                                                          ease: "linear",
-                                                      }
-                                                    : {}
-                                            }
-                                        >
-                                            🔄
-                                        </motion.div>
-                                        تازه کول
-                                    </motion.button>
-                                    <motion.button
-                                        onClick={() => setIsOpen(false)}
-                                        className="text-gray-400 hover:text-gray-600"
-                                        whileHover={{ scale: 1.1 }}
-                                        whileTap={{ scale: 0.9 }}
-                                    >
-                                        <FaTimes className="text-sm" />
-                                    </motion.button>
-                                </div> */}
                             </div>
 
                             {/* Notifications List */}

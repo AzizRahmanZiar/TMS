@@ -8,26 +8,28 @@ import { createRoot } from "react-dom/client";
 import axios from "axios";
 
 import GlobalProviders from "./Components/GlobalProviders";
-import { recordCSRFError, resetCSRFErrorTracking } from "./Utils/csrfUtils";
+import { recordCSRFError, resetCSRFErrorTracking } from "./utils/csrfUtils";
 
 // Load CSRF console utilities in development
 if (import.meta.env.DEV) {
-    import("./Utils/csrfConsole");
+    import("./utils/csrfConsole");
 }
 
 // Configure Inertia to include CSRF token in all requests
-router.on('before', (event) => {
-    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+router.on("before", (event) => {
+    const token = document
+        .querySelector('meta[name="csrf-token"]')
+        ?.getAttribute("content");
     if (token) {
         event.detail.visit.headers = {
             ...event.detail.visit.headers,
-            'X-CSRF-TOKEN': token,
+            "X-CSRF-TOKEN": token,
         };
     }
 });
 
 // Handle successful responses to update CSRF token
-router.on('success', (event) => {
+router.on("success", (event) => {
     // Reset CSRF error tracking on successful requests
     resetCSRFErrorTracking();
 
@@ -36,11 +38,11 @@ router.on('success', (event) => {
     if (newToken) {
         const metaTag = document.querySelector('meta[name="csrf-token"]');
         if (metaTag) {
-            metaTag.setAttribute('content', newToken);
+            metaTag.setAttribute("content", newToken);
         }
         // Update axios headers
         if (window.axios) {
-            window.axios.defaults.headers.common['X-CSRF-TOKEN'] = newToken;
+            window.axios.defaults.headers.common["X-CSRF-TOKEN"] = newToken;
         }
     }
 });
@@ -91,12 +93,12 @@ createInertiaApp({
                 refreshTimeout = setTimeout(async () => {
                     try {
                         const response = await fetch("/refresh-csrf", {
-                            method: 'GET',
-                            credentials: 'same-origin',
+                            method: "GET",
+                            credentials: "same-origin",
                             headers: {
-                                'Accept': 'application/json',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
+                                Accept: "application/json",
+                                "X-Requested-With": "XMLHttpRequest",
+                            },
                         });
 
                         if (response.ok) {
@@ -108,15 +110,18 @@ createInertiaApp({
                                     ?.setAttribute("content", data.token);
 
                                 // Update axios headers
-                                axios.defaults.headers.common["X-CSRF-TOKEN"] = data.token;
+                                axios.defaults.headers.common["X-CSRF-TOKEN"] =
+                                    data.token;
 
-                                console.log("CSRF token refreshed successfully");
+                                console.log(
+                                    "CSRF token refreshed successfully"
+                                );
                                 resolve(data.token);
                             } else {
-                                reject(new Error('No token received'));
+                                reject(new Error("No token received"));
                             }
                         } else {
-                            reject(new Error('Failed to refresh token'));
+                            reject(new Error("Failed to refresh token"));
                         }
                     } catch (error) {
                         console.error("Failed to refresh CSRF token:", error);
@@ -176,19 +181,20 @@ createInertiaApp({
             const { errors, status } = event.detail;
 
             // Check if it's a CSRF error (419)
-            if (status === 419 || (
-                errors &&
-                (errors.message?.includes("419") ||
-                    errors.message?.includes("expired") ||
-                    errors.message?.includes("token") ||
-                    Object.keys(errors).some(
-                        (key) =>
-                            errors[key]?.includes &&
-                            (errors[key].includes("419") ||
-                                errors[key].includes("expired") ||
-                                errors[key].includes("token"))
-                    ))
-            )) {
+            if (
+                status === 419 ||
+                (errors &&
+                    (errors.message?.includes("419") ||
+                        errors.message?.includes("expired") ||
+                        errors.message?.includes("token") ||
+                        Object.keys(errors).some(
+                            (key) =>
+                                errors[key]?.includes &&
+                                (errors[key].includes("419") ||
+                                    errors[key].includes("expired") ||
+                                    errors[key].includes("token"))
+                        )))
+            ) {
                 console.log("CSRF error detected, refreshing token...");
 
                 // Record the CSRF error for tracking

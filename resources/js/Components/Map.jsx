@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 const Map = () => {
     const [isClient, setIsClient] = useState(false);
-    const position = [31.6289, 65.7372]; // د کندهار جغرافیوي مختصات
+    const position = [31.6289, 65.7372];
 
     useEffect(() => {
         setIsClient(true);

@@ -1144,91 +1144,11 @@ const Shop = ({ shops }) => {
                                                         {selectedTailor.email}
                                                     </p>
                                                 </div>
-                                                {/*
-                                                <div>
-                                                    <span className="text-sm text-gray-500">
-                                                        تجربه:
-                                                    </span>
-                                                    <p className="font-medium">
-                                                        {
-                                                            selectedTailor.experience
-                                                        }
-                                                        کلونه
-                                                    </p>
-                                                </div> */}
 
-                                                {/* {selectedTailor.career && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            مسلک:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.career
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                )} */}
                                             </div>
                                         </div>
 
-                                        {/* Professional Information */}
-                                        {/* <div className="bg-gray-50 p-4 rounded-xl">
-                                            <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                                <FaTools className="text-secondary-500 mr-2" />
-                                                مسلکي معلومات
-                                            </h4>
-                                            <div className="space-y-3">
-                                                {selectedTailor.skills && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            مهارتونه:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.skills
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                )}
-                                                {selectedTailor.work_availability && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            د کار شتون:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.work_availability
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                )}
-                                                {selectedTailor.previous_work && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            پخوانی کار:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.previous_work
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                )}
-                                                {selectedTailor.certifications && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            سندونه:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.certifications
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div> */}
+
                                     </div>
 
                                     {/* Action Buttons */}

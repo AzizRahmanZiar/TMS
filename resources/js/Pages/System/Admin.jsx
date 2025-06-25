@@ -178,9 +178,7 @@ const Admin = () => {
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
                                         <span>بریښنالیک</span>
                                     </th>
-                                    <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
-                                        <span>تلیفون</span>
-                                    </th>
+
                                     <th className="px-4 md:px-6 py-4 text-right font-zar text-sm md:text-base font-bold text-primary-800 border-b border-primary-200">
                                         <span>رول</span>
                                     </th>
@@ -205,7 +203,7 @@ const Admin = () => {
                                         }}
                                     >
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-3">
+                                            <div className="flex items-center gap-3">
                                                 <div>
                                                     <div className="font-zar text-sm md:text-base font-semibold text-gray-900">
                                                         {user.name}
@@ -236,7 +234,7 @@ const Admin = () => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center gap-2">
                                                 <span className="font-zar text-sm md:text-base text-gray-900 font-medium truncate max-w-[150px] md:max-w-none">
                                                     {user.email}
                                                 </span>
@@ -245,18 +243,9 @@ const Admin = () => {
                                                 </div>
                                             </div>
                                         </td>
+
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <span className="font-zar text-sm text-gray-900 font-medium">
-                                                    {user.phone}
-                                                </span>
-                                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                                    <FaPhone className="text-green-600 text-xs" />
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end">
+                                            <div className="flex items-center">
                                                 {user.role === "admin" && (
                                                     <span className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-xs font-bold font-zar border border-blue-200">
                                                         اډمین
@@ -276,7 +265,7 @@ const Admin = () => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
-                                            <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center  gap-2">
                                                 <span className="text-sm text-gray-600 font-zar">
                                                     {new Date(
                                                         user.created_at
@@ -288,7 +277,7 @@ const Admin = () => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end">
+                                            <div className="flex items-center ">
                                                 <motion.button
                                                     onClick={() =>
                                                         handleDeleteClick(user)

@@ -131,7 +131,7 @@ const Messages = () => {
                             </div>
                             <div className="w-full md:w-96">
                                 <SearchBar
-                                    placeholder="د نوم، بریښنالیک، تلیفون، موضوع یا پیغام په اساس لټون..."
+                                    placeholder="د نوم، بریښنالیک، په اساس لټون..."
                                     onSearch={handleSearch}
                                     initialValue={searchTerm}
                                     className="w-full text-gray-700"
@@ -191,7 +191,7 @@ const Messages = () => {
                                         }}
                                     >
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-3">
+                                            <div className="flex items-center  gap-3">
                                                 <div>
                                                     <div className="font-zar text-sm md:text-base font-semibold text-gray-900">
                                                         {message.user?.name ||
@@ -207,7 +207,7 @@ const Messages = () => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right hidden lg:table-cell">
-                                            <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center  gap-2">
                                                 <span className="font-zar text-sm text-gray-900 font-medium truncate max-w-[150px]">
                                                     {message.user?.email ||
                                                         "نامعلوم"}
@@ -218,7 +218,7 @@ const Messages = () => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right hidden md:table-cell">
-                                            <div className="flex items-center justify-end">
+                                            <div className="flex items-center ">
                                                 <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold font-zar border border-blue-200">
                                                     {message.user?.role ||
                                                         "مشتری"}
@@ -226,7 +226,7 @@ const Messages = () => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center  gap-2">
                                                 <span className="font-zar text-sm text-gray-900 font-medium">
                                                     {message.phone}
                                                 </span>
@@ -236,7 +236,7 @@ const Messages = () => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center  gap-2">
                                                 <span className="font-zar text-sm text-gray-900 font-medium truncate max-w-[120px]">
                                                     {message.subject}
                                                 </span>
@@ -246,7 +246,7 @@ const Messages = () => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center  gap-2">
                                                 <span className="font-zar text-sm text-gray-900 max-w-[150px] truncate">
                                                     {message.message}
                                                 </span>
@@ -256,7 +256,7 @@ const Messages = () => {
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right hidden xl:table-cell">
-                                            <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center  gap-2">
                                                 <span className="text-sm text-gray-600 font-zar">
                                                     {new Date(
                                                         message.created_at

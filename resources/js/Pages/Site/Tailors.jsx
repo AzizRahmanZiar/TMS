@@ -30,10 +30,10 @@ const Tailors = ({ tailors }) => {
     // Function to translate work availability to Pashto
     const translateWorkAvailability = (availability) => {
         const translations = {
-            'Full-time': 'مکمل وخت',
-            'Part-time': 'نیم وخت',
-            'مکمل وخت': 'مکمل وخت',
-            'نیم وخت': 'نیم وخت'
+            "Full-time": "مکمل وخت",
+            "Part-time": "نیم وخت",
+            "مکمل وخت": "مکمل وخت",
+            "نیم وخت": "نیم وخت",
         };
         return translations[availability] || availability;
     };
@@ -365,9 +365,9 @@ const Tailors = ({ tailors }) => {
                                                                 <FaClock className="text-secondary-600 text-xs" />
                                                             </div>
                                                             <span className="text-xs text-gray-700 line-clamp-1 flex-1">
-                                                                {
-                                                                    translateWorkAvailability(tailor.work_availability)
-                                                                }
+                                                                {translateWorkAvailability(
+                                                                    tailor.work_availability
+                                                                )}
                                                             </span>
                                                         </div>
                                                     )}
@@ -738,12 +738,6 @@ const Tailors = ({ tailors }) => {
                                             {selectedTailor.name}
                                         </h3>
                                         <div className="flex justify-center gap-2 mb-4 flex-wrap">
-                                            {/* {selectedTailor.has_shop && (
-                                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-100 text-secondary-700 text-sm">
-                                                    <FaStore className="text-sm" />
-                                                    د دوکان لرونکی
-                                                </span>
-                                            )} */}
                                             {selectedTailor.rating_percentage >
                                                 0 && (
                                                 <span
@@ -803,9 +797,9 @@ const Tailors = ({ tailors }) => {
                                                         د کار شتون:
                                                     </span>
                                                     <p className="font-medium">
-                                                        {
-                                                            translateWorkAvailability(selectedTailor.work_availability)
-                                                        }
+                                                        {translateWorkAvailability(
+                                                            selectedTailor.work_availability
+                                                        )}
                                                     </p>
                                                 </div>
                                             </div>
@@ -871,78 +865,6 @@ const Tailors = ({ tailors }) => {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* Shop Information (if available) */}
-                                    {/* {selectedTailor.has_shop && (
-                                        <div className="mt-6 bg-gradient-to-r from-secondary-50 to-primary-50 p-6 rounded-xl border border-secondary-200">
-                                            <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                                                <FaStore className="text-secondary-500 mr-2" />
-                                                د دوکان معلومات
-                                            </h4>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                {selectedTailor.tailoring_name && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            د دوکان نوم:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.tailoring_name
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                )}
-                                                {selectedTailor.tailoring_address && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            پته:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.tailoring_address
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                )}
-                                                {selectedTailor.contact_number && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            د اړیکو شمیره:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.contact_number
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                )}
-                                                {selectedTailor.working_hours && (
-                                                    <div>
-                                                        <span className="text-sm text-gray-500">
-                                                            د کار وختونه:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.working_hours
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                )}
-                                                {selectedTailor.services && (
-                                                    <div className="md:col-span-2">
-                                                        <span className="text-sm text-gray-500">
-                                                            خدمتونه:
-                                                        </span>
-                                                        <p className="font-medium">
-                                                            {
-                                                                selectedTailor.services
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )} */}
 
                                     {/* Action Buttons */}
                                     <div className="mt-6 flex gap-4">
