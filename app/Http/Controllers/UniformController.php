@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Uniform;
 use App\Http\Requests\UniformRequest;
+use App\Services\PdfReportService;
+use App\Services\ExcelReportService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -89,5 +91,61 @@ class UniformController extends Controller
 
         $uniform->delete();
         return back()->with('success', 'Uniform deleted successfully');
+    }
+
+    // Download Excel report
+    public function downloadExcel(Request $request, ExcelReportService $excelService)
+    {
+        $type = $request->get('type', 'total');
+        $userId = auth()->id();
+
+        $query = Uniform::where('user_id', $userId);
+
+        switch ($type) {
+            case 'active':
+                $query->whereNull('tasleem_tareekh');
+                break;
+            case 'disabled':
+                $query->whereNotNull('tasleem_tareekh');
+                break;
+        }
+
+        $uniforms = $query->orderBy('created_at', 'desc')->get();
+
+        $csvContent = $excelService->generateUniformsReport($uniforms, $type);
+
+        $filename = 'uniforms_' . $type . '_' . date('Y-m-d') . '.csv';
+
+        return response($csvContent)
+            ->header('Content-Type', 'text/csv; charset=UTF-8')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Content-Length', strlen($csvContent));
+    }
+
+    // Download PDF report
+    public function downloadPdf(Request $request, PdfReportService $pdfService)
+    {
+        $type = $request->get('type', 'total');
+        $userId = auth()->id();
+
+        $query = Uniform::where('user_id', $userId);
+
+        switch ($type) {
+            case 'active':
+                $query->whereNull('tasleem_tareekh');
+                break;
+            case 'disabled':
+                $query->whereNotNull('tasleem_tareekh');
+                break;
+        }
+
+        $uniforms = $query->orderBy('created_at', 'desc')->get();
+
+        $pdf = $pdfService->generateUniformsReport($uniforms, $type);
+        $pdf->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+
+        $filename = 'uniforms_' . $type . '_' . date('Y-m-d') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }

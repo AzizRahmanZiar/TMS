@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Cloth;
 use App\Http\Requests\ClothRequest;
+use App\Services\PdfReportService;
+use App\Services\ExcelReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -76,5 +78,64 @@ class ClothController extends Controller
         $cloth->delete();
 
         return redirect()->route('cloths.index')->with('success', 'Cloth deleted successfully.');
+    }
+
+    // Download Excel report
+    public function downloadExcel(Request $request, ExcelReportService $excelService)
+    {
+        $type = $request->get('type', 'total');
+        $userId = auth()->id();
+
+        $query = Cloth::where('user_id', $userId);
+
+        switch ($type) {
+            case 'active':
+                $query->whereNull('tasleem_tareekh');
+                break;
+            case 'disabled':
+                $query->whereNotNull('tasleem_tareekh');
+                break;
+        }
+
+        $cloths = $query->orderBy('created_at', 'desc')->get();
+
+        $excelContent = $excelService->generateClothsReport($cloths, $type);
+
+        $filename = 'cloths_' . $type . '_' . date('Y-m-d') . '.xls';
+
+        return response($excelContent)
+            ->header('Content-Type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Content-Length', strlen($excelContent))
+            ->header('Cache-Control', 'no-cache, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
+    }
+
+    // Download PDF report
+    public function downloadPdf(Request $request, PdfReportService $pdfService)
+    {
+        $type = $request->get('type', 'total');
+        $userId = auth()->id();
+
+        $query = Cloth::where('user_id', $userId);
+
+        switch ($type) {
+            case 'active':
+                $query->whereNull('tasleem_tareekh');
+                break;
+            case 'disabled':
+                $query->whereNotNull('tasleem_tareekh');
+                break;
+        }
+
+        $cloths = $query->orderBy('created_at', 'desc')->get();
+
+        $pdf = $pdfService->generateClothsReport($cloths, $type);
+        $pdf->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+
+        $filename = 'cloths_' . $type . '_' . date('Y-m-d') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }
