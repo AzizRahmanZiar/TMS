@@ -98,7 +98,7 @@ const DownloadModal = ({ isOpen, onClose, onDownload, reportType }) => {
                                     </div>
                                 </motion.button>
 
-                                {/* CSV Option */}
+                                {/* Excel Option */}
                                 <motion.button
                                     onClick={() => handleFormatSelect('excel')}
                                     className="w-full p-4 bg-gradient-to-r from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 border-2 border-green-200 hover:border-green-300 rounded-xl transition-all duration-300 group"
@@ -122,6 +122,8 @@ const DownloadModal = ({ isOpen, onClose, onDownload, reportType }) => {
                                         </div>
                                     </div>
                                 </motion.button>
+
+
                             </div>
 
                             {/* Footer */}

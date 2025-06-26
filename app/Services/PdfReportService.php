@@ -2,64 +2,100 @@
 
 namespace App\Services;
 
-use Barryvdh\DomPDF\Facade\Pdf;
+use Mpdf\Mpdf;
 
 class PdfReportService
 {
     public function generateClothsReport($cloths, $type)
     {
         $html = $this->generateClothsHtml($cloths, $type);
-        $pdf = Pdf::loadHTML($html)
-            ->setPaper('a4', 'landscape')
-            ->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true,
-                'defaultFont' => 'DejaVu Sans',
-                'isPhpEnabled' => true
-            ]);
-        return $pdf;
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'orientation' => 'L',
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'default_font' => 'dejavusans',
+            'dir' => 'rtl',
+            'default_font_size' => 12,
+            'autoScriptToLang' => true,
+            'autoLangToFont' => true
+        ]);
+
+        $mpdf->WriteHTML($html);
+        return $mpdf;
     }
 
     public function generateUniformsReport($uniforms, $type)
     {
         $html = $this->generateUniformsHtml($uniforms, $type);
-        $pdf = Pdf::loadHTML($html)
-            ->setPaper('a4', 'landscape')
-            ->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true,
-                'defaultFont' => 'DejaVu Sans',
-                'isPhpEnabled' => true
-            ]);
-        return $pdf;
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'orientation' => 'L',
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'default_font' => 'dejavusans',
+            'dir' => 'rtl',
+            'default_font_size' => 12,
+            'autoScriptToLang' => true,
+            'autoLangToFont' => true
+        ]);
+
+        $mpdf->WriteHTML($html);
+        return $mpdf;
     }
 
     public function generateKortaisReport($kortais, $type)
     {
         $html = $this->generateKortaisHtml($kortais, $type);
-        $pdf = Pdf::loadHTML($html)
-            ->setPaper('a4', 'landscape')
-            ->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true,
-                'defaultFont' => 'DejaVu Sans',
-                'isPhpEnabled' => true
-            ]);
-        return $pdf;
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'orientation' => 'L',
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'default_font' => 'dejavusans',
+            'dir' => 'rtl',
+            'default_font_size' => 12,
+            'autoScriptToLang' => true,
+            'autoLangToFont' => true
+        ]);
+
+        $mpdf->WriteHTML($html);
+        return $mpdf;
     }
 
     public function generateSadraisReport($sadrais, $type)
     {
         $html = $this->generateSadraisHtml($sadrais, $type);
-        $pdf = Pdf::loadHTML($html)
-            ->setPaper('a4', 'landscape')
-            ->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true,
-                'defaultFont' => 'DejaVu Sans',
-                'isPhpEnabled' => true
-            ]);
-        return $pdf;
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'orientation' => 'L',
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'default_font' => 'dejavusans',
+            'dir' => 'rtl',
+            'default_font_size' => 12,
+            'autoScriptToLang' => true,
+            'autoLangToFont' => true
+        ]);
+
+        $mpdf->WriteHTML($html);
+        return $mpdf;
     }
 
     private function getTypeLabel($type)
@@ -97,25 +133,25 @@ class PdfReportService
 
 
 
+
+
     private function getBaseStyles()
     {
         return '
         <style>
-            @page {
-                margin: 15mm;
-                size: A4 landscape;
+            * {
+                font-family: "DejaVu Sans", sans-serif !important;
             }
             body {
                 font-family: "DejaVu Sans", sans-serif;
                 direction: rtl;
                 text-align: right;
                 margin: 0;
-                padding: 0;
+                padding: 15px;
                 font-size: 14px;
-                line-height: 1.6;
+                line-height: 1.4;
                 color: #333;
                 background: #fff;
-                unicode-bidi: embed;
             }
             .report-container {
                 max-width: 100%;
@@ -128,41 +164,27 @@ class PdfReportService
             .header {
                 background: #5d5361;
                 color: white;
-                padding: 25px;
+                padding: 15px;
                 text-align: center;
-                border-radius: 8px;
-                margin-bottom: 20px;
-            }
-            .header-content {
-                position: relative;
-                z-index: 1;
+                margin-bottom: 15px;
+                border-radius: 5px;
             }
             .company-name {
-                font-size: 28px;
+                font-size: 20px;
                 font-weight: bold;
                 margin-bottom: 8px;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                letter-spacing: 1px;
             }
             .report-title {
-                font-size: 22px;
-                font-weight: 600;
-                margin-bottom: 12px;
-                opacity: 0.95;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 6px;
             }
             .report-subtitle {
                 font-size: 16px;
-                margin-bottom: 8px;
-                opacity: 0.9;
-                background: rgba(255,255,255,0.2);
-                padding: 8px 16px;
-                border-radius: 20px;
-                display: inline-block;
+                margin-bottom: 6px;
             }
             .report-date {
                 font-size: 14px;
-                opacity: 0.8;
-                margin-top: 10px;
             }
             .content-section {
                 padding: 30px;
@@ -178,25 +200,28 @@ class PdfReportService
             table {
                 width: 100%;
                 border-collapse: collapse;
-                margin: 0;
+                margin: 15px 0;
                 font-size: 11px;
+                direction: rtl;
+                text-align: right;
             }
             th {
                 background: #6d6354;
                 color: white;
-                padding: 12px 8px;
+                padding: 10px 6px;
                 text-align: center;
                 font-weight: bold;
-                font-size: 12px;
+                font-size: 10px;
+                border: 1px solid #4d463d;
                 direction: rtl;
-                border: 1px solid #333;
             }
             td {
-                padding: 14px 12px;
+                padding: 8px 5px;
                 text-align: center;
                 background-color: #ffffff;
+                font-size: 10px;
+                border: 1px solid #ddd;
                 direction: rtl;
-                font-size: 11px;
                 border-bottom: 1px solid #f1f5f9;
                 transition: background-color 0.2s ease;
             }
@@ -276,7 +301,7 @@ class PdfReportService
         $html .= '<div class="header-content">';
         $html .= '<div class="company-name">د خیاطۍ مدیریت سیسټم</div>';
         $html .= '<div class="report-title">د جامو راپور</div>';
-        $html .= '<div class="report-subtitle">' . $typeLabel . '</div>';
+        $html .= '<div class="report-subtitle">' . htmlspecialchars($typeLabel) . '</div>';
         $html .= '<div class="report-date">د تولید نیټه: ' . $date . '</div>';
         $html .= '</div>';
         $html .= '</div>';
@@ -286,25 +311,38 @@ class PdfReportService
         $html .= '<table>';
         $html .= '<thead><tr>';
         $html .= '<th>نوم</th><th>موبایل</th><th>قد</th><th>شانه</th><th>غاړه</th><th>زیګر</th>';
-        $html .= '<th>لستونی</th><th>پرتوګ</th><th>پای څه</th><th>د راوړلو نیټه</th>';
-        $html .= '<th>د تسلیمولو نیټه</th><th>تعداد</th><th>پیسې</th>';
+        $html .= '<th>لستونی</th><th>پرتوګ</th><th>پای څه</th><th>لستوڼي</th><th>لستوڼي غوټۍ</th>';
+        $html .= '<th>بین</th><th>بین کاټ</th><th>د مخ جیب</th><th>ترخزي</th><th>کالري</th>';
+        $html .= '<th>شبازي</th><th>عربي</th><th>لمن</th><th>لستوڼي ۲</th>';
+        $html .= '<th>د راوړلو نیټه</th><th>د تسلیمولو نیټه</th><th>تعداد</th><th>پیسې</th>';
         $html .= '</tr></thead><tbody>';
 
         foreach ($cloths as $cloth) {
             $html .= '<tr>';
-            $html .= '<td>' . htmlspecialchars($cloth->nom) . '</td>';
-            $html .= '<td>' . htmlspecialchars($cloth->mobile) . '</td>';
-            $html .= '<td>' . $cloth->qadd . '</td>';
-            $html .= '<td>' . $cloth->shana . '</td>';
-            $html .= '<td>' . $cloth->ghara . '</td>';
-            $html .= '<td>' . $cloth->zegar . '</td>';
-            $html .= '<td>' . $cloth->lstoony . '</td>';
-            $html .= '<td>' . $cloth->partog . '</td>';
-            $html .= '<td>' . $cloth->pai_tsa . '</td>';
-            $html .= '<td>' . $this->formatDate($cloth->rawrul_tareekh) . '</td>';
-            $html .= '<td>' . $this->formatDate($cloth->tasleem_tareekh) . '</td>';
-            $html .= '<td>' . $cloth->tidad . '</td>';
-            $html .= '<td>' . number_format($cloth->money, 2) . '</td>';
+            $html .= '<td>' . htmlspecialchars($cloth->nom ?: 'نامعلوم') . '</td>';
+            $html .= '<td>' . htmlspecialchars($cloth->mobile ?: 'نامعلوم') . '</td>';
+            $html .= '<td>' . ($cloth->qadd ?: '-') . '</td>';
+            $html .= '<td>' . ($cloth->shana ?: '-') . '</td>';
+            $html .= '<td>' . ($cloth->ghara ?: '-') . '</td>';
+            $html .= '<td>' . ($cloth->zegar ?: '-') . '</td>';
+            $html .= '<td>' . ($cloth->lstoony ?: '-') . '</td>';
+            $html .= '<td>' . ($cloth->partog ?: '-') . '</td>';
+            $html .= '<td>' . ($cloth->pai_tsa ?: '-') . '</td>';
+            $html .= '<td>' . ($cloth->lastoni ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($cloth->lastoni_goti ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($cloth->bin ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($cloth->bin_kat ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($cloth->makh_jib ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($cloth->tarikhzi ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($cloth->kalari ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($cloth->shabazi ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($cloth->arabi ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($cloth->lemen ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($cloth->lastoni_2 ? 'هو' : 'نه') . '</td>';
+            $html .= '<td>' . ($this->formatDate($cloth->rawrul_tareekh) ?: 'نامعلوم') . '</td>';
+            $html .= '<td>' . ($this->formatDate($cloth->tasleem_tareekh) ?: 'نه دی تسلیم شوی') . '</td>';
+            $html .= '<td>' . ($cloth->tidad ?: 1) . '</td>';
+            $html .= '<td>' . number_format($cloth->money ?: 0, 0) . '</td>';
             $html .= '</tr>';
         }
 

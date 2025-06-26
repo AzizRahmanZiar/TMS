@@ -25,7 +25,7 @@ class ExcelReportService
         $sheet->setRightToLeft(true);
 
         // Header row
-        $sheet->mergeCells('A1:M1');
+        $sheet->mergeCells('A1:X1');
         $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - ' . $typeLabel);
         $sheet->getStyle('A1')->applyFromArray([
             'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
@@ -36,22 +36,26 @@ class ExcelReportService
         $sheet->getRowDimension(1)->setRowHeight(30);
 
         // Info row
-        $sheet->mergeCells('A3:M3');
+        $sheet->mergeCells('A3:X3');
         $sheet->setCellValue('A3', 'د تولید نیټه: ' . $currentDate . ' | ټول ریکارډونه: ' . $totalRecords . ' | ټولې پیسې: ' . number_format($totalMoney, 0) . ' افغانۍ');
         $sheet->getStyle('A3')->applyFromArray([
             'font' => ['size' => 12],
             'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
         ]);
 
-        // Column headers
-        $headers = ['نوم', 'موبایل', 'قد', 'شانه', 'غاړه', 'زیګر', 'لستونی', 'پرتوګ', 'پای څه', 'د راوړلو نیټه', 'د تسلیمولو نیټه', 'تعداد', 'پیسې'];
+        // Column headers - ALL FIELDS
+        $headers = [
+            'نوم', 'موبایل', 'قد', 'شانه', 'غاړه', 'زیګر', 'لستونی', 'پرتوګ', 'پای څه',
+            'لستوڼي', 'لستوڼي غوټۍ', 'بین', 'بین کاټ', 'د مخ جیب', 'ترخزي', 'کالري',
+            'شبازي', 'عربي', 'لمن', 'لستوڼي ۲', 'د راوړلو نیټه', 'د تسلیمولو نیټه', 'تعداد', 'پیسې'
+        ];
         $col = 'A';
         foreach ($headers as $header) {
             $sheet->setCellValue($col . '5', $header);
             $col++;
         }
 
-        $sheet->getStyle('A5:M5')->applyFromArray([
+        $sheet->getStyle('A5:X5')->applyFromArray([
             'font' => ['bold' => true, 'size' => 12, 'color' => ['rgb' => 'FFFFFF']],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '6d6354']],
             'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
@@ -59,7 +63,7 @@ class ExcelReportService
         ]);
         $sheet->getRowDimension(5)->setRowHeight(25);
 
-        // Data rows
+        // Data rows - ALL FIELDS
         $row = 6;
         foreach ($cloths as $cloth) {
             $sheet->setCellValue('A' . $row, $cloth->nom ?: 'نامعلوم');
@@ -71,15 +75,26 @@ class ExcelReportService
             $sheet->setCellValue('G' . $row, $cloth->lstoony ?: '-');
             $sheet->setCellValue('H' . $row, $cloth->partog ?: '-');
             $sheet->setCellValue('I' . $row, $cloth->pai_tsa ?: '-');
-            $sheet->setCellValue('J' . $row, $this->formatDate($cloth->rawrul_tareekh) ?: 'نامعلوم');
-            $sheet->setCellValue('K' . $row, $this->formatDate($cloth->tasleem_tareekh) ?: 'نه دی تسلیم شوی');
-            $sheet->setCellValue('L' . $row, $cloth->tidad ?: 1);
-            $sheet->setCellValue('M' . $row, $cloth->money ?: 0);
+            $sheet->setCellValue('J' . $row, $cloth->lastoni ? 'هو' : 'نه');
+            $sheet->setCellValue('K' . $row, $cloth->lastoni_goti ? 'هو' : 'نه');
+            $sheet->setCellValue('L' . $row, $cloth->bin ? 'هو' : 'نه');
+            $sheet->setCellValue('M' . $row, $cloth->bin_kat ? 'هو' : 'نه');
+            $sheet->setCellValue('N' . $row, $cloth->makh_jib ? 'هو' : 'نه');
+            $sheet->setCellValue('O' . $row, $cloth->tarikhzi ? 'هو' : 'نه');
+            $sheet->setCellValue('P' . $row, $cloth->kalari ? 'هو' : 'نه');
+            $sheet->setCellValue('Q' . $row, $cloth->shabazi ? 'هو' : 'نه');
+            $sheet->setCellValue('R' . $row, $cloth->arabi ? 'هو' : 'نه');
+            $sheet->setCellValue('S' . $row, $cloth->lemen ? 'هو' : 'نه');
+            $sheet->setCellValue('T' . $row, $cloth->lastoni_2 ? 'هو' : 'نه');
+            $sheet->setCellValue('U' . $row, $this->formatDate($cloth->rawrul_tareekh) ?: 'نامعلوم');
+            $sheet->setCellValue('V' . $row, $this->formatDate($cloth->tasleem_tareekh) ?: 'نه دی تسلیم شوی');
+            $sheet->setCellValue('W' . $row, $cloth->tidad ?: 1);
+            $sheet->setCellValue('X' . $row, $cloth->money ?: 0);
             $row++;
         }
 
         // Style data rows
-        $dataRange = 'A6:M' . ($row - 1);
+        $dataRange = 'A6:X' . ($row - 1);
         $sheet->getStyle($dataRange)->applyFromArray([
             'font' => ['size' => 11],
             'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
@@ -87,7 +102,7 @@ class ExcelReportService
         ]);
 
         // Auto-size columns
-        foreach (range('A', 'M') as $col) {
+        foreach (range('A', 'X') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 

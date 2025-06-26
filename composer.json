@@ -17,6 +17,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^1.1",
+        "mpdf/mpdf": "^8.2",
         "phpoffice/phpspreadsheet": "^4.4",
         "tightenco/ziggy": "^2.5"
     },

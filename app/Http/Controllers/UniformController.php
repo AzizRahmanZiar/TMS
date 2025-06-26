@@ -147,6 +147,8 @@ class UniformController extends Controller
         $pdf = $pdfService->generateUniformsReport($uniforms, $type);
         $filename = 'uniforms_' . $type . '_' . date('Y-m-d') . '.pdf';
 
-        return $pdf->download($filename);
+        return response($pdf->Output($filename, 'S'))
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 }
