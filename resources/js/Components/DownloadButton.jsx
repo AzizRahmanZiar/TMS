@@ -9,9 +9,9 @@ const DownloadButton = ({ onDownload, className = "" }) => {
     const [selectedType, setSelectedType] = useState(null);
 
     const options = [
-        { value: "total", label: "ټول", icon: "📊" },
-        { value: "active", label: "فعال", icon: "✅" },
-        { value: "disabled", label: "بشپړ شوي", icon: "✔️" }
+        { value: "total", label: "ټول" },
+        { value: "active", label: "فعال" },
+        { value: "disabled", label: "بشپړ شوي" },
     ];
 
     const handleOptionClick = (value) => {
@@ -73,7 +73,9 @@ const DownloadButton = ({ onDownload, className = "" }) => {
                             {options.map((option, index) => (
                                 <motion.button
                                     key={option.value}
-                                    onClick={() => handleOptionClick(option.value)}
+                                    onClick={() =>
+                                        handleOptionClick(option.value)
+                                    }
                                     className="w-full px-4 py-3 text-right font-zar font-medium text-gray-700 hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-700 transition-all duration-200 flex items-center justify-between group border-b border-gray-100 last:border-b-0"
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
@@ -83,7 +85,9 @@ const DownloadButton = ({ onDownload, className = "" }) => {
                                     <span className="text-lg group-hover:scale-110 transition-transform duration-200">
                                         {option.icon}
                                     </span>
-                                    <span className="flex-1 text-center">{option.label}</span>
+                                    <span className="flex-1 text-center">
+                                        {option.label}
+                                    </span>
                                     <div className="w-6"></div>
                                 </motion.button>
                             ))}
