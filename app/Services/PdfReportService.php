@@ -9,25 +9,57 @@ class PdfReportService
     public function generateClothsReport($cloths, $type)
     {
         $html = $this->generateClothsHtml($cloths, $type);
-        return Pdf::loadHTML($html)->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadHTML($html)
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'DejaVu Sans',
+                'isPhpEnabled' => true
+            ]);
+        return $pdf;
     }
 
     public function generateUniformsReport($uniforms, $type)
     {
         $html = $this->generateUniformsHtml($uniforms, $type);
-        return Pdf::loadHTML($html)->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadHTML($html)
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'DejaVu Sans',
+                'isPhpEnabled' => true
+            ]);
+        return $pdf;
     }
 
     public function generateKortaisReport($kortais, $type)
     {
         $html = $this->generateKortaisHtml($kortais, $type);
-        return Pdf::loadHTML($html)->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadHTML($html)
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'DejaVu Sans',
+                'isPhpEnabled' => true
+            ]);
+        return $pdf;
     }
 
     public function generateSadraisReport($sadrais, $type)
     {
         $html = $this->generateSadraisHtml($sadrais, $type);
-        return Pdf::loadHTML($html)->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadHTML($html)
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'DejaVu Sans',
+                'isPhpEnabled' => true
+            ]);
+        return $pdf;
     }
 
     private function getTypeLabel($type)
@@ -58,10 +90,12 @@ class PdfReportService
         // If it's a string, try to parse it
         try {
             return \Carbon\Carbon::parse($date)->format('Y-m-d');
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $date; // Return as is if parsing fails
         }
     }
+
+
 
     private function getBaseStyles()
     {
@@ -72,15 +106,16 @@ class PdfReportService
                 size: A4 landscape;
             }
             body {
-                font-family: "DejaVu Sans", "Arial Unicode MS", sans-serif;
+                font-family: "DejaVu Sans", sans-serif;
                 direction: rtl;
                 text-align: right;
                 margin: 0;
                 padding: 0;
-                font-size: 12px;
-                line-height: 1.4;
+                font-size: 14px;
+                line-height: 1.6;
                 color: #333;
                 background: #fff;
+                unicode-bidi: embed;
             }
             .report-container {
                 max-width: 100%;
@@ -91,7 +126,7 @@ class PdfReportService
                 box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             }
             .header {
-                background: #4F46E5;
+                background: #5d5361;
                 color: white;
                 padding: 25px;
                 text-align: center;
@@ -147,7 +182,7 @@ class PdfReportService
                 font-size: 11px;
             }
             th {
-                background: #4f46e5;
+                background: #6d6354;
                 color: white;
                 padding: 12px 8px;
                 text-align: center;
@@ -184,22 +219,25 @@ class PdfReportService
                 gap: 15px;
             }
             .stat-card {
-                background: white;
+                background: linear-gradient(135deg, #b36447 0%, #954e3b 100%);
+                color: white;
                 padding: 15px;
                 border-radius: 8px;
                 border: 1px solid #e2e8f0;
                 text-align: center;
                 flex: 1;
+                box-shadow: 0 4px 15px rgba(179, 100, 71, 0.3);
             }
             .stat-value {
                 font-size: 24px;
                 font-weight: bold;
-                color: #1e293b;
+                color: white;
                 margin-bottom: 8px;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
             }
             .stat-label {
                 font-size: 14px;
-                color: #64748b;
+                color: rgba(255, 255, 255, 0.9);
                 font-weight: 600;
             }
             .generation-info {
@@ -216,7 +254,7 @@ class PdfReportService
                 right: 20px;
                 opacity: 0.1;
                 font-size: 24px;
-                color: #4f46e5;
+                color: #6d6354;
                 z-index: -1;
             }
         </style>';
@@ -229,9 +267,9 @@ class PdfReportService
         $totalMoney = $cloths->sum('money');
         $date = date('Y-m-d H:i:s');
 
-        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        $html = '<!DOCTYPE html><html dir="rtl" lang="ps"><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
         $html .= $this->getBaseStyles();
-        $html .= '</head><body>';
+        $html .= '</head><body dir="rtl">';
 
         $html .= '<div class="report-container">';
         $html .= '<div class="header">';
@@ -304,9 +342,9 @@ class PdfReportService
         $totalMoney = $uniforms->sum('money');
         $date = date('Y-m-d H:i:s');
 
-        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        $html = '<!DOCTYPE html><html dir="rtl" lang="ps"><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
         $html .= $this->getBaseStyles();
-        $html .= '</head><body>';
+        $html .= '</head><body dir="rtl">';
 
         $html .= '<div class="report-container">';
         $html .= '<div class="header">';
@@ -377,9 +415,9 @@ class PdfReportService
         $totalMoney = $kortais->sum('money');
         $date = date('Y-m-d H:i:s');
 
-        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        $html = '<!DOCTYPE html><html dir="rtl" lang="ps"><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
         $html .= $this->getBaseStyles();
-        $html .= '</head><body>';
+        $html .= '</head><body dir="rtl">';
         
         $html .= '<div class="header">';
         $html .= '<div class="title">د کورتۍ راپور</div>';
@@ -432,9 +470,9 @@ class PdfReportService
         $totalMoney = $sadrais->sum('money');
         $date = date('Y-m-d H:i:s');
 
-        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        $html = '<!DOCTYPE html><html dir="rtl" lang="ps"><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
         $html .= $this->getBaseStyles();
-        $html .= '</head><body>';
+        $html .= '</head><body dir="rtl">';
         
         $html .= '<div class="header">';
         $html .= '<div class="title">د صدری راپور</div>';
