@@ -137,7 +137,9 @@ class KortaiController extends Controller
         $pdf = $pdfService->generateKortaisReport($kortais, $type);
         $filename = 'kortais_' . $type . '_' . date('Y-m-d') . '.pdf';
 
-        return $pdf->download($filename);
+        return response($pdf->Output($filename, 'S'))
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 }
 

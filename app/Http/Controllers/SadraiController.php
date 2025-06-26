@@ -140,6 +140,8 @@ class SadraiController extends Controller
         $pdf = $pdfService->generateSadraisReport($sadrais, $type);
         $filename = 'sadrais_' . $type . '_' . date('Y-m-d') . '.pdf';
 
-        return $pdf->download($filename);
+        return response($pdf->Output($filename, 'S'))
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 }

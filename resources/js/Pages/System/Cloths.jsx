@@ -513,11 +513,19 @@ const Cloths = ({ cloths: initialCloths }) => {
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-4 md:px-6 py-4 text-right">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm text-gray-600 font-zar">
-                                                    {formatDate(row.tasleem_tareekh)}
-                                                </span>
+                                          <td className="px-4 md:px-6 py-4 text-right">
+                                            <div className="flex items-center ">
+                                                {row.tasleem_tareekh ? (
+                                                    <span className="px-4 py-2 bg-green-100 text-green-800 rounded-full text-xs font-bold font-zar border border-green-200 flex items-center gap-2">
+                                                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                                        {formatDate(row.tasleem_tareekh)}
+                                                    </span>
+                                                ) : (
+                                                    <span className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold font-zar border border-yellow-200 flex items-center gap-2">
+                                                        <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                                        نه دی تسلیم شوی
+                                                    </span>
+                                                )}
                                             </div>
                                         </td>
                                         <td className="px-4 md:px-6 py-4 text-right hidden sm:table-cell">
