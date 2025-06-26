@@ -107,10 +107,10 @@ class SadraiController extends Controller
 
         $excelContent = $excelService->generateSadraisReport($sadrais, $type);
 
-        $filename = 'sadrais_' . $type . '_' . date('Y-m-d') . '.xls';
+        $filename = 'sadrais_' . $type . '_' . date('Y-m-d') . '.xlsx';
 
         return response($excelContent)
-            ->header('Content-Type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
             ->header('Content-Length', strlen($excelContent))
             ->header('Cache-Control', 'no-cache, must-revalidate')
@@ -138,8 +138,6 @@ class SadraiController extends Controller
         $sadrais = $query->orderBy('created_at', 'desc')->get();
 
         $pdf = $pdfService->generateSadraisReport($sadrais, $type);
-        $pdf->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
-
         $filename = 'sadrais_' . $type . '_' . date('Y-m-d') . '.pdf';
 
         return $pdf->download($filename);

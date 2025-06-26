@@ -114,10 +114,10 @@ class UniformController extends Controller
 
         $excelContent = $excelService->generateUniformsReport($uniforms, $type);
 
-        $filename = 'uniforms_' . $type . '_' . date('Y-m-d') . '.xls';
+        $filename = 'uniforms_' . $type . '_' . date('Y-m-d') . '.xlsx';
 
         return response($excelContent)
-            ->header('Content-Type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
             ->header('Content-Length', strlen($excelContent))
             ->header('Cache-Control', 'no-cache, must-revalidate')
@@ -145,8 +145,6 @@ class UniformController extends Controller
         $uniforms = $query->orderBy('created_at', 'desc')->get();
 
         $pdf = $pdfService->generateUniformsReport($uniforms, $type);
-        $pdf->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
-
         $filename = 'uniforms_' . $type . '_' . date('Y-m-d') . '.pdf';
 
         return $pdf->download($filename);

@@ -2,6 +2,12 @@
 
 namespace App\Services;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+
 class ExcelReportService
 {
     public function generateClothsReport($cloths, $type)
@@ -11,116 +17,87 @@ class ExcelReportService
         $totalMoney = $cloths->sum('money');
         $totalRecords = $cloths->count();
 
-        // Create Excel XML format
-        $excel = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $excel .= '<?mso-application progid="Excel.Sheet"?>' . "\n";
-        $excel .= '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"' . "\n";
-        $excel .= ' xmlns:o="urn:schemas-microsoft-com:office:office"' . "\n";
-        $excel .= ' xmlns:x="urn:schemas-microsoft-com:office:excel"' . "\n";
-        $excel .= ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"' . "\n";
-        $excel .= ' xmlns:html="http://www.w3.org/TR/REC-html40">' . "\n";
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('د جامو راپور');
 
-        // Styles
-        $excel .= '<Styles>' . "\n";
-
-        // Header style
-        $excel .= '<Style ss:ID="HeaderStyle">' . "\n";
-        $excel .= '<Font ss:Bold="1" ss:Size="16" ss:Color="#FFFFFF"/>' . "\n";
-        $excel .= '<Interior ss:Color="#4F46E5" ss:Pattern="Solid"/>' . "\n";
-        $excel .= '<Alignment ss:Horizontal="Center" ss:Vertical="Center"/>' . "\n";
-        $excel .= '<Borders>' . "\n";
-        $excel .= '<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '</Borders>' . "\n";
-        $excel .= '</Style>' . "\n";
-
-        // Column header style
-        $excel .= '<Style ss:ID="ColumnHeaderStyle">' . "\n";
-        $excel .= '<Font ss:Bold="1" ss:Size="12" ss:Color="#FFFFFF"/>' . "\n";
-        $excel .= '<Interior ss:Color="#7C3AED" ss:Pattern="Solid"/>' . "\n";
-        $excel .= '<Alignment ss:Horizontal="Center" ss:Vertical="Center"/>' . "\n";
-        $excel .= '<Borders>' . "\n";
-        $excel .= '<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '</Borders>' . "\n";
-        $excel .= '</Style>' . "\n";
-
-        // Data style
-        $excel .= '<Style ss:ID="DataStyle">' . "\n";
-        $excel .= '<Font ss:Size="11"/>' . "\n";
-        $excel .= '<Alignment ss:Horizontal="Center" ss:Vertical="Center"/>' . "\n";
-        $excel .= '<Borders>' . "\n";
-        $excel .= '<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '</Borders>' . "\n";
-        $excel .= '</Style>' . "\n";
-
-        $excel .= '</Styles>' . "\n";
-
-        // Worksheet
-        $excel .= '<Worksheet ss:Name="د جامو راپور">' . "\n";
-        $excel .= '<Table>' . "\n";
+        // Set RTL direction
+        $sheet->setRightToLeft(true);
 
         // Header row
-        $excel .= '<Row ss:Height="30">' . "\n";
-        $excel .= '<Cell ss:MergeAcross="12" ss:StyleID="HeaderStyle">' . "\n";
-        $excel .= '<Data ss:Type="String">د خیاطۍ مدیریت سیسټم - ' . htmlspecialchars($typeLabel) . '</Data>' . "\n";
-        $excel .= '</Cell>' . "\n";
-        $excel .= '</Row>' . "\n";
-
-        // Empty row
-        $excel .= '<Row/>' . "\n";
+        $sheet->mergeCells('A1:M1');
+        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - ' . $typeLabel);
+        $sheet->getStyle('A1')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '5d5361']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(30);
 
         // Info row
-        $excel .= '<Row>' . "\n";
-        $excel .= '<Cell ss:MergeAcross="12">' . "\n";
-        $excel .= '<Data ss:Type="String">د تولید نیټه: ' . htmlspecialchars($currentDate) . ' | ټول ریکارډونه: ' . $totalRecords . ' | ټولې پیسې: ' . number_format($totalMoney, 0) . ' افغانۍ</Data>' . "\n";
-        $excel .= '</Cell>' . "\n";
-        $excel .= '</Row>' . "\n";
-
-        // Empty row
-        $excel .= '<Row/>' . "\n";
+        $sheet->mergeCells('A3:M3');
+        $sheet->setCellValue('A3', 'د تولید نیټه: ' . $currentDate . ' | ټول ریکارډونه: ' . $totalRecords . ' | ټولې پیسې: ' . number_format($totalMoney, 0) . ' افغانۍ');
+        $sheet->getStyle('A3')->applyFromArray([
+            'font' => ['size' => 12],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+        ]);
 
         // Column headers
-        $excel .= '<Row ss:Height="25">' . "\n";
         $headers = ['نوم', 'موبایل', 'قد', 'شانه', 'غاړه', 'زیګر', 'لستونی', 'پرتوګ', 'پای څه', 'د راوړلو نیټه', 'د تسلیمولو نیټه', 'تعداد', 'پیسې'];
+        $col = 'A';
         foreach ($headers as $header) {
-            $excel .= '<Cell ss:StyleID="ColumnHeaderStyle">' . "\n";
-            $excel .= '<Data ss:Type="String">' . htmlspecialchars($header) . '</Data>' . "\n";
-            $excel .= '</Cell>' . "\n";
+            $sheet->setCellValue($col . '5', $header);
+            $col++;
         }
-        $excel .= '</Row>' . "\n";
+
+        $sheet->getStyle('A5:M5')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 12, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '6d6354']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
+        $sheet->getRowDimension(5)->setRowHeight(25);
 
         // Data rows
+        $row = 6;
         foreach ($cloths as $cloth) {
-            $excel .= '<Row>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($cloth->nom ?: 'نامعلوم') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($cloth->mobile ?: 'نامعلوم') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($cloth->qadd ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($cloth->shana ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($cloth->ghara ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($cloth->zegar ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($cloth->lstoony ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($cloth->partog ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($cloth->pai_tsa ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($this->formatDate($cloth->rawrul_tareekh) ?: 'نامعلوم') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($this->formatDate($cloth->tasleem_tareekh) ?: 'نه دی تسلیم شوی') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="Number">' . ($cloth->tidad ?: 1) . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="Number">' . ($cloth->money ?: 0) . '</Data></Cell>' . "\n";
-            $excel .= '</Row>' . "\n";
+            $sheet->setCellValue('A' . $row, $cloth->nom ?: 'نامعلوم');
+            $sheet->setCellValue('B' . $row, $cloth->mobile ?: 'نامعلوم');
+            $sheet->setCellValue('C' . $row, $cloth->qadd ?: '-');
+            $sheet->setCellValue('D' . $row, $cloth->shana ?: '-');
+            $sheet->setCellValue('E' . $row, $cloth->ghara ?: '-');
+            $sheet->setCellValue('F' . $row, $cloth->zegar ?: '-');
+            $sheet->setCellValue('G' . $row, $cloth->lstoony ?: '-');
+            $sheet->setCellValue('H' . $row, $cloth->partog ?: '-');
+            $sheet->setCellValue('I' . $row, $cloth->pai_tsa ?: '-');
+            $sheet->setCellValue('J' . $row, $this->formatDate($cloth->rawrul_tareekh) ?: 'نامعلوم');
+            $sheet->setCellValue('K' . $row, $this->formatDate($cloth->tasleem_tareekh) ?: 'نه دی تسلیم شوی');
+            $sheet->setCellValue('L' . $row, $cloth->tidad ?: 1);
+            $sheet->setCellValue('M' . $row, $cloth->money ?: 0);
+            $row++;
         }
 
-        $excel .= '</Table>' . "\n";
-        $excel .= '</Worksheet>' . "\n";
-        $excel .= '</Workbook>';
+        // Style data rows
+        $dataRange = 'A6:M' . ($row - 1);
+        $sheet->getStyle($dataRange)->applyFromArray([
+            'font' => ['size' => 11],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
 
-        return $excel;
+        // Auto-size columns
+        foreach (range('A', 'M') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Create writer and return content
+        $writer = new Xlsx($spreadsheet);
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        return $content;
     }
     
     public function generateUniformsReport($uniforms, $type)
@@ -130,222 +107,264 @@ class ExcelReportService
         $totalMoney = $uniforms->sum('money');
         $totalRecords = $uniforms->count();
 
-        // Create Excel XML format
-        $excel = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $excel .= '<?mso-application progid="Excel.Sheet"?>' . "\n";
-        $excel .= '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"' . "\n";
-        $excel .= ' xmlns:o="urn:schemas-microsoft-com:office:office"' . "\n";
-        $excel .= ' xmlns:x="urn:schemas-microsoft-com:office:excel"' . "\n";
-        $excel .= ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"' . "\n";
-        $excel .= ' xmlns:html="http://www.w3.org/TR/REC-html40">' . "\n";
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('د درشي راپور');
 
-        // Styles
-        $excel .= '<Styles>' . "\n";
-
-        // Header style
-        $excel .= '<Style ss:ID="HeaderStyle">' . "\n";
-        $excel .= '<Font ss:Bold="1" ss:Size="16" ss:Color="#FFFFFF"/>' . "\n";
-        $excel .= '<Interior ss:Color="#4F46E5" ss:Pattern="Solid"/>' . "\n";
-        $excel .= '<Alignment ss:Horizontal="Center" ss:Vertical="Center"/>' . "\n";
-        $excel .= '<Borders>' . "\n";
-        $excel .= '<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '</Borders>' . "\n";
-        $excel .= '</Style>' . "\n";
-
-        // Column header style
-        $excel .= '<Style ss:ID="ColumnHeaderStyle">' . "\n";
-        $excel .= '<Font ss:Bold="1" ss:Size="12" ss:Color="#FFFFFF"/>' . "\n";
-        $excel .= '<Interior ss:Color="#7C3AED" ss:Pattern="Solid"/>' . "\n";
-        $excel .= '<Alignment ss:Horizontal="Center" ss:Vertical="Center"/>' . "\n";
-        $excel .= '<Borders>' . "\n";
-        $excel .= '<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '</Borders>' . "\n";
-        $excel .= '</Style>' . "\n";
-
-        // Data style
-        $excel .= '<Style ss:ID="DataStyle">' . "\n";
-        $excel .= '<Font ss:Size="11"/>' . "\n";
-        $excel .= '<Alignment ss:Horizontal="Center" ss:Vertical="Center"/>' . "\n";
-        $excel .= '<Borders>' . "\n";
-        $excel .= '<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>' . "\n";
-        $excel .= '</Borders>' . "\n";
-        $excel .= '</Style>' . "\n";
-
-        $excel .= '</Styles>' . "\n";
-
-        // Worksheet
-        $excel .= '<Worksheet ss:Name="د درشي راپور">' . "\n";
-        $excel .= '<Table>' . "\n";
+        // Set RTL direction
+        $sheet->setRightToLeft(true);
 
         // Header row
-        $excel .= '<Row ss:Height="30">' . "\n";
-        $excel .= '<Cell ss:MergeAcross="10" ss:StyleID="HeaderStyle">' . "\n";
-        $excel .= '<Data ss:Type="String">د خیاطۍ مدیریت سیسټم - ' . htmlspecialchars($typeLabel) . '</Data>' . "\n";
-        $excel .= '</Cell>' . "\n";
-        $excel .= '</Row>' . "\n";
-
-        // Empty row
-        $excel .= '<Row/>' . "\n";
+        $sheet->mergeCells('A1:K1');
+        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - ' . $typeLabel);
+        $sheet->getStyle('A1')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '5d5361']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(30);
 
         // Info row
-        $excel .= '<Row>' . "\n";
-        $excel .= '<Cell ss:MergeAcross="10">' . "\n";
-        $excel .= '<Data ss:Type="String">د تولید نیټه: ' . htmlspecialchars($currentDate) . ' | ټول ریکارډونه: ' . $totalRecords . ' | ټولې پیسې: ' . number_format($totalMoney, 0) . ' افغانۍ</Data>' . "\n";
-        $excel .= '</Cell>' . "\n";
-        $excel .= '</Row>' . "\n";
-
-        // Empty row
-        $excel .= '<Row/>' . "\n";
+        $sheet->mergeCells('A3:K3');
+        $sheet->setCellValue('A3', 'د تولید نیټه: ' . $currentDate . ' | ټول ریکارډونه: ' . $totalRecords . ' | ټولې پیسې: ' . number_format($totalMoney, 0) . ' افغانۍ');
+        $sheet->getStyle('A3')->applyFromArray([
+            'font' => ['size' => 12],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+        ]);
 
         // Column headers
-        $excel .= '<Row ss:Height="25">' . "\n";
         $headers = ['نوم', 'موبایل', 'یخن قک', 'پتلون', 'غاړه', 'زیګر', 'لستونی', 'د راوړلو نیټه', 'د تسلیمولو نیټه', 'تعداد', 'پیسې'];
+        $col = 'A';
         foreach ($headers as $header) {
-            $excel .= '<Cell ss:StyleID="ColumnHeaderStyle">' . "\n";
-            $excel .= '<Data ss:Type="String">' . htmlspecialchars($header) . '</Data>' . "\n";
-            $excel .= '</Cell>' . "\n";
+            $sheet->setCellValue($col . '5', $header);
+            $col++;
         }
-        $excel .= '</Row>' . "\n";
+
+        $sheet->getStyle('A5:K5')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 12, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '6d6354']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
+        $sheet->getRowDimension(5)->setRowHeight(25);
 
         // Data rows
+        $row = 6;
         foreach ($uniforms as $uniform) {
-            $excel .= '<Row>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($uniform->nom ?: 'نامعلوم') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($uniform->mobile ?: 'نامعلوم') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($uniform->yakhun_qak ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($uniform->patlun ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($uniform->ghara ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($uniform->zegar ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($uniform->lstoony ?: '-') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($this->formatDate($uniform->rawrul_tareekh) ?: 'نامعلوم') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="String">' . htmlspecialchars($this->formatDate($uniform->tasleem_tareekh) ?: 'نه دی تسلیم شوی') . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="Number">' . ($uniform->tidad ?: 1) . '</Data></Cell>' . "\n";
-            $excel .= '<Cell ss:StyleID="DataStyle"><Data ss:Type="Number">' . ($uniform->money ?: 0) . '</Data></Cell>' . "\n";
-            $excel .= '</Row>' . "\n";
+            $sheet->setCellValue('A' . $row, $uniform->nom ?: 'نامعلوم');
+            $sheet->setCellValue('B' . $row, $uniform->mobile ?: 'نامعلوم');
+            $sheet->setCellValue('C' . $row, $uniform->yakhun_qak ?: '-');
+            $sheet->setCellValue('D' . $row, $uniform->patlun ?: '-');
+            $sheet->setCellValue('E' . $row, $uniform->ghara ?: '-');
+            $sheet->setCellValue('F' . $row, $uniform->zegar ?: '-');
+            $sheet->setCellValue('G' . $row, $uniform->lstoony ?: '-');
+            $sheet->setCellValue('H' . $row, $this->formatDate($uniform->rawrul_tareekh) ?: 'نامعلوم');
+            $sheet->setCellValue('I' . $row, $this->formatDate($uniform->tasleem_tareekh) ?: 'نه دی تسلیم شوی');
+            $sheet->setCellValue('J' . $row, $uniform->tidad ?: 1);
+            $sheet->setCellValue('K' . $row, $uniform->money ?: 0);
+            $row++;
         }
 
-        $excel .= '</Table>' . "\n";
-        $excel .= '</Worksheet>' . "\n";
-        $excel .= '</Workbook>';
+        // Style data rows
+        $dataRange = 'A6:K' . ($row - 1);
+        $sheet->getStyle($dataRange)->applyFromArray([
+            'font' => ['size' => 11],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
 
-        return $excel;
+        // Auto-size columns
+        foreach (range('A', 'K') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Create writer and return content
+        $writer = new Xlsx($spreadsheet);
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        return $content;
     }
     
     public function generateKortaisReport($kortais, $type)
     {
         $typeLabel = $this->getTypeLabel($type);
+        $currentDate = date('Y-m-d H:i:s');
+        $totalMoney = $kortais->sum('money');
+        $totalRecords = $kortais->count();
 
-        // Create CSV content
-        $csvData = [];
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('د کورتۍ راپور');
 
-        // Add header
-        $csvData[] = ['د کورتۍ راپور - ' . $typeLabel];
-        $csvData[] = []; // Empty row
+        // Set RTL direction
+        $sheet->setRightToLeft(true);
 
-        // Add column headers
-        $csvData[] = [
-            'نوم', 'موبایل', 'شانه', 'تینه', 'لستونی اوږد', 'لستونی بروالی',
-            'غاړه دول', 'زیګر', 'د راوړلو نیټه', 'د تسلیمولو نیټه', 'تعداد', 'پیسې'
-        ];
+        // Header row
+        $sheet->mergeCells('A1:L1');
+        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - ' . $typeLabel);
+        $sheet->getStyle('A1')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '5d5361']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(30);
 
-        // Add data
-        foreach ($kortais as $kortai) {
-            $csvData[] = [
-                $kortai->nom,
-                $kortai->mobile,
-                $kortai->shana,
-                $kortai->tenna,
-                $kortai->lstoony_ojd,
-                $kortai->lstoony_browali,
-                $kortai->ghara_dol,
-                $kortai->zegar,
-                $this->formatDate($kortai->rawrul_tareekh),
-                $this->formatDate($kortai->tasleem_tareekh),
-                $kortai->tidad,
-                $kortai->money
-            ];
+        // Info row
+        $sheet->mergeCells('A3:L3');
+        $sheet->setCellValue('A3', 'د تولید نیټه: ' . $currentDate . ' | ټول ریکارډونه: ' . $totalRecords . ' | ټولې پیسې: ' . number_format($totalMoney, 0) . ' افغانۍ');
+        $sheet->getStyle('A3')->applyFromArray([
+            'font' => ['size' => 12],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+        ]);
+
+        // Column headers
+        $headers = ['نوم', 'موبایل', 'شانه', 'تینه', 'لستونی اوږد', 'لستونی بروالی', 'غاړه دول', 'زیګر', 'د راوړلو نیټه', 'د تسلیمولو نیټه', 'تعداد', 'پیسې'];
+        $col = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . '5', $header);
+            $col++;
         }
 
-        // Add summary
-        $csvData[] = []; // Empty row
-        $csvData[] = ['ټول ریکارډونه: ' . $kortais->count()];
-        $csvData[] = ['ټولې پیسې: ' . number_format($kortais->sum('money'), 2)];
+        $sheet->getStyle('A5:L5')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 12, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '6d6354']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
+        $sheet->getRowDimension(5)->setRowHeight(25);
 
-        return $this->arrayToCsv($csvData);
+        // Data rows
+        $row = 6;
+        foreach ($kortais as $kortai) {
+            $sheet->setCellValue('A' . $row, $kortai->nom ?: 'نامعلوم');
+            $sheet->setCellValue('B' . $row, $kortai->mobile ?: 'نامعلوم');
+            $sheet->setCellValue('C' . $row, $kortai->shana ?: '-');
+            $sheet->setCellValue('D' . $row, $kortai->tenna ?: '-');
+            $sheet->setCellValue('E' . $row, $kortai->lstoony_ojd ?: '-');
+            $sheet->setCellValue('F' . $row, $kortai->lstoony_browali ?: '-');
+            $sheet->setCellValue('G' . $row, $kortai->ghara_dol ?: '-');
+            $sheet->setCellValue('H' . $row, $kortai->zegar ?: '-');
+            $sheet->setCellValue('I' . $row, $this->formatDate($kortai->rawrul_tareekh) ?: 'نامعلوم');
+            $sheet->setCellValue('J' . $row, $this->formatDate($kortai->tasleem_tareekh) ?: 'نه دی تسلیم شوی');
+            $sheet->setCellValue('K' . $row, $kortai->tidad ?: 1);
+            $sheet->setCellValue('L' . $row, $kortai->money ?: 0);
+            $row++;
+        }
+
+        // Style data rows
+        $dataRange = 'A6:L' . ($row - 1);
+        $sheet->getStyle($dataRange)->applyFromArray([
+            'font' => ['size' => 11],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
+
+        // Auto-size columns
+        foreach (range('A', 'L') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Create writer and return content
+        $writer = new Xlsx($spreadsheet);
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        return $content;
     }
     
     public function generateSadraisReport($sadrais, $type)
     {
         $typeLabel = $this->getTypeLabel($type);
+        $currentDate = date('Y-m-d H:i:s');
+        $totalMoney = $sadrais->sum('money');
+        $totalRecords = $sadrais->count();
 
-        // Create CSV content
-        $csvData = [];
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('د صدری راپور');
 
-        // Add header
-        $csvData[] = ['د صدری راپور - ' . $typeLabel];
-        $csvData[] = []; // Empty row
+        // Set RTL direction
+        $sheet->setRightToLeft(true);
 
-        // Add column headers
-        $csvData[] = [
-            'نوم', 'موبایل', 'پیسې', 'شانه', 'تینه', 'غاړه دول',
-            'زیګر', 'تعداد', 'د راوړلو نیټه', 'د تسلیمولو نیټه'
-        ];
+        // Header row
+        $sheet->mergeCells('A1:J1');
+        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - ' . $typeLabel);
+        $sheet->getStyle('A1')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '5d5361']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(30);
 
-        // Add data
+        // Info row
+        $sheet->mergeCells('A3:J3');
+        $sheet->setCellValue('A3', 'د تولید نیټه: ' . $currentDate . ' | ټول ریکارډونه: ' . $totalRecords . ' | ټولې پیسې: ' . number_format($totalMoney, 0) . ' افغانۍ');
+        $sheet->getStyle('A3')->applyFromArray([
+            'font' => ['size' => 12],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+        ]);
+
+        // Column headers
+        $headers = ['نوم', 'موبایل', 'پیسې', 'شانه', 'تینه', 'غاړه دول', 'زیګر', 'تعداد', 'د راوړلو نیټه', 'د تسلیمولو نیټه'];
+        $col = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . '5', $header);
+            $col++;
+        }
+
+        $sheet->getStyle('A5:J5')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 12, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '6d6354']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
+        $sheet->getRowDimension(5)->setRowHeight(25);
+
+        // Data rows
+        $row = 6;
         foreach ($sadrais as $sadrai) {
-            $csvData[] = [
-                $sadrai->nom,
-                $sadrai->mobile,
-                $sadrai->money,
-                $sadrai->shana,
-                $sadrai->tenna,
-                $sadrai->ghara_dol,
-                $sadrai->zegar,
-                $sadrai->tidad,
-                $this->formatDate($sadrai->rawrul_tareekh),
-                $this->formatDate($sadrai->tasleem_tareekh)
-            ];
+            $sheet->setCellValue('A' . $row, $sadrai->nom ?: 'نامعلوم');
+            $sheet->setCellValue('B' . $row, $sadrai->mobile ?: 'نامعلوم');
+            $sheet->setCellValue('C' . $row, $sadrai->money ?: 0);
+            $sheet->setCellValue('D' . $row, $sadrai->shana ?: '-');
+            $sheet->setCellValue('E' . $row, $sadrai->tenna ?: '-');
+            $sheet->setCellValue('F' . $row, $sadrai->ghara_dol ?: '-');
+            $sheet->setCellValue('G' . $row, $sadrai->zegar ?: '-');
+            $sheet->setCellValue('H' . $row, $sadrai->tidad ?: 1);
+            $sheet->setCellValue('I' . $row, $this->formatDate($sadrai->rawrul_tareekh) ?: 'نامعلوم');
+            $sheet->setCellValue('J' . $row, $this->formatDate($sadrai->tasleem_tareekh) ?: 'نه دی تسلیم شوی');
+            $row++;
         }
 
-        // Add summary
-        $csvData[] = []; // Empty row
-        $csvData[] = ['ټول ریکارډونه: ' . $sadrais->count()];
-        $csvData[] = ['ټولې پیسې: ' . number_format($sadrais->sum('money'), 2)];
+        // Style data rows
+        $dataRange = 'A6:J' . ($row - 1);
+        $sheet->getStyle($dataRange)->applyFromArray([
+            'font' => ['size' => 11],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+        ]);
 
-        return $this->arrayToCsv($csvData);
-    }
-
-    private function arrayToCsv($data)
-    {
-        $output = fopen('php://temp', 'r+');
-
-        // Add UTF-8 BOM for proper encoding in Excel
-        fwrite($output, "\xEF\xBB\xBF");
-
-        foreach ($data as $row) {
-            // Ensure all values are UTF-8 encoded
-            $encodedRow = array_map(function($value) {
-                return mb_convert_encoding($value, 'UTF-8', 'auto');
-            }, $row);
-
-            fputcsv($output, $encodedRow);
+        // Auto-size columns
+        foreach (range('A', 'J') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
-        rewind($output);
-        $csv = stream_get_contents($output);
-        fclose($output);
+        // Create writer and return content
+        $writer = new Xlsx($spreadsheet);
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
 
-        return $csv;
+        return $content;
     }
+
+
     
     private function getTypeLabel($type)
     {
@@ -373,7 +392,7 @@ class ExcelReportService
         
         try {
             return \Carbon\Carbon::parse($date)->format('Y-m-d');
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $date;
         }
     }
