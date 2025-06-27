@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import { IoMdArrowDropleft } from "react-icons/io";
 import { motion, AnimatePresence } from "framer-motion";
+import { LiaFirstOrderAlt } from "react-icons/lia";
 import {
     FaUserShield,
     FaTachometerAlt,
@@ -13,11 +14,7 @@ import {
     FaTshirt,
     FaUserTie,
 } from "react-icons/fa";
-import {
-    GiSewingMachine,
-    GiClothes,
-    GiShirt,
-} from "react-icons/gi";
+import { GiSewingMachine, GiClothes, GiShirt } from "react-icons/gi";
 import { FiSend } from "react-icons/fi";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
@@ -118,7 +115,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             title: "پرمــــــــــــایش",
             href: "/customerorder",
             roles: ["tailor"],
-            icon: <FiSend className="text-xl md:text-2xl" />,
+            icon: <LiaFirstOrderAlt className="text-xl md:text-2xl" />,
         },
         {
             title: "تنظیمــــــــــــات",
