@@ -25,15 +25,8 @@ class ExcelReportService
         $sheet->setRightToLeft(true);
 
         // Header row
-        $sheet->mergeCells('A1:X1');
-        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - ' . $typeLabel);
-        $sheet->getStyle('A1')->applyFromArray([
-            'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '5d5361']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
-        ]);
-        $sheet->getRowDimension(1)->setRowHeight(30);
+        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - د جامو راپور - ' . $typeLabel);
+        $this->applyTitleStyle($sheet, 'A1', 'A1:X1');
 
         // Info row
         $sheet->mergeCells('A3:X3');
@@ -55,12 +48,7 @@ class ExcelReportService
             $col++;
         }
 
-        $sheet->getStyle('A5:X5')->applyFromArray([
-            'font' => ['bold' => true, 'size' => 12, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '6d6354']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
-        ]);
+        $this->applyHeaderStyle($sheet, 'A5:X5');
         $sheet->getRowDimension(5)->setRowHeight(25);
 
         // Data rows - ALL FIELDS
@@ -130,15 +118,8 @@ class ExcelReportService
         $sheet->setRightToLeft(true);
 
         // Header row
-        $sheet->mergeCells('A1:K1');
-        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - ' . $typeLabel);
-        $sheet->getStyle('A1')->applyFromArray([
-            'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '5d5361']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
-        ]);
-        $sheet->getRowDimension(1)->setRowHeight(30);
+        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - د درشي راپور - ' . $typeLabel);
+        $this->applyTitleStyle($sheet, 'A1', 'A1:K1');
 
         // Info row
         $sheet->mergeCells('A3:K3');
@@ -156,12 +137,7 @@ class ExcelReportService
             $col++;
         }
 
-        $sheet->getStyle('A5:K5')->applyFromArray([
-            'font' => ['bold' => true, 'size' => 12, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '6d6354']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
-        ]);
+        $this->applyHeaderStyle($sheet, 'A5:K5');
         $sheet->getRowDimension(5)->setRowHeight(25);
 
         // Data rows
@@ -218,15 +194,8 @@ class ExcelReportService
         $sheet->setRightToLeft(true);
 
         // Header row
-        $sheet->mergeCells('A1:L1');
-        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - ' . $typeLabel);
-        $sheet->getStyle('A1')->applyFromArray([
-            'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '5d5361']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
-        ]);
-        $sheet->getRowDimension(1)->setRowHeight(30);
+        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - د کورتۍ راپور - ' . $typeLabel);
+        $this->applyTitleStyle($sheet, 'A1', 'A1:L1');
 
         // Info row
         $sheet->mergeCells('A3:L3');
@@ -244,12 +213,7 @@ class ExcelReportService
             $col++;
         }
 
-        $sheet->getStyle('A5:L5')->applyFromArray([
-            'font' => ['bold' => true, 'size' => 12, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '6d6354']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
-        ]);
+        $this->applyHeaderStyle($sheet, 'A5:L5');
         $sheet->getRowDimension(5)->setRowHeight(25);
 
         // Data rows
@@ -307,15 +271,8 @@ class ExcelReportService
         $sheet->setRightToLeft(true);
 
         // Header row
-        $sheet->mergeCells('A1:J1');
-        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - ' . $typeLabel);
-        $sheet->getStyle('A1')->applyFromArray([
-            'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '5d5361']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
-        ]);
-        $sheet->getRowDimension(1)->setRowHeight(30);
+        $sheet->setCellValue('A1', 'د خیاطۍ مدیریت سیسټم - د صدری راپور - ' . $typeLabel);
+        $this->applyTitleStyle($sheet, 'A1', 'A1:J1');
 
         // Info row
         $sheet->mergeCells('A3:J3');
@@ -333,12 +290,7 @@ class ExcelReportService
             $col++;
         }
 
-        $sheet->getStyle('A5:J5')->applyFromArray([
-            'font' => ['bold' => true, 'size' => 12, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '6d6354']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
-        ]);
+        $this->applyHeaderStyle($sheet, 'A5:J5');
         $sheet->getRowDimension(5)->setRowHeight(25);
 
         // Data rows
@@ -410,5 +362,57 @@ class ExcelReportService
         } catch (\Exception) {
             return $date;
         }
+    }
+
+    /**
+     * Apply standardized title styling to Excel reports
+     */
+    private function applyTitleStyle($sheet, $cellRange, $columnRange = 'A1:L1')
+    {
+        $sheet->mergeCells($columnRange);
+        $sheet->getStyle($cellRange)->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 16,
+                'color' => ['rgb' => 'FFFFFF']
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '5d5361']
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER
+            ],
+            'borders' => [
+                'allBorders' => ['borderStyle' => Border::BORDER_THIN]
+            ]
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(30);
+    }
+
+    /**
+     * Apply standardized header styling to Excel reports
+     */
+    private function applyHeaderStyle($sheet, $cellRange)
+    {
+        $sheet->getStyle($cellRange)->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 12,
+                'color' => ['rgb' => 'FFFFFF']
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '374151']
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER
+            ],
+            'borders' => [
+                'allBorders' => ['borderStyle' => Border::BORDER_THIN]
+            ]
+        ]);
     }
 }
