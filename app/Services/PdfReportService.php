@@ -412,8 +412,8 @@ class PdfReportService
             $html .= '<td>' . $uniform->ghara . '</td>';
             $html .= '<td>' . $uniform->zegar . '</td>';
             $html .= '<td>' . $uniform->lstoony . '</td>';
-            $html .= '<td>' . $this->formatDate($uniform->rawrul_tareekh) . '</td>';
-            $html .= '<td>' . $this->formatDate($uniform->tasleem_tareekh) . '</td>';
+            $html .= '<td>' . ($this->formatDate($uniform->rawrul_tareekh) ?: 'نامعلوم') . '</td>';
+            $html .= '<td>' . ($this->formatDate($uniform->tasleem_tareekh) ?: 'نه دی تسلیم شوی') . '</td>';
             $html .= '<td>' . $uniform->tidad . '</td>';
             $html .= '<td>' . number_format($uniform->money, 2) . '</td>';
             $html .= '</tr>';
@@ -488,8 +488,8 @@ class PdfReportService
             $html .= '<td>' . $kortai->lstoony_browali . '</td>';
             $html .= '<td>' . $kortai->ghara_dol . '</td>';
             $html .= '<td>' . $kortai->zegar . '</td>';
-            $html .= '<td>' . $this->formatDate($kortai->rawrul_tareekh) . '</td>';
-            $html .= '<td>' . $this->formatDate($kortai->tasleem_tareekh) . '</td>';
+            $html .= '<td>' . ($this->formatDate($kortai->rawrul_tareekh) ?: 'نامعلوم') . '</td>';
+            $html .= '<td>' . ($this->formatDate($kortai->tasleem_tareekh) ?: 'نه دی تسلیم شوی') . '</td>';
             $html .= '<td>' . $kortai->tidad . '</td>';
             $html .= '<td>' . number_format($kortai->money, 2) . '</td>';
             $html .= '</tr>';
@@ -544,8 +544,8 @@ class PdfReportService
             $html .= '<td>' . $sadrai->ghara_dol . '</td>';
             $html .= '<td>' . $sadrai->zegar . '</td>';
             $html .= '<td>' . $sadrai->tidad . '</td>';
-            $html .= '<td>' . $this->formatDate($sadrai->rawrul_tareekh) . '</td>';
-            $html .= '<td>' . $this->formatDate($sadrai->tasleem_tareekh) . '</td>';
+            $html .= '<td>' . ($this->formatDate($sadrai->rawrul_tareekh) ?: 'نامعلوم') . '</td>';
+            $html .= '<td>' . ($this->formatDate($sadrai->tasleem_tareekh) ?: 'نه دی تسلیم شوی') . '</td>';
             $html .= '</tr>';
         }
 
