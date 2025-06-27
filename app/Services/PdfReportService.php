@@ -467,12 +467,9 @@ class PdfReportService
         $html .= '</div>';
         $html .= '</div>';
 
-        $html .= '<div class="summary-stats">';
-        $html .= '<div class="stat-item"><span class="stat-label">ټول ریکارډونه:</span> <span class="stat-value">' . $count . '</span></div>';
-        $html .= '<div class="stat-item"><span class="stat-label">ټولې پیسې:</span> <span class="stat-value">' . number_format($totalMoney) . ' افغانۍ</span></div>';
-        $html .= '</div>';
-
-        $html .= '<table class="data-table">';
+        $html .= '<div class="content-section">';
+        $html .= '<div class="table-container">';
+        $html .= '<table>';
         $html .= '<thead><tr>';
         $html .= '<th>نوم</th><th>موبایل</th><th>شانه</th><th>تینه</th><th>لستونی اوږد</th><th>لستونی بروالی</th>';
         $html .= '<th>غاړه دول</th><th>زیګر</th><th>د راوړلو نیټه</th><th>د تسلیمولو نیټه</th><th>تعداد</th><th>پیسې</th>';
@@ -496,7 +493,27 @@ class PdfReportService
         }
 
         $html .= '</tbody></table>';
-        $html .= '</div>'; // Close report-container
+        $html .= '</div>'; // table-container
+        $html .= '</div>'; // content-section
+
+        $html .= '<div class="footer">';
+        $html .= '<div class="stats-container">';
+        $html .= '<div class="stat-card">';
+        $html .= '<div class="stat-value">' . $count . '</div>';
+        $html .= '<div class="stat-label">ټول ریکارډونه</div>';
+        $html .= '</div>';
+        $html .= '<div class="stat-card">';
+        $html .= '<div class="stat-value">' . number_format($totalMoney, 0) . '</div>';
+        $html .= '<div class="stat-label">ټولې پیسې (افغانۍ)</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="generation-info">';
+        $html .= '<p>دا راپور د ' . $date . ' نیټې په اتوماتیک ډول تولید شوی</p>';
+        $html .= '</div>';
+        $html .= '</div>';
+
+        $html .= '</div>'; // report-container
+        $html .= '<div class="watermark">TMS</div>';
         $html .= '</body></html>';
 
         return $html;
@@ -523,12 +540,9 @@ class PdfReportService
         $html .= '</div>';
         $html .= '</div>';
 
-        $html .= '<div class="summary-stats">';
-        $html .= '<div class="stat-item"><span class="stat-label">ټول ریکارډونه:</span> <span class="stat-value">' . $count . '</span></div>';
-        $html .= '<div class="stat-item"><span class="stat-label">ټولې پیسې:</span> <span class="stat-value">' . number_format($totalMoney) . ' افغانۍ</span></div>';
-        $html .= '</div>';
-
-        $html .= '<table class="data-table">';
+        $html .= '<div class="content-section">';
+        $html .= '<div class="table-container">';
+        $html .= '<table>';
         $html .= '<thead><tr>';
         $html .= '<th>نوم</th><th>موبایل</th><th>پیسې</th><th>شانه</th><th>تینه</th><th>غاړه دول</th>';
         $html .= '<th>زیګر</th><th>تعداد</th><th>د راوړلو نیټه</th><th>د تسلیمولو نیټه</th>';
@@ -550,7 +564,27 @@ class PdfReportService
         }
 
         $html .= '</tbody></table>';
-        $html .= '</div>'; // Close report-container
+        $html .= '</div>'; // table-container
+        $html .= '</div>'; // content-section
+
+        $html .= '<div class="footer">';
+        $html .= '<div class="stats-container">';
+        $html .= '<div class="stat-card">';
+        $html .= '<div class="stat-value">' . $count . '</div>';
+        $html .= '<div class="stat-label">ټول ریکارډونه</div>';
+        $html .= '</div>';
+        $html .= '<div class="stat-card">';
+        $html .= '<div class="stat-value">' . number_format($totalMoney, 0) . '</div>';
+        $html .= '<div class="stat-label">ټولې پیسې (افغانۍ)</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="generation-info">';
+        $html .= '<p>دا راپور د ' . $date . ' نیټې په اتوماتیک ډول تولید شوی</p>';
+        $html .= '</div>';
+        $html .= '</div>';
+
+        $html .= '</div>'; // report-container
+        $html .= '<div class="watermark">TMS</div>';
         $html .= '</body></html>';
 
         return $html;
