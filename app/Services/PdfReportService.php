@@ -456,14 +456,23 @@ class PdfReportService
         $html = '<!DOCTYPE html><html dir="rtl" lang="ps"><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
         $html .= $this->getBaseStyles();
         $html .= '</head><body dir="rtl">';
-        
+
+        $html .= '<div class="report-container">';
         $html .= '<div class="header">';
-        $html .= '<div class="title">د کورتۍ راپور</div>';
-        $html .= '<div class="subtitle">' . $typeLabel . '</div>';
-        $html .= '<div class="subtitle">نیټه: ' . $date . '</div>';
+        $html .= '<div class="header-content">';
+        $html .= '<div class="company-name">د خیاطۍ مدیریت سیسټم</div>';
+        $html .= '<div class="report-title">د کورتۍ راپور</div>';
+        $html .= '<div class="report-subtitle">' . htmlspecialchars($typeLabel) . '</div>';
+        $html .= '<div class="report-date">د تولید نیټه: ' . $date . '</div>';
+        $html .= '</div>';
         $html .= '</div>';
 
-        $html .= '<table>';
+        $html .= '<div class="summary-stats">';
+        $html .= '<div class="stat-item"><span class="stat-label">ټول ریکارډونه:</span> <span class="stat-value">' . $count . '</span></div>';
+        $html .= '<div class="stat-item"><span class="stat-label">ټولې پیسې:</span> <span class="stat-value">' . number_format($totalMoney) . ' افغانۍ</span></div>';
+        $html .= '</div>';
+
+        $html .= '<table class="data-table">';
         $html .= '<thead><tr>';
         $html .= '<th>نوم</th><th>موبایل</th><th>شانه</th><th>تینه</th><th>لستونی اوږد</th><th>لستونی بروالی</th>';
         $html .= '<th>غاړه دول</th><th>زیګر</th><th>د راوړلو نیټه</th><th>د تسلیمولو نیټه</th><th>تعداد</th><th>پیسې</th>';
@@ -487,15 +496,7 @@ class PdfReportService
         }
 
         $html .= '</tbody></table>';
-        
-        $html .= '<div class="footer">';
-        $html .= '<div class="stats">';
-        $html .= '<div class="stat-item"><strong>ټول ریکارډونه: ' . $count . '</strong></div>';
-        $html .= '<div class="stat-item"><strong>ټولې پیسې: ' . number_format($totalMoney, 2) . '</strong></div>';
-        $html .= '</div>';
-        $html .= '<p>د جوړولو نیټه: ' . $date . '</p>';
-        $html .= '</div>';
-        
+        $html .= '</div>'; // Close report-container
         $html .= '</body></html>';
 
         return $html;
@@ -511,14 +512,23 @@ class PdfReportService
         $html = '<!DOCTYPE html><html dir="rtl" lang="ps"><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
         $html .= $this->getBaseStyles();
         $html .= '</head><body dir="rtl">';
-        
+
+        $html .= '<div class="report-container">';
         $html .= '<div class="header">';
-        $html .= '<div class="title">د صدری راپور</div>';
-        $html .= '<div class="subtitle">' . $typeLabel . '</div>';
-        $html .= '<div class="subtitle">نیټه: ' . $date . '</div>';
+        $html .= '<div class="header-content">';
+        $html .= '<div class="company-name">د خیاطۍ مدیریت سیسټم</div>';
+        $html .= '<div class="report-title">د صدری راپور</div>';
+        $html .= '<div class="report-subtitle">' . htmlspecialchars($typeLabel) . '</div>';
+        $html .= '<div class="report-date">د تولید نیټه: ' . $date . '</div>';
+        $html .= '</div>';
         $html .= '</div>';
 
-        $html .= '<table>';
+        $html .= '<div class="summary-stats">';
+        $html .= '<div class="stat-item"><span class="stat-label">ټول ریکارډونه:</span> <span class="stat-value">' . $count . '</span></div>';
+        $html .= '<div class="stat-item"><span class="stat-label">ټولې پیسې:</span> <span class="stat-value">' . number_format($totalMoney) . ' افغانۍ</span></div>';
+        $html .= '</div>';
+
+        $html .= '<table class="data-table">';
         $html .= '<thead><tr>';
         $html .= '<th>نوم</th><th>موبایل</th><th>پیسې</th><th>شانه</th><th>تینه</th><th>غاړه دول</th>';
         $html .= '<th>زیګر</th><th>تعداد</th><th>د راوړلو نیټه</th><th>د تسلیمولو نیټه</th>';
@@ -540,15 +550,7 @@ class PdfReportService
         }
 
         $html .= '</tbody></table>';
-        
-        $html .= '<div class="footer">';
-        $html .= '<div class="stats">';
-        $html .= '<div class="stat-item"><strong>ټول ریکارډونه: ' . $count . '</strong></div>';
-        $html .= '<div class="stat-item"><strong>ټولې پیسې: ' . number_format($totalMoney, 2) . '</strong></div>';
-        $html .= '</div>';
-        $html .= '<p>د جوړولو نیټه: ' . $date . '</p>';
-        $html .= '</div>';
-        
+        $html .= '</div>'; // Close report-container
         $html .= '</body></html>';
 
         return $html;
