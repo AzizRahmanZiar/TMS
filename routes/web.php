@@ -1,5 +1,7 @@
 <?php
 
+
+
 use App\Http\Controllers\{
     AdminController,
     // ClothsController,
@@ -109,8 +111,8 @@ Route::middleware(['auth', 'checkrole:admin,tailor,shopkeeper'])->group(function
     Route::delete('profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Protected System routes
-Route::middleware(['auth', 'verified'])->group(function () {
+// Protected System routes - EMAIL VERIFICATION DISABLED
+Route::middleware(['auth'])->group(function () {
     // Common system routes (accessible by admin, tailor, and shopkeeper)
     Route::middleware(['checkrole:admin,tailor,shopkeeper'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
