@@ -40,8 +40,8 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->profile_image);
             }
 
-            // Store new profile image
-            $imagePath = $request->file('profile_image')->store('profile-images', 'public');
+            // Store new profile image - FIXED: Use consistent naming with underscore
+            $imagePath = $request->file('profile_image')->store('profile_images', 'public');
             $validatedData['profile_image'] = $imagePath;
         }
 
